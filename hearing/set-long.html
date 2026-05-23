@@ -245,7 +245,8 @@ const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtk
 const params = new URLSearchParams(location.search);
 const paramName  = params.get('name')  || '';
 const paramEmail = params.get('email') || '';
-const paramPlan  = params.get('plan')  || '長尺動画パック';
+const paramPlan    = params.get('plan')    || '長尺動画パック';
+const paramPlanKey = params.get('planKey') || 'edit-long';
 if (paramName)  document.getElementById('f-name').value  = paramName;
 if (paramEmail) document.getElementById('f-email').value = paramEmail;
 document.getElementById('plan-display').textContent = paramPlan;
@@ -260,6 +261,7 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
   const videoTypes  = [...form.querySelectorAll('input[name=video_type]:checked')].map(i => i.value);
   const softwares   = [...form.querySelectorAll('input[name=software]:checked')].map(i => i.value);
   const answers = {
+    '__planKey':             paramPlanKey,
     '会社名/屋号':          fd.get('company') || '',
     'Chatwork ID':          fd.get('chatwork_id') || '',
     'YouTubeチャンネルURL': fd.get('yt_url') || '',

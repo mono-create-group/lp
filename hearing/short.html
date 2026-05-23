@@ -212,6 +212,20 @@ a { color: inherit; text-decoration: none; }
     <div class="form-section">
       <p class="form-section-title">動画の仕様</p>
       <div class="form-group">
+        <label>月の希望本数 <span>*</span></label>
+        <div class="form-radio-group">
+          <label class="form-radio-item"><input type="radio" name="monthly_count" value="1本"><span>1本</span></label>
+          <label class="form-radio-item"><input type="radio" name="monthly_count" value="2本"><span>2本</span></label>
+          <label class="form-radio-item"><input type="radio" name="monthly_count" value="3本"><span>3本</span></label>
+          <label class="form-radio-item"><input type="radio" name="monthly_count" value="5本"><span>5本</span></label>
+          <label class="form-radio-item"><input type="radio" name="monthly_count" value="10本"><span>10本</span></label>
+          <label class="form-radio-item"><input type="radio" name="monthly_count" value="15本"><span>15本</span></label>
+          <label class="form-radio-item"><input type="radio" name="monthly_count" value="20本"><span>20本</span></label>
+          <label class="form-radio-item"><input type="radio" name="monthly_count" value="30本"><span>30本</span></label>
+          <label class="form-radio-item"><input type="radio" name="monthly_count" value="未定・相談したい"><span>未定・相談したい</span></label>
+        </div>
+      </div>
+      <div class="form-group">
         <label>1本あたりの動画の長さ</label>
         <div class="form-radio-group">
           <label class="form-radio-item"><input type="radio" name="duration" value="15秒以内"><span>15秒以内</span></label>
@@ -315,7 +329,8 @@ const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtk
 const params = new URLSearchParams(location.search);
 const paramName  = params.get('name')  || '';
 const paramEmail = params.get('email') || '';
-const paramPlan  = params.get('plan')  || 'ショート動画編集';
+const paramPlan    = params.get('plan')    || 'ショート動画編集';
+const paramPlanKey = params.get('planKey') || 'edit-short';
 
 if (paramName)  document.getElementById('f-name').value  = paramName;
 if (paramEmail) document.getElementById('f-email').value = paramEmail;
@@ -334,11 +349,13 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
   const platforms = [...form.querySelectorAll('input[name=sns_platform]:checked')].map(i => i.value);
 
   const answers = {
+    '__planKey':           paramPlanKey,
     '会社名/屋号':        fd.get('company') || '',
     'Chatwork ID':        fd.get('chatwork_id') || '',
     'SNSアカウントURL':   fd.get('sns_url') || '',
     '投稿SNS':            platforms.join(' / ') || '',
     'ジャンル/テーマ':    fd.get('genre') || '',
+    '月の希望本数':       fd.get('monthly_count') || '',
     '動画の長さ':         fd.get('duration') || '',
     'テロップスタイル':   fd.get('caption_style') || '',
     'BGM/SE':             fd.get('bgm') || '',
