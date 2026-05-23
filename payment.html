@@ -219,7 +219,21 @@ footer {
   <div class="prepay-banner" id="banner-prepay">
     <div class="prepay-banner__icon">⚠️</div>
     <div>
-      <p class="prepay-banner__body">mono.createでは<strong style="color:#E8EDF5;">ご入金の確認後に編集を開始</strong>しております。<br>トラブル防止のため、必ず振込完了後に素材をご共有ください。</p>
+      <p class="prepay-banner__body">mono.createでは<strong style="color:#E8EDF5;">ご入金の確認後に作業を開始</strong>しております。<br>トラブル防止のため、必ず振込完了後に素材をご共有ください。</p>
+    </div>
+  </div>
+
+  <!-- 当日納品オプション -->
+  <div style="background:linear-gradient(135deg,rgba(16,185,129,0.12),rgba(59,130,246,0.08));border:1px solid rgba(16,185,129,0.35);border-radius:14px;padding:20px 24px;display:flex;align-items:flex-start;gap:14px;margin-bottom:40px;">
+    <div style="font-size:2rem;flex-shrink:0;">⚡</div>
+    <div>
+      <p style="font-size:0.95rem;font-weight:700;color:#10B981;margin-bottom:6px;">当日納品オプション（+¥2,000 / 長尺は+¥5,000）</p>
+      <p style="font-size:0.83rem;color:#8B9BB4;line-height:1.9;">
+        12:00までにご依頼いただいた場合、当日中に納品する「当日納品オプション」があります。<br>
+        お急ぎの際はご利用ください。<br>
+        ただし、稼働状況によってはご利用いただけない場合がございます。<br>
+        あらかじめご了承ください。
+      </p>
     </div>
   </div>
 
@@ -262,8 +276,8 @@ footer {
     <div class="bank-card">
       <div class="bank-card__row">
         <span class="bank-card__label">銀行名</span>
-        <span class="bank-card__value" id="bank-name">ペイペイ銀行</span>
-        <button class="copy-btn" onclick="copyText('ペイペイ銀行', this)">コピー</button>
+        <span class="bank-card__value" id="bank-name">PayPay銀行</span>
+        <button class="copy-btn" onclick="copyText('PayPay銀行', this)">コピー</button>
       </div>
       <div class="bank-card__row">
         <span class="bank-card__label">銀行コード</span>
@@ -305,8 +319,8 @@ footer {
       <div class="notice-item"><span>振込人名義は<strong style="color:#E8EDF5;">ご本人名義</strong>でお振込みください。法人の場合は会社名義でも可。</span></div>
       <div class="notice-item"><span>振込確認後、ChatworkまたはGmailにてご連絡します（通常営業時間内に対応）。</span></div>
       <div class="notice-item"><span>振込完了後、下記フォームから<strong style="color:#E8EDF5;">振込完了のご報告</strong>をお願いします。確認がスムーズになります。</span></div>
-      <div class="notice-item"><span>ご入金確認前に素材の共有をいただいても、編集は開始できません。</span></div>
-      <div class="notice-item">稼働時間外（平日19:00以降・土日）の入金確認は翌営業日になります。</div>
+      <div class="notice-item"><span>ご入金確認前に素材の共有をいただいても、作業は開始できません。</span></div>
+      <div class="notice-item">稼働時間外（19:00以降・日曜）の入金確認は翌営業日になります。</div>
     </div>
   </div>
 
@@ -314,10 +328,6 @@ footer {
   <div class="pay-section">
     <p class="pay-section__title">振込完了のご報告</p>
     <div class="pay-form" id="report-form-wrap">
-      <p style="font-size:0.83rem;color:var(--sub);margin-bottom:24px;line-height:1.8;">
-        振込完了後にこのフォームからご報告いただくと、入金確認がスムーズになります。<br>
-        Chatworkへの確認メッセージと合わせてご利用ください。
-      </p>
       <form id="report-form">
         <div class="form-group">
           <label class="form-label">お名前（振込人名義）<span class="req">*</span></label>
@@ -374,8 +384,8 @@ footer {
         <p class="success-box__title">ご報告ありがとうございます！</p>
         <p class="success-box__body">
           内容を確認次第、ChatworkまたはGmailにてご連絡いたします。<br>
-          通常、営業時間内（平日9:00〜19:00）に対応します。<br><br>
-          素材の共有は入金確認のご連絡後にお願いします。
+          通常、営業時間内（月〜土 9:00〜19:00）に対応します。<br>
+          素材の共有は、入金確認のご連絡後にお願いします。
         </p>
       </div>
     </div>

@@ -467,11 +467,45 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
 
     <!-- ── ヒアリング回答タブ ── -->
     <div id="tab-hearings" style="display:none;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
         <h2 style="font-size:1rem;font-weight:800;">ヒアリングシート回答</h2>
         <div style="display:flex;gap:10px;">
           <button class="refresh-btn" onclick="loadHearings()">更新</button>
           <button class="export-btn" onclick="exportHearingsCSV()">CSV出力</button>
+        </div>
+      </div>
+      <!-- 手動見積もり送信 -->
+      <div style="background:rgba(59,130,246,0.07);border:1px solid rgba(59,130,246,0.25);border-radius:10px;padding:16px 20px;margin-bottom:20px;">
+        <p style="font-size:0.8rem;font-weight:700;color:#60a5fa;margin-bottom:12px;">💳 新規見積もり・振込依頼を手動送信</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+          <div>
+            <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">お名前 <span style="color:#f87171;">*</span></label>
+            <input type="text" id="manual-name" placeholder="山田 太郎"
+              style="width:100%;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;">
+          </div>
+          <div>
+            <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">メールアドレス <span style="color:#f87171;">*</span></label>
+            <input type="email" id="manual-email" placeholder="email@example.com"
+              style="width:100%;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;">
+          </div>
+          <div>
+            <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">プラン名</label>
+            <input type="text" id="manual-plan" placeholder="例：ショート動画編集10本"
+              style="width:100%;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;">
+          </div>
+          <div>
+            <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">金額（税込）<span style="color:#f87171;">*</span></label>
+            <input type="number" id="manual-amount" placeholder="例: 45000" min="0"
+              style="width:100%;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;">
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <input type="text" id="manual-due" placeholder="振込期限（例：7日以内）"
+            style="flex:1;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;">
+          <button onclick="submitManualPaymentRequest()"
+            style="padding:9px 20px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;border:none;border-radius:8px;font-size:0.85rem;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit;">
+            💳 見積もりを送信
+          </button>
         </div>
       </div>
       <div class="table-wrap">
@@ -679,8 +713,34 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       <div class="modal-row"><p class="modal-label">メール</p><p class="modal-val" id="pm-email">—</p></div>
       <div class="modal-row"><p class="modal-label">プラン</p><p class="modal-val" id="pm-plan">—</p></div>
       <div id="pm-calc-box" style="display:none;padding:10px 12px;border-radius:6px;border:1px solid;font-size:0.82rem;margin-bottom:12px;"></div>
+
+      <!-- オプション追加 -->
+      <div style="margin-bottom:12px;">
+        <label style="display:block;font-size:0.82rem;color:var(--sub);margin-bottom:8px;">オプション追加（クリックで自動加算）</label>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;" id="pm-option-btns">
+          <button type="button" onclick="addOption('当日納品（ショート）',2000)" style="padding:5px 10px;border-radius:6px;font-size:0.75rem;border:1px solid var(--border);background:var(--bg2);color:#60a5fa;cursor:pointer;">⚡当日納品 +¥2,000</button>
+          <button type="button" onclick="addOption('当日納品（長尺）',5000)" style="padding:5px 10px;border-radius:6px;font-size:0.75rem;border:1px solid var(--border);background:var(--bg2);color:#60a5fa;cursor:pointer;">⚡当日納品(長尺) +¥5,000</button>
+          <button type="button" onclick="addOption('修正料（ショート）',1000)" style="padding:5px 10px;border-radius:6px;font-size:0.75rem;border:1px solid var(--border);background:var(--bg2);color:#f59e0b;cursor:pointer;">✏️修正料(ショート) +¥1,000</button>
+          <button type="button" onclick="addOption('修正料（長尺）',3000)" style="padding:5px 10px;border-radius:6px;font-size:0.75rem;border:1px solid var(--border);background:var(--bg2);color:#f59e0b;cursor:pointer;">✏️修正料(長尺) +¥3,000</button>
+          <button type="button" onclick="addOption('アカウント分析',5000)" style="padding:5px 10px;border-radius:6px;font-size:0.75rem;border:1px solid var(--border);background:var(--bg2);color:#a78bfa;cursor:pointer;">📊アカウント分析 +¥5,000</button>
+          <button type="button" onclick="addOption('市場分析',5000)" style="padding:5px 10px;border-radius:6px;font-size:0.75rem;border:1px solid var(--border);background:var(--bg2);color:#a78bfa;cursor:pointer;">📊市場分析 +¥5,000</button>
+        </div>
+        <!-- 追加内訳リスト -->
+        <div id="pm-options-list" style="display:none;margin-bottom:8px;padding:8px 12px;background:rgba(255,255,255,0.04);border-radius:6px;border:1px solid var(--border);">
+          <p style="font-size:0.75rem;color:var(--sub);margin-bottom:6px;">追加内訳：</p>
+          <ul id="pm-options-items" style="list-style:none;padding:0;font-size:0.78rem;color:var(--text);"></ul>
+          <button type="button" onclick="clearOptions()" style="margin-top:6px;font-size:0.72rem;color:#f87171;background:none;border:none;cursor:pointer;padding:0;">✕ 追加をリセット</button>
+        </div>
+        <!-- 手動追加 -->
+        <div style="display:flex;gap:6px;align-items:center;">
+          <input type="text" id="pm-custom-label" placeholder="手動追加の内容名" style="flex:1;padding:7px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.82rem;">
+          <input type="number" id="pm-custom-amt" placeholder="金額" min="0" style="width:90px;padding:7px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.82rem;">
+          <button type="button" onclick="addCustomOption()" style="padding:7px 12px;border-radius:6px;font-size:0.78rem;border:1px solid #3b82f6;background:rgba(59,130,246,0.1);color:#60a5fa;cursor:pointer;white-space:nowrap;">追加</button>
+        </div>
+      </div>
+
       <div style="margin:0 0 12px;">
-        <label style="display:block;font-size:0.82rem;color:var(--sub);margin-bottom:6px;">合計金額（税込）<span style="color:#f87171;">*</span></label>
+        <label style="display:block;font-size:0.82rem;color:var(--sub);margin-bottom:6px;">合計金額（税込）<span style="color:#f87171;">*</span> <span id="pm-amount-breakdown" style="font-size:0.75rem;color:#4ade80;"></span></label>
         <input type="number" id="pm-amount" placeholder="例: 69800" min="0"
           style="width:100%;padding:9px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:1rem;">
       </div>
@@ -839,6 +899,7 @@ function renderTable() {
           <button class="action-btn btn-mail" onclick="openMail('${esc(i.email)}')">✉ メール</button>
           <button class="action-btn btn-expand" onclick="openModal(${i.row})">詳細</button>
           ${i.email ? `<button class="action-btn" style="background:#1a3a2a;color:#4ade80;border:1px solid #166534;" onclick="openHearingLinkModal(${i.row})">📋 ヒアリング案内</button>` : ''}
+          ${i.email ? `<button class="action-btn" style="background:#1a2a3a;color:#60a5fa;border:1px solid #1d4ed8;" onclick="openManualPaymentFromInquiry(${i.row})">💳 振込依頼</button>` : ''}
         </div>
       </td>
     </tr>
@@ -1214,6 +1275,9 @@ async function submitHearingLink() {
 
 // ── 自動見積もり計算 ─────────────────────────────────────────
 function calcEstimate(planKey, answers) {
+  // 無料トライアル
+  if (planKey === 'trial') return { amount: 0, note: '初回無料トライアル（¥0）', reliable: true, isTrial: true };
+
   // 固定月額プラン
   const fixed = { 'set-8': 69800, 'set-10': 45000, 'set-15': 75000, 'set-30': 150000, 'mixed-std': 150000, 'mixed-pre': 220000 };
   if (fixed[planKey]) return { amount: fixed[planKey], note: '月額固定プラン', reliable: true };
@@ -1228,35 +1292,150 @@ function calcEstimate(planKey, answers) {
   // 動画尺パース
   const duration = answers['動画の長さ'] || '';
 
-  // ─ ショート動画単品 ─
+  // ショート段階割引（15本以下5%、16〜29本10%、30本以上15%）
+  function shortDisc(n) {
+    if (n >= 30) return 0.85;
+    if (n >= 16) return 0.90;
+    return 0.95;
+  }
+  function shortDiscLabel(n) {
+    if (n >= 30) return '15%割引';
+    if (n >= 16) return '10%割引';
+    return '5%割引';
+  }
+
+  // 長尺段階割引（4本以下5%、5〜8本10%、9本以上は10%、12本以上15%）
+  function longDisc(n) {
+    if (n >= 12) return 0.85;
+    if (n >= 5)  return 0.90;
+    return 0.95;
+  }
+  function longDiscLabel(n) {
+    if (n >= 12) return '15%割引';
+    if (n >= 5)  return '10%割引';
+    return '5%割引';
+  }
+
+  // ─ ショート動画まとめて編集 ─
   if (planKey === 'edit-short') {
     if (!count) return { amount: 0, note: '本数未定 — 手動で入力してください', reliable: false };
     const unit = 4000;
-    const disc = count >= 5 ? 0.95 : 1.0;
+    const disc = shortDisc(count);
     const amt  = Math.round(unit * count * disc);
-    return { amount: amt, note: `¥4,000 × ${count}本${disc < 1 ? '（5%割引）' : ''}`, reliable: true };
+    return { amount: amt, note: `¥4,000 × ${count}本（${shortDiscLabel(count)}） = ¥${amt.toLocaleString()}`, reliable: true };
   }
 
-  // ─ 長尺動画単品 ─
-  if (planKey === 'edit-long') {
+  // ─ 長尺動画まとめて編集 ─
+  if (planKey === 'edit-long' || planKey === 'long-single') {
     const durationPrice = { '〜10分': 10000, '10〜15分': 15000, '15〜20分': 20000 };
     const unitPrice = durationPrice[duration];
     if (!count || !unitPrice) return { amount: 0, note: `尺「${duration || '未定'}」/ ${count || '?'}本 — 手動で入力してください`, reliable: false };
-    const disc = count >= 5 ? 0.95 : 1.0;
+    const disc = longDisc(count);
     const amt  = Math.round(unitPrice * count * disc);
-    return { amount: amt, note: `¥${unitPrice.toLocaleString()} × ${count}本${disc < 1 ? '（5%割引）' : ''}`, reliable: true };
+    return { amount: amt, note: `¥${unitPrice.toLocaleString()} × ${count}本（${longDiscLabel(count)}） = ¥${amt.toLocaleString()}`, reliable: true };
   }
 
   // ─ 長尺セットパック ─（後払い計算）
   if (planKey === 'set-long') {
-    const discPrice = { '〜10分': 9500, '10〜15分': 14250, '15〜20分': 19000 };
-    const editUnit = discPrice[duration];
+    const basePrices = { '〜10分': 10000, '10〜15分': 15000, '15〜20分': 20000 };
+    const editUnit = basePrices[duration];
     if (!count || !editUnit) return { amount: 0, note: '長尺セット — 尺/本数確認後に手動入力', reliable: false };
-    const amt = Math.round((editUnit * count + 1000 * count) * 1.3 - 5000);
-    return { amount: amt, note: `(¥${editUnit.toLocaleString()}+¥1,000) × ${count}本 × 1.3 − ¥5,000（後払い概算）`, reliable: true };
+    const disc = longDisc(count);
+    const discUnit = Math.round(editUnit * disc);
+    const amt = Math.round((discUnit * count + 1000 * count) * 1.3 - 5000);
+    return { amount: amt, note: `(¥${discUnit.toLocaleString()}+¥1,000) × ${count}本 × 1.3 − ¥5,000（後払い概算）`, reliable: true };
   }
 
   return { amount: 0, note: 'プラン自動計算対象外 — 手動で入力してください', reliable: false };
+}
+
+// ── 手動見積もり送信（ヒアリングなし） ─────────────────────────
+async function submitManualPaymentRequest() {
+  const name   = document.getElementById('manual-name').value.trim();
+  const email  = document.getElementById('manual-email').value.trim();
+  const plan   = document.getElementById('manual-plan').value.trim();
+  const amount = document.getElementById('manual-amount').value.trim();
+  const due    = document.getElementById('manual-due').value.trim();
+  if (!name || !email || !amount) { showToast('名前・メール・金額は必須です', true); return; }
+  if (email.indexOf('@') === -1) { showToast('メールアドレスを正しく入力してください', true); return; }
+  try {
+    const url = `${GAS_URL}?action=send_payment_request&key=${encodeURIComponent(getAdminPw())}`
+      + `&email=${encodeURIComponent(email)}`
+      + `&name=${encodeURIComponent(name)}`
+      + `&plan=${encodeURIComponent(plan || 'ご依頼プラン')}`
+      + `&amount=${encodeURIComponent(amount)}`
+      + `&due=${encodeURIComponent(due || '7日以内')}`;
+    const res  = await fetch(url);
+    const json = await res.json();
+    if (json.success) {
+      showToast(`💳 ${name} 様に見積もりメールを送信しました`);
+      document.getElementById('manual-name').value   = '';
+      document.getElementById('manual-email').value  = '';
+      document.getElementById('manual-plan').value   = '';
+      document.getElementById('manual-amount').value = '';
+      document.getElementById('manual-due').value    = '';
+    } else {
+      showToast('送信失敗: ' + (json.error || 'エラー'), true);
+    }
+  } catch(e) { showToast('送信エラー', true); }
+}
+
+// 問い合わせタブから直接振込依頼を開く
+function openManualPaymentFromInquiry(row) {
+  const i = inquiries.find(x => x.row === row);
+  if (!i) return;
+  // ヒアリングタブの手動フォームに値を入れてタブ切替
+  switchAdminTab('hearings');
+  setTimeout(() => {
+    document.getElementById('manual-name').value  = i.name  || '';
+    document.getElementById('manual-email').value = i.email || '';
+    document.getElementById('manual-plan').value  = i.plan  || '';
+    document.getElementById('manual-name').scrollIntoView({ behavior:'smooth', block:'center' });
+    document.getElementById('manual-amount').focus();
+  }, 150);
+}
+
+// ── オプション追加ロジック ────────────────────────────────────
+let _pmBaseAmount  = 0;   // 自動計算の基本金額
+let _pmOptions     = [];  // { label, amount }[]
+
+function addOption(label, amt) {
+  _pmOptions.push({ label, amount: amt });
+  _refreshOptionUI();
+}
+function addCustomOption() {
+  const label = document.getElementById('pm-custom-label').value.trim();
+  const amt   = parseInt(document.getElementById('pm-custom-amt').value) || 0;
+  if (!label || amt <= 0) { showToast('内容と金額を入力してください', true); return; }
+  _pmOptions.push({ label, amount: amt });
+  document.getElementById('pm-custom-label').value = '';
+  document.getElementById('pm-custom-amt').value   = '';
+  _refreshOptionUI();
+}
+function clearOptions() {
+  _pmOptions = [];
+  _refreshOptionUI();
+}
+function _refreshOptionUI() {
+  const list    = document.getElementById('pm-options-items');
+  const wrapper = document.getElementById('pm-options-list');
+  const breakdown = document.getElementById('pm-amount-breakdown');
+  list.innerHTML = '';
+  if (_pmOptions.length === 0) {
+    wrapper.style.display = 'none';
+    breakdown.textContent = '';
+  } else {
+    wrapper.style.display = 'block';
+    const optTotal = _pmOptions.reduce((s, o) => s + o.amount, 0);
+    _pmOptions.forEach(o => {
+      const li = document.createElement('li');
+      li.textContent = `+ ¥${o.amount.toLocaleString()}（${o.label}）`;
+      list.appendChild(li);
+    });
+    const total = _pmBaseAmount + optTotal;
+    breakdown.textContent = `基本 ¥${_pmBaseAmount.toLocaleString()} + オプション ¥${optTotal.toLocaleString()} = ¥${total.toLocaleString()}`;
+    document.getElementById('pm-amount').value = total;
+  }
 }
 
 // ── 振込依頼モーダル ──────────────────────────────────────────
@@ -1270,26 +1449,40 @@ function openPaymentRequestModal(row) {
   document.getElementById('pm-plan').textContent  = h.plan  || '—';
   document.getElementById('pm-due').value   = '';
   document.getElementById('pm-note').value  = '';
+  _pmOptions = [];
+  document.getElementById('pm-options-items').innerHTML = '';
+  document.getElementById('pm-options-list').style.display = 'none';
+  document.getElementById('pm-amount-breakdown').textContent = '';
 
   // 自動計算
   const planKey = (h.answers && h.answers['__planKey']) || '';
   const est = calcEstimate(planKey, h.answers || {});
-  document.getElementById('pm-amount').value = est.amount > 0 ? est.amount : '';
+  _pmBaseAmount = est.amount || 0;
+  document.getElementById('pm-amount').value = est.amount > 0 ? est.amount : (est.isTrial ? 0 : '');
 
   // 計算根拠を表示
   const calcBox = document.getElementById('pm-calc-box');
-  if (est.reliable) {
+  if (est.isTrial) {
+    calcBox.style.display = 'block';
+    calcBox.style.background = '#0a2a1a';
+    calcBox.style.borderColor = '#10b981';
+    calcBox.style.color = '#34d399';
+    calcBox.innerHTML = `🎁 無料トライアル — 支払い不要。「振込依頼を送信」を押すと完了メールが送付されます。`;
+    document.getElementById('pm-send-btn').textContent = '🎁 トライアル確認メールを送信';
+  } else if (est.reliable) {
     calcBox.style.display = 'block';
     calcBox.style.background = '#0f2a1a';
     calcBox.style.borderColor = '#16a34a';
     calcBox.style.color = '#4ade80';
-    calcBox.innerHTML = `✅ 自動計算: ${est.note} = ¥${est.amount.toLocaleString()}`;
+    calcBox.innerHTML = `✅ 自動計算: ${est.note}`;
+    document.getElementById('pm-send-btn').textContent = '💳 振込依頼を送信';
   } else {
     calcBox.style.display = 'block';
     calcBox.style.background = '#1a1a0f';
     calcBox.style.borderColor = '#ca8a04';
     calcBox.style.color = '#fbbf24';
     calcBox.innerHTML = `⚠️ ${est.note}`;
+    document.getElementById('pm-send-btn').textContent = '💳 振込依頼を送信';
   }
 
   document.getElementById('payment-req-modal').classList.add('open');
@@ -1302,7 +1495,8 @@ async function submitPaymentRequest() {
   const h = hearings.find(x => x.row === _paymentReqRow);
   if (!h || !h.email) { showToast('メールアドレスがありません'); return; }
   const amount = document.getElementById('pm-amount').value.trim();
-  if (!amount || isNaN(amount) || Number(amount) <= 0) {
+  const isTrial = (amount === '0' || (h.answers && h.answers['__planKey'] === 'trial'));
+  if (!isTrial && (!amount || isNaN(amount) || Number(amount) < 0)) {
     showToast('金額を正しく入力してください', true); return;
   }
   const due  = document.getElementById('pm-due').value.trim();
@@ -1355,11 +1549,16 @@ function renderSales() {
     document.getElementById('sales-total-exc').textContent = '¥0';
     return;
   }
-  // 今月合計
-  const now = new Date(); const ym = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}`;
-  const thisMonth = salesData.filter(s => String(s.date).startsWith(ym));
-  const totalInc = thisMonth.reduce((s,r) => s + Number(r.taxInc||0), 0);
-  const totalExc = thisMonth.reduce((s,r) => s + Number(r.taxExc||0), 0);
+  // 今月合計（"2026/05" と "2026-05" 両形式に対応）
+  const now = new Date();
+  const ym     = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}`;
+  const ymDash = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  const thisMonth = salesData.filter(s => {
+    const d = String(s.date).replace(/-/g, '/');   // 正規化してスラッシュ統一
+    return d.startsWith(ym);
+  });
+  const totalInc = thisMonth.reduce((s,r) => s + (Number(r.taxInc) || 0), 0);
+  const totalExc = thisMonth.reduce((s,r) => s + (Number(r.taxExc) || 0), 0);
   document.getElementById('sales-total').textContent = '¥' + totalInc.toLocaleString();
   document.getElementById('sales-total-exc').textContent = '¥' + totalExc.toLocaleString();
 
@@ -1376,12 +1575,14 @@ function renderSales() {
     </tr>`).join('');
 }
 async function addSalesRecord() {
-  const date   = document.getElementById('sl-date').value;
-  const client = document.getElementById('sl-client').value.trim();
-  const amount = document.getElementById('sl-amount').value;
-  const plan   = document.getElementById('sl-plan').value.trim();
-  const payDate= document.getElementById('sl-paydate').value;
-  const note   = document.getElementById('sl-note').value.trim();
+  const dateRaw = document.getElementById('sl-date').value;
+  const date    = dateRaw.replace(/-/g, '/');   // "2026-05-24" → "2026/05/24" に統一
+  const client  = document.getElementById('sl-client').value.trim();
+  const amount  = document.getElementById('sl-amount').value;
+  const plan    = document.getElementById('sl-plan').value.trim();
+  const payDateRaw = document.getElementById('sl-paydate').value;
+  const payDate = payDateRaw ? payDateRaw.replace(/-/g, '/') : '';
+  const note    = document.getElementById('sl-note').value.trim();
   if (!date || !client || !amount) { alert('取引日・取引先・金額は必須です'); return; }
   try {
     await fetch(GAS_URL, {

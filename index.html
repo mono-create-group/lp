@@ -966,7 +966,7 @@ footer {
       </div>
       <div class="hero-stat">
         <p class="hero-stat-value">3<span>回</span></p>
-        <p class="hero-stat-label">修正無料回数（4回目〜¥500）</p>
+        <p class="hero-stat-label">修正無料回数（4回目〜¥1,000）</p>
       </div>
       <div class="hero-stat">
         <p class="hero-stat-value">¥10,000 <span>〜 / 1本</span></p>
@@ -1124,6 +1124,17 @@ footer {
     <h2 class="section-title fade-up"><span class="mark">料金プラン</span></h2>
     <p class="section-sub fade-up">記載は最低料金です。詳細はお問い合わせください。</p>
 
+    <!-- 無料トライアルバナー -->
+    <div class="fade-up" style="background:linear-gradient(135deg,rgba(16,185,129,0.13),rgba(59,130,246,0.08));border:1px solid rgba(16,185,129,0.45);border-radius:16px;padding:28px 32px;text-align:center;margin:36px 0;">
+      <p style="font-size:1.2rem;font-weight:800;color:#10B981;margin-bottom:10px;">🎁 初回1本 完全無料トライアル</p>
+      <p style="font-size:0.87rem;color:var(--sub);line-height:1.9;margin-bottom:18px;">
+        すべてのプランで、まずは1本を<strong style="color:#E8EDF5;">無料でお試し</strong>いただけます。<br>
+        品質を確認してからご契約いただけるので、安心してスタートできます。<br>
+        まずはお気軽にご相談ください。
+      </p>
+      <a href="#" onclick="openContract('trial');return false;" class="btn btn-primary" style="display:inline-flex;padding:13px 36px;font-size:1rem;font-weight:700;">無料で1本試してみる →</a>
+    </div>
+
     <div style="margin-top:40px;">
       <div class="pricing-tabs">
         <button class="ptab active" onclick="switchTab('single',this)">単品</button>
@@ -1172,7 +1183,7 @@ footer {
           </div>
           <p class="pricing-price">¥5,000〜</p>
         </div>
-        <p style="font-size:0.8rem;color:var(--sub);margin-top:20px;padding:0 8px;">※ 修正3回まで無料。4回目以降¥500/回。こちら側のミスは無制限対応。</p>
+        <p style="font-size:0.8rem;color:var(--sub);margin-top:20px;padding:0 8px;">※ 修正3回まで無料。4回目以降¥1,000/回（長尺動画は¥3,000/回）。こちら側のミスは無制限対応。</p>
       </div>
 
       <!-- Option -->
@@ -1182,7 +1193,7 @@ footer {
             <p class="pricing-row-name">当日納品</p>
             <p class="pricing-row-desc">12:00までのご依頼に限り、当日中に仕上げます。<br>場合によってはお受けできない場合もございますので、ご了承ください。</p>
           </div>
-          <p class="pricing-price">+¥2,000</p>
+          <p class="pricing-price">+¥2,000<br><span style="font-size:0.72rem;color:var(--sub);font-weight:500;">長尺 +¥5,000</span></p>
         </div>
         <div class="pricing-row fade-up">
           <div>
@@ -1218,26 +1229,27 @@ footer {
         <p style="font-size:0.8rem;font-weight:700;margin-bottom:12px;color:var(--sub);padding-left:8px;">◎ ショート動画</p>
         <div class="pack-card fade-up" style="margin-bottom:32px;">
           <p class="pack-name" style="margin-bottom:4px;">まとめて編集プラン（ショート）</p>
-          <p style="font-size:0.75rem;color:var(--sub);margin-bottom:12px;">¥4,000 × 本数 × 0.95（5%割引）</p>
+          <p style="font-size:0.75rem;color:var(--sub);margin-bottom:12px;">15本まで 5%引き ／ 30本まで 10%引き ／ 30本以上 15%引き</p>
           <div style="overflow-x:auto;">
             <table style="width:100%;border-collapse:collapse;font-size:0.83rem;">
               <thead>
                 <tr style="border-bottom:1px solid var(--border);">
                   <th style="padding:8px 6px;text-align:left;color:var(--sub);font-weight:600;">本数 / 月</th>
+                  <th style="padding:8px 6px;text-align:center;color:var(--sub);font-weight:600;">割引率</th>
                   <th style="padding:8px 6px;text-align:right;color:var(--sub);font-weight:600;">月額</th>
                 </tr>
               </thead>
               <tbody>
-                <tr style="border-bottom:1px solid var(--border);"><td style="padding:10px 6px;color:var(--text);">10本</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥38,000</td></tr>
-                <tr style="border-bottom:1px solid var(--border);"><td style="padding:10px 6px;color:var(--text);">12本</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥45,600</td></tr>
-                <tr style="border-bottom:1px solid var(--border);"><td style="padding:10px 6px;color:var(--text);">15本</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥57,000</td></tr>
-                <tr style="border-bottom:1px solid var(--border);"><td style="padding:10px 6px;color:var(--text);">20本</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥76,000</td></tr>
-                <tr style="border-bottom:1px solid var(--border);"><td style="padding:10px 6px;color:var(--text);">25本</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥95,000</td></tr>
-                <tr><td style="padding:10px 6px;color:var(--text);">30本</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥114,000</td></tr>
+                <tr style="border-bottom:1px solid var(--border);"><td style="padding:10px 6px;color:var(--text);">10本</td><td style="padding:10px 6px;text-align:center;color:var(--sub);font-size:0.78rem;">5%引き</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥38,000</td></tr>
+                <tr style="border-bottom:1px solid var(--border);"><td style="padding:10px 6px;color:var(--text);">12本</td><td style="padding:10px 6px;text-align:center;color:var(--sub);font-size:0.78rem;">5%引き</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥45,600</td></tr>
+                <tr style="border-bottom:1px solid var(--border);"><td style="padding:10px 6px;color:var(--text);">15本</td><td style="padding:10px 6px;text-align:center;color:var(--sub);font-size:0.78rem;">5%引き</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥57,000</td></tr>
+                <tr style="border-bottom:1px solid var(--border);"><td style="padding:10px 6px;color:var(--text);">20本</td><td style="padding:10px 6px;text-align:center;color:#60A5FA;font-size:0.78rem;font-weight:700;">10%引き</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥72,000</td></tr>
+                <tr style="border-bottom:1px solid var(--border);"><td style="padding:10px 6px;color:var(--text);">25本</td><td style="padding:10px 6px;text-align:center;color:#60A5FA;font-size:0.78rem;font-weight:700;">10%引き</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥90,000</td></tr>
+                <tr><td style="padding:10px 6px;color:var(--text);">30本〜</td><td style="padding:10px 6px;text-align:center;color:#10B981;font-size:0.78rem;font-weight:700;">15%引き</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥102,000〜</td></tr>
               </tbody>
             </table>
           </div>
-          <p style="font-size:0.75rem;color:var(--sub);margin-top:12px;">※ 10本以上から本数を細かく調整可能。上記以外の本数はご相談ください。</p>
+          <p style="font-size:0.75rem;color:var(--sub);margin-top:12px;">※ 最低10本以上から本数を細かく調整可能。上記以外の本数はご相談ください。</p>
           <a href="#" onclick="openContract('edit-short');return false;" class="btn btn-gold" style="width:100%;justify-content:center;margin-top:16px;">申し込む →</a>
           <p class="pack-note" style="margin-top:12px;">※ 契約同意後すぐにヒアリングシートへ進みます。</p>
         </div>
@@ -1246,30 +1258,39 @@ footer {
         <p style="font-size:0.8rem;font-weight:700;margin-bottom:12px;color:var(--sub);padding-left:8px;">◎ YouTube長尺動画</p>
         <div class="pack-card fade-up" style="margin-bottom:48px;">
           <p class="pack-name" style="margin-bottom:4px;">まとめて編集プラン（長尺）</p>
-          <p style="font-size:0.75rem;color:var(--sub);margin-bottom:12px;">単価から5%割引。本数はご相談ください。</p>
+          <p style="font-size:0.75rem;color:var(--sub);margin-bottom:12px;">4本まで 5%引き ／ 8本まで 10%引き ／ 12本以上 15%引き　※ 最低4本以上</p>
           <div style="overflow-x:auto;">
             <table style="width:100%;border-collapse:collapse;font-size:0.83rem;">
               <thead>
                 <tr style="border-bottom:1px solid var(--border);">
                   <th style="padding:8px 6px;text-align:left;color:var(--sub);font-weight:600;">動画の長さ</th>
-                  <th style="padding:8px 6px;text-align:right;color:var(--sub);font-weight:600;">単価（5%割引）</th>
+                  <th style="padding:8px 6px;text-align:center;color:var(--sub);font-weight:600;">本数</th>
+                  <th style="padding:8px 6px;text-align:center;color:var(--sub);font-weight:600;">割引率</th>
+                  <th style="padding:8px 6px;text-align:right;color:var(--sub);font-weight:600;">月額目安</th>
                 </tr>
               </thead>
               <tbody>
-                <tr style="border-bottom:1px solid var(--border);"><td style="padding:10px 6px;color:var(--text);">〜10分</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥9,500 / 本</td></tr>
-                <tr style="border-bottom:1px solid var(--border);"><td style="padding:10px 6px;color:var(--text);">10〜15分</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥14,250 / 本</td></tr>
-                <tr><td style="padding:10px 6px;color:var(--text);">15〜20分</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥19,000 / 本</td></tr>
+                <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px 6px;color:var(--text);" rowspan="3">〜10分</td><td style="padding:8px 6px;text-align:center;color:var(--sub);">4本</td><td style="padding:8px 6px;text-align:center;color:var(--sub);font-size:0.75rem;">5%引き</td><td style="padding:8px 6px;text-align:right;font-weight:700;color:var(--gold);">¥38,000</td></tr>
+                <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px 6px;text-align:center;color:var(--sub);">8本</td><td style="padding:8px 6px;text-align:center;color:#60A5FA;font-size:0.75rem;font-weight:700;">10%引き</td><td style="padding:8px 6px;text-align:right;font-weight:700;color:var(--gold);">¥72,000</td></tr>
+                <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px 6px;text-align:center;color:var(--sub);">12本</td><td style="padding:8px 6px;text-align:center;color:#10B981;font-size:0.75rem;font-weight:700;">15%引き</td><td style="padding:8px 6px;text-align:right;font-weight:700;color:var(--gold);">¥102,000</td></tr>
+                <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px 6px;color:var(--text);" rowspan="3">10〜15分</td><td style="padding:8px 6px;text-align:center;color:var(--sub);">4本</td><td style="padding:8px 6px;text-align:center;color:var(--sub);font-size:0.75rem;">5%引き</td><td style="padding:8px 6px;text-align:right;font-weight:700;color:var(--gold);">¥57,000</td></tr>
+                <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px 6px;text-align:center;color:var(--sub);">8本</td><td style="padding:8px 6px;text-align:center;color:#60A5FA;font-size:0.75rem;font-weight:700;">10%引き</td><td style="padding:8px 6px;text-align:right;font-weight:700;color:var(--gold);">¥108,000</td></tr>
+                <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px 6px;text-align:center;color:var(--sub);">12本</td><td style="padding:8px 6px;text-align:center;color:#10B981;font-size:0.75rem;font-weight:700;">15%引き</td><td style="padding:8px 6px;text-align:right;font-weight:700;color:var(--gold);">¥153,000</td></tr>
+                <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px 6px;color:var(--text);" rowspan="3">15〜20分</td><td style="padding:8px 6px;text-align:center;color:var(--sub);">4本</td><td style="padding:8px 6px;text-align:center;color:var(--sub);font-size:0.75rem;">5%引き</td><td style="padding:8px 6px;text-align:right;font-weight:700;color:var(--gold);">¥76,000</td></tr>
+                <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px 6px;text-align:center;color:var(--sub);">8本</td><td style="padding:8px 6px;text-align:center;color:#60A5FA;font-size:0.75rem;font-weight:700;">10%引き</td><td style="padding:8px 6px;text-align:right;font-weight:700;color:var(--gold);">¥144,000</td></tr>
+                <tr><td style="padding:8px 6px;text-align:center;color:var(--sub);">12本</td><td style="padding:8px 6px;text-align:center;color:#10B981;font-size:0.75rem;font-weight:700;">15%引き</td><td style="padding:8px 6px;text-align:right;font-weight:700;color:var(--gold);">¥204,000</td></tr>
               </tbody>
             </table>
           </div>
-          <p style="font-size:0.75rem;color:var(--sub);margin-top:12px;">※ まとめてご依頼いただくほどお得です。本数はご相談ください。</p>
+          <p style="font-size:0.75rem;color:var(--sub);margin-top:12px;">※ 最低4本以上から。上記以外の本数はご相談ください。上記は目安金額です。</p>
           <a href="#" onclick="openContract('edit-long');return false;" class="btn btn-gold" style="width:100%;justify-content:center;margin-top:16px;">申し込む →</a>
           <p class="pack-note" style="margin-top:12px;">※ 契約同意後すぐにヒアリングシートへ進みます。</p>
         </div>
 
         <!-- 投稿丸投げプラン -->
         <p style="font-size:0.9rem;font-weight:700;margin-bottom:4px;color:var(--sub);">── 投稿丸投げプラン（編集 + 投稿代行）</p>
-        <p style="font-size:0.82rem;color:var(--gold);font-weight:600;margin-bottom:20px;">本数は調整可能。</p>
+        <p style="font-size:0.82rem;color:var(--gold);font-weight:600;margin-bottom:4px;">最低10本以上から調整可能です。</p>
+        <p style="font-size:0.8rem;color:var(--sub);margin-bottom:20px;">※ YouTube長尺動画は最低4本以上</p>
 
         <!-- ショート版 -->
         <p style="font-size:0.8rem;font-weight:700;margin-bottom:12px;color:var(--sub);padding-left:8px;">◎ ショート動画</p>
@@ -1307,7 +1328,7 @@ footer {
             <p class="pack-note">※ 契約同意後すぐにヒアリングシートへ進みます。</p>
           </div>
           <div class="pack-card featured fade-up">
-            <span class="pack-badge">お得</span>
+            <span class="pack-badge">1番人気</span>
             <p class="pack-name">15本投稿パック</p>
             <p class="pack-title">ショート動画 + 投稿代行</p>
             <p class="pack-volume">15本 / 月</p>
@@ -1342,7 +1363,7 @@ footer {
         </div>
 
         <!-- 長尺版 -->
-        <p style="font-size:0.8rem;font-weight:700;margin-bottom:8px;color:var(--sub);padding-left:8px;">◎ YouTube長尺動画</p>
+        <p style="font-size:0.8rem;font-weight:700;margin-bottom:8px;color:var(--sub);padding-left:8px;">◎ YouTube長尺動画（最低4本以上）</p>
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;padding:10px 14px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);border-radius:8px;">
           <span style="font-size:1rem;">⚠️</span>
           <p style="font-size:0.78rem;color:#F59E0B;line-height:1.6;"><strong>長尺動画は後払いです。</strong>動画の尺によって料金が変動するため、納品後に金額を確定してご請求します。</p>
@@ -1514,7 +1535,7 @@ footer {
           <span>修正はどこまで対応してもらえますか？</span>
           <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         </div>
-        <div class="faq-a">修正は3回まで無料です。4回目以降は¥500/回をいただきます。なお、こちら側のミスや認識のズレによる修正は回数に関わらず無料で対応します。</div>
+        <div class="faq-a">修正は3回まで無料です。4回目以降はショート動画¥1,000/回、長尺動画¥3,000/回をいただきます。なお、こちら側のミスや認識のズレによる修正は回数に関わらず無料で対応します。</div>
       </div>
       <div class="faq-item fade-up">
         <div class="faq-q" onclick="toggleFaq(this)">
@@ -1535,7 +1556,7 @@ footer {
           <span>稼働時間外の連絡はどうなりますか？</span>
           <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         </div>
-        <div class="faq-a">稼働時間は平日9:00〜19:00（土曜除く）です。時間外のご連絡は翌営業日に確認・返信いたします。</div>
+        <div class="faq-a">稼働時間は月〜土 9:00〜19:00（日曜除く）です。時間外のご連絡は翌営業日に確認・返信いたします。</div>
       </div>
     </div>
   </div>
@@ -1569,7 +1590,7 @@ footer {
           <div class="contact-item-icon">🕐</div>
           <div class="contact-item-body">
             <p class="contact-item-label">稼働時間</p>
-            <p class="contact-item-val">平日 9:00〜19:00（土曜除く）</p>
+            <p class="contact-item-val">月〜土 9:00〜19:00（日曜除く）</p>
           </div>
         </div>
         <div class="contact-item">
@@ -1670,41 +1691,126 @@ footer {
     </div>
     <div class="contract-body">
       <p class="contract-plan-tag" id="contractPlanTag"></p>
-      <h4>ショート動画制作および運用支援 業務委託契約書</h4>
+      <h4 style="text-align:center;font-size:1rem;margin-bottom:4px;">動画制作・SNS運用支援 業務委託契約書</h4>
+      <p style="font-size:0.78rem;color:var(--sub);text-align:center;margin-bottom:16px;">本契約は、甲（委託者）と乙（受託者：中村 航汰 / mono.create）との間で締結されます。</p>
+
       <h4>第1条（目的）</h4>
-      <p>甲（委託者）が運営するSNSアカウントにおける動画制作および運用支援業務を、乙（受託者：中村航汰 / mono.create）に委託することを目的とします。</p>
+      <p>本契約は、甲が乙に対して動画制作・編集・SNS運用支援に関する業務を委託し、乙がこれを受託することを目的とします。</p>
+
       <h4>第2条（業務内容）</h4>
       <ul>
-        <li>選択プランに基づく動画制作・編集業務</li>
-        <li>アカウント分析および市場分析レポート提出（該当プランのみ）</li>
-        <li>投稿代行業務（該当プランのみ）</li>
+        <li>選択プランに基づく動画編集・制作業務</li>
+        <li>SNSへの投稿代行（該当プランのみ）</li>
+        <li>アカウント分析・市場分析レポートの作成（該当プランのみ）</li>
+        <li>その他、両者が個別に合意した付随業務</li>
       </ul>
+      <p style="font-size:0.78rem;color:var(--sub);margin-top:4px;">※ 業務範囲はヒアリングシートの内容および両者間の合意に基づき確定します。</p>
+
       <h4>第3条（委託料および支払方法）</h4>
       <ul>
-        <li>委託料は選択プランに記載の金額とします</li>
-        <li>毎月末日までに翌月分を前払いにて指定銀行口座へお振込みください</li>
+        <li>委託料は選択プランおよびお見積もりメールに記載の金額とします</li>
+        <li>ショート動画プランは前払い。長尺動画プラン（編集のみ）は納品後の後払いとします</li>
+        <li>振込期限は請求書受領後7日以内とします</li>
         <li>振込手数料は甲のご負担とします</li>
+        <li>期日を超過した場合、年利14.6%の遅延損害金が発生します</li>
       </ul>
-      <h4>第4条（素材の提供および検収）</h4>
+
+      <h4>第4条（無料トライアルについて）</h4>
       <ul>
-        <li>甲が編集素材を適時提供するものとします</li>
-        <li>完成動画の甲による確認をもって検収完了とします</li>
-        <li>甲都合の修正は1本につき3回まで無料。4回目以降は¥500/回をいただきます</li>
-        <li>乙側の誤りによる修正は回数に関わらず無料で対応します</li>
+        <li>初回1本は無料トライアルとして制作します（全プラン対象）</li>
+        <li>トライアル完了後、甲が継続を希望しない場合は費用は一切発生しません</li>
+        <li>トライアル作品の著作権は、甲が継続契約を締結した場合に限り甲へ移転します</li>
+        <li>トライアルを悪用した複数回の申込みはお断りします</li>
       </ul>
-      <h4>第5条（アカウント情報の管理）</h4>
+
+      <h4>第5条（素材の提供）</h4>
       <ul>
-        <li>提供いただいたログイン情報は本業務以外に使用しません</li>
-        <li>投稿内容は事前に甲のご確認をいただいた上で実施します</li>
+        <li>甲は業務に必要な素材（動画・画像・音声等）を乙に提供するものとします</li>
+        <li>素材提供は入金確認後に行ってください（先払いプランの場合）</li>
+        <li>甲が提供した素材について、第三者の著作権・肖像権・プライバシー権等を侵害しないよう甲が責任を負います</li>
+        <li>違法・公序良俗に反するコンテンツの制作依頼はお断りします</li>
       </ul>
-      <h4>第6条（免責事項）</h4>
-      <p>乙はSNSアルゴリズムの変化、アカウントの凍結、再生数・フォロワー数の増減に関する責任を負いません。</p>
+
+      <h4>第6条（検収・修正）</h4>
+      <ul>
+        <li>成果物の納品後、甲は5営業日以内に確認・検収を行うものとします</li>
+        <li>期間内に指摘がない場合は検収完了とみなします</li>
+        <li>甲都合の修正は1本につき3回まで無料。4回目以降はショート動画¥1,000/回、長尺動画¥3,000/回を申し受けます</li>
+        <li>乙側の誤り・認識相違による修正は回数に関わらず無料で対応します</li>
+        <li>修正とは細部の調整を指し、方向性の大幅な変更は別途見積もりとします</li>
+      </ul>
+
       <h4>第7条（著作権の帰属）</h4>
-      <p>著作権は委託料の完済時に乙から甲に移転します。ただし乙は制作実績としてポートフォリオへの掲載を行う場合があります。</p>
-      <h4>第8条（秘密保持）</h4>
-      <p>両者は相手方の機密情報を正当な理由なく第三者に漏洩してはなりません。</p>
-      <h4>第9条（契約期間および解約）</h4>
-      <p>契約期間は締結日から1ヶ月間とします。終了の7日前までにお申し出がない場合は自動更新されます。</p>
+      <ul>
+        <li>成果物の著作権は、委託料の<strong>完済確認後</strong>に乙から甲へ移転します</li>
+        <li>完済前の無断使用・公開・転用は禁止します</li>
+        <li>乙は制作実績として成果物をポートフォリオ・SNS等に掲載できるものとします（甲が書面により拒否した場合を除く）</li>
+        <li>甲が提供した素材の著作権は甲に帰属します</li>
+      </ul>
+
+      <h4>第8条（アカウント情報の管理）</h4>
+      <ul>
+        <li>甲が提供したSNSアカウントのログイン情報は本業務の目的にのみ使用します</li>
+        <li>乙は当該情報を暗号化して管理し、第三者に開示しません</li>
+        <li>投稿代行を行う場合、投稿内容は事前に甲の確認を得た上で実施します</li>
+        <li>乙によるアカウント操作に起因する不測の事態（凍結等）について、故意・重過失がない限り乙は責任を負いません</li>
+      </ul>
+
+      <h4>第9条（秘密保持）</h4>
+      <ul>
+        <li>両者は本契約の履行に際して知り得た相手方の技術上・営業上その他一切の情報を秘密として保持します</li>
+        <li>相手方の事前の書面による承諾なく第三者に開示・漏洩してはなりません</li>
+        <li>本条の義務は契約終了後3年間継続します</li>
+        <li>法令・裁判所の命令による開示は除きます</li>
+      </ul>
+
+      <h4>第10条（免責事項）</h4>
+      <ul>
+        <li>乙はSNSプラットフォームのアルゴリズム変更・仕様変更・規約変更による影響に責任を負いません</li>
+        <li>再生数・フォロワー数・エンゲージメント等の成果について特定の結果を保証しません</li>
+        <li>不可抗力（天災・通信障害・システム障害等）による業務遅延・不能については双方免責とします</li>
+        <li>甲が提供した素材の権利関係に問題があった場合、乙は責任を負いません</li>
+      </ul>
+
+      <h4>第11条（禁止事項）</h4>
+      <p>甲は以下の行為を行ってはなりません。</p>
+      <ul>
+        <li>成果物の完済前における無断使用・第三者への転売・再配布</li>
+        <li>乙の名誉・信用を傷つける行為</li>
+        <li>本契約に基づく権利・義務の第三者への譲渡（乙の書面承諾なく）</li>
+        <li>違法・公序良俗に反するコンテンツへの使用</li>
+      </ul>
+
+      <h4>第12条（契約期間および更新）</h4>
+      <ul>
+        <li>本契約の有効期間は締結日から1ヶ月間とします</li>
+        <li>期間満了の7日前までに両者いずれからも解約の申し出がない場合、同条件で1ヶ月間自動更新します</li>
+        <li>自動更新は最大12回（計1年間）を上限とします。それ以降は改めて協議のうえ更新します</li>
+      </ul>
+
+      <h4>第13条（解約・解除）</h4>
+      <ul>
+        <li>甲は月末7日前までに書面または電子メールで申し出ることにより、翌月末をもって解約できます</li>
+        <li>乙は甲が次の事由に該当する場合、即時解除できます：（ア）支払期日から14日以上の延滞、（イ）本契約の重大な違反、（ウ）反社会的勢力への該当が判明した場合</li>
+        <li>解除の場合、乙は既に完了した業務分の委託料を請求できます</li>
+        <li>解約・解除後、甲はアカウント情報のパスワードを変更するものとします</li>
+      </ul>
+
+      <h4>第14条（損害賠償の制限）</h4>
+      <ul>
+        <li>乙の債務不履行・不法行為による損害賠償額は、当該月の委託料を上限とします</li>
+        <li>ただし乙の故意・重過失による場合はこの限りではありません</li>
+        <li>間接損害・特別損害・逸失利益については、乙は責任を負いません</li>
+      </ul>
+
+      <h4>第15条（反社会的勢力の排除）</h4>
+      <p>両者は、現在および将来にわたり、暴力団・暴力団員・暴力団関係企業その他反社会的勢力に該当しないことを表明・保証します。該当が判明した場合、相手方は何ら通知なく本契約を即時解除できます。</p>
+
+      <h4>第16条（協議解決）</h4>
+      <p>本契約に定めのない事項または解釈に疑義が生じた場合、両者は誠意をもって協議し解決を図るものとします。</p>
+
+      <h4>第17条（準拠法・合意管轄）</h4>
+      <p>本契約は日本法に準拠します。本契約に関する紛争については、乙の所在地を管轄する裁判所を第一審の専属合意管轄裁判所とします。</p>
     </div>
     <div class="contract-footer">
       <div class="contract-fields">
@@ -1827,15 +1933,17 @@ document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 // ── Contract Modal ──────────────────────────────────────
 let _ctrPlan = '', _ctrHearing = '';
 const PLAN_MAP = {
+  'trial':      ['無料トライアル（初回1本無料）',                    'hearing/short.html'],
   'edit-short': ['まとめて編集プラン（ショート）',                   'hearing/short.html'],
-  'edit-long':  ['まとめて編集プラン（長尺）',                       'hearing/set-long.html'],
+  'edit-long':  ['まとめて編集プラン（長尺）',                       'hearing/long-single.html'],
+  'long-single':['長尺動画単品',                                     'hearing/long-single.html'],
   'set-8':      ['投稿丸投げプラン ショート8本（¥69,800/月）',       'hearing/set-short.html'],
   'set-10':     ['投稿丸投げプラン ショート10本（¥45,000/月）',      'hearing/set-short.html'],
   'set-15':     ['投稿丸投げプラン ショート15本（¥75,000/月）',      'hearing/set-short.html'],
   'set-30':     ['投稿丸投げプラン ショート30本（¥150,000/月）',     'hearing/set-short.html'],
   'set-long':   ['投稿丸投げプラン 長尺動画（後払い・要相談）',      'hearing/set-long.html'],
-  'mixed-std':  ['運用丸投げパック スタンダード（¥150,000/月）',     'hearing/set-long.html'],
-  'mixed-pre':  ['運用丸投げパック プレミアム（¥220,000/月）',       'hearing/set-long.html'],
+  'mixed-std':  ['運用丸投げパック スタンダード（¥150,000/月）',     'hearing/ops-pack.html'],
+  'mixed-pre':  ['運用丸投げパック プレミアム（¥220,000/月）',       'hearing/ops-pack.html'],
   'dispatch':   ['編集者派遣',                                       'hearing/dispatch.html'],
 };
 
