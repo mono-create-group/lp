@@ -920,3 +920,17 @@ function jsonResponse(obj) {
     .createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
 }
+
+// ================================================================
+// Gmail認証テスト（GASエディターで一度だけ手動実行してください）
+// 実行後は削除不要。スコープが承認されます。
+// ================================================================
+function authorizeGmail() {
+  GmailApp.sendEmail(
+    OWNER_EMAIL,
+    '【mono.create GAS】Gmail送信の認証完了',
+    'GASからのメール送信が正常に認証されました。\n\nこのメールが届いていれば設定完了です。',
+    { name: 'mono.create GAS' }
+  );
+  Logger.log('Gmail認証・テストメール送信完了: ' + OWNER_EMAIL);
+}
