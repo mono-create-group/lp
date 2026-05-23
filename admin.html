@@ -632,6 +632,75 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
   </div>
 </div>
 
+<!-- ── ヒアリング案内モーダル ── -->
+<div class="modal-overlay" id="hearing-modal" onclick="if(event.target===this)closeHearingModal()">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-header">
+      <h2 class="modal-title">📋 ヒアリング案内を送る</h2>
+      <button class="modal-close" onclick="closeHearingModal()">×</button>
+    </div>
+    <div style="padding:24px;">
+      <p style="color:var(--sub);font-size:0.85rem;margin-bottom:16px;">メールアドレス宛にヒアリングシートのURLを自動送信します。</p>
+      <div class="modal-row"><p class="modal-label">お名前</p><p class="modal-val" id="hm-name">—</p></div>
+      <div class="modal-row"><p class="modal-label">メール</p><p class="modal-val" id="hm-email">—</p></div>
+      <div class="modal-row" style="margin-bottom:16px;">
+        <p class="modal-label">プラン</p>
+        <select id="hm-plan-key" style="width:100%;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.9rem;">
+          <option value="edit-short">まとめて編集プラン（ショート）</option>
+          <option value="edit-long">まとめて編集プラン（長尺）</option>
+          <option value="set-8">投稿丸投げプラン ショート8本</option>
+          <option value="set-10">投稿丸投げプラン ショート10本</option>
+          <option value="set-15">投稿丸投げプラン ショート15本</option>
+          <option value="set-30">投稿丸投げプラン ショート30本</option>
+          <option value="set-long">投稿丸投げプラン 長尺動画</option>
+          <option value="mixed-std">運用丸投げパック スタンダード</option>
+          <option value="mixed-pre">運用丸投げパック プレミアム</option>
+          <option value="dispatch">編集者派遣</option>
+        </select>
+      </div>
+      <div class="modal-actions" style="margin-top:20px;">
+        <button class="modal-btn" onclick="closeHearingModal()" style="background:var(--bg2);color:var(--sub);">キャンセル</button>
+        <button class="modal-btn mail" id="hm-send-btn" onclick="submitHearingLink()">📨 送信する</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── 振込依頼モーダル ── -->
+<div class="modal-overlay" id="payment-req-modal" onclick="if(event.target===this)closePaymentReqModal()">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-header">
+      <h2 class="modal-title">💳 お見積もり・振込依頼を送る</h2>
+      <button class="modal-close" onclick="closePaymentReqModal()">×</button>
+    </div>
+    <div style="padding:24px;">
+      <p style="color:var(--sub);font-size:0.85rem;margin-bottom:16px;">見積金額と振込先口座をメールで自動送信します。</p>
+      <div class="modal-row"><p class="modal-label">お名前</p><p class="modal-val" id="pm-name">—</p></div>
+      <div class="modal-row"><p class="modal-label">メール</p><p class="modal-val" id="pm-email">—</p></div>
+      <div class="modal-row"><p class="modal-label">プラン</p><p class="modal-val" id="pm-plan">—</p></div>
+      <div style="margin:16px 0 12px;">
+        <label style="display:block;font-size:0.82rem;color:var(--sub);margin-bottom:6px;">合計金額（税込）<span style="color:#f87171;">*</span></label>
+        <input type="number" id="pm-amount" placeholder="例: 69800" min="0"
+          style="width:100%;padding:9px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:1rem;">
+      </div>
+      <div style="margin-bottom:12px;">
+        <label style="display:block;font-size:0.82rem;color:var(--sub);margin-bottom:6px;">振込期限</label>
+        <input type="text" id="pm-due" placeholder="例: 2026年6月5日（5日以内）"
+          style="width:100%;padding:9px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.9rem;">
+      </div>
+      <div style="margin-bottom:16px;">
+        <label style="display:block;font-size:0.82rem;color:var(--sub);margin-bottom:6px;">備考・メッセージ（任意）</label>
+        <textarea id="pm-note" rows="3" placeholder="特記事項があれば入力してください"
+          style="width:100%;padding:9px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;resize:vertical;"></textarea>
+      </div>
+      <div class="modal-actions" style="margin-top:20px;">
+        <button class="modal-btn" onclick="closePaymentReqModal()" style="background:var(--bg2);color:var(--sub);">キャンセル</button>
+        <button class="modal-btn mail" id="pm-send-btn" onclick="submitPaymentRequest()">💳 振込依頼を送信</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
@@ -765,6 +834,7 @@ function renderTable() {
           ${i.chatwork_id ? `<button class="action-btn btn-cw" onclick="openCW('${esc(i.chatwork_id)}')">💬 CW</button>` : ''}
           <button class="action-btn btn-mail" onclick="openMail('${esc(i.email)}')">✉ メール</button>
           <button class="action-btn btn-expand" onclick="openModal(${i.row})">詳細</button>
+          ${i.email ? `<button class="action-btn" style="background:#1a3a2a;color:#4ade80;border:1px solid #166534;" onclick="openHearingLinkModal(${i.row})">📋 ヒアリング案内</button>` : ''}
         </div>
       </td>
     </tr>
@@ -1056,6 +1126,7 @@ function renderHearings() {
         <div class="td-actions">
           <button class="action-btn btn-expand" onclick="openHearingDetail(${h.row})">詳細</button>
           <button class="action-btn btn-mail" onclick="openMail('${esc(h.email)}')">✉ メール</button>
+          ${h.email ? `<button class="action-btn" style="background:#1a2a3a;color:#60a5fa;border:1px solid #1d4ed8;" onclick="openPaymentRequestModal(${h.row})">💳 振込依頼</button>` : ''}
         </div>
       </td>
     </tr>`).join('');
@@ -1083,6 +1154,113 @@ function exportHearingsCSV() {
   const rows = [['受信日時','お名前','メール','プラン','ステータス']];
   hearings.forEach(h => rows.push([h.date,h.name,h.email,h.plan,h.status]));
   downloadCSV(rows, 'monocreate_hearings');
+}
+
+// ── ヒアリング案内モーダル ──────────────────────────────────────
+let _hearingLinkRow = null;
+function openHearingLinkModal(row) {
+  const i = inquiries.find(x => x.row === row);
+  if (!i) return;
+  _hearingLinkRow = row;
+  document.getElementById('hm-name').textContent  = i.name  || '—';
+  document.getElementById('hm-email').textContent = i.email || '—';
+  // プランをヒューリスティックで推定してセレクトをデフォルト設定
+  const pl = (i.plan || '').toLowerCase();
+  const sel = document.getElementById('hm-plan-key');
+  if      (pl.includes('長尺'))             sel.value = 'edit-long';
+  else if (pl.includes('30本'))             sel.value = 'set-30';
+  else if (pl.includes('15本'))             sel.value = 'set-15';
+  else if (pl.includes('10本'))             sel.value = 'set-10';
+  else if (pl.includes('8本'))              sel.value = 'set-8';
+  else if (pl.includes('プレミアム'))       sel.value = 'mixed-pre';
+  else if (pl.includes('スタンダード'))     sel.value = 'mixed-std';
+  else if (pl.includes('派遣'))             sel.value = 'dispatch';
+  else                                      sel.value = 'edit-short';
+  document.getElementById('hearing-modal').classList.add('open');
+}
+function closeHearingModal() {
+  document.getElementById('hearing-modal').classList.remove('open');
+  _hearingLinkRow = null;
+}
+async function submitHearingLink() {
+  const i = inquiries.find(x => x.row === _hearingLinkRow);
+  if (!i || !i.email) { showToast('メールアドレスがありません'); return; }
+  const planKey = document.getElementById('hm-plan-key').value;
+  const btn = document.getElementById('hm-send-btn');
+  btn.disabled = true; btn.textContent = '送信中...';
+  try {
+    const pw = localStorage.getItem('mc_admin_pw') || '20180412k';
+    const url = `${GAS_URL}?action=send_hearing_link&key=${encodeURIComponent(pw)}`
+      + `&email=${encodeURIComponent(i.email)}`
+      + `&name=${encodeURIComponent(i.name||'')}`
+      + `&plan=${encodeURIComponent(i.plan||'')}`
+      + `&planKey=${encodeURIComponent(planKey)}`;
+    const res  = await fetch(url);
+    const json = await res.json();
+    if (json.success) {
+      showToast('📋 ヒアリング案内メールを送信しました');
+      closeHearingModal();
+    } else {
+      showToast('送信失敗: ' + (json.error || 'エラー'), true);
+    }
+  } catch(e) {
+    showToast('送信エラー', true);
+  } finally {
+    btn.disabled = false; btn.textContent = '📨 送信する';
+  }
+}
+
+// ── 振込依頼モーダル ──────────────────────────────────────────
+let _paymentReqRow = null;
+function openPaymentRequestModal(row) {
+  const h = hearings.find(x => x.row === row);
+  if (!h) return;
+  _paymentReqRow = row;
+  document.getElementById('pm-name').textContent  = h.name  || '—';
+  document.getElementById('pm-email').textContent = h.email || '—';
+  document.getElementById('pm-plan').textContent  = h.plan  || '—';
+  document.getElementById('pm-amount').value = '';
+  document.getElementById('pm-due').value    = '';
+  document.getElementById('pm-note').value   = '';
+  document.getElementById('payment-req-modal').classList.add('open');
+}
+function closePaymentReqModal() {
+  document.getElementById('payment-req-modal').classList.remove('open');
+  _paymentReqRow = null;
+}
+async function submitPaymentRequest() {
+  const h = hearings.find(x => x.row === _paymentReqRow);
+  if (!h || !h.email) { showToast('メールアドレスがありません'); return; }
+  const amount = document.getElementById('pm-amount').value.trim();
+  if (!amount || isNaN(amount) || Number(amount) <= 0) {
+    showToast('金額を正しく入力してください', true); return;
+  }
+  const due  = document.getElementById('pm-due').value.trim();
+  const note = document.getElementById('pm-note').value.trim();
+  const btn  = document.getElementById('pm-send-btn');
+  btn.disabled = true; btn.textContent = '送信中...';
+  try {
+    const pw = localStorage.getItem('mc_admin_pw') || '20180412k';
+    const url = `${GAS_URL}?action=send_payment_request&key=${encodeURIComponent(pw)}`
+      + `&email=${encodeURIComponent(h.email)}`
+      + `&name=${encodeURIComponent(h.name||'')}`
+      + `&plan=${encodeURIComponent(h.plan||'')}`
+      + `&amount=${encodeURIComponent(amount)}`
+      + `&due=${encodeURIComponent(due)}`
+      + `&note=${encodeURIComponent(note)}`;
+    const res  = await fetch(url);
+    const json = await res.json();
+    if (json.success) {
+      showToast('💳 振込依頼メールを送信しました');
+      closePaymentReqModal();
+    } else {
+      showToast('送信失敗: ' + (json.error || 'エラー'), true);
+    }
+  } catch(e) {
+    showToast('送信エラー', true);
+  } finally {
+    btn.disabled = false; btn.textContent = '💳 振込依頼を送信';
+  }
 }
 
 // ── Sales ──

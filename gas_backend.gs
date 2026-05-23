@@ -22,6 +22,30 @@ var CHATWORK_MENTION  = 9377370;
 var SHEET_NAME        = 'inquiries';
 var OWNER_EMAIL       = 'mono.create.group@gmail.com';  // オーナー通知先
 var LP_BASE_URL       = 'https://mono-create-group.github.io/mono-create-lp/';
+
+// ─── 振込先口座情報 ───────────────────────────────────────────────
+var BANK_INFO = [
+  '【振込先口座】',
+  '銀行名  ：○○銀行',
+  '支店名  ：○○支店',
+  '口座種別：普通',
+  '口座番号：0000000',
+  '口座名義：ナカムラ コウタ（mono.create）',
+].join('\n');
+
+// ─── プラン→ヒアリングURL マッピング ─────────────────────────────
+var HEARING_MAP = {
+  'edit-short': 'hearing/short.html',
+  'edit-long':  'hearing/set-long.html',
+  'set-8':      'hearing/set-short.html',
+  'set-10':     'hearing/set-short.html',
+  'set-15':     'hearing/set-short.html',
+  'set-30':     'hearing/set-short.html',
+  'set-long':   'hearing/set-long.html',
+  'mixed-std':  'hearing/set-long.html',
+  'mixed-pre':  'hearing/set-long.html',
+  'dispatch':   'hearing/dispatch.html',
+};
 // ────────────────────────────────────────────────────────────────
 
 // ================================================================
@@ -200,6 +224,28 @@ function doGet(e) {
   if (action === 'approve_payment') {
     var row = parseInt(e.parameter.row, 10);
     return approvePayment(row);
+  }
+
+  // ヒアリング案内メールを送信（問い合わせ一覧から）
+  if (action === 'send_hearing_link') {
+    return sendHearingLink(
+      e.parameter.email   || '',
+      e.parameter.name    || '',
+      e.parameter.plan    || '',
+      e.parameter.planKey || ''
+    );
+  }
+
+  // お見積もり・振込依頼メールを送信（ヒアリング一覧から）
+  if (action === 'send_payment_request') {
+    return sendPaymentRequest(
+      e.parameter.email   || '',
+      e.parameter.name    || '',
+      e.parameter.plan    || '',
+      e.parameter.amount  || '',
+      e.parameter.due     || '',
+      e.parameter.note    || ''
+    );
   }
 
   return jsonResponse({ error: 'unknown action' });
@@ -783,6 +829,87 @@ function approvePayment(row) {
   }
 
   return jsonResponse({ success: true, taxInc: taxInc, taxExc: taxExc });
+}
+
+// ================================================================
+// ヒアリング案内メール送信
+// ================================================================
+function sendHearingLink(email, name, plan, planKey) {
+  if (!email || email.indexOf('@') === -1) {
+    return jsonResponse({ error: 'invalid email' });
+  }
+
+  // プランキーからヒアリングURLを決定
+  var hearingPath = HEARING_MAP[planKey] || 'hearing/short.html';
+  var hearingUrl  = LP_BASE_URL + hearingPath
+    + '?name=' + encodeURIComponent(name)
+    + '&email=' + encodeURIComponent(email)
+    + '&plan='  + encodeURIComponent(plan || planKey);
+
+  sendAutoReply(email, name,
+    '【mono.create】次のステップのご案内',
+    [
+      'この度はmono.createをご検討いただきありがとうございます。',
+      '以下のヒアリングシートへのご記入をお願いいたします。',
+      '',
+      '▼ ヒアリングシート（クリックして回答）',
+      hearingUrl,
+      '',
+      '所要時間は約5分です。',
+      'ご記入いただいた内容をもとに、お見積もりをお送りいたします。',
+      '',
+      'ご不明な点はこのメールへご返信ください。',
+    ]
+  );
+
+  return jsonResponse({ success: true, hearingUrl: hearingUrl });
+}
+
+// ================================================================
+// お見積もり・振込依頼メール送信
+// ================================================================
+function sendPaymentRequest(email, name, plan, amount, due, note) {
+  if (!email || email.indexOf('@') === -1) {
+    return jsonResponse({ error: 'invalid email' });
+  }
+
+  var taxInc = parseInt((amount + '').replace(/[^0-9]/g, ''), 10) || 0;
+  var dueStr = due || '7日以内';
+
+  // payment.html へのプリセットリンク
+  var paymentUrl = LP_BASE_URL + 'payment.html'
+    + '?name='   + encodeURIComponent(name)
+    + '&email='  + encodeURIComponent(email)
+    + '&plan='   + encodeURIComponent(plan)
+    + '&amount=' + encodeURIComponent('¥' + taxInc.toLocaleString());
+
+  sendAutoReply(email, name,
+    '【mono.create】お見積もりのご案内',
+    [
+      'この度はmono.createをご利用いただきありがとうございます。',
+      'お見積もりをお送りいたします。',
+      '',
+      '━━━━━━━━━━━━━━━━━━━━━━',
+      '▼ お見積もり内容',
+      'プラン  ：' + plan,
+      '合計金額：¥' + taxInc.toLocaleString() + '（税込）',
+      '振込期限：' + dueStr,
+      note ? ('備考    ：' + note) : '',
+      '━━━━━━━━━━━━━━━━━━━━━━',
+      '',
+      BANK_INFO,
+      '',
+      '━━━━━━━━━━━━━━━━━━━━━━',
+      '▼ お振込完了後、以下より振込完了をご連絡ください',
+      paymentUrl,
+      '━━━━━━━━━━━━━━━━━━━━━━',
+      '',
+      'ご不明な点はこのメールへご返信ください。',
+      'ご依頼お待ちしております。',
+    ].filter(function(l){ return l !== ''; })
+  );
+
+  return jsonResponse({ success: true });
 }
 
 function jsonResponse(obj) {
