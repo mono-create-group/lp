@@ -208,9 +208,10 @@ a { color:inherit;text-decoration:none; }
 <script>
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
 const params = new URLSearchParams(location.search);
-const paramName  = params.get('name')  || '';
-const paramEmail = params.get('email') || '';
-const paramPlan  = params.get('plan')  || '編集者派遣';
+const paramName    = params.get('name')    || '';
+const paramEmail   = params.get('email')   || '';
+const paramPlan    = params.get('plan')    || '編集者派遣';
+const paramPlanKey = params.get('planKey') || 'dispatch';
 if (paramName)  document.getElementById('f-name').value  = paramName;
 if (paramEmail) document.getElementById('f-email').value = paramEmail;
 document.getElementById('plan-display').textContent = paramPlan;
@@ -226,6 +227,7 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
   const jobTypes  = [...form.querySelectorAll('input[name=job_type]:checked')].map(i => i.value);
   const softwares = [...form.querySelectorAll('input[name=software]:checked')].map(i => i.value);
   const answers = {
+    '__planKey':          paramPlanKey,
     '会社名/屋号':        fd.get('company') || '',
     'Chatwork ID':        fd.get('chatwork_id') || '',
     '現在のチーム規模':   fd.get('team_size') || '',
