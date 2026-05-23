@@ -160,6 +160,10 @@ a { color: inherit; text-decoration: none; }
     <h1>📋 ヒアリングシート</h1>
     <p>契約同意ありがとうございます。以下の項目にご回答いただくことで、最適な編集環境をご用意できます。<br>
     回答後、2営業日以内にChatworkまたはメールにてご連絡いたします。</p>
+    <div style="margin-top:14px;padding:12px 16px;background:#FEF9C3;border:1px solid #D97706;border-radius:10px;font-size:0.82rem;color:#92400E;line-height:1.7;">
+      🎁 <strong>初回トライアル：1本目は無料</strong>でご依頼いただけます。<br>
+      まずはお気軽にご回答ください。
+    </div>
   </div>
 
   <form class="form-card" id="hearing-form">
@@ -225,6 +229,11 @@ a { color: inherit; text-decoration: none; }
           <label class="form-radio-item"><input type="radio" name="monthly_count" value="未定・相談したい"><span>未定・相談したい</span></label>
         </div>
       </div>
+      <!-- プラン自動提示ボックス -->
+      <div id="plan-suggest-box" style="display:none;margin-top:-8px;margin-bottom:20px;padding:14px 18px;background:#EFF6FF;border:1.5px solid #3B82F6;border-radius:10px;font-size:0.83rem;color:#1E40AF;line-height:1.8;">
+        <strong>💡 おすすめプラン：</strong><span id="plan-suggest-text"></span>
+      </div>
+
       <div class="form-group">
         <label>1本あたりの動画の長さ</label>
         <div class="form-radio-group">
@@ -241,7 +250,19 @@ a { color: inherit; text-decoration: none; }
           <label class="form-radio-item"><input type="radio" name="caption_style" value="シンプル（白文字）"><span>シンプル（白文字）</span></label>
           <label class="form-radio-item"><input type="radio" name="caption_style" value="アニメーション付き"><span>アニメーション付き</span></label>
           <label class="form-radio-item"><input type="radio" name="caption_style" value="カラフル・賑やか系"><span>カラフル・賑やか系</span></label>
+          <label class="form-radio-item"><input type="radio" name="caption_style" value="参考動画と近しいもの"><span>参考動画と近しいもの</span></label>
+          <label class="form-radio-item"><input type="radio" name="caption_style" value="プロマネの提示あり"><span>プロマネの提示あり（ディレクターが提案）</span></label>
           <label class="form-radio-item"><input type="radio" name="caption_style" value="おまかせ"><span>おまかせ</span></label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>アニメーション・エフェクトの希望</label>
+        <div class="form-radio-group">
+          <label class="form-radio-item"><input type="radio" name="animation" value="なし（静止テロップのみ）"><span>なし（静止テロップのみ）</span></label>
+          <label class="form-radio-item"><input type="radio" name="animation" value="テキストアニメあり（フェード・スライド系）"><span>テキストアニメあり（フェード・スライド系）</span></label>
+          <label class="form-radio-item"><input type="radio" name="animation" value="エフェクト多め（派手・賑やか系）"><span>エフェクト多め（派手・賑やか系）</span></label>
+          <label class="form-radio-item"><input type="radio" name="animation" value="参考動画に合わせて"><span>参考動画に合わせて</span></label>
+          <label class="form-radio-item"><input type="radio" name="animation" value="おまかせ"><span>おまかせ</span></label>
         </div>
       </div>
       <div class="form-group">
@@ -264,20 +285,11 @@ a { color: inherit; text-decoration: none; }
       <p class="form-section-title">素材・納品</p>
       <div class="form-group">
         <label>素材の提供方法</label>
+        <p class="hint">素材の受け取りはYouTube限定公開またはギガファイル便にて承ります。</p>
         <div class="form-radio-group">
-          <label class="form-radio-item"><input type="radio" name="material" value="Googleドライブ"><span>Googleドライブ</span></label>
-          <label class="form-radio-item"><input type="radio" name="material" value="Dropbox"><span>Dropbox</span></label>
-          <label class="form-radio-item"><input type="radio" name="material" value="WeTransfer"><span>WeTransfer</span></label>
-          <label class="form-radio-item"><input type="radio" name="material" value="Chatworkで共有"><span>Chatworkで共有</span></label>
-          <label class="form-radio-item"><input type="radio" name="material" value="相談したい"><span>相談したい</span></label>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>希望の納品形式</label>
-        <div class="form-radio-group">
-          <label class="form-radio-item"><input type="radio" name="delivery" value="MP4（縦型 9:16）"><span>MP4（縦型 9:16）</span></label>
-          <label class="form-radio-item"><input type="radio" name="delivery" value="MP4（正方形 1:1）"><span>MP4（正方形 1:1）</span></label>
-          <label class="form-radio-item"><input type="radio" name="delivery" value="おまかせ"><span>おまかせ</span></label>
+          <label class="form-radio-item"><input type="radio" name="material" value="YouTube限定公開"><span>YouTube限定公開（動画素材）</span></label>
+          <label class="form-radio-item"><input type="radio" name="material" value="ギガファイル便（MP4）"><span>ギガファイル便（MP4）</span></label>
+          <label class="form-radio-item"><input type="radio" name="material" value="ギガファイル便（プロジェクトファイル含む）"><span>ギガファイル便（プロジェクトファイル含む）</span></label>
         </div>
       </div>
       <div class="form-group">
@@ -285,7 +297,6 @@ a { color: inherit; text-decoration: none; }
         <div class="form-radio-group">
           <label class="form-radio-item"><input type="radio" name="deadline" value="最短（1〜3日）"><span>最短（1〜3日）</span></label>
           <label class="form-radio-item"><input type="radio" name="deadline" value="通常（5〜7日）"><span>通常（5〜7日）</span></label>
-          <label class="form-radio-item"><input type="radio" name="deadline" value="月に◯本ペースで継続"><span>月に◯本ペースで継続</span></label>
         </div>
       </div>
     </div>
@@ -301,7 +312,9 @@ a { color: inherit; text-decoration: none; }
         <label>このサービスを知ったきっかけ</label>
         <div class="form-radio-group">
           <label class="form-radio-item"><input type="radio" name="source" value="X（Twitter）"><span>X（Twitter）</span></label>
+          <label class="form-radio-item"><input type="radio" name="source" value="Threads（スレッズ）"><span>Threads（スレッズ）</span></label>
           <label class="form-radio-item"><input type="radio" name="source" value="Instagram"><span>Instagram</span></label>
+          <label class="form-radio-item"><input type="radio" name="source" value="DM（ダイレクトメッセージ）"><span>DM（ダイレクトメッセージ）</span></label>
           <label class="form-radio-item"><input type="radio" name="source" value="知人の紹介"><span>知人の紹介</span></label>
           <label class="form-radio-item"><input type="radio" name="source" value="Google検索"><span>Google検索</span></label>
           <label class="form-radio-item"><input type="radio" name="source" value="その他"><span>その他</span></label>
@@ -317,7 +330,7 @@ a { color: inherit; text-decoration: none; }
     <h2>回答を受け付けました！</h2>
     <p>ありがとうございます。<strong id="success-name"></strong> 様のご回答を確認いたしました。<br>
     2営業日以内に <strong id="success-email"></strong> またはChatworkにてご連絡いたします。<br><br>
-    お急ぎの場合はChatwork（ID: nakamurakota512）までご連絡ください。</p>
+    お急ぎの場合はメール（mono.create.group@gmail.com）またはChatwork（ID: nakamurakota512）までご連絡ください。</p>
   </div>
 
 </div>
@@ -336,6 +349,40 @@ if (paramName)  document.getElementById('f-name').value  = paramName;
 if (paramEmail) document.getElementById('f-email').value = paramEmail;
 document.getElementById('plan-display').textContent = paramPlan;
 document.getElementById('plan-badge').textContent = paramPlan;
+
+// ── プラン自動提示ロジック ─────────────────────────────────
+function suggestPlan() {
+  const countVal = (document.querySelector('input[name=monthly_count]:checked') || {}).value || '';
+  const countMatch = countVal.match(/(\d+)/);
+  const count = countMatch ? parseInt(countMatch[1]) : 0;
+
+  const box  = document.getElementById('plan-suggest-box');
+  const text = document.getElementById('plan-suggest-text');
+
+  if (!count) { box.style.display = 'none'; return; }
+
+  let msg = '';
+  if (count === 1) {
+    msg = '<strong>まとめて編集プラン（単品）</strong> — 初回1本無料トライアルでお試しいただけます！';
+  } else if (count <= 4) {
+    msg = '<strong>まとめて編集プラン ショート動画</strong>（¥4,000/本） — ¥' + (4000 * count).toLocaleString() + '（' + count + '本）が目安です。';
+  } else if (count <= 7) {
+    msg = '<strong>まとめて編集プラン ショート動画</strong>（¥4,000/本・5%割引） — ¥' + Math.round(4000 * count * 0.95).toLocaleString() + '（' + count + '本）が目安です。';
+  } else if (count <= 10) {
+    msg = '<strong>投稿丸投げプラン ショート10本（¥45,000/月）</strong> — 編集＋投稿代行込みでコスパ◎';
+  } else if (count <= 15) {
+    msg = '<strong>投稿丸投げプラン ショート15本（¥75,000/月）</strong> — 月15本の運用に最適です。';
+  } else if (count <= 30) {
+    msg = '<strong>投稿丸投げプラン ショート30本（¥150,000/月）</strong> — 本格運用プランです。';
+  } else {
+    msg = '本数が多い場合は<strong>運用丸投げパック</strong>または個別お見積もりをご検討ください。';
+  }
+
+  text.innerHTML = msg;
+  box.style.display = 'block';
+}
+
+document.querySelectorAll('input[name=monthly_count]').forEach(r => r.addEventListener('change', suggestPlan));
 
 document.getElementById('hearing-form').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -358,10 +405,10 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
     '月の希望本数':       fd.get('monthly_count') || '',
     '動画の長さ':         fd.get('duration') || '',
     'テロップスタイル':   fd.get('caption_style') || '',
+    'アニメーション':     fd.get('animation') || '',
     'BGM/SE':             fd.get('bgm') || '',
     '参考動画URL':        fd.get('ref_url') || '',
     '素材提供方法':       fd.get('material') || '',
-    '納品形式':           fd.get('delivery') || '',
     '納期希望':           fd.get('deadline') || '',
     'ご要望・特記事項':   fd.get('note') || '',
     '認知きっかけ':       fd.get('source') || '',
