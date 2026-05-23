@@ -65,8 +65,11 @@ function sendAutoReply(toEmail, name, subject, bodyLines) {
     '─────────────────────────'
   ].join('\n');
   var body = greeting + bodyLines.join('\n') + footer;
-  GmailApp.sendEmail(toEmail, subject, body, {
-    name: 'mono.create',
+  MailApp.sendEmail({
+    to:      toEmail,
+    subject: subject,
+    body:    body,
+    name:    'mono.create',
     replyTo: OWNER_EMAIL
   });
 }
@@ -74,7 +77,7 @@ function sendAutoReply(toEmail, name, subject, bodyLines) {
 // オーナーへのGmail通知（Chatworkが届かない場合のバックアップ）
 function notifyOwnerEmail(subject, lines) {
   var body = lines.join('\n');
-  GmailApp.sendEmail(OWNER_EMAIL, subject, body, { name: 'mono.create LP' });
+  MailApp.sendEmail({ to: OWNER_EMAIL, subject: subject, body: body, name: 'mono.create LP' });
 }
 
 // 文字列がメールアドレスか判定
@@ -926,11 +929,11 @@ function jsonResponse(obj) {
 // 実行後は削除不要。スコープが承認されます。
 // ================================================================
 function authorizeGmail() {
-  GmailApp.sendEmail(
-    OWNER_EMAIL,
-    '【mono.create GAS】Gmail送信の認証完了',
-    'GASからのメール送信が正常に認証されました。\n\nこのメールが届いていれば設定完了です。',
-    { name: 'mono.create GAS' }
-  );
-  Logger.log('Gmail認証・テストメール送信完了: ' + OWNER_EMAIL);
+  MailApp.sendEmail({
+    to:      OWNER_EMAIL,
+    subject: '【mono.create GAS】メール送信の認証完了',
+    body:    'GASからのメール送信が正常に認証されました。\n\nこのメールが届いていれば設定完了です。',
+    name:    'mono.create GAS'
+  });
+  Logger.log('MailApp認証・テストメール送信完了: ' + OWNER_EMAIL);
 }
