@@ -403,26 +403,37 @@ function setPayType(type) {
   document.getElementById('amount-display').textContent = isPre ? '契約時にご確認ください' : '納品後にChatworkでご連絡します';
 }
 
-// URLパラメータからプラン・金額を反映
+// URLパラメータからプラン・金額・名前を反映
 (function() {
   const p = new URLSearchParams(location.search);
-  const amount = p.get('amount');
-  const plan   = p.get('plan');
+  const amountRaw = p.get('amount') || '';
+  const plan      = p.get('plan')   || '';
+  const name      = p.get('name')   || '';
+  const email     = p.get('email')  || '';
+
   const postpayPlans = ['長尺', 'set-long', 'edit-long', 'longplus', '後払い'];
   const isPostpay = plan && postpayPlans.some(k => plan.includes(k));
 
   // 先払い/後払いを自動判定
   setPayType(isPostpay ? 'postpay' : 'prepay');
 
-  if (amount) {
-    document.getElementById('amount-display').textContent = '¥' + Number(amount).toLocaleString();
-    document.getElementById('r-amount').value = '¥' + Number(amount).toLocaleString();
+  // 金額：¥や,を除いて数値化（'¥69,800' → 69800）
+  if (amountRaw) {
+    const numAmount = Number(amountRaw.replace(/[¥,￥\s]/g, ''));
+    if (!isNaN(numAmount) && numAmount > 0) {
+      document.getElementById('amount-display').textContent = '¥' + numAmount.toLocaleString();
+      document.getElementById('r-amount').value = '¥' + numAmount.toLocaleString();
+    }
   }
   if (plan) {
     document.getElementById('plan-display').textContent = plan;
     const sel = document.getElementById('r-plan');
     for (let o of sel.options) { if (o.value === plan || o.text.includes(plan)) { sel.value = o.value; break; } }
   }
+  // 名前・連絡先を事前入力
+  if (name)  document.getElementById('r-name').value = name;
+  if (email) document.getElementById('r-contact').value = email;
+
   // デフォルト振込日を今日に
   document.getElementById('r-date').value = new Date().toISOString().slice(0,10);
 })();

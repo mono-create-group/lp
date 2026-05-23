@@ -13,7 +13,7 @@
 // ================================================================
 
 // ─── 設定 ───────────────────────────────────────────────────────
-var ADMIN_KEY         = 'monocreate2025';
+var ADMIN_KEY         = '20180412k';
 var SPREADSHEET_ID    = '13RESWCy5tuOqVzzG5aoeIFtyDk--OrLnpaPDep5yjj0';
 var CHATWORK_TOKEN    = 'f79405b3d71215d721e6a9d3f86f55a6';
 var CHATWORK_ROOM_ID  = '437407663';  // HPお問い合わせ
@@ -26,11 +26,11 @@ var LP_BASE_URL       = 'https://mono-create-group.github.io/mono-create-lp/';
 // ─── 振込先口座情報 ───────────────────────────────────────────────
 var BANK_INFO = [
   '【振込先口座】',
-  '銀行名  ：○○銀行',
-  '支店名  ：○○支店',
+  '銀行名  ：PayPay銀行（銀行コード：0033）',
+  '支店名  ：うぐいす支店（ウグイス）　店番号：008',
   '口座種別：普通',
-  '口座番号：0000000',
-  '口座名義：ナカムラ コウタ（mono.create）',
+  '口座番号：4220331',
+  '口座名義：ナカムラ コウタ',
 ].join('\n');
 
 // ─── プラン→ヒアリングURL マッピング ─────────────────────────────
@@ -182,6 +182,13 @@ function doGet(e) {
   var action = (e.parameter.action || '').toLowerCase();
   var key    = e.parameter.key || '';
 
+  // ── 認証不要の公開エンドポイント ──────────────────────────────
+  // LPからkeyなしで呼ばれるポートフォリオ一覧は公開
+  if (action === 'portfolio') {
+    return listPortfolio();
+  }
+
+  // ── 以降は管理者キー必須 ──────────────────────────────────────
   if (key !== ADMIN_KEY) {
     return jsonResponse({ error: 'unauthorized' });
   }
@@ -194,10 +201,6 @@ function doGet(e) {
     var row    = parseInt(e.parameter.row, 10);
     var status = e.parameter.status || '';
     return updateStatus(row, status);
-  }
-
-  if (action === 'portfolio') {
-    return listPortfolio();
   }
 
   if (action === 'portfolio_delete') {
