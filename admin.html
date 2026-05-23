@@ -974,7 +974,7 @@ async function loadPayments() {
   document.getElementById('payments-body').innerHTML =
     '<tr><td colspan="8" class="table-empty"><span class="spinner"></span></td></tr>';
   try {
-    const res  = await fetch(`${GAS_URL}?action=payments&key=${encodeURIComponent(localStorage.getItem('mc_admin_pw') || DEFAULT_PASSWORD)}`);
+    const res  = await fetch(`${GAS_URL}?action=payments&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
     payments   = json.data || [];
     renderPayments();
@@ -1018,8 +1018,7 @@ async function approvePayment(row) {
   btn.disabled = true;
   btn.textContent = '処理中...';
   try {
-    const pw  = localStorage.getItem('mc_admin_pw') || DEFAULT_PASSWORD;
-    const res = await fetch(`${GAS_URL}?action=approve_payment&key=${encodeURIComponent(pw)}&row=${row}`);
+    const res = await fetch(`${GAS_URL}?action=approve_payment&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
     const json = await res.json();
     if (json.error === 'already_approved') {
       alert('この振込はすでに承認済みです。');
@@ -1193,8 +1192,7 @@ async function submitHearingLink() {
   const btn = document.getElementById('hm-send-btn');
   btn.disabled = true; btn.textContent = '送信中...';
   try {
-    const pw = localStorage.getItem('mc_admin_pw') || '20180412k';
-    const url = `${GAS_URL}?action=send_hearing_link&key=${encodeURIComponent(pw)}`
+    const url = `${GAS_URL}?action=send_hearing_link&key=${encodeURIComponent(getAdminPw())}`
       + `&email=${encodeURIComponent(i.email)}`
       + `&name=${encodeURIComponent(i.name||'')}`
       + `&plan=${encodeURIComponent(i.plan||'')}`
@@ -1312,8 +1310,7 @@ async function submitPaymentRequest() {
   const btn  = document.getElementById('pm-send-btn');
   btn.disabled = true; btn.textContent = '送信中...';
   try {
-    const pw = localStorage.getItem('mc_admin_pw') || '20180412k';
-    const url = `${GAS_URL}?action=send_payment_request&key=${encodeURIComponent(pw)}`
+    const url = `${GAS_URL}?action=send_payment_request&key=${encodeURIComponent(getAdminPw())}`
       + `&email=${encodeURIComponent(h.email)}`
       + `&name=${encodeURIComponent(h.name||'')}`
       + `&plan=${encodeURIComponent(h.plan||'')}`

@@ -848,9 +848,10 @@ function sendHearingLink(email, name, plan, planKey) {
   // プランキーからヒアリングURLを決定
   var hearingPath = HEARING_MAP[planKey] || 'hearing/short.html';
   var hearingUrl  = LP_BASE_URL + hearingPath
-    + '?name=' + encodeURIComponent(name)
-    + '&email=' + encodeURIComponent(email)
-    + '&plan='  + encodeURIComponent(plan || planKey);
+    + '?name='    + encodeURIComponent(name)
+    + '&email='   + encodeURIComponent(email)
+    + '&plan='    + encodeURIComponent(plan || planKey)
+    + '&planKey=' + encodeURIComponent(planKey);
 
   sendAutoReply(email, name,
     '【mono.create】次のステップのご案内',
