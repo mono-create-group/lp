@@ -4,19 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>動画編集代行・SNS運用代行 | mono.create</title>
-<meta name="description" content="ショート動画編集・YouTube長尺動画編集・SNS投稿代行のプロチーム。月10本から丸投げOK。編集のみ¥4,000〜、まとめて編集プランあり。最短当日納品対応。">
-<meta name="keywords" content="動画編集代行,ショート動画編集,YouTube動画編集,SNS運用代行,投稿代行,動画編集外注,TikTok編集,Instagram リール編集,動画編集チーム">
-<link rel="canonical" href="https://mono-create-group.github.io/mono-create-lp/">
-<!-- OGP -->
+<meta name="description" content="マーケター視点でバズる動画を設計。ショート動画編集¥3,000〜、最短当日納品。月10本〜の丸投げパック¥40,000〜。">
 <meta property="og:title" content="動画編集代行・SNS運用代行 | mono.create">
-<meta property="og:description" content="ショート動画編集・YouTube長尺・SNS投稿代行をまとめてお任せ。編集のみ¥4,000〜、月10本パックあり。最短当日納品。">
+<meta property="og:description" content="マーケター視点の動画設計 × チームの迅速納品。ショート動画編集¥3,000〜。">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://mono-create-group.github.io/mono-create-lp/">
-<meta property="og:site_name" content="mono.create">
-<!-- Twitter Card -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="動画編集代行・SNS運用代行 | mono.create">
-<meta name="twitter:description" content="ショート動画編集・YouTube長尺・SNS投稿代行をまとめてお任せ。編集のみ¥4,000〜、月10本パックあり。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -25,8 +16,8 @@
 html { scroll-behavior: smooth; font-size: 16px; }
 body {
   font-family: 'Noto Sans JP', sans-serif;
-  background: #FFFFFF;
-  color: #0F172A;
+  background: #04080F;
+  color: #E8EDF5;
   line-height: 1.8;
   -webkit-font-smoothing: antialiased;
 }
@@ -35,19 +26,18 @@ a { text-decoration: none; color: inherit; }
 
 /* ── CSS Variables ── */
 :root {
-  --bg:        #FFFFFF;
-  --bg2:       #FAF9F6;
-  --bg3:       #F3EFE9;
-  --accent:    #1E40AF;
-  --accent-lt: #2563EB;
-  --glow:      rgba(30,64,175,0.10);
-  --gold:      #B45309;
-  --gold-lt:   #D97706;
-  --green:     #047857;
-  --text:      #0F172A;
-  --sub:       #64748B;
-  --border:    rgba(15,23,42,0.09);
-  --card:      rgba(15,23,42,0.03);
+  --bg:        #04080F;
+  --bg2:       #0B1220;
+  --bg3:       #111C2E;
+  --accent:    #2563EB;
+  --accent-lt: #3B82F6;
+  --glow:      rgba(37,99,235,0.25);
+  --gold:      #F59E0B;
+  --green:     #10B981;
+  --text:      #E8EDF5;
+  --sub:       #94A3B8;
+  --border:    rgba(255,255,255,0.07);
+  --card:      rgba(255,255,255,0.04);
   --radius:    12px;
 }
 
@@ -62,8 +52,8 @@ a { text-decoration: none; color: inherit; }
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--accent-lt);
-  background: rgba(30,64,175,0.07);
-  border: 1px solid rgba(30,64,175,0.20);
+  background: var(--glow);
+  border: 1px solid rgba(59,130,246,0.3);
   padding: 4px 14px;
   border-radius: 20px;
   margin-bottom: 20px;
@@ -73,10 +63,6 @@ a { text-decoration: none; color: inherit; }
   font-weight: 900;
   line-height: 1.3;
   margin-bottom: 16px;
-}
-.mark {
-  background: linear-gradient(transparent 55%, rgba(250,204,21,0.45) 55%);
-  padding-bottom: 2px;
 }
 .section-sub {
   color: var(--sub);
@@ -99,13 +85,13 @@ a { text-decoration: none; color: inherit; }
 .btn-primary {
   background: var(--accent);
   color: #fff;
-  box-shadow: 0 4px 16px rgba(30,64,175,0.22);
+  box-shadow: 0 4px 24px var(--glow);
 }
-.btn-primary:hover { background: var(--accent-lt); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(30,64,175,0.30); }
+.btn-primary:hover { background: var(--accent-lt); transform: translateY(-2px); box-shadow: 0 8px 32px var(--glow); }
 .btn-outline {
   background: transparent;
-  color: var(--text);
-  border: 1.5px solid rgba(15,23,42,0.20);
+  color: #fff;
+  border: 1.5px solid rgba(255,255,255,0.25);
 }
 .btn-outline:hover { border-color: var(--accent-lt); color: var(--accent-lt); }
 .btn-gold {
@@ -128,7 +114,7 @@ a { text-decoration: none; color: inherit; }
 /* ── Nav ── */
 nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  background: rgba(255,255,255,0.92);
+  background: rgba(4,8,15,0.85);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
   padding: 14px 24px;
@@ -138,7 +124,7 @@ nav {
 .nav-logo span { color: var(--accent-lt); }
 .nav-links { display: flex; gap: 24px; align-items: center; }
 .nav-links a { font-size: 0.85rem; color: var(--sub); transition: color 0.2s; }
-.nav-links a:hover { color: var(--text); }
+.nav-links a:hover { color: #fff; }
 @media (max-width: 640px) { .nav-links { display: none; } }
 
 /* ── Hero ── */
@@ -153,8 +139,8 @@ nav {
   content: '';
   position: absolute; inset: 0;
   background:
-    radial-gradient(ellipse 60% 60% at 70% 40%, rgba(30,64,175,0.06) 0%, transparent 70%),
-    radial-gradient(ellipse 40% 40% at 20% 70%, rgba(99,37,235,0.04) 0%, transparent 60%);
+    radial-gradient(ellipse 60% 60% at 70% 40%, rgba(37,99,235,0.15) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 20% 70%, rgba(99,37,235,0.1) 0%, transparent 60%);
   pointer-events: none;
 }
 .hero-grid {
@@ -191,49 +177,7 @@ nav {
 .hero h1 em {
   font-style: normal;
   color: var(--accent-lt);
-  display: inline;
-  background: linear-gradient(transparent 58%, rgba(250,204,21,0.45) 58%);
-  padding-bottom: 2px;
-}
-
-/* ── Achievement Badges (参考: PRONIアイミツ) ── */
-.achievement-badges {
-  display: flex; gap: 16px; flex-wrap: wrap;
-  margin-top: 36px;
-}
-.achievement-badge {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  width: 110px; height: 110px;
-  border-radius: 50%;
-  background: linear-gradient(145deg, #FFFBEB, #FEF3C7);
-  border: 2.5px solid #D97706;
-  text-align: center;
-  padding: 10px 6px;
-  position: relative;
-  box-shadow: 0 2px 12px rgba(217,119,6,0.18);
-  flex-shrink: 0;
-}
-.achievement-badge::before {
-  content: '';
-  position: absolute; inset: 5px;
-  border-radius: 50%;
-  border: 1px dashed rgba(217,119,6,0.40);
-  pointer-events: none;
-}
-.achievement-badge-num {
-  font-size: 1.35rem; font-weight: 900; color: var(--text);
-  line-height: 1; letter-spacing: -0.03em;
-  font-family: 'Inter', sans-serif;
-}
-.achievement-badge-num span { font-size: 0.72rem; font-weight: 700; color: var(--gold); }
-.achievement-badge-label {
-  font-size: 0.62rem; font-weight: 700; color: var(--gold);
-  letter-spacing: 0.03em; line-height: 1.4; margin-top: 4px;
-}
-@media (max-width: 480px) {
-  .achievement-badges { gap: 12px; }
-  .achievement-badge { width: 90px; height: 90px; }
-  .achievement-badge-num { font-size: 1.1rem; }
+  display: block;
 }
 .hero-desc {
   color: var(--sub);
@@ -270,7 +214,7 @@ nav {
   gap: 4px;
 }
 .hero-stat:last-child { border-bottom: none; }
-.hero-stat-value { font-size: 1.8rem; font-weight: 900; color: var(--text); letter-spacing: -0.03em; }
+.hero-stat-value { font-size: 1.8rem; font-weight: 900; color: #fff; letter-spacing: -0.03em; }
 .hero-stat-value span { font-size: 1rem; font-weight: 500; color: var(--sub); }
 .hero-stat-label { font-size: 0.8rem; color: var(--sub); }
 
@@ -337,11 +281,11 @@ nav {
   padding: 32px;
   transition: border-color 0.25s, transform 0.25s;
 }
-.service-card:hover { border-color: rgba(37,99,235,0.35); transform: translateY(-4px); }
+.service-card:hover { border-color: rgba(59,130,246,0.4); transform: translateY(-4px); }
 .service-icon {
   width: 52px; height: 52px;
   background: var(--glow);
-  border: 1px solid rgba(30,64,175,0.20);
+  border: 1px solid rgba(59,130,246,0.25);
   border-radius: 14px;
   display: flex; align-items: center; justify-content: center;
   font-size: 1.5rem;
@@ -355,7 +299,7 @@ nav {
   font-size: 0.7rem; font-weight: 700;
   padding: 4px 10px;
   border-radius: 4px;
-  background: rgba(30,64,175,0.09);
+  background: rgba(59,130,246,0.12);
   color: var(--accent-lt);
 }
 
@@ -394,7 +338,7 @@ nav {
   overflow: hidden;
   transition: border-color 0.25s, transform 0.25s;
 }
-.work-card:hover { border-color: rgba(37,99,235,0.35); transform: translateY(-4px); }
+.work-card:hover { border-color: rgba(59,130,246,0.4); transform: translateY(-4px); }
 .work-thumb {
   width: 100%;
   aspect-ratio: 16/9;
@@ -422,8 +366,8 @@ nav {
 .work-type-badge {
   font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em;
   padding: 4px 10px; border-radius: 4px;
-  background: rgba(255,255,255,0.88); color: var(--text);
-  border: 1px solid rgba(15,23,42,0.12);
+  background: rgba(0,0,0,0.5); color: #fff;
+  border: 1px solid rgba(255,255,255,0.1);
 }
 .work-body { padding: 20px 24px; }
 .work-genre { font-size: 0.72rem; color: var(--sub); margin-bottom: 6px; letter-spacing: 0.04em; }
@@ -454,13 +398,8 @@ nav {
   cursor: pointer;
   border: none; background: none; color: var(--sub);
   transition: all 0.2s;
-  white-space: nowrap;
 }
 .ptab.active { background: var(--accent); color: #fff; }
-@media (max-width: 480px) {
-  .pricing-tabs { width: 100%; }
-  .ptab { padding: 8px 12px; font-size: 0.78rem; flex: 1; text-align: center; }
-}
 
 .pricing-single, .pricing-option, .pricing-packs { display: none; }
 .pricing-single.active, .pricing-option.active, .pricing-packs.active { display: block; }
@@ -478,31 +417,10 @@ nav {
   margin-bottom: 12px;
   transition: border-color 0.2s;
 }
-.pricing-row:hover { border-color: rgba(30,64,175,0.25); }
+.pricing-row:hover { border-color: rgba(59,130,246,0.3); }
 .pricing-row-name { font-weight: 700; font-size: 1rem; }
 .pricing-row-desc { font-size: 0.82rem; color: var(--sub); margin-top: 4px; }
-.pricing-row--group { cursor: pointer; flex-wrap: wrap; }
-.pricing-tag {
-  font-size: 0.68rem; font-weight: 600; color: var(--sub);
-  background: rgba(15,23,42,0.05); border: 1px solid var(--border);
-  border-radius: 20px; padding: 2px 9px;
-}
-.longform-toggle-hint {
-  margin-left: 8px; font-size: 0.75rem; color: var(--accent-lt);
-  transition: opacity 0.2s;
-}
-.longform-detail {
-  display: none; margin-top: 14px; padding-top: 14px;
-  border-top: 1px solid var(--border);
-}
-.longform-detail.open { display: block; }
-.longform-table { width: 100%; border-collapse: collapse; }
-.longform-table tr { border-bottom: 1px solid var(--border); }
-.longform-table tr:last-child { border-bottom: none; }
-.longform-table td { padding: 8px 4px; font-size: 0.83rem; color: var(--sub); }
-.longform-price { text-align: right; font-weight: 700; color: var(--gold); white-space: nowrap; }
 .pricing-price { font-size: 1.2rem; font-weight: 900; color: var(--gold); white-space: nowrap; font-family: 'Inter', sans-serif; }
-.pricing-row--group.open .pricing-price { display: none; }
 
 /* Pack pricing */
 .pack-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
@@ -514,10 +432,10 @@ nav {
   position: relative;
   transition: border-color 0.25s, transform 0.25s;
 }
-.pack-card:hover { border-color: rgba(30,64,175,0.30); transform: translateY(-4px); }
+.pack-card:hover { border-color: rgba(59,130,246,0.4); transform: translateY(-4px); }
 .pack-card.featured {
   border-color: var(--accent);
-  background: linear-gradient(135deg, rgba(30,64,175,0.06), var(--bg3));
+  background: linear-gradient(135deg, rgba(37,99,235,0.08), var(--bg3));
 }
 .pack-badge {
   position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
@@ -539,7 +457,7 @@ nav {
 .pack-saving {
   display: inline-block;
   font-size: 0.75rem; font-weight: 700;
-  color: var(--green); background: rgba(4,120,87,0.09);
+  color: var(--green); background: rgba(16,185,129,0.12);
   padding: 3px 10px; border-radius: 4px;
   margin-bottom: 24px;
 }
@@ -572,31 +490,9 @@ nav {
   color: var(--accent-lt); margin-bottom: 12px;
   display: flex; align-items: center; gap: 10px;
 }
-.flow-num::after { content: ''; flex: 1; height: 1px; background: rgba(30,64,175,0.18); }
+.flow-num::after { content: ''; flex: 1; height: 1px; background: rgba(59,130,246,0.2); }
 .flow-step h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
 .flow-step p { font-size: 0.83rem; color: var(--sub); line-height: 1.75; }
-.flow-step--payment { background: rgba(30,64,175,0.05); border: 1px solid rgba(30,64,175,0.18); border-radius: 12px; }
-.badge-prepay {
-  display: inline-block; font-size: 0.65rem; font-weight: 700;
-  background: linear-gradient(135deg, #F59E0B, #EF4444);
-  color: #fff; padding: 2px 8px; border-radius: 20px;
-  letter-spacing: 0.05em; vertical-align: middle; margin-left: 6px;
-}
-.flow-pay-link {
-  display: inline-block; margin-top: 12px;
-  font-size: 0.78rem; font-weight: 600; color: var(--accent-lt);
-  border: 1px solid rgba(30,64,175,0.30); border-radius: 6px;
-  padding: 6px 14px; transition: all 0.2s;
-}
-.flow-pay-link:hover { background: rgba(30,64,175,0.07); }
-.prepay-notice {
-  margin-top: 48px; display: flex; align-items: flex-start; gap: 16px;
-  background: rgba(180,83,9,0.06); border: 1px solid rgba(180,83,9,0.20);
-  border-radius: 12px; padding: 24px 28px;
-}
-.prepay-notice__icon { font-size: 1.8rem; flex-shrink: 0; }
-.prepay-notice__title { font-size: 0.9rem; font-weight: 700; color: var(--gold); margin-bottom: 6px; }
-.prepay-notice__body { font-size: 0.82rem; color: var(--sub); line-height: 1.75; }
 
 /* ── FAQ ── */
 .faq-list { margin-top: 48px; display: flex; flex-direction: column; gap: 12px; max-width: 760px; }
@@ -643,13 +539,13 @@ nav {
 .contact-item-icon {
   width: 40px; height: 40px; flex-shrink: 0;
   background: var(--glow);
-  border: 1px solid rgba(30,64,175,0.18);
+  border: 1px solid rgba(59,130,246,0.2);
   border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
   font-size: 1rem;
 }
 .contact-item-body { font-size: 0.88rem; line-height: 1.7; }
-.contact-item-label { font-weight: 700; color: var(--text); font-size: 0.82rem; margin-bottom: 2px; }
+.contact-item-label { font-weight: 700; color: #fff; font-size: 0.82rem; margin-bottom: 2px; }
 .contact-item-val { color: var(--sub); }
 .contact-cw-btn {
   display: inline-flex; align-items: center; gap: 10px;
@@ -660,37 +556,6 @@ nav {
   transition: opacity 0.2s, transform 0.2s;
 }
 .contact-cw-btn:hover { opacity: 0.85; transform: translateY(-2px); }
-.contact-cw-id-box {
-  margin-top: 20px;
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 18px 20px;
-}
-.contact-cw-id-label {
-  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
-  color: var(--sub); text-transform: uppercase; margin-bottom: 6px;
-}
-.contact-cw-id-value {
-  font-size: 1.1rem; font-weight: 700; color: var(--text);
-  letter-spacing: 0.03em; margin-bottom: 14px;
-  font-family: 'Inter', monospace;
-}
-.contact-cw-copy-btn {
-  display: block; width: 100%;
-  padding: 10px 16px;
-  background: #00B900; color: #fff;
-  font-weight: 700; font-size: 0.83rem;
-  border: none; border-radius: 8px; cursor: pointer;
-  transition: opacity 0.2s, transform 0.2s;
-  font-family: 'Noto Sans JP', sans-serif;
-  margin-bottom: 10px;
-}
-.contact-cw-copy-btn:hover { opacity: 0.85; transform: translateY(-1px); }
-.contact-cw-copy-btn.copied { background: #059669; }
-.contact-cw-id-hint {
-  font-size: 0.75rem; color: var(--sub); line-height: 1.6;
-}
 
 /* Form */
 .form-card {
@@ -715,7 +580,7 @@ nav {
   outline: none;
 }
 .form-control:focus { border-color: var(--accent); }
-.form-control::placeholder { color: rgba(100,116,139,0.45); }
+.form-control::placeholder { color: rgba(148,163,184,0.5); }
 select.form-control { cursor: pointer; }
 textarea.form-control { resize: vertical; min-height: 120px; }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -757,8 +622,8 @@ footer {
 .footer-logo span { color: var(--accent-lt); }
 .footer-links { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
 .footer-links a { font-size: 0.82rem; color: var(--sub); transition: color 0.2s; }
-.footer-links a:hover { color: var(--text); }
-.footer-copy { font-size: 0.75rem; color: rgba(100,116,139,0.6); }
+.footer-links a:hover { color: #fff; }
+.footer-copy { font-size: 0.75rem; color: rgba(148,163,184,0.5); }
 
 /* ── Scroll animation ── */
 .fade-up {
@@ -783,13 +648,13 @@ footer {
   font-weight: 700;
   padding: 14px 22px;
   border-radius: 50px;
-  box-shadow: 0 4px 20px rgba(30,64,175,0.30);
+  box-shadow: 0 4px 20px rgba(37,99,235,0.45);
   transition: transform 0.2s, box-shadow 0.2s;
   text-decoration: none;
 }
 .floating-cta:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 28px rgba(30,64,175,0.40);
+  box-shadow: 0 8px 28px rgba(37,99,235,0.55);
 }
 @media (max-width: 600px) {
   .floating-cta {
@@ -799,105 +664,6 @@ footer {
     font-size: 0.8rem;
   }
 }
-
-/* ── Contract Modal ── */
-.contract-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: rgba(15,23,42,0.65);
-  backdrop-filter: blur(4px);
-  justify-content: center;
-  align-items: flex-start;
-  padding: 24px 16px 40px;
-  overflow-y: auto;
-}
-.contract-overlay.open { display: flex; }
-.contract-box {
-  background: var(--bg);
-  border-radius: 16px;
-  max-width: 680px;
-  width: 100%;
-  margin: auto;
-  box-shadow: 0 24px 60px rgba(0,0,0,0.22);
-  overflow: hidden;
-}
-.contract-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 18px 24px;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg2);
-}
-.contract-header h3 { font-size: 1rem; font-weight: 800; color: var(--text); }
-.contract-close-btn {
-  background: none; border: none;
-  font-size: 1.3rem; cursor: pointer;
-  color: var(--sub); padding: 2px 8px; line-height: 1;
-}
-.contract-plan-tag {
-  font-size: 0.73rem; font-weight: 700; color: var(--accent-lt);
-  padding: 4px 12px; background: rgba(37,99,235,0.09);
-  border-radius: 20px; display: inline-block; margin-bottom: 14px;
-}
-.contract-body {
-  padding: 20px 24px;
-  max-height: 360px;
-  overflow-y: auto;
-  border-bottom: 1px solid var(--border);
-  font-size: 0.8rem;
-  line-height: 1.9;
-  color: var(--text);
-}
-.contract-body h4 {
-  font-size: 0.83rem; font-weight: 800; margin: 14px 0 5px;
-  color: var(--accent);
-}
-.contract-body p { margin-bottom: 7px; }
-.contract-body ul { padding-left: 16px; margin-bottom: 7px; }
-.contract-body li { margin-bottom: 3px; }
-.contract-footer { padding: 18px 24px; }
-.contract-fields {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 14px;
-}
-@media (max-width: 480px) { .contract-fields { grid-template-columns: 1fr; } }
-.contract-field label {
-  display: block; font-size: 0.73rem; font-weight: 700;
-  color: var(--sub); margin-bottom: 4px;
-}
-.contract-field label span { color: #DC2626; }
-.contract-field input {
-  width: 100%; padding: 9px 12px;
-  border: 1.5px solid var(--border); border-radius: 8px;
-  font-size: 0.84rem; font-family: inherit;
-  color: var(--text); background: var(--bg);
-  transition: border-color 0.2s;
-}
-.contract-field input:focus { outline: none; border-color: var(--accent-lt); }
-.contract-agree-row {
-  display: flex; align-items: center; gap: 10px;
-  padding: 11px 14px; background: var(--bg3);
-  border-radius: 8px; margin-bottom: 14px; cursor: pointer;
-}
-.contract-agree-row input[type=checkbox] {
-  width: 18px; height: 18px; accent-color: var(--accent);
-  flex-shrink: 0; cursor: pointer;
-}
-.contract-agree-row span { font-size: 0.82rem; color: var(--text); font-weight: 600; }
-.contract-submit-btn {
-  width: 100%; padding: 13px;
-  background: var(--accent); color: #fff;
-  border: none; border-radius: 10px;
-  font-size: 0.93rem; font-weight: 800; cursor: pointer;
-  transition: opacity 0.2s, transform 0.2s; font-family: inherit;
-}
-.contract-submit-btn:disabled { opacity: 0.38; cursor: not-allowed; }
-.contract-submit-btn:not(:disabled):hover { opacity: 0.88; transform: translateY(-1px); }
 </style>
 </head>
 <body>
@@ -910,7 +676,7 @@ footer {
     <a href="#works">実績</a>
     <a href="#pricing">料金</a>
     <a href="#faq">FAQ</a>
-    <a href="#contact" class="btn btn-primary" style="padding:9px 22px;font-size:0.82rem;color:#fff;">無料で相談する →</a>
+    <a href="#contact" class="btn btn-primary" style="padding:9px 22px;font-size:0.82rem;">無料相談する</a>
   </div>
 </nav>
 
@@ -920,33 +686,33 @@ footer {
     <div>
       <p class="hero-eyebrow">VIDEO EDITING &amp; SNS MARKETING</p>
       <h1>
-        編集を外注して<br>
+        編集を外注して、<br>
         <em>運用に全集中。</em>
       </h1>
       <p class="hero-desc">
-        プロのフリーランスチームが最短当日で仕上げます。<br>
-        編集から運用代行まで、丸ごとお任せください。
+        プロのフリーランスチームが最短当日（ショート動画の場合）で仕上げます。<br>
+        制作から投稿代行まで、丸ごとお任せください。
       </p>
       <div class="hero-cta">
         <a href="#contact" class="btn btn-primary">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-          無料で相談する →
+          無料相談する
         </a>
-        <a href="#pricing" class="btn btn-outline">料金を見る</a>
+        <a href="#works" class="btn btn-outline">実績を見る</a>
       </div>
-      <div class="achievement-badges">
-        <div class="achievement-badge">
-          <p class="achievement-badge-num">丸投<span>げOK</span></p>
-          <p class="achievement-badge-label">完全外注<br>お任せ対応</p>
-        </div>
-        <div class="achievement-badge">
-          <p class="achievement-badge-num">3<span>回</span></p>
-          <p class="achievement-badge-label">修正<br>無料保証</p>
-        </div>
-        <div class="achievement-badge">
-          <p class="achievement-badge-num">全<span>ジャンル</span></p>
-          <p class="achievement-badge-label">業種・用途<br>対応実績あり</p>
-        </div>
+      <div class="hero-badges">
+        <span class="hero-badge">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          最短当日納品
+        </span>
+        <span class="hero-badge">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          修正3回無料
+        </span>
+        <span class="hero-badge">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          チーム体制
+        </span>
       </div>
     </div>
 
@@ -968,10 +734,6 @@ footer {
         <p class="hero-stat-value">3<span>回</span></p>
         <p class="hero-stat-label">修正無料回数（4回目〜¥500）</p>
       </div>
-      <div class="hero-stat">
-        <p class="hero-stat-value">¥10,000 <span>〜 / 1本</span></p>
-        <p class="hero-stat-label">長尺動画編集（YouTube・セミナー等）</p>
-      </div>
     </div>
   </div>
 </section>
@@ -985,7 +747,7 @@ footer {
     <span class="marquee-item"><span class="marquee-dot">◆</span> ナイト業界</span>
     <span class="marquee-item"><span class="marquee-dot">◆</span> スポーツ解説</span>
     <span class="marquee-item"><span class="marquee-dot">◆</span> SNS広告</span>
-    <span class="marquee-item"><span class="marquee-dot">◆</span> 縦型ショート動画</span>
+    <span class="marquee-item"><span class="marquee-dot">◆</span> Premiere Pro</span>
     <span class="marquee-item"><span class="marquee-dot">◆</span> ショート動画</span>
     <!-- 繰り返し -->
     <span class="marquee-item"><span class="marquee-dot">◆</span> ビジネス系</span>
@@ -994,7 +756,7 @@ footer {
     <span class="marquee-item"><span class="marquee-dot">◆</span> ナイト業界</span>
     <span class="marquee-item"><span class="marquee-dot">◆</span> スポーツ解説</span>
     <span class="marquee-item"><span class="marquee-dot">◆</span> SNS広告</span>
-    <span class="marquee-item"><span class="marquee-dot">◆</span> 縦型ショート動画</span>
+    <span class="marquee-item"><span class="marquee-dot">◆</span> Premiere Pro</span>
     <span class="marquee-item"><span class="marquee-dot">◆</span> ショート動画</span>
   </div>
 </div>
@@ -1003,7 +765,7 @@ footer {
 <section class="section problems" id="about">
   <div class="container">
     <p class="label">PROBLEM</p>
-    <h2 class="section-title fade-up">こんな悩み抱えていませんか？</h2>
+    <h2 class="section-title fade-up">こんな状況、ありませんか？</h2>
     <div class="problem-grid">
       <div class="problem-card fade-up">
         <div class="problem-icon">⏱</div>
@@ -1033,7 +795,7 @@ footer {
 <section class="section" id="services">
   <div class="container">
     <p class="label">SERVICES</p>
-    <h2 class="section-title fade-up"><span class="mark">提供サービス</span></h2>
+    <h2 class="section-title fade-up">提供サービス</h2>
     <p class="section-sub fade-up">編集単体から運用丸投げまで、ビジネスフェーズに合わせて選べます。</p>
     <div class="services-grid">
       <div class="service-card fade-up">
@@ -1058,8 +820,7 @@ footer {
         <div class="service-icon">👥</div>
         <h3>編集者派遣</h3>
         <p>即戦力の動画編集者をチームに追加。<br>採用・育成コストをゼロにしながら、すぐに生産力を上げられます。</p>
-        <span class="service-badge">ショート ¥2,500〜 / 本</span>
-        <span class="service-badge" style="margin-top:6px;display:inline-block;">長尺 ¥6,000〜 / 本</span>
+        <span class="service-badge">¥2,500〜 / 本</span>
       </div>
       <div class="service-card fade-up">
         <div class="service-icon">🚀</div>
@@ -1075,7 +836,7 @@ footer {
 <section class="section strengths">
   <div class="container">
     <p class="label">WHY mono.create</p>
-    <h2 class="section-title fade-up"><span class="mark">3つの強み</span></h2>
+    <h2 class="section-title fade-up">3つの強み</h2>
     <div class="strengths-grid">
       <div class="strength-item fade-up">
         <div class="strength-num">01</div>
@@ -1085,7 +846,7 @@ footer {
       <div class="strength-item fade-up">
         <div class="strength-num">02</div>
         <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;">チームによる迅速納品</h3>
-        <p class="strength-label">プロのフリーランス人材が多数所属しているため、依頼が増えてもキャパオーバーしません。<br>ご依頼の内容に合わせて、安定した品質と納期を実現します。</p>
+        <p class="strength-label">プロのフリーランス人材が多数所属しているため、依頼が増えてもキャパオーバーしません。<br>最短当日〜3日の安定した納品を実現。</p>
       </div>
       <div class="strength-item fade-up">
         <div class="strength-num">03</div>
@@ -1121,7 +882,7 @@ footer {
 <section class="section pricing" id="pricing">
   <div class="container">
     <p class="label">PRICING</p>
-    <h2 class="section-title fade-up"><span class="mark">料金プラン</span></h2>
+    <h2 class="section-title fade-up">料金プラン</h2>
     <p class="section-sub fade-up">記載は最低料金です。詳細はお問い合わせください。</p>
 
     <div style="margin-top:40px;">
@@ -1140,23 +901,33 @@ footer {
           </div>
           <p class="pricing-price">¥4,000〜</p>
         </div>
-        <div class="pricing-row pricing-row--group fade-up" onclick="toggleLongform(this)">
-          <div style="flex:1;">
-            <div style="display:flex;align-items:center;gap:10px;">
-              <p class="pricing-row-name">長尺動画編集</p>
-              <span class="pricing-tag">YouTube・セミナー等</span>
-            </div>
-            <p class="pricing-row-desc">納品5〜7日。動画の長さによって料金が変わります。<span class="longform-toggle-hint">▼ 詳細を見る</span></p>
-            <div class="longform-detail">
-              <table class="longform-table">
-                <tr><td>〜10分</td><td class="longform-price">¥10,000</td></tr>
-                <tr><td>10〜15分</td><td class="longform-price">¥15,000</td></tr>
-                <tr><td>15〜20分</td><td class="longform-price">¥20,000</td></tr>
-                <tr><td>20分〜</td><td class="longform-price">¥20,000 + ¥1,200/分</td></tr>
-              </table>
-            </div>
+        <div class="pricing-row fade-up">
+          <div>
+            <p class="pricing-row-name">長尺動画編集（〜10分）</p>
+            <p class="pricing-row-desc">YouTube等の長尺動画。納品5〜7日。</p>
           </div>
-          <p class="pricing-price" style="white-space:nowrap;">¥10,000〜</p>
+          <p class="pricing-price">¥10,000</p>
+        </div>
+        <div class="pricing-row fade-up">
+          <div>
+            <p class="pricing-row-name">長尺動画編集（10〜15分）</p>
+            <p class="pricing-row-desc">納品5〜7日。</p>
+          </div>
+          <p class="pricing-price">¥15,000</p>
+        </div>
+        <div class="pricing-row fade-up">
+          <div>
+            <p class="pricing-row-name">長尺動画編集（15〜20分）</p>
+            <p class="pricing-row-desc">納品5〜7日。</p>
+          </div>
+          <p class="pricing-price">¥20,000</p>
+        </div>
+        <div class="pricing-row fade-up">
+          <div>
+            <p class="pricing-row-name">長尺動画編集（20分〜）</p>
+            <p class="pricing-row-desc">20分以降は1分ごとに¥1,200追加。納品5〜7日。</p>
+          </div>
+          <p class="pricing-price">¥20,000 +¥1,200/分</p>
         </div>
         <div class="pricing-row fade-up">
           <div>
@@ -1210,70 +981,60 @@ footer {
       <!-- Packs -->
       <div class="pricing-packs" id="tab-packs">
 
-        <!-- まとめて編集プラン -->
-        <p style="font-size:0.9rem;font-weight:700;margin-bottom:8px;color:var(--sub);">── まとめて編集プラン（編集のみ）</p>
-        <p style="font-size:0.85rem;color:var(--sub);margin-bottom:20px;line-height:1.6;">投稿代行なし・編集のみのセットプランです。10本以上から本数を細かく調整できます。</p>
-
-        <!-- まとめて編集プラン ショート -->
-        <p style="font-size:0.8rem;font-weight:700;margin-bottom:12px;color:var(--sub);padding-left:8px;">◎ ショート動画</p>
-        <div class="pack-card fade-up" style="margin-bottom:32px;">
-          <p class="pack-name" style="margin-bottom:4px;">まとめて編集プラン（ショート）</p>
-          <p style="font-size:0.75rem;color:var(--sub);margin-bottom:12px;">¥4,000 × 本数 × 0.95（5%割引）</p>
-          <div style="overflow-x:auto;">
-            <table style="width:100%;border-collapse:collapse;font-size:0.83rem;">
-              <thead>
-                <tr style="border-bottom:1px solid var(--border);">
-                  <th style="padding:8px 6px;text-align:left;color:var(--sub);font-weight:600;">本数 / 月</th>
-                  <th style="padding:8px 6px;text-align:right;color:var(--sub);font-weight:600;">月額</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr style="border-bottom:1px solid var(--border);"><td style="padding:10px 6px;color:var(--text);">10本</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥38,000</td></tr>
-                <tr style="border-bottom:1px solid var(--border);"><td style="padding:10px 6px;color:var(--text);">12本</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥45,600</td></tr>
-                <tr style="border-bottom:1px solid var(--border);"><td style="padding:10px 6px;color:var(--text);">15本</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥57,000</td></tr>
-                <tr style="border-bottom:1px solid var(--border);"><td style="padding:10px 6px;color:var(--text);">20本</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥76,000</td></tr>
-                <tr style="border-bottom:1px solid var(--border);"><td style="padding:10px 6px;color:var(--text);">25本</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥95,000</td></tr>
-                <tr><td style="padding:10px 6px;color:var(--text);">30本</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥114,000</td></tr>
-              </tbody>
-            </table>
+        <!-- 丸投げパック -->
+        <p style="font-size:0.9rem;font-weight:700;margin-bottom:20px;color:var(--sub);">── 丸投げパック（ショート動画編集のみ）</p>
+        <div class="pack-grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr));margin-bottom:48px;">
+          <div class="pack-card fade-up">
+            <p class="pack-name">10本パック</p>
+            <p class="pack-title">ショート動画編集</p>
+            <p class="pack-volume">10本 / 月</p>
+            <div class="pack-price-row">
+              <p class="pack-price">¥49,800</p>
+              <p class="pack-price-label">/ 月</p>
+            </div>
+            <ul class="pack-features">
+              <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>ショート動画編集 × 10本</li>
+              <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>修正3回無料</li>
+            </ul>
+            <a href="YOUR_STRIPE_LINK_PACK10_EDIT" class="btn btn-gold" style="width:100%;justify-content:center;">今すぐ申し込む →</a>
+            <p class="pack-note">※ 申し込み後にヒアリングシートをお送りします。</p>
           </div>
-          <p style="font-size:0.75rem;color:var(--sub);margin-top:12px;">※ 10本以上から本数を細かく調整可能。上記以外の本数はご相談ください。</p>
-          <a href="#" onclick="openContract('edit-short');return false;" class="btn btn-gold" style="width:100%;justify-content:center;margin-top:16px;">申し込む →</a>
-          <p class="pack-note" style="margin-top:12px;">※ 契約同意後すぐにヒアリングシートへ進みます。</p>
+          <div class="pack-card featured fade-up">
+            <span class="pack-badge">人気 No.1</span>
+            <p class="pack-name">15本パック</p>
+            <p class="pack-title">ショート動画編集</p>
+            <p class="pack-volume">15本 / 月</p>
+            <div class="pack-price-row">
+              <p class="pack-price">¥69,800</p>
+              <p class="pack-price-label">/ 月</p>
+            </div>
+            <ul class="pack-features">
+              <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>ショート動画編集 × 15本</li>
+              <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>修正3回無料</li>
+            </ul>
+            <a href="YOUR_STRIPE_LINK_PACK15_EDIT" class="btn btn-gold" style="width:100%;justify-content:center;">今すぐ申し込む →</a>
+            <p class="pack-note">※ 申し込み後にヒアリングシートをお送りします。</p>
+          </div>
+          <div class="pack-card fade-up">
+            <p class="pack-name">30本パック</p>
+            <p class="pack-title">ショート動画編集</p>
+            <p class="pack-volume">30本 / 月</p>
+            <div class="pack-price-row">
+              <p class="pack-price">¥129,800</p>
+              <p class="pack-price-label">/ 月</p>
+            </div>
+            <ul class="pack-features">
+              <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>ショート動画編集 × 30本</li>
+              <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>修正3回無料</li>
+            </ul>
+            <a href="#contact" class="btn btn-gold" style="width:100%;justify-content:center;">相談して申し込む →</a>
+            <p class="pack-note">※ 申し込み後にヒアリングシートをお送りします。</p>
+          </div>
         </div>
 
-        <!-- まとめて編集プラン 長尺 -->
-        <p style="font-size:0.8rem;font-weight:700;margin-bottom:12px;color:var(--sub);padding-left:8px;">◎ YouTube長尺動画</p>
-        <div class="pack-card fade-up" style="margin-bottom:48px;">
-          <p class="pack-name" style="margin-bottom:4px;">まとめて編集プラン（長尺）</p>
-          <p style="font-size:0.75rem;color:var(--sub);margin-bottom:12px;">単価から5%割引。本数はご相談ください。</p>
-          <div style="overflow-x:auto;">
-            <table style="width:100%;border-collapse:collapse;font-size:0.83rem;">
-              <thead>
-                <tr style="border-bottom:1px solid var(--border);">
-                  <th style="padding:8px 6px;text-align:left;color:var(--sub);font-weight:600;">動画の長さ</th>
-                  <th style="padding:8px 6px;text-align:right;color:var(--sub);font-weight:600;">単価（5%割引）</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr style="border-bottom:1px solid var(--border);"><td style="padding:10px 6px;color:var(--text);">〜10分</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥9,500 / 本</td></tr>
-                <tr style="border-bottom:1px solid var(--border);"><td style="padding:10px 6px;color:var(--text);">10〜15分</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥14,250 / 本</td></tr>
-                <tr><td style="padding:10px 6px;color:var(--text);">15〜20分</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥19,000 / 本</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <p style="font-size:0.75rem;color:var(--sub);margin-top:12px;">※ まとめてご依頼いただくほどお得です。本数はご相談ください。</p>
-          <a href="#" onclick="openContract('edit-long');return false;" class="btn btn-gold" style="width:100%;justify-content:center;margin-top:16px;">申し込む →</a>
-          <p class="pack-note" style="margin-top:12px;">※ 契約同意後すぐにヒアリングシートへ進みます。</p>
-        </div>
-
-        <!-- 投稿丸投げプラン -->
-        <p style="font-size:0.9rem;font-weight:700;margin-bottom:4px;color:var(--sub);">── 投稿丸投げプラン（編集 + 投稿代行）</p>
-        <p style="font-size:0.82rem;color:var(--gold);font-weight:600;margin-bottom:20px;">本数は調整可能。</p>
-
-        <!-- ショート版 -->
-        <p style="font-size:0.8rem;font-weight:700;margin-bottom:12px;color:var(--sub);padding-left:8px;">◎ ショート動画</p>
-        <div class="pack-grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr));margin-bottom:32px;">
+        <!-- SNS全対応パック -->
+        <p style="font-size:0.9rem;font-weight:700;margin-bottom:20px;color:var(--sub);">── SNS全対応パック（ショート動画 + 投稿代行）</p>
+        <div class="pack-grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr));margin-bottom:48px;">
           <div class="pack-card fade-up">
             <p class="pack-name">8本投稿パック</p>
             <p class="pack-title">ショート動画 + 投稿代行</p>
@@ -1287,8 +1048,8 @@ footer {
               <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>投稿代行 × 8本</li>
               <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>修正3回無料</li>
             </ul>
-            <a href="#" onclick="openContract('set-8');return false;" class="btn btn-gold" style="width:100%;justify-content:center;">今すぐ申し込む →</a>
-            <p class="pack-note">※ 契約同意後すぐにヒアリングシートへ進みます。</p>
+            <a href="YOUR_STRIPE_LINK_PACK10_FULL" class="btn btn-gold" style="width:100%;justify-content:center;">今すぐ申し込む →</a>
+            <p class="pack-note">※ 申し込み後にヒアリングシートをお送りします。</p>
           </div>
           <div class="pack-card fade-up">
             <p class="pack-name">10本投稿パック</p>
@@ -1303,8 +1064,8 @@ footer {
               <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>投稿代行 × 10本</li>
               <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>修正3回無料</li>
             </ul>
-            <a href="#" onclick="openContract('set-10');return false;" class="btn btn-gold" style="width:100%;justify-content:center;">相談して申し込む →</a>
-            <p class="pack-note">※ 契約同意後すぐにヒアリングシートへ進みます。</p>
+            <a href="#contact" class="btn btn-gold" style="width:100%;justify-content:center;">相談して申し込む →</a>
+            <p class="pack-note">※ 申し込み後にヒアリングシートをお送りします。</p>
           </div>
           <div class="pack-card featured fade-up">
             <span class="pack-badge">お得</span>
@@ -1320,8 +1081,8 @@ footer {
               <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>投稿代行 × 15本</li>
               <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>修正3回無料</li>
             </ul>
-            <a href="#" onclick="openContract('set-15');return false;" class="btn btn-gold" style="width:100%;justify-content:center;">今すぐ申し込む →</a>
-            <p class="pack-note">※ 契約同意後すぐにヒアリングシートへ進みます。</p>
+            <a href="YOUR_STRIPE_LINK_PACK15_FULL" class="btn btn-gold" style="width:100%;justify-content:center;">今すぐ申し込む →</a>
+            <p class="pack-note">※ 申し込み後にヒアリングシートをお送りします。</p>
           </div>
           <div class="pack-card fade-up">
             <p class="pack-name">30本投稿パック</p>
@@ -1336,102 +1097,44 @@ footer {
               <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>投稿代行 × 30本</li>
               <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>修正3回無料</li>
             </ul>
-            <a href="#" onclick="openContract('set-30');return false;" class="btn btn-gold" style="width:100%;justify-content:center;">相談して申し込む →</a>
-            <p class="pack-note">※ 契約同意後すぐにヒアリングシートへ進みます。</p>
+            <a href="#contact" class="btn btn-gold" style="width:100%;justify-content:center;">相談して申し込む →</a>
+            <p class="pack-note">※ 申し込み後にヒアリングシートをお送りします。</p>
           </div>
         </div>
 
-        <!-- 長尺版 -->
-        <p style="font-size:0.8rem;font-weight:700;margin-bottom:8px;color:var(--sub);padding-left:8px;">◎ YouTube長尺動画</p>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;padding:10px 14px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);border-radius:8px;">
-          <span style="font-size:1rem;">⚠️</span>
-          <p style="font-size:0.78rem;color:#F59E0B;line-height:1.6;"><strong>長尺動画は後払いです。</strong>動画の尺によって料金が変動するため、納品後に金額を確定してご請求します。</p>
-        </div>
-        <div class="pack-card fade-up" style="margin-bottom:48px;">
-          <p class="pack-name" style="margin-bottom:4px;">長尺動画 投稿丸投げプラン</p>
-          <p style="font-size:0.75rem;color:var(--sub);margin-bottom:12px;">計算式：(編集費 + ¥1,000 × 本数) × 1.3 − ¥5,000　※ 後払い</p>
-          <div style="overflow-x:auto;">
-            <table style="width:100%;border-collapse:collapse;font-size:0.83rem;">
-              <thead>
-                <tr style="border-bottom:1px solid var(--border);">
-                  <th style="padding:8px 6px;text-align:left;color:var(--sub);font-weight:600;">動画の長さ</th>
-                  <th style="padding:8px 6px;text-align:center;color:var(--sub);font-weight:600;">本数 / 月</th>
-                  <th style="padding:8px 6px;text-align:right;color:var(--sub);font-weight:600;">月額目安</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr style="border-bottom:1px solid var(--border);">
-                  <td style="padding:10px 6px;color:var(--text);" rowspan="2">〜10分</td>
-                  <td style="padding:10px 6px;text-align:center;color:var(--sub);">4本</td>
-                  <td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥52,200</td>
-                </tr>
-                <tr style="border-bottom:1px solid var(--border);">
-                  <td style="padding:10px 6px;text-align:center;color:var(--sub);">8本</td>
-                  <td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥109,400</td>
-                </tr>
-                <tr style="border-bottom:1px solid var(--border);">
-                  <td style="padding:10px 6px;color:var(--text);" rowspan="2">10〜15分</td>
-                  <td style="padding:10px 6px;text-align:center;color:var(--sub);">4本</td>
-                  <td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥78,200</td>
-                </tr>
-                <tr style="border-bottom:1px solid var(--border);">
-                  <td style="padding:10px 6px;text-align:center;color:var(--sub);">8本</td>
-                  <td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥161,400</td>
-                </tr>
-                <tr style="border-bottom:1px solid var(--border);">
-                  <td style="padding:10px 6px;color:var(--text);" rowspan="2">15〜20分</td>
-                  <td style="padding:10px 6px;text-align:center;color:var(--sub);">4本</td>
-                  <td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥104,200</td>
-                </tr>
-                <tr>
-                  <td style="padding:10px 6px;text-align:center;color:var(--sub);">8本</td>
-                  <td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥213,400</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <p style="font-size:0.75rem;color:var(--sub);margin-top:12px;">※ 本数はご相談で調整可能。上記は目安金額です。正確な金額は納品後にご請求します。</p>
-          <a href="#" onclick="openContract('set-long');return false;" class="btn btn-gold" style="width:100%;justify-content:center;margin-top:16px;">相談して申し込む →</a>
-          <p class="pack-note" style="margin-top:12px;">※ 契約同意後すぐにヒアリングシートへ進みます。</p>
-        </div>
-
-        <!-- 運用丸投げパック -->
-        <p style="font-size:0.9rem;font-weight:700;margin-bottom:8px;color:var(--sub);">── 運用丸投げパック</p>
-        <p style="font-size:0.85rem;color:var(--sub);margin-bottom:4px;line-height:1.6;">ショート × YouTube長尺の両方を丸ごとお任せ。企画・撮影・編集・投稿代行・分析まで一括対応。</p>
-        <p style="font-size:0.78rem;color:rgba(245,158,11,0.85);margin-bottom:20px;">※ 20分以内の動画限定。20分超の動画は別途オプション料金が発生します。</p>
+        <!-- ショート × YouTube長尺パック -->
+        <p style="font-size:0.9rem;font-weight:700;margin-bottom:20px;color:var(--sub);">── ショート動画 × YouTube長尺 混合パック</p>
         <div class="pack-grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr));margin-bottom:48px;">
           <div class="pack-card fade-up">
             <p class="pack-name">スタンダードパック</p>
-            <p class="pack-title">ショート8本 + YouTube長尺4本</p>
+            <p class="pack-title">ショート + YouTube長尺</p>
             <div class="pack-price-row">
               <p class="pack-price">¥150,000</p>
               <p class="pack-price-label">/ 月</p>
             </div>
             <ul class="pack-features">
-              <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>ショート動画 × 8本（企画〜投稿）</li>
-              <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>YouTube長尺 × 4本（編集〜投稿）</li>
-              <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>分析レポート付き</li>
+              <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>ショート動画投稿 × 8本</li>
+              <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>YouTube長尺投稿 × 4本</li>
               <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>修正3回無料</li>
             </ul>
-            <a href="#" onclick="openContract('mixed-std');return false;" class="btn btn-gold" style="width:100%;justify-content:center;">相談して申し込む →</a>
-            <p class="pack-note">※ 契約同意後すぐにヒアリングシートへ進みます。</p>
+            <a href="#contact" class="btn btn-gold" style="width:100%;justify-content:center;">相談して申し込む →</a>
+            <p class="pack-note">※ 申し込み後にヒアリングシートをお送りします。</p>
           </div>
           <div class="pack-card featured fade-up">
             <span class="pack-badge">おすすめ</span>
             <p class="pack-name">プレミアムパック</p>
-            <p class="pack-title">ショート15本 + YouTube長尺8本</p>
+            <p class="pack-title">ショート + YouTube長尺</p>
             <div class="pack-price-row">
-              <p class="pack-price">¥220,000</p>
+              <p class="pack-price">¥180,000</p>
               <p class="pack-price-label">/ 月</p>
             </div>
             <ul class="pack-features">
-              <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>ショート動画 × 15本（企画〜投稿）</li>
-              <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>YouTube長尺 × 8本（編集〜投稿）</li>
-              <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>分析レポート付き</li>
+              <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>ショート動画投稿 × 15本</li>
+              <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>YouTube長尺投稿 × 4本</li>
               <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>修正3回無料</li>
             </ul>
-            <a href="#" onclick="openContract('mixed-pre');return false;" class="btn btn-gold" style="width:100%;justify-content:center;margin-top:8px;">相談して申し込む →</a>
-            <p class="pack-note">※ 契約同意後すぐにヒアリングシートへ進みます。</p>
+            <a href="#contact" class="btn btn-gold" style="width:100%;justify-content:center;">相談して申し込む →</a>
+            <p class="pack-note">※ 申し込み後にヒアリングシートをお送りします。</p>
           </div>
         </div>
 
@@ -1450,40 +1153,38 @@ footer {
 <section class="section" id="flow">
   <div class="container">
     <p class="label">FLOW</p>
-    <h2 class="section-title fade-up">ご依頼の流れ</h2>
-    <p class="section-sub fade-up">お問い合わせから作業開始まで最短3日。<br>シンプルなやり取りで完結します。</p>
+    <h2 class="section-title fade-up">制作フロー</h2>
+    <p class="section-sub fade-up">お問い合わせから納品まで最短3日。シンプルなやり取りで完結します。</p>
     <div class="flow-steps">
       <div class="flow-step fade-up">
         <p class="flow-num">STEP 01</p>
-        <h3>無料相談・お問い合わせ</h3>
-        <p>目的・ご予算・参考動画をフォームからお送りください。<br>Chatworkにてご連絡します。</p>
-        <a href="#contact" class="flow-pay-link" style="margin-top:10px;">↓ お問い合わせフォームへ</a>
+        <h3>ヒアリング</h3>
+        <p>目的・ターゲット・参考動画をChatworkまたはフォームでお知らせください。</p>
       </div>
       <div class="flow-step fade-up">
         <p class="flow-num">STEP 02</p>
-        <h3>ヒアリング</h3>
-        <p>ご要望・ターゲット・納品形式・本数などを詳しくお伺いします。<br>ご不明点はこの段階で全て解決します。</p>
+        <h3>素材共有</h3>
+        <p>動画素材・音声・台本・必須要素（CTAなど）を共有フォルダで受け取ります。</p>
       </div>
       <div class="flow-step fade-up">
         <p class="flow-num">STEP 03</p>
-        <h3>契約書送付・ご契約</h3>
-        <p>業務委託契約書をデジタルにて送付します。<br>内容をご確認・ご署名いただき、契約を締結します。</p>
+        <h3>初稿提出</h3>
+        <p>最短当日〜3日で初稿をお届け。マーケター視点の構成も併せてご説明します。<br><small style="color:var(--sub);">※ 最初の1本のみ、4日いただいております。</small></p>
       </div>
-      <div class="flow-step fade-up flow-step--payment">
+      <div class="flow-step fade-up">
         <p class="flow-num">STEP 04</p>
-        <h3>お支払い <span class="badge-prepay">先払い</span></h3>
-        <p>契約締結後、<strong style="color:var(--text);">銀行振込にてお支払いをお願いします。</strong><br>入金確認後に作業を開始します。</p>
-        <a href="payment.html" class="flow-pay-link" target="_blank">振込先・お支払い方法を確認 →</a>
+        <h3>修正対応</h3>
+        <p>3回まで無料で修正対応。ご要望をお伝えください。</p>
       </div>
       <div class="flow-step fade-up">
         <p class="flow-num">STEP 05</p>
-        <h3>素材共有・作業開始</h3>
-        <p>入金確認後、動画素材・音声・台本・必須要素などを共有フォルダでお送りください。</p>
+        <h3>納品</h3>
+        <p>mp4形式でお渡し。<br>プロマネやその他成果物は要相談で対応。</p>
       </div>
       <div class="flow-step fade-up">
         <p class="flow-num">STEP 06</p>
-        <h3>修正対応・納品</h3>
-        <p>3回まで無料修正対応。<br>ご指定の形式でお渡しします。</p>
+        <h3>効果測定（オプション）</h3>
+        <p>投稿後48時間のKPI（再生数・いいね・保存）を確認し、次回に活かします。</p>
       </div>
     </div>
   </div>
@@ -1579,6 +1280,10 @@ footer {
             <p class="contact-item-val">Chatwork</p>
           </div>
         </div>
+        <a href="https://www.chatwork.com/" target="_blank" rel="noopener" class="contact-cw-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15l-5-5 1.41-1.41L11 14.17l7.59-7.59L20 8l-9 9z"/></svg>
+          Chatworkで直接連絡する
+        </a>
       </div>
 
       <div class="form-card fade-up">
@@ -1644,7 +1349,7 @@ footer {
 <!-- ── Floating CTA ── -->
 <a href="#contact" class="floating-cta">
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-  無料で相談する →
+  無料相談する
 </a>
 
 <!-- ── Footer ── -->
@@ -1661,97 +1366,10 @@ footer {
   <p class="footer-copy">© 2025 mono.create All Rights Reserved.</p>
 </footer>
 
-<!-- ── Contract Agreement Modal ── -->
-<div class="contract-overlay" id="contractOverlay">
-  <div class="contract-box">
-    <div class="contract-header">
-      <h3>📄 業務委託契約書 — ご確認・同意</h3>
-      <button class="contract-close-btn" onclick="closeContract()">✕</button>
-    </div>
-    <div class="contract-body">
-      <p class="contract-plan-tag" id="contractPlanTag"></p>
-      <h4>ショート動画制作および運用支援 業務委託契約書</h4>
-      <h4>第1条（目的）</h4>
-      <p>甲（委託者）が運営するSNSアカウントにおける動画制作および運用支援業務を、乙（受託者：中村航汰 / mono.create）に委託することを目的とします。</p>
-      <h4>第2条（業務内容）</h4>
-      <ul>
-        <li>選択プランに基づく動画制作・編集業務</li>
-        <li>アカウント分析および市場分析レポート提出（該当プランのみ）</li>
-        <li>投稿代行業務（該当プランのみ）</li>
-      </ul>
-      <h4>第3条（委託料および支払方法）</h4>
-      <ul>
-        <li>委託料は選択プランに記載の金額とします</li>
-        <li>毎月末日までに翌月分を前払いにて指定銀行口座へお振込みください</li>
-        <li>振込手数料は甲のご負担とします</li>
-      </ul>
-      <h4>第4条（素材の提供および検収）</h4>
-      <ul>
-        <li>甲が編集素材を適時提供するものとします</li>
-        <li>完成動画の甲による確認をもって検収完了とします</li>
-        <li>甲都合の修正は1本につき3回まで無料。4回目以降は¥500/回をいただきます</li>
-        <li>乙側の誤りによる修正は回数に関わらず無料で対応します</li>
-      </ul>
-      <h4>第5条（アカウント情報の管理）</h4>
-      <ul>
-        <li>提供いただいたログイン情報は本業務以外に使用しません</li>
-        <li>投稿内容は事前に甲のご確認をいただいた上で実施します</li>
-      </ul>
-      <h4>第6条（免責事項）</h4>
-      <p>乙はSNSアルゴリズムの変化、アカウントの凍結、再生数・フォロワー数の増減に関する責任を負いません。</p>
-      <h4>第7条（著作権の帰属）</h4>
-      <p>著作権は委託料の完済時に乙から甲に移転します。ただし乙は制作実績としてポートフォリオへの掲載を行う場合があります。</p>
-      <h4>第8条（秘密保持）</h4>
-      <p>両者は相手方の機密情報を正当な理由なく第三者に漏洩してはなりません。</p>
-      <h4>第9条（契約期間および解約）</h4>
-      <p>契約期間は締結日から1ヶ月間とします。終了の7日前までにお申し出がない場合は自動更新されます。</p>
-    </div>
-    <div class="contract-footer">
-      <div class="contract-fields">
-        <div class="contract-field">
-          <label>お名前 <span>*</span></label>
-          <input type="text" id="ctrName" placeholder="山田 太郎">
-        </div>
-        <div class="contract-field">
-          <label>メールアドレス <span>*</span></label>
-          <input type="email" id="ctrEmail" placeholder="email@example.com">
-        </div>
-      </div>
-      <label class="contract-agree-row">
-        <input type="checkbox" id="ctrAgree" onchange="_updateCtrBtn()">
-        <span>上記の契約内容を全て確認し、同意します</span>
-      </label>
-      <button class="contract-submit-btn" id="ctrSubmitBtn" disabled onclick="submitContract()">
-        同意してヒアリングシートへ進む →
-      </button>
-    </div>
-  </div>
-</div>
-
 <script>
 // ─── 設定 ──────────────────────────────────────────────
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
 // ───────────────────────────────────────────────────────
-
-function toggleLongform(row) {
-  const detail = row.querySelector('.longform-detail');
-  const hint = row.querySelector('.longform-toggle-hint');
-  const isOpen = detail.classList.toggle('open');
-  hint.textContent = isOpen ? '▲ 閉じる' : '▼ 詳細を見る';
-  row.classList.toggle('open', isOpen);
-}
-
-function copyCwId(btn) {
-  const id = document.getElementById('cw-id-text').textContent.trim();
-  navigator.clipboard.writeText(id).then(() => {
-    btn.textContent = '✅ コピーしました！';
-    btn.classList.add('copied');
-    setTimeout(() => {
-      btn.textContent = 'IDをコピーしてChatworkで検索';
-      btn.classList.remove('copied');
-    }, 2500);
-  });
-}
 
 function switchTab(tab, el) {
   document.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
@@ -1793,7 +1411,7 @@ function buildWorkCard(item, idx) {
 }
 
 async function loadPortfolio() {
-  if (!GAS_URL) {
+  if (!GAS_URL || GAS_URL === 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec') {
     document.getElementById('portfolio-loading').textContent = 'ポートフォリオは準備中です。';
     return;
   }
@@ -1807,7 +1425,7 @@ async function loadPortfolio() {
     if (shorts.length) {
       shortEl.innerHTML = shorts.map(function(d, i){ return buildWorkCard(d, i); }).join('');
     } else {
-      shortEl.innerHTML = '<p style="color:var(--sub);font-size:0.85rem;padding:16px 0;">ポートフォリオは準備中です。</p>';
+      shortEl.innerHTML = '<p style="color:var(--sub);font-size:0.85rem;padding:16px 0;">管理画面からポートフォリオを追加してください。</p>';
     }
     if (longs.length) {
       longEl.innerHTML = longs.map(function(d, i){ return buildWorkCard(d, i); }).join('');
@@ -1823,75 +1441,6 @@ const observer = new IntersectionObserver((entries) => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
 }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-
-// ── Contract Modal ──────────────────────────────────────
-let _ctrPlan = '', _ctrHearing = '';
-const PLAN_MAP = {
-  'edit-short': ['まとめて編集プラン（ショート）',                   'hearing/short.html'],
-  'edit-long':  ['まとめて編集プラン（長尺）',                       'hearing/set-long.html'],
-  'set-8':      ['投稿丸投げプラン ショート8本（¥69,800/月）',       'hearing/set-short.html'],
-  'set-10':     ['投稿丸投げプラン ショート10本（¥45,000/月）',      'hearing/set-short.html'],
-  'set-15':     ['投稿丸投げプラン ショート15本（¥75,000/月）',      'hearing/set-short.html'],
-  'set-30':     ['投稿丸投げプラン ショート30本（¥150,000/月）',     'hearing/set-short.html'],
-  'set-long':   ['投稿丸投げプラン 長尺動画（後払い・要相談）',      'hearing/set-long.html'],
-  'mixed-std':  ['運用丸投げパック スタンダード（¥150,000/月）',     'hearing/set-long.html'],
-  'mixed-pre':  ['運用丸投げパック プレミアム（¥220,000/月）',       'hearing/set-long.html'],
-  'dispatch':   ['編集者派遣',                                       'hearing/dispatch.html'],
-};
-
-function openContract(planId) {
-  _ctrPlan = planId;
-  const info = PLAN_MAP[planId] || [planId, 'hearing/short.html'];
-  _ctrHearing = info[1];
-  document.getElementById('contractPlanTag').textContent = '申込プラン：' + info[0];
-  document.getElementById('ctrName').value = '';
-  document.getElementById('ctrEmail').value = '';
-  document.getElementById('ctrAgree').checked = false;
-  document.getElementById('ctrSubmitBtn').disabled = true;
-  document.getElementById('contractOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeContract() {
-  document.getElementById('contractOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-function _updateCtrBtn() {
-  const n = document.getElementById('ctrName').value.trim();
-  const e = document.getElementById('ctrEmail').value.trim();
-  const a = document.getElementById('ctrAgree').checked;
-  document.getElementById('ctrSubmitBtn').disabled = !(n && e && a);
-}
-async function submitContract() {
-  const name  = document.getElementById('ctrName').value.trim();
-  const email = document.getElementById('ctrEmail').value.trim();
-  if (!name || !email || !document.getElementById('ctrAgree').checked) return;
-  const btn = document.getElementById('ctrSubmitBtn');
-  btn.disabled = true; btn.textContent = '送信中...';
-  const info = PLAN_MAP[_ctrPlan] || [_ctrPlan, 'hearing/short.html'];
-  try {
-    await fetch(GAS_URL, {
-      method: 'POST', mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        type: 'contract', name, email,
-        plan: info[0],
-        agreedAt: new Date().toLocaleString('ja-JP'),
-        contractVer: 'v2025-05',
-      }),
-    });
-  } catch(e) { /* no-cors */ }
-  const qs = new URLSearchParams({ name, email, plan: info[0] });
-  window.location.href = info[1] + '?' + qs.toString();
-}
-document.addEventListener('DOMContentLoaded', () => {
-  ['ctrName','ctrEmail'].forEach(id => {
-    document.getElementById(id).addEventListener('input', _updateCtrBtn);
-  });
-  document.getElementById('contractOverlay').addEventListener('click', function(ev) {
-    if (ev.target === this) closeContract();
-  });
-});
-// ────────────────────────────────────────────────────────
 
 document.getElementById('contact-form').addEventListener('submit', async (e) => {
   e.preventDefault();

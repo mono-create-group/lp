@@ -1,2 +1,4 @@
 .DS_Store
 *.swp
+# clasp は認証情報を含まないため追跡対象（.clasprc.json は含まれない）
+
