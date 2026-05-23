@@ -20,6 +20,43 @@ var CHATWORK_ROOM_ID  = '437407663';  // HPお問い合わせ
 var PAYMENT_ROOM_ID   = '437439208';  // 振込確認依頼
 var CHATWORK_MENTION  = 9377370;
 var SHEET_NAME        = 'inquiries';
+var OWNER_EMAIL       = 'mono.create.group@gmail.com';  // オーナー通知先
+var LP_BASE_URL       = 'https://mono-create-group.github.io/mono-create-lp/';
+// ────────────────────────────────────────────────────────────────
+
+// ================================================================
+// メール自動返信ヘルパー
+// ================================================================
+
+// お客様への自動返信（メールアドレスがある場合のみ送信）
+function sendAutoReply(toEmail, name, subject, bodyLines) {
+  if (!toEmail || toEmail.indexOf('@') === -1) return;
+  var greeting = name ? name + ' 様\n\n' : '';
+  var footer = [
+    '',
+    '─────────────────────────',
+    'mono.create',
+    'メール: ' + OWNER_EMAIL,
+    'HP: ' + LP_BASE_URL,
+    '─────────────────────────'
+  ].join('\n');
+  var body = greeting + bodyLines.join('\n') + footer;
+  GmailApp.sendEmail(toEmail, subject, body, {
+    name: 'mono.create',
+    replyTo: OWNER_EMAIL
+  });
+}
+
+// オーナーへのGmail通知（Chatworkが届かない場合のバックアップ）
+function notifyOwnerEmail(subject, lines) {
+  var body = lines.join('\n');
+  GmailApp.sendEmail(OWNER_EMAIL, subject, body, { name: 'mono.create LP' });
+}
+
+// 文字列がメールアドレスか判定
+function isEmail(str) {
+  return !!(str && str.indexOf('@') !== -1 && str.indexOf('.') !== -1);
+}
 // ────────────────────────────────────────────────────────────────
 
 // ── POST: フォーム受信 / ポートフォリオ追加・更新 ───────────────
@@ -76,6 +113,39 @@ function doPost(e) {
     if (CHATWORK_ROOM_ID) {
       notifyChatwork(data, now);
     }
+
+    // ① お客様への自動返信メール
+    sendAutoReply(data.email, data.name,
+      '【mono.create】お問い合わせを受け付けました',
+      [
+        'この度はmono.createへのお問い合わせありがとうございます。',
+        '内容を確認のうえ、1〜2営業日以内にご連絡いたします。',
+        '',
+        '▼ お問い合わせ内容',
+        'プラン: ' + (data.plan || '未選択'),
+        'ご相談内容: ' + (data.message || ''),
+        '',
+        'お急ぎの場合は、このメールへご返信ください。',
+      ]
+    );
+
+    // ① オーナーへのGmailバックアップ通知
+    notifyOwnerEmail(
+      '【LP問い合わせ】' + (data.name || '名前なし') + ' — ' + (data.plan || 'プラン未選択'),
+      [
+        '受信日時: ' + now,
+        'お名前: '  + (data.name        || ''),
+        '会社名: '  + (data.company     || ''),
+        'メール: '  + (data.email       || '未入力'),
+        'CW ID: '   + (data.chatwork_id || '未入力'),
+        'プラン: '  + (data.plan        || ''),
+        '',
+        '【相談内容】',
+        data.message || '',
+        '',
+        '▶ 管理画面: ' + LP_BASE_URL + 'admin.html',
+      ]
+    );
 
     return jsonResponse({ success: true });
   } catch (err) {
@@ -216,7 +286,7 @@ function notifyPayment(data) {
       '振込日  ：' + (data.date    || '未入力'),
       '備考    ：' + (data.note    || 'なし'),
       '━━━━━━━━━━━━━━━━━━━━',
-      '▶ 振込確認後、Chatworkにて編集開始のご連絡をお願いします。',
+      '▶ 振込確認後、編集開始のご連絡をお願いします。',
     ].join('\n');
 
     var url = 'https://api.chatwork.com/v2/rooms/' + PAYMENT_ROOM_ID + '/messages';
@@ -226,6 +296,41 @@ function notifyPayment(data) {
       payload: { body: msg }
     });
   }
+
+  // ④ お客様への自動返信メール（contactがメールアドレスの場合）
+  if (isEmail(data.contact)) {
+    sendAutoReply(data.contact, data.name,
+      '【mono.create】お振込確認依頼を受け付けました',
+      [
+        'お振込のご連絡ありがとうございます。',
+        '内容を確認次第、ご連絡いたします。',
+        '',
+        '▼ ご報告内容',
+        'プラン: '    + (data.plan   || ''),
+        '振込金額: '  + (data.amount || ''),
+        '振込日: '    + (data.date   || ''),
+        '',
+        '通常、当日〜翌営業日中にご連絡いたします。',
+        'ご不明な点はこのメールへご返信ください。',
+      ]
+    );
+  }
+
+  // ④ オーナーへのGmailバックアップ通知
+  notifyOwnerEmail(
+    '【LP振込報告】' + (data.name || '') + ' ¥' + (data.amount || ''),
+    [
+      '報告日時: '  + now,
+      '振込名義: '  + (data.name    || ''),
+      '連絡先: '    + (data.contact || '未入力'),
+      'プラン: '    + (data.plan    || ''),
+      '振込金額: '  + (data.amount  || ''),
+      '振込日: '    + (data.date    || ''),
+      '備考: '      + (data.note    || 'なし'),
+      '',
+      '▶ 管理画面で承認: ' + LP_BASE_URL + 'admin.html',
+    ]
+  );
 
   return jsonResponse({ success: true });
 }
@@ -374,6 +479,35 @@ function saveContract(data) {
     UrlFetchApp.fetch(url, { method:'post', headers:{'X-ChatWorkToken':CHATWORK_TOKEN}, payload:{body:msg} });
   }
 
+  // ② お客様への自動返信メール
+  sendAutoReply(data.email, data.name,
+    '【mono.create】ご契約同意を確認しました',
+    [
+      'ご契約内容への同意ありがとうございます。',
+      '確認いたしました。',
+      '',
+      '引き続きヒアリングシートへのご記入をお願いいたします。',
+      '担当者よりヒアリングシートのURLをお送りします。',
+      '',
+      'ご不明な点はこのメールへご返信ください。',
+    ]
+  );
+
+  // ② オーナーへのGmailバックアップ通知
+  notifyOwnerEmail(
+    '【LP契約同意】' + (data.name || '') + ' — ' + (data.plan || ''),
+    [
+      '同意日時: ' + now,
+      'お名前: '  + (data.name  || ''),
+      'メール: '  + (data.email || '未入力'),
+      'プラン: '  + (data.plan  || ''),
+      '契約バージョン: ' + (data.contractVer || ''),
+      '',
+      '▶ ヒアリングシートURLを送付してください。',
+      '▶ 管理画面: ' + LP_BASE_URL + 'admin.html',
+    ]
+  );
+
   return jsonResponse({ success: true });
 }
 
@@ -431,6 +565,39 @@ function saveHearing(data) {
     var url = 'https://api.chatwork.com/v2/rooms/' + CHATWORK_ROOM_ID + '/messages';
     UrlFetchApp.fetch(url, { method:'post', headers:{'X-ChatWorkToken':CHATWORK_TOKEN}, payload:{body:lines.join('\n')} });
   }
+
+  // ③ お客様への自動返信メール
+  sendAutoReply(data.email, data.name,
+    '【mono.create】ヒアリングシートを受け付けました',
+    [
+      'ヒアリングシートへのご記入ありがとうございます。',
+      '内容を確認のうえ、2〜3営業日以内にお見積もりをお送りいたします。',
+      '',
+      '▼ ご回答いただいたプラン: ' + (data.plan || ''),
+      '',
+      'ご不明な点はこのメールへご返信ください。',
+    ]
+  );
+
+  // ③ オーナーへのGmailバックアップ通知
+  var answerLines = [];
+  var ans2 = data.answers || {};
+  Object.keys(ans2).forEach(function(k){ answerLines.push(k + ': ' + ans2[k]); });
+  notifyOwnerEmail(
+    '【LPヒアリング】' + (data.name || '') + ' — ' + (data.plan || ''),
+    [
+      '受信日時: ' + now,
+      'お名前: '  + (data.name  || ''),
+      'メール: '  + (data.email || '未入力'),
+      'プラン: '  + (data.plan  || ''),
+      '',
+      '【回答内容】',
+    ].concat(answerLines).concat([
+      '',
+      '▶ お見積もりを送付してください。',
+      '▶ 管理画面: ' + LP_BASE_URL + 'admin.html',
+    ])
+  );
 
   return jsonResponse({ success: true });
 }
@@ -595,6 +762,25 @@ function approvePayment(row) {
     '確認済み',   // 入金確認
     note          // 備考
   ]);
+
+  // ⑤ お客様へ入金確認メール（contactがメールアドレスの場合）
+  var contact = values[2] || '';
+  if (isEmail(contact)) {
+    sendAutoReply(contact, name,
+      '【mono.create】お振込を確認しました ／ 制作開始のお知らせ',
+      [
+        'お振込を確認いたしました。',
+        '本日より制作を開始いたします。',
+        '',
+        '▼ ご契約内容',
+        'プラン: '    + plan,
+        '金額（税込）: ¥' + taxInc.toLocaleString(),
+        '',
+        '進捗は随時このメールにてご連絡いたします。',
+        'ご質問はいつでもご返信ください。',
+      ]
+    );
+  }
 
   return jsonResponse({ success: true, taxInc: taxInc, taxExc: taxExc });
 }
