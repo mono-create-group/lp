@@ -1411,7 +1411,7 @@ function buildWorkCard(item, idx) {
 }
 
 async function loadPortfolio() {
-  if (!GAS_URL || GAS_URL === 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec') {
+  if (!GAS_URL) {
     document.getElementById('portfolio-loading').textContent = 'ポートフォリオは準備中です。';
     return;
   }
