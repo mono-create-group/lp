@@ -70,7 +70,7 @@ a { color: inherit; text-decoration: none; }
   display: block; font-size: 0.82rem; font-weight: 700;
   color: #0F172A; margin-bottom: 6px;
 }
-.form-group label span { color: #DC2626; font-size: 0.75rem; }
+.form-group label span.req { color: #DC2626; font-size: 0.75rem; }
 .form-group .hint { font-size: 0.75rem; color: #64748B; margin-bottom: 6px; }
 .form-input, .form-select, .form-textarea {
   width: 100%;
@@ -88,6 +88,10 @@ a { color: inherit; text-decoration: none; }
   border-color: #2563EB;
   box-shadow: 0 0 0 3px rgba(37,99,235,0.10);
 }
+.form-input.error, .form-textarea.error {
+  border-color: #DC2626;
+  box-shadow: 0 0 0 3px rgba(220,38,38,0.10);
+}
 .form-textarea { resize: vertical; min-height: 90px; }
 .form-radio-group { display: flex; flex-direction: column; gap: 8px; }
 label.form-radio-item {
@@ -104,6 +108,16 @@ label.form-radio-item:has(input:checked) {
 }
 label.form-radio-item input { accent-color: #2563EB; width: 18px; height: 18px; flex: 0 0 18px; margin: 1px 0 0 0; }
 label.form-radio-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.5; word-break: break-word; }
+/* 必須ラジオグループのエラー枠 */
+.radio-group-required.error .form-radio-group {
+  outline: 2px solid #DC2626;
+  border-radius: 10px;
+  outline-offset: 2px;
+}
+.field-error-msg {
+  display: none; font-size: 0.75rem; color: #DC2626; margin-top: 4px; font-weight: 700;
+}
+.field-error-msg.visible { display: block; }
 .submit-btn {
   width: 100%; padding: 15px;
   background: #1E40AF; color: #fff;
@@ -125,6 +139,15 @@ label.form-radio-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
 .success-box h2 { font-size: 1.2rem; font-weight: 900; color: #15803D; margin-bottom: 12px; }
 .success-box p  { font-size: 0.88rem; color: #166534; line-height: 1.9; }
 .success-icon { font-size: 3rem; margin-bottom: 16px; }
+.error-box {
+  display: none;
+  background: #FFF1F2; border: 1.5px solid #F43F5E;
+  border-radius: 16px; padding: 28px 32px; text-align: center;
+  margin-top: 32px;
+}
+.error-box.visible { display: block; }
+.error-box h2 { font-size: 1.1rem; font-weight: 900; color: #BE123C; margin-bottom: 10px; }
+.error-box p  { font-size: 0.85rem; color: #9F1239; line-height: 1.9; }
 
 .other-text-input {
   display: none; margin-top:6px; width:100%;
@@ -154,18 +177,26 @@ label.form-radio-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
     </div>
   </div>
   <div id="plan-details-card" style="display:none;background:#FFFBEB;border:1.5px solid #F59E0B;border-radius:16px;padding:24px 28px;margin-bottom:32px;"></div>
-<form class="form-card" id="hearing-form">
+<form class="form-card" id="hearing-form" novalidate>
 
     <!-- 基本情報 -->
     <div class="form-section">
       <p class="form-section-title">基本情報</p>
       <div class="form-group">
-        <label>お名前 <span>*</span></label>
+        <label>お名前 <span class="req">*必須</span></label>
         <input type="text" class="form-input" id="f-name" name="name" required placeholder="山田 太郎">
+        <p class="field-error-msg" id="err-name">お名前をご入力ください</p>
       </div>
       <div class="form-group">
-        <label>メールアドレス <span>*</span></label>
+        <label>メールアドレス <span class="req">*必須</span></label>
         <input type="email" class="form-input" id="f-email" name="email" required placeholder="email@example.com">
+        <p class="field-error-msg" id="err-email">有効なメールアドレスをご入力ください</p>
+      </div>
+      <div class="form-group">
+        <label>メールアドレス（確認用） <span class="req">*必須</span></label>
+        <p class="hint">入力間違いを防ぐため、もう一度ご入力ください</p>
+        <input type="email" class="form-input" id="f-email-confirm" name="email_confirm" required placeholder="email@example.com">
+        <p class="field-error-msg" id="err-email-confirm">上のメールアドレスと一致しません</p>
       </div>
       <div class="form-group">
         <label>会社名 / 屋号</label>
@@ -173,6 +204,7 @@ label.form-radio-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
       </div>
       <div class="form-group">
         <label>Chatwork ID（お持ちの場合）</label>
+        <p class="hint">主な連絡手段はChatworkです。お持ちの方は必ずご記入ください</p>
         <input type="text" class="form-input" name="chatwork_id" placeholder="例: yamada_taro">
       </div>
     </div>
@@ -181,12 +213,14 @@ label.form-radio-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
     <div class="form-section">
       <p class="form-section-title">YouTubeチャンネル情報</p>
       <div class="form-group">
-        <label>YouTubeチャンネルURL <span>*</span></label>
-        <input type="url" class="form-input" name="sns_url" required placeholder="https://www.youtube.com/@channel_name">
+        <label>YouTubeチャンネルURL <span class="req">*必須</span></label>
+        <input type="url" class="form-input" id="f-sns-url" name="sns_url" required placeholder="https://www.youtube.com/@channel_name">
+        <p class="field-error-msg" id="err-sns-url">チャンネルURLをご入力ください</p>
       </div>
       <div class="form-group">
-        <label>チャンネルのジャンル / テーマ <span>*</span></label>
-        <input type="text" class="form-input" name="genre" required placeholder="例：ビジネス解説 / 料理 / Vlog / セミナー">
+        <label>チャンネルのジャンル / テーマ <span class="req">*必須</span></label>
+        <input type="text" class="form-input" id="f-genre" name="genre" required placeholder="例：ビジネス解説 / 料理 / Vlog / セミナー">
+        <p class="field-error-msg" id="err-genre">ジャンル / テーマをご入力ください</p>
       </div>
       <div class="form-group">
         <label>チャンネル登録者数（目安）</label>
@@ -203,27 +237,35 @@ label.form-radio-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
     <!-- 動画仕様 -->
     <div class="form-section">
       <p class="form-section-title">動画の仕様</p>
-      <div class="form-group">
-        <label>動画の長さ（1本あたり） <span>*</span></label>
+
+      <!-- 動画の長さ：必須 -->
+      <div class="form-group radio-group-required" id="group-length">
+        <label>動画の長さ（1本あたり） <span class="req">*必須</span></label>
+        <p class="hint">料金のベースになります。必ずご選択ください</p>
         <div class="form-radio-group">
-          <label class="form-radio-item"><input type="radio" name="動画の長さ" value="〜10分"><span>〜10分（¥15,000/本）</span></label>
-          <label class="form-radio-item"><input type="radio" name="動画の長さ" value="10〜15分"><span>10〜15分（¥20,000/本）</span></label>
-          <label class="form-radio-item"><input type="radio" name="動画の長さ" value="15〜20分"><span>15〜20分（¥30,000/本）</span></label>
-          <label class="form-radio-item"><input type="radio" name="動画の長さ" value="20分〜"><span>20分〜（+¥1,200/分）</span></label>
+          <label class="form-radio-item"><input type="radio" name="動画の長さ" value="〜10分（¥15,000/本）"><span>〜10分（¥15,000/本）</span></label>
+          <label class="form-radio-item"><input type="radio" name="動画の長さ" value="10〜15分（¥20,000/本）"><span>10〜15分（¥20,000/本）</span></label>
+          <label class="form-radio-item"><input type="radio" name="動画の長さ" value="15〜20分（¥30,000/本）"><span>15〜20分（¥30,000/本）</span></label>
+          <label class="form-radio-item"><input type="radio" name="動画の長さ" value="20分〜（+¥1,200/分）"><span>20分〜（+¥1,200/分）</span></label>
           <label class="form-radio-item"><input type="radio" name="動画の長さ" value="未定・相談したい"><span>未定・相談したい</span></label>
         </div>
+        <p class="field-error-msg" id="err-length">動画の長さをお選びください</p>
       </div>
-      <div class="form-group">
-        <label>月の希望本数</label>
+
+      <!-- 月の希望本数：必須 -->
+      <div class="form-group radio-group-required" id="group-count">
+        <label>月の希望本数 <span class="req">*必須</span></label>
         <p class="hint">4本以上：5%割引 ／ 8本以上：10%割引 ／ 12本以上：15%割引</p>
         <div class="form-radio-group">
-          <label class="form-radio-item"><input type="radio" name="月の希望本数" value="1〜3本"><span>1〜3本（割引なし）</span></label>
-          <label class="form-radio-item"><input type="radio" name="月の希望本数" value="4〜7本"><span>4〜7本（5%割引）</span></label>
-          <label class="form-radio-item"><input type="radio" name="月の希望本数" value="8〜11本"><span>8〜11本（10%割引）</span></label>
-          <label class="form-radio-item"><input type="radio" name="月の希望本数" value="12本以上"><span>12本以上（15%割引）</span></label>
+          <label class="form-radio-item"><input type="radio" name="月の希望本数" value="1〜3本（割引なし）"><span>1〜3本（割引なし）</span></label>
+          <label class="form-radio-item"><input type="radio" name="月の希望本数" value="4〜7本（5%割引）"><span>4〜7本（5%割引）</span></label>
+          <label class="form-radio-item"><input type="radio" name="月の希望本数" value="8〜11本（10%割引）"><span>8〜11本（10%割引）</span></label>
+          <label class="form-radio-item"><input type="radio" name="月の希望本数" value="12本以上（15%割引）"><span>12本以上（15%割引）</span></label>
           <label class="form-radio-item"><input type="radio" name="月の希望本数" value="未定・相談したい"><span>未定・相談したい</span></label>
         </div>
+        <p class="field-error-msg" id="err-count">月の希望本数をお選びください</p>
       </div>
+
       <div class="form-group">
         <label>テロップスタイルの希望</label>
         <div class="form-radio-group">
@@ -233,7 +275,7 @@ label.form-radio-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
           <label class="form-radio-item"><input type="radio" name="caption_style" value="プロマネの提示あり"><span>プロマネの提示あり</span></label>
           <label class="form-radio-item"><input type="radio" name="caption_style" value="おまかせ"><span>おまかせ</span></label>
           <label class="form-radio-item"><input type="radio" name="caption_style" value="その他"><span>その他</span></label>
-          <input type="text" class="other-text-input" name="caption_style_other" placeholder="自由にご記入ください">
+          <input type="text" class="other-text-input" id="caption-style-other" name="caption_style_other" placeholder="具体的にご記入ください（例：テロップ量少なめ・英語併記 等）">
         </div>
       </div>
       <div class="form-group">
@@ -268,28 +310,6 @@ label.form-radio-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
       </div>
     </div>
 
-    <!-- その他 -->
-    <div class="form-section">
-      <p class="form-section-title">その他</p>
-      <div class="form-group">
-        <label>ご要望・特記事項</label>
-        <textarea class="form-textarea" name="note" placeholder="NG表現・使用ソフト指定・テロップ量の希望・過去に気になった点など、何でもご記載ください。"></textarea>
-      </div>
-      <div class="form-group">
-        <label>このサービスを知ったきっかけ</label>
-        <div class="form-radio-group">
-          <label class="form-radio-item"><input type="radio" name="source" value="X（Twitter）"><span>X（Twitter）</span></label>
-          <label class="form-radio-item"><input type="radio" name="source" value="Threads（スレッズ）"><span>Threads（スレッズ）</span></label>
-          <label class="form-radio-item"><input type="radio" name="source" value="Instagram"><span>Instagram</span></label>
-          <label class="form-radio-item"><input type="radio" name="source" value="DM（ダイレクトメッセージ）"><span>DM（ダイレクトメッセージ）</span></label>
-          <label class="form-radio-item"><input type="radio" name="source" value="知人の紹介"><span>知人の紹介</span></label>
-          <label class="form-radio-item"><input type="radio" name="source" value="Google検索"><span>Google検索</span></label>
-          <label class="form-radio-item"><input type="radio" name="source" value="その他"><span>その他</span></label>
-        </div>
-      </div>
-    </div>
-
-
     <!-- 素材・納品 -->
     <div class="form-section">
       <p class="form-section-title">素材・納品</p>
@@ -309,13 +329,41 @@ label.form-radio-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
           </p>
         </div>
       </div>
-      <div class="form-group">
-        <label>納期の希望</label>
+
+      <!-- 納期希望：必須 -->
+      <div class="form-group radio-group-required" id="group-deadline">
+        <label>納期の希望 <span class="req">*必須</span></label>
         <div class="form-radio-group">
-                    <label class="form-radio-item"><input type="radio" name="deadline" value="最短当日（オプション料金あり）"><span>最短当日（オプション料金がつきます）</span></label>
-          <label class="form-radio-item"><input type="radio" name="deadline" value="通常2〜3日"><span>通常2〜3日</span></label>
+          <label class="form-radio-item">
+            <input type="radio" name="deadline" value="最短当日（オプション料金あり）">
+            <span>最短当日<span style="font-size:0.78rem;color:#DC2626;font-weight:700;">（+¥5,000〜 別途見積り）</span></span>
+          </label>
+          <label class="form-radio-item"><input type="radio" name="deadline" value="通常2〜3日"><span>通常2〜3日（標準）</span></label>
           <label class="form-radio-item"><input type="radio" name="deadline" value="余裕あり（1週間以上）"><span>余裕あり（1週間以上）</span></label>
           <label class="form-radio-item"><input type="radio" name="deadline" value="相談したい"><span>相談したい</span></label>
+        </div>
+        <p class="field-error-msg" id="err-deadline">納期希望をお選びください</p>
+      </div>
+    </div>
+
+    <!-- その他 -->
+    <div class="form-section">
+      <p class="form-section-title">その他</p>
+      <div class="form-group">
+        <label>ご要望・特記事項</label>
+        <textarea class="form-textarea" name="note" placeholder="NG表現・使用ソフト指定・テロップ量の希望・過去に気になった点など、何でもご記載ください。"></textarea>
+      </div>
+      <div class="form-group">
+        <label>このサービスを知ったきっかけ</label>
+        <div class="form-radio-group">
+          <label class="form-radio-item"><input type="radio" name="source" value="X（Twitter）"><span>X（Twitter）</span></label>
+          <label class="form-radio-item"><input type="radio" name="source" value="Threads（スレッズ）"><span>Threads（スレッズ）</span></label>
+          <label class="form-radio-item"><input type="radio" name="source" value="Instagram"><span>Instagram</span></label>
+          <label class="form-radio-item"><input type="radio" name="source" value="DM（ダイレクトメッセージ）"><span>DM（ダイレクトメッセージ）</span></label>
+          <label class="form-radio-item"><input type="radio" name="source" value="知人の紹介"><span>知人の紹介</span></label>
+          <label class="form-radio-item"><input type="radio" name="source" value="Google検索"><span>Google検索</span></label>
+          <label class="form-radio-item"><input type="radio" name="source" value="その他"><span>その他</span></label>
+          <input type="text" class="other-text-input" id="source-other" name="source_other" placeholder="具体的にお教えください">
         </div>
       </div>
     </div>
@@ -330,6 +378,17 @@ label.form-radio-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
     2営業日以内に <strong id="success-email"></strong> またはChatworkにてご連絡いたします。<br><br>
     お急ぎの場合はメール（mono.create.group@gmail.com）またはChatwork（ID: wl0b2t4akjur）までご連絡ください。</p>
     <a href="https://mono-create-group.github.io/lp/" style="display:inline-block;margin-top:24px;padding:12px 28px;background:#1E40AF;color:#fff;border-radius:10px;font-weight:700;text-decoration:none;font-size:0.9rem;">🏠 ホームに戻る</a>
+  </div>
+
+  <div class="error-box" id="error-box">
+    <div style="font-size:2rem;margin-bottom:12px;">⚠️</div>
+    <h2>送信できませんでした</h2>
+    <p>通信エラーが発生した可能性があります。<br>
+    お手数ですが、以下のいずれかよりご連絡ください。<br><br>
+    📧 メール：<a href="mailto:mono.create.group@gmail.com" style="color:#BE123C;text-decoration:underline;font-weight:700;">mono.create.group@gmail.com</a><br>
+    💬 Chatwork ID：<strong>wl0b2t4akjur</strong><br><br>
+    <span style="font-size:0.8rem;color:#9F1239;">「ヒアリングシートを送ろうとしたが届かなかった」とお伝えいただければスムーズです。</span>
+    </p>
   </div>
 
 </div>
@@ -435,18 +494,128 @@ function renderPlanDetails() {
 
 
 if (paramName)  document.getElementById('f-name').value  = paramName;
-if (paramEmail) document.getElementById('f-email').value = paramEmail;
+if (paramEmail) {
+  document.getElementById('f-email').value = paramEmail;
+  // 確認用も自動入力（URLパラメータから来た場合）
+  document.getElementById('f-email-confirm').value = paramEmail;
+}
 document.getElementById('plan-display').textContent = paramPlan;
 renderPlanDetails();
 document.getElementById('plan-badge').textContent   = paramPlan;
 
+// ── バリデーション ────────────────────────────────────────────
+function showErr(id, show) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('visible', show);
+}
+function setInputErr(el, show) {
+  if (el) el.classList.toggle('error', show);
+}
+function setGroupErr(groupId, show) {
+  const el = document.getElementById(groupId);
+  if (el) el.classList.toggle('error', show);
+}
+function getRadioValue(name) {
+  const checked = document.querySelector('input[name="'+name+'"]:checked');
+  return checked ? checked.value : '';
+}
+
+function validateForm(fd) {
+  let valid = true;
+
+  // お名前
+  const name = fd.get('name') || '';
+  const nameInput = document.getElementById('f-name');
+  const nameErr = !name.trim();
+  setInputErr(nameInput, nameErr);
+  showErr('err-name', nameErr);
+  if (nameErr) valid = false;
+
+  // メール
+  const email = fd.get('email') || '';
+  const emailInput = document.getElementById('f-email');
+  const emailErr = !email.trim() || email.indexOf('@') === -1;
+  setInputErr(emailInput, emailErr);
+  showErr('err-email', emailErr);
+  if (emailErr) valid = false;
+
+  // メール確認
+  const emailConfirm = fd.get('email_confirm') || '';
+  const emailConfirmInput = document.getElementById('f-email-confirm');
+  const emailConfirmErr = email.trim() !== emailConfirm.trim();
+  setInputErr(emailConfirmInput, emailConfirmErr);
+  showErr('err-email-confirm', emailConfirmErr);
+  if (emailConfirmErr) valid = false;
+
+  // チャンネルURL
+  const snsUrl = fd.get('sns_url') || '';
+  const snsInput = document.getElementById('f-sns-url');
+  const snsErr = !snsUrl.trim();
+  setInputErr(snsInput, snsErr);
+  showErr('err-sns-url', snsErr);
+  if (snsErr) valid = false;
+
+  // ジャンル
+  const genre = fd.get('genre') || '';
+  const genreInput = document.getElementById('f-genre');
+  const genreErr = !genre.trim();
+  setInputErr(genreInput, genreErr);
+  showErr('err-genre', genreErr);
+  if (genreErr) valid = false;
+
+  // 動画の長さ（必須ラジオ）
+  const lengthVal = getRadioValue('動画の長さ');
+  const lengthErr = !lengthVal;
+  setGroupErr('group-length', lengthErr);
+  showErr('err-length', lengthErr);
+  if (lengthErr) valid = false;
+
+  // 月の希望本数（必須ラジオ）
+  const countVal = getRadioValue('月の希望本数');
+  const countErr = !countVal;
+  setGroupErr('group-count', countErr);
+  showErr('err-count', countErr);
+  if (countErr) valid = false;
+
+  // 納期希望（必須ラジオ）
+  const deadlineVal = getRadioValue('deadline');
+  const deadlineErr = !deadlineVal;
+  setGroupErr('group-deadline', deadlineErr);
+  showErr('err-deadline', deadlineErr);
+  if (deadlineErr) valid = false;
+
+  return valid;
+}
+
 document.getElementById('hearing-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const btn = document.getElementById('submit-btn');
-  btn.disabled = true; btn.textContent = '送信中...';
-
   const form = e.target;
   const fd   = new FormData(form);
+
+  // バリデーション
+  if (!validateForm(fd)) {
+    // 最初のエラー箇所にスクロール
+    const firstErr = document.querySelector('.form-input.error, .radio-group-required.error');
+    if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  btn.disabled = true; btn.textContent = '送信中...';
+
+  // caption_style_other（テロップその他の詳細）
+  const captionStyle = getRadioValue('caption_style');
+  const captionStyleOther = (document.getElementById('caption-style-other') || {}).value || '';
+  const captionStyleFinal = captionStyle === 'その他' && captionStyleOther
+    ? 'その他：' + captionStyleOther
+    : captionStyle;
+
+  // source_other（認知きっかけその他の詳細）
+  const sourceVal = getRadioValue('source');
+  const sourceOther = (document.getElementById('source-other') || {}).value || '';
+  const sourceFinal = sourceVal === 'その他' && sourceOther
+    ? 'その他：' + sourceOther
+    : sourceVal;
 
   const answers = {
     '__planKey':        paramPlanKey,
@@ -457,7 +626,7 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
     'ジャンル/テーマ':  fd.get('genre')      || '',
     '動画の長さ':       fd.get('動画の長さ') || '',
     '月の希望本数':     fd.get('月の希望本数') || '',
-    'テロップスタイル': fd.get('caption_style') || '',
+    'テロップスタイル': captionStyleFinal,
     'BGM':        fd.get('bgm') || '',
     'SE（効果音）':fd.get('se')  || '',
     'チャプター設定':   fd.get('chapter')    || '',
@@ -465,9 +634,10 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
     '素材提供方法':     fd.get('material')   || '',
     '納期希望':         fd.get('deadline')   || '',
     'ご要望・特記事項': fd.get('note')       || '',
-    '認知きっかけ':     fd.get('source')     || '',
+    '認知きっかけ':     sourceFinal,
   };
 
+  let sendOk = false;
   try {
     await fetch(GAS_URL, {
       method: 'POST', mode: 'no-cors',
@@ -480,24 +650,54 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
         answers,
       }),
     });
-  } catch(err) { /* no-cors */ }
+    sendOk = true;
+  } catch(err) {
+    sendOk = false;
+  }
 
-  document.getElementById('hearing-form').style.display = 'none';
-  const sb = document.getElementById('success-box');
-  sb.classList.add('visible');
-  document.getElementById('success-name').textContent  = fd.get('name');
-  document.getElementById('success-email').textContent = fd.get('email');
+  if (sendOk) {
+    document.getElementById('hearing-form').style.display = 'none';
+    const sb = document.getElementById('success-box');
+    sb.classList.add('visible');
+    document.getElementById('success-name').textContent  = fd.get('name');
+    document.getElementById('success-email').textContent = fd.get('email');
+  } else {
+    // ネットワークエラー時はエラーボックスを表示し、ボタンを復帰
+    document.getElementById('hearing-form').style.display = 'none';
+    document.getElementById('error-box').classList.add('visible');
+  }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
 // その他テキスト入力の表示制御
-document.querySelectorAll('input[value="その他"]').forEach(function(inp){
+document.querySelectorAll('input[type="radio"][value="その他"]').forEach(function(inp){
   inp.addEventListener('change', function(){
-    var next = this.closest('label').nextElementSibling;
-    if(next && next.classList.contains('other-text-input')){
-      next.classList.toggle('visible', this.checked);
-      if(!this.checked) next.value='';
-    }
+    const name = this.name;
+    // caption_style → caption-style-other
+    // source → source-other
+    const targetId = name === 'caption_style' ? 'caption-style-other'
+                   : name === 'source'        ? 'source-other'
+                   : null;
+    if (!targetId) return;
+    const target = document.getElementById(targetId);
+    if (!target) return;
+    target.classList.add('visible');
+    target.focus();
+  });
+});
+// その他以外を選んだら自由入力を隠す
+document.querySelectorAll('input[type="radio"]').forEach(function(inp){
+  if (inp.value === 'その他') return;
+  inp.addEventListener('change', function(){
+    const name = this.name;
+    const targetId = name === 'caption_style' ? 'caption-style-other'
+                   : name === 'source'        ? 'source-other'
+                   : null;
+    if (!targetId) return;
+    const target = document.getElementById(targetId);
+    if (!target) return;
+    target.classList.remove('visible');
+    target.value = '';
   });
 });
 </script>
