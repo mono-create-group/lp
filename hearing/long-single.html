@@ -91,18 +91,19 @@ a { color: inherit; text-decoration: none; }
 .form-textarea { resize: vertical; min-height: 90px; }
 .form-radio-group { display: flex; flex-direction: column; gap: 8px; }
 label.form-radio-item {
-  display: flex; align-items: flex-start; gap: 12px;
+  display: flex !important; align-items: flex-start; gap: 14px;
   padding: 10px 14px;
   border: 1.5px solid rgba(15,23,42,0.10);
   border-radius: 8px; cursor: pointer;
   transition: border-color 0.2s, background 0.2s;
+  margin-bottom: 0;
 }
 label.form-radio-item:has(input:checked) {
   border-color: #2563EB;
   background: rgba(37,99,235,0.05);
 }
-label.form-radio-item input { accent-color: #2563EB; width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; }
-label.form-radio-item span { font-size: 0.85rem; flex: 1; line-height: 1.5; word-break: break-word; }
+label.form-radio-item input { accent-color: #2563EB; width: 18px; height: 18px; flex: 0 0 18px; margin: 1px 0 0 0; }
+label.form-radio-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.5; word-break: break-word; }
 .submit-btn {
   width: 100%; padding: 15px;
   background: #1E40AF; color: #fff;
@@ -222,7 +223,7 @@ label.form-radio-item span { font-size: 0.85rem; flex: 1; line-height: 1.5; word
           <label class="form-radio-item"><input type="radio" name="caption_style" value="シンプル（白文字）"><span>シンプル（白文字）</span></label>
           <label class="form-radio-item"><input type="radio" name="caption_style" value="アニメーション付き"><span>アニメーション付き</span></label>
           <label class="form-radio-item"><input type="radio" name="caption_style" value="参考動画と近しいもの"><span>参考動画と近しいもの</span></label>
-          <label class="form-radio-item"><input type="radio" name="caption_style" value="プロマネの提示あり"><span>プロマネの提示あり（ディレクターが提案）</span></label>
+          <label class="form-radio-item"><input type="radio" name="caption_style" value="プロマネの提示あり"><span>プロマネの提示あり</span></label>
           <label class="form-radio-item"><input type="radio" name="caption_style" value="おまかせ"><span>おまかせ</span></label>
         </div>
       </div>
@@ -263,12 +264,17 @@ label.form-radio-item span { font-size: 0.85rem; flex: 1; line-height: 1.5; word
       <p class="form-section-title">素材・納品</p>
       <div class="form-group">
         <label>素材の提供方法</label>
-        <p class="hint">素材の受け取りはYouTube限定公開またはギガファイル便（MP4・プロマネ）にて承ります。</p>
-        <div class="form-radio-group">
-          <label class="form-radio-item"><input type="radio" name="material" value="YouTube限定公開"><span>YouTube限定公開（動画素材）</span></label>
-          <label class="form-radio-item"><input type="radio" name="material" value="ギガファイル便（MP4）"><span>ギガファイル便（MP4）</span></label>
-          <label class="form-radio-item"><input type="radio" name="material" value="ギガファイル便（プロマネ・プロジェクトファイル含む）"><span>ギガファイル便（プロマネ・プロジェクトファイル含む）</span></label>
+        <div style="background:#F0F9FF;border:1.5px solid #BAE6FD;border-radius:10px;padding:14px 18px;">
+          <p style="font-size:0.82rem;color:#075985;font-weight:700;margin-bottom:6px;">📦 素材は以下のいずれかでお送りください（固定）</p>
+          <ul style="margin:6px 0 0 18px;font-size:0.82rem;color:#0C4A6E;line-height:1.9;">
+            <li>YouTube限定公開（動画素材を限定公開URLで共有）</li>
+            <li>ギガファイル便（MP4）</li>
+            <li>ギガファイル便（プロマネ・プロジェクトファイル含む）</li>
+          </ul>
+          <p style="font-size:0.72rem;color:#0369A1;margin-top:8px;">※ 上記以外の方法をご希望の場合は備考欄にご記入ください。</p>
         </div>
+      </div>
+      </div>
       </div>
       <div class="form-group">
         <label>納期の希望</label>
