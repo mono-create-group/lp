@@ -243,10 +243,10 @@ label.form-radio-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
         <label>動画の長さ（1本あたり） <span class="req">*必須</span></label>
         <p class="hint">料金のベースになります。必ずご選択ください</p>
         <div class="form-radio-group">
-          <label class="form-radio-item"><input type="radio" name="動画の長さ" value="〜10分（¥10,000/本）"><span>〜10分（¥10,000/本）</span></label>
-          <label class="form-radio-item"><input type="radio" name="動画の長さ" value="10〜15分（¥15,000/本）"><span>10〜15分（¥15,000/本）</span></label>
-          <label class="form-radio-item"><input type="radio" name="動画の長さ" value="15〜20分（¥20,000/本）"><span>15〜20分（¥20,000/本）</span></label>
-          <label class="form-radio-item"><input type="radio" name="動画の長さ" value="20分〜（¥20,000+¥1,200/分）"><span>20分〜（¥20,000+¥1,200/分）</span></label>
+          <label class="form-radio-item"><input type="radio" name="動画の長さ" value="〜10分（¥15,000/本）"><span>〜10分（¥15,000/本）</span></label>
+          <label class="form-radio-item"><input type="radio" name="動画の長さ" value="10〜15分（¥20,000/本）"><span>10〜15分（¥20,000/本）</span></label>
+          <label class="form-radio-item"><input type="radio" name="動画の長さ" value="15〜20分（¥30,000/本）"><span>15〜20分（¥30,000/本）</span></label>
+          <label class="form-radio-item"><input type="radio" name="動画の長さ" value="20分〜（+¥1,200/分）"><span>20分〜（+¥1,200/分）</span></label>
           <label class="form-radio-item"><input type="radio" name="動画の長さ" value="未定・相談したい"><span>未定・相談したい</span></label>
         </div>
         <p class="field-error-msg" id="err-length">動画の長さをお選びください</p>
@@ -413,13 +413,13 @@ const PLAN_DETAILS = {
   'edit-long':  {
     title: '🎬 まとめて編集プラン（長尺）', summary: 'YouTube長尺動画4本〜の段階割引パック',
     services: '編集のみ（長尺）',
-    items: ['〜10分¥10,000、10〜15分¥15,000、15〜20分¥20,000、20分〜¥20,000+¥1,200/分', '4本以上：5%割引', '8本以上：10%割引', '12本以上：15%割引', 'カット・テロップ・効果音込み', '修正3回まで無料'],
+    items: ['〜10分¥15,000、10〜15分¥20,000、15〜20分¥30,000、20分〜+¥1,200/分', '4〜7本：5%割引', '8〜11本：10%割引', '12本〜：15%割引', 'カット・テロップ・効果音込み', '修正3回まで無料'],
     recommend: 'YouTuber・教育系・解説系チャンネル運営者'
   },
   'long-single':{
     title: '🎬 長尺動画 単品', summary: 'YouTube長尺を1本から依頼可能',
     services: '編集のみ（長尺・単品）',
-    items: ['〜10分¥10,000、10〜15分¥15,000、15〜20分¥20,000、20分〜¥20,000+¥1,200/分', '修正3回まで無料'],
+    items: ['〜10分¥15,000、10〜15分¥20,000、15〜20分¥30,000、20分〜+¥1,200/分', '修正3回まで無料'],
     recommend: 'まず1本だけ試したい方'
   },
   'set-8':  {
