@@ -520,10 +520,10 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       <div class="table-wrap">
         <table>
           <thead><tr>
-            <th>同意日時</th><th>お名前</th><th>メールアドレス</th><th>プラン</th><th>契約Ver</th><th>アクション</th>
+            <th>同意日時</th><th>お名前</th><th>メールアドレス</th><th>プラン</th><th>ステージ</th><th>契約書PDF</th><th>アクション</th>
           </tr></thead>
           <tbody id="contracts-body">
-            <tr><td colspan="6" class="table-empty"><span class="spinner"></span></td></tr>
+            <tr><td colspan="7" class="table-empty"><span class="spinner"></span></td></tr>
           </tbody>
         </table>
       </div>
@@ -1254,21 +1254,31 @@ async function loadContracts() {
 function renderContracts() {
   const el = document.getElementById('contracts-body');
   if (!contracts.length) {
-    el.innerHTML = '<tr><td colspan="6" class="table-empty">まだ記録がありません。</td></tr>'; return;
+    el.innerHTML = '<tr><td colspan="7" class="table-empty">まだ記録がありません。</td></tr>'; return;
   }
-  el.innerHTML = contracts.map(c => `
+  el.innerHTML = contracts.map(c => {
+    const isFinal = c.stage === 'pre-payment';
+    const stageBadge = isFinal
+      ? '<span style="background:#0a2a1a;color:#4ade80;border:1px solid #166534;padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:700;">📝 締結</span>'
+      : '<span style="background:#1a2332;color:#60a5fa;border:1px solid #1d4ed8;padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:700;">📨 問合せ</span>';
+    const pdfCell = c.pdfUrl
+      ? `<a href="${esc(c.pdfUrl)}" target="_blank" rel="noopener" style="color:#60a5fa;text-decoration:underline;font-size:0.78rem;">📄 PDF</a>`
+      : '<span style="color:var(--sub);font-size:0.75rem;">—</span>';
+    return `
     <tr>
       <td class="td-date">${esc(c.date)}</td>
       <td class="td-name">${esc(c.name)}</td>
       <td class="td-email">${esc(c.email)}</td>
       <td class="td-plan" style="font-size:0.78rem;">${esc(c.plan)}</td>
-      <td style="font-size:0.75rem;color:var(--sub);">${esc(c.ver)}</td>
+      <td>${stageBadge}</td>
+      <td>${pdfCell}</td>
       <td><button class="action-btn btn-mail" onclick="openMail('${esc(c.email)}')">✉ メール</button></td>
-    </tr>`).join('');
+    </tr>`;
+  }).join('');
 }
 function exportContractsCSV() {
-  const rows = [['同意日時','お名前','メール','プラン','契約Ver']];
-  contracts.forEach(c => rows.push([c.date,c.name,c.email,c.plan,c.ver]));
+  const rows = [['同意日時','お名前','メール','プラン','契約Ver','ステージ','契約書PDF URL']];
+  contracts.forEach(c => rows.push([c.date,c.name,c.email,c.plan,c.ver,c.stage||'',c.pdfUrl||'']));
   downloadCSV(rows, 'monocreate_contracts');
 }
 
