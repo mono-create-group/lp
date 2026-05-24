@@ -406,6 +406,10 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
         💰 売上帳（青色申告）
       </button>
+      <button id="tab-schedule-btn" onclick="switchAdminTab('schedule')"
+        style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
+        📅 制作スケジュール
+      </button>
       <button id="tab-portfolio-btn" onclick="switchAdminTab('portfolio')"
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
         🎬 ポートフォリオ管理
@@ -634,6 +638,80 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
             <th>取引日</th><th>取引先</th><th>プラン</th><th>税抜</th><th>消費税</th><th>税込</th><th>入金日</th><th>入金確認</th>
           </tr></thead>
           <tbody id="sales-body">
+            <tr><td colspan="8" class="table-empty"><span class="spinner"></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── 制作スケジュール（納期管理）タブ ── -->
+    <div id="tab-schedule" style="display:none;">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+          <h3 style="font-size:0.95rem;font-weight:700;">📅 制作スケジュール — 案件・素材ごとの納期管理</h3>
+          <div style="display:flex;gap:10px;">
+            <button class="refresh-btn" onclick="loadSchedule()">更新</button>
+            <button class="export-btn" onclick="exportScheduleCSV()">CSV出力</button>
+          </div>
+        </div>
+        <div id="schedule-stats" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px;"></div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px;">
+        <p style="font-size:0.85rem;font-weight:700;color:#60a5fa;margin-bottom:10px;">➕ 新規案件・素材の納期登録</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:10px;" id="sch-form-grid">
+          <div>
+            <label style="font-size:0.72rem;color:var(--sub);display:block;margin-bottom:4px;">クライアント名 *</label>
+            <input type="text" id="sch-client" placeholder="陸斗様" list="sch-client-list"
+              style="width:100%;padding:8px 10px;background:var(--bg3);border:1.5px solid var(--border);border-radius:6px;color:#fff;font-size:0.85rem;">
+            <datalist id="sch-client-list"></datalist>
+          </div>
+          <div>
+            <label style="font-size:0.72rem;color:var(--sub);display:block;margin-bottom:4px;">素材／動画タイトル *</label>
+            <input type="text" id="sch-title" placeholder="姫の本音と建前"
+              style="width:100%;padding:8px 10px;background:var(--bg3);border:1.5px solid var(--border);border-radius:6px;color:#fff;font-size:0.85rem;">
+          </div>
+          <div>
+            <label style="font-size:0.72rem;color:var(--sub);display:block;margin-bottom:4px;">初稿納期 *</label>
+            <input type="date" id="sch-deadline-draft"
+              style="width:100%;padding:8px 10px;background:var(--bg3);border:1.5px solid var(--border);border-radius:6px;color:#fff;font-size:0.85rem;">
+          </div>
+          <div>
+            <label style="font-size:0.72rem;color:var(--sub);display:block;margin-bottom:4px;">最終納品予定</label>
+            <input type="date" id="sch-deadline-final"
+              style="width:100%;padding:8px 10px;background:var(--bg3);border:1.5px solid var(--border);border-radius:6px;color:#fff;font-size:0.85rem;">
+          </div>
+          <div>
+            <label style="font-size:0.72rem;color:var(--sub);display:block;margin-bottom:4px;">担当者</label>
+            <input type="text" id="sch-assignee" placeholder="中村航汰"
+              style="width:100%;padding:8px 10px;background:var(--bg3);border:1.5px solid var(--border);border-radius:6px;color:#fff;font-size:0.85rem;">
+          </div>
+          <div>
+            <label style="font-size:0.72rem;color:var(--sub);display:block;margin-bottom:4px;">ステータス</label>
+            <select id="sch-status" style="width:100%;padding:8px 10px;background:var(--bg3);border:1.5px solid var(--border);border-radius:6px;color:#fff;font-size:0.85rem;">
+              <option value="未着手">未着手</option>
+              <option value="編集中">編集中</option>
+              <option value="初稿納品済">初稿納品済</option>
+              <option value="修正中">修正中</option>
+              <option value="完成">完成</option>
+            </select>
+          </div>
+          <div style="grid-column:1 / -1;">
+            <label style="font-size:0.72rem;color:var(--sub);display:block;margin-bottom:4px;">Driveフォルダ／メモ</label>
+            <input type="text" id="sch-note" placeholder="例：Drive https://drive.google.com/... / 編集ソフトはPremiere"
+              style="width:100%;padding:8px 10px;background:var(--bg3);border:1.5px solid var(--border);border-radius:6px;color:#fff;font-size:0.85rem;">
+          </div>
+        </div>
+        <button onclick="addScheduleItem()"
+          style="margin-top:6px;padding:10px 22px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:0.88rem;cursor:pointer;font-family:inherit;">
+          📅 案件を登録（Chatwork通知あり）
+        </button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>クライアント</th><th>素材・動画</th><th>初稿納期</th><th>最終納品</th><th>担当</th><th>ステータス</th><th>残日数</th><th>アクション</th>
+          </tr></thead>
+          <tbody id="schedule-body">
             <tr><td colspan="8" class="table-empty"><span class="spinner"></span></td></tr>
           </tbody>
         </table>
@@ -1127,7 +1205,7 @@ function exportCSV() {
 }
 
 // ── Tab switch ──
-const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','portfolio','settings'];
+const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','settings'];
 function switchAdminTab(tab) {
   ADMIN_TABS.forEach(t => {
     document.getElementById('tab-' + t).style.display = t === tab ? '' : 'none';
@@ -1140,6 +1218,135 @@ function switchAdminTab(tab) {
   if (tab === 'contracts') loadContracts();
   if (tab === 'hearings')  loadHearings();
   if (tab === 'sales')     loadSales();
+  if (tab === 'schedule')  loadSchedule();
+}
+
+// ── 制作スケジュール（納期管理） ──────────────────────────────
+let scheduleData = [];
+async function loadSchedule() {
+  document.getElementById('schedule-body').innerHTML =
+    '<tr><td colspan="8" class="table-empty"><span class="spinner"></span></td></tr>';
+  try {
+    const res = await fetch(`${GAS_URL}?action=schedule_list&key=${encodeURIComponent(getAdminPw())}`);
+    const json = await res.json();
+    scheduleData = json.data || [];
+    renderSchedule();
+    refreshScheduleClientList();
+  } catch(e) {
+    document.getElementById('schedule-body').innerHTML =
+      '<tr><td colspan="8" class="table-empty">読み込みに失敗しました。</td></tr>';
+  }
+}
+function refreshScheduleClientList() {
+  // ヒアリング・問い合わせから候補
+  const names = new Set();
+  (hearings||[]).forEach(h => h.name && names.add(h.name));
+  (inquiries||[]).forEach(i => i.name && names.add(i.name));
+  (scheduleData||[]).forEach(s => s.client && names.add(s.client));
+  const list = document.getElementById('sch-client-list');
+  if (list) list.innerHTML = Array.from(names).map(n => `<option value="${esc(n)}">`).join('');
+}
+function renderSchedule() {
+  const tbody = document.getElementById('schedule-body');
+  const statsBar = document.getElementById('schedule-stats');
+  if (!scheduleData.length) {
+    tbody.innerHTML = '<tr><td colspan="8" class="table-empty">まだ案件がありません。上のフォームから登録してください。</td></tr>';
+    statsBar.innerHTML = '';
+    return;
+  }
+  // ステータス集計
+  const counts = { '未着手':0, '編集中':0, '初稿納品済':0, '修正中':0, '完成':0 };
+  scheduleData.forEach(s => { if (counts[s.status] !== undefined) counts[s.status]++; });
+  statsBar.innerHTML = Object.entries(counts).map(([st,n]) => `
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 16px;text-align:center;">
+      <p style="font-size:0.7rem;color:var(--sub);">${st}</p>
+      <p style="font-size:1.4rem;font-weight:900;color:#fff;">${n}</p>
+    </div>`).join('');
+  // 残日数で並び替え
+  const today = new Date(); today.setHours(0,0,0,0);
+  const dlist = scheduleData.slice().sort((a,b) => {
+    const da = a.deadlineDraft ? new Date(a.deadlineDraft) : new Date('2099-12-31');
+    const db = b.deadlineDraft ? new Date(b.deadlineDraft) : new Date('2099-12-31');
+    return da - db;
+  });
+  tbody.innerHTML = dlist.map(s => {
+    let remainBadge = '';
+    if (s.deadlineDraft) {
+      const d = new Date(s.deadlineDraft); d.setHours(0,0,0,0);
+      const diff = Math.round((d - today) / 86400000);
+      let c = '#4ade80', label = `あと${diff}日`;
+      if (diff < 0) { c = '#f87171'; label = `${-diff}日超過`; }
+      else if (diff <= 1) { c = '#fbbf24'; label = diff === 0 ? '本日締切' : 'あと1日'; }
+      else if (diff <= 3) { c = '#fb923c'; label = `あと${diff}日`; }
+      remainBadge = `<span style="background:${c}22;color:${c};border:1px solid ${c}55;padding:3px 9px;border-radius:10px;font-size:0.75rem;font-weight:700;">${label}</span>`;
+    } else remainBadge = '<span style="color:var(--sub);font-size:0.75rem;">—</span>';
+
+    const statusColor = {
+      '未着手':'#94a3b8','編集中':'#60a5fa','初稿納品済':'#a78bfa','修正中':'#fbbf24','完成':'#4ade80'
+    }[s.status] || '#94a3b8';
+    return `
+      <tr>
+        <td class="td-name">${esc(s.client)}</td>
+        <td style="font-size:0.82rem;">${esc(s.title)}</td>
+        <td style="font-size:0.78rem;color:var(--sub);">${esc(s.deadlineDraft||'-')}</td>
+        <td style="font-size:0.78rem;color:var(--sub);">${esc(s.deadlineFinal||'-')}</td>
+        <td style="font-size:0.78rem;">${esc(s.assignee||'-')}</td>
+        <td><span style="background:${statusColor}22;color:${statusColor};padding:3px 9px;border-radius:10px;font-size:0.75rem;font-weight:700;">${esc(s.status)}</span></td>
+        <td>${remainBadge}</td>
+        <td>
+          <select onchange="updateScheduleStatus(${s.row}, this.value)"
+            style="background:var(--bg2);border:1px solid var(--border);border-radius:5px;color:var(--text);font-size:0.72rem;padding:3px 6px;">
+            <option value="">変更...</option>
+            <option value="未着手">→ 未着手</option>
+            <option value="編集中">→ 編集中</option>
+            <option value="初稿納品済">→ 初稿納品済</option>
+            <option value="修正中">→ 修正中</option>
+            <option value="完成">→ 完成</option>
+          </select>
+        </td>
+      </tr>`;
+  }).join('');
+}
+async function addScheduleItem() {
+  const data = {
+    client: document.getElementById('sch-client').value.trim(),
+    title:  document.getElementById('sch-title').value.trim(),
+    deadlineDraft: document.getElementById('sch-deadline-draft').value,
+    deadlineFinal: document.getElementById('sch-deadline-final').value,
+    assignee: document.getElementById('sch-assignee').value.trim(),
+    status: document.getElementById('sch-status').value,
+    note: document.getElementById('sch-note').value.trim(),
+  };
+  if (!data.client || !data.title || !data.deadlineDraft) {
+    showToast('クライアント名・素材タイトル・初稿納期は必須です', true); return;
+  }
+  try {
+    await fetch(`${GAS_URL}?action=schedule_add&key=${encodeURIComponent(getAdminPw())}`, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    showToast('📅 案件を登録しました（Chatworkに通知）');
+    document.getElementById('sch-title').value = '';
+    document.getElementById('sch-deadline-draft').value = '';
+    document.getElementById('sch-deadline-final').value = '';
+    document.getElementById('sch-note').value = '';
+    setTimeout(loadSchedule, 1200);
+  } catch(e) { showToast('登録エラー', true); }
+}
+async function updateScheduleStatus(row, status) {
+  if (!status) return;
+  try {
+    const url = `${GAS_URL}?action=schedule_status&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(status)}`;
+    await fetch(url);
+    showToast(`ステータス→ ${status}`);
+    setTimeout(loadSchedule, 800);
+  } catch(e) { showToast('更新エラー', true); }
+}
+function exportScheduleCSV() {
+  const rows = [['クライアント','素材・動画','初稿納期','最終納品','担当','ステータス','メモ']];
+  scheduleData.forEach(s => rows.push([s.client,s.title,s.deadlineDraft||'',s.deadlineFinal||'',s.assignee||'',s.status||'',s.note||'']));
+  downloadCSV(rows, 'monocreate_schedule');
 }
 
 // ── 振込確認 ──────────────────────────────────────────────────
