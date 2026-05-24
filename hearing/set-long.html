@@ -80,8 +80,8 @@ label.form-check-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
     <p>契約同意ありがとうございます。長尺動画の編集や運用代行に必要な情報をお聞かせください。<br>
     回答後、2営業日以内にご連絡いたします。</p>
   </div>
-
-  <form class="form-card" id="hearing-form">
+  <div id="plan-details-card" style="display:none;background:#FFFBEB;border:1.5px solid #F59E0B;border-radius:16px;padding:24px 28px;margin-bottom:32px;"></div>
+<form class="form-card" id="hearing-form">
 
     <!-- 基本情報 -->
     <div class="form-section">
@@ -263,7 +263,8 @@ label.form-check-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
     <h2>回答を受け付けました！</h2>
     <p>ありがとうございます。<strong id="success-name"></strong> 様のご回答を確認いたしました。<br>
     2営業日以内に <strong id="success-email"></strong> またはChatworkまたはメールにてご連絡いたします。<br><br>
-    お急ぎの場合はメール（mono.create.group@gmail.com）またはChatwork（ID: nakamurakota512）までご連絡ください。</p>
+    お急ぎの場合はメール（mono.create.group@gmail.com）またはChatwork（ID: wl0b2t4akjur）までご連絡ください。</p>
+    <a href="https://mono-create-group.github.io/lp/" style="display:inline-block;margin-top:24px;padding:12px 28px;background:#1E40AF;color:#fff;border-radius:10px;font-weight:700;text-decoration:none;font-size:0.9rem;">🏠 ホームに戻る</a>
   </div>
 
 </div>
@@ -275,9 +276,95 @@ const paramName  = params.get('name')  || '';
 const paramEmail = params.get('email') || '';
 const paramPlan    = params.get('plan')    || '長尺動画パック';
 const paramPlanKey = params.get('planKey') || 'edit-long';
+
+// ── プラン詳細マップ ──────────────────────────────────────────
+const PLAN_DETAILS = {
+  'trial': {
+    title: '🎁 無料トライアル', summary: '初回1本を完全無料で制作（全プラン対象）',
+    items: ['ショート動画 or 長尺動画 1本まで', '通常クオリティで制作', '継続を希望されなければ費用は一切不要', '気に入っていただければ正式契約へ進めます'],
+    recommend: 'まずはクオリティを見たい方'
+  },
+  'edit-short': {
+    title: '📦 まとめて編集プラン（ショート）', summary: 'ショート動画10本〜の段階割引パック',
+    items: ['基本¥4,000/本', '10〜15本：5%割引', '16〜30本：10%割引', '31本以上：15%割引', 'テロップ・BGM・SE付き', '修正3回まで無料'],
+    recommend: '月10本以上のSNS運用者・継続的に発信したい方'
+  },
+  'edit-long':  {
+    title: '🎬 まとめて編集プラン（長尺）', summary: 'YouTube長尺動画4本〜の段階割引パック',
+    items: ['〜10分¥10,000、10〜15分¥15,000、15〜20分¥20,000', '4本：5%割引', '5〜11本：10%割引', '12本以上：15%割引', 'カット・テロップ・効果音込み', '修正3回まで無料'],
+    recommend: 'YouTuber・教育系・解説系チャンネル運営者'
+  },
+  'long-single':{
+    title: '🎬 長尺動画 単品', summary: 'YouTube長尺を1本から依頼可能',
+    items: ['〜10分¥10,000、10〜15分¥15,000、15〜20分¥20,000', '単品でもクオリティ妥協なし', '修正3回まで無料'],
+    recommend: 'まず1本だけ試したい方'
+  },
+  'set-8':  {
+    title: '🚀 投稿丸投げ ショート8本', summary: '編集+投稿代行のオールインワン（月¥69,800）',
+    items: ['ショート編集 8本/月', 'SNS投稿代行込み', 'アカウント分析レポート', '月1回のミーティング'],
+    recommend: '副業フリーランス・週2本ペース運用者'
+  },
+  'set-10': {
+    title: '🚀 投稿丸投げ ショート10本', summary: '編集+投稿代行（月¥45,000）',
+    items: ['ショート編集 10本/月', 'SNS投稿代行込み', '基本ジャンルOK', '修正3回まで無料'],
+    recommend: 'コスパ重視の継続発信者'
+  },
+  'set-15': {
+    title: '⭐ 投稿丸投げ ショート15本（1番人気）', summary: '編集+投稿代行（月¥75,000）',
+    items: ['ショート編集 15本/月', 'SNS投稿代行込み', 'アカウント分析レポート', 'チャプターTC設計', '優先サポート'],
+    recommend: '週3〜4本ペースで本気で伸ばしたい方'
+  },
+  'set-30': {
+    title: '🔥 投稿丸投げ ショート30本', summary: '毎日投稿レベルのフルパック（月¥150,000）',
+    items: ['ショート編集 30本/月', 'SNS投稿代行込み', '毎月アカウント分析', 'チャンネル戦略MTG', '優先対応'],
+    recommend: '法人・本格運用者・複数アカウント運営'
+  },
+  'set-long': {
+    title: '🎞️ 投稿丸投げ 長尺パック', summary: '長尺動画の編集+投稿代行（後払い・要相談）',
+    items: ['長尺編集（〜20分対応）', '投稿スケジューリング', '後払い対応可', '本数・尺はご相談'],
+    recommend: 'YouTube本気運営チャンネル'
+  },
+  'mixed-std': {
+    title: '💎 運用丸投げ スタンダード', summary: 'ショート+長尺+分析の総合パック（月¥150,000）',
+    items: ['ショート15本+長尺2本/月', 'SNS投稿代行', 'アカウント分析+市場分析', '月1MTG', '優先サポート'],
+    recommend: '複数SNSを横断運用する個人事業主・法人'
+  },
+  'mixed-pre': {
+    title: '💎 運用丸投げ プレミアム', summary: 'フルカスタム総合パック（月¥220,000）',
+    items: ['ショート30本+長尺4本/月', 'SNS投稿代行', '専属ディレクター', 'バズ施策・SEO対応', '隔週MTG', '24時間対応Chat'],
+    recommend: '事業として本気で取り組みたい法人'
+  },
+  'dispatch': {
+    title: '👥 編集者派遣', summary: 'チームへの編集者派遣（要相談）',
+    items: ['編集者を1〜複数名アサイン', '使用ツール・ジャンルに合わせて選定', '月単位契約', '直接やり取り可'],
+    recommend: 'インハウスチームに編集者を入れたい企業'
+  },
+};
+
+function renderPlanDetails() {
+  const key = paramPlanKey;
+  const d = PLAN_DETAILS[key];
+  if (!d) return;
+  const box = document.getElementById('plan-details-card');
+  if (!box) return;
+  box.innerHTML = `
+    <p style="font-size:0.72rem;font-weight:700;letter-spacing:0.06em;color:#B45309;margin-bottom:4px;">あなたが選択したプラン</p>
+    <h2 style="font-size:1.05rem;font-weight:900;color:#0F172A;margin-bottom:4px;">${d.title}</h2>
+    <p style="font-size:0.85rem;color:#475569;margin-bottom:12px;">${d.summary}</p>
+    <p style="font-size:0.78rem;font-weight:700;color:#0369A1;margin-bottom:6px;">📋 プラン内容</p>
+    <ul style="margin:0 0 12px 18px;padding:0;font-size:0.82rem;color:#0F172A;line-height:1.85;">
+      ${d.items.map(i=>'<li>'+i+'</li>').join('')}
+    </ul>
+    <p style="font-size:0.78rem;font-weight:700;color:#15803D;margin-bottom:4px;">🎯 こんな方におすすめ</p>
+    <p style="font-size:0.82rem;color:#166534;">${d.recommend}</p>
+  `;
+  box.style.display = 'block';
+}
+
 if (paramName)  document.getElementById('f-name').value  = paramName;
 if (paramEmail) document.getElementById('f-email').value = paramEmail;
 document.getElementById('plan-display').textContent = paramPlan;
+renderPlanDetails();
 document.getElementById('plan-badge').textContent = paramPlan;
 
 document.getElementById('hearing-form').addEventListener('submit', async (e) => {
