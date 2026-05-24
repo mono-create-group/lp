@@ -235,6 +235,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
   display: none; position: fixed; inset: 0;
   background: rgba(0,0,0,0.7); z-index: 200;
   align-items: center; justify-content: center; padding: 24px;
+  overflow-y: auto;
 }
 .modal-overlay.open { display: flex; }
 .modal {
@@ -243,7 +244,70 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
   border-radius: 16px;
   padding: 36px;
   width: 100%; max-width: 560px;
-  max-height: 80vh; overflow-y: auto;
+  max-height: calc(100vh - 48px); overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── スマホ対応：モーダル最適化 ── */
+@media (max-width: 640px) {
+  .modal-overlay {
+    padding: 12px;
+    align-items: flex-start;
+  }
+  .modal {
+    padding: 20px 18px;
+    border-radius: 12px;
+    max-height: calc(100vh - 24px);
+    margin: 6px 0;
+  }
+  .modal-header { margin-bottom: 16px; }
+  .modal-title  { font-size: 0.95rem; }
+  .modal-actions {
+    position: sticky; bottom: -20px;
+    background: var(--bg2);
+    padding: 14px 0 4px;
+    margin: 16px -4px 0;
+    border-top: 1px solid var(--border);
+    z-index: 10;
+  }
+  .modal-btn { padding: 12px 14px; font-size: 0.85rem; }
+
+  /* 管理画面全体のスマホ対応 */
+  .container { padding: 16px 12px; }
+  .stats-bar { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .tabs { overflow-x: auto; white-space: nowrap; padding-bottom: 4px; }
+  .tab-btn { font-size: 0.78rem; padding: 8px 12px; }
+
+  /* テーブルは横スクロール可能に */
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { min-width: 560px; }
+
+  /* 手動見積もり送信フォーム：1列化 */
+  #tab-hearings > div[style*="grid-template-columns:1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+  /* 売上記録フォーム：1列化 */
+  #tab-sales div[style*="grid-template-columns:1fr 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+  /* ポートフォリオフォーム：1列化 */
+  #portfolio-form-grid { grid-template-columns: 1fr !important; }
+
+  /* ヒアリング詳細：160px 1fr auto → stack */
+  #modal-body div[style*="grid-template-columns:160px"] {
+    grid-template-columns: 1fr auto !important;
+  }
+  #modal-body div[style*="grid-template-columns:160px"] > div:first-child {
+    grid-column: 1 / -1;
+  }
+  /* ヘッダーサマリーカード：2列→1列 */
+  #modal-body div[style*="grid-template-columns:1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* 振込モーダル：オプションボタン群を縦並びに */
+  #pm-option-btns { flex-direction: column; }
+  #pm-option-btns button { width: 100%; text-align: left; }
 }
 .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
 .modal-title { font-size: 1rem; font-weight: 700; }
