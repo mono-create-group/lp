@@ -1988,7 +1988,7 @@ async function submitContract() {
       }),
     });
   } catch(e) { /* no-cors */ }
-  const qs = new URLSearchParams({ name, email, plan: info[0] });
+  const qs = new URLSearchParams({ name, email, plan: info[0], planKey: _ctrPlan });
   window.location.href = info[1] + '?' + qs.toString();
 }
 document.addEventListener('DOMContentLoaded', () => {
