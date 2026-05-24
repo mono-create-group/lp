@@ -724,8 +724,8 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         <h3 style="font-size:0.95rem;font-weight:700;margin-bottom:20px;">ポートフォリオを追加</h3>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;" id="portfolio-form-grid">
           <div>
-            <label style="font-size:0.78rem;color:var(--sub);display:block;margin-bottom:4px;">YouTube / SNS URL <span style="color:#EF4444;">*</span></label>
-            <input type="url" id="pf-url" placeholder="https://www.youtube.com/watch?v=..." style="width:100%;padding:10px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;">
+            <label style="font-size:0.78rem;color:var(--sub);display:block;margin-bottom:4px;">動画URL（YouTube / Google Drive） <span style="color:#EF4444;">*</span></label>
+            <input type="url" id="pf-url" placeholder="https://www.youtube.com/watch?v=... または https://drive.google.com/..." style="width:100%;padding:10px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;">
           </div>
           <div>
             <label style="font-size:0.78rem;color:var(--sub);display:block;margin-bottom:4px;">タイトル</label>
@@ -1771,7 +1771,7 @@ function calcEstimate(planKey, answers) {
 
   // ─ 長尺動画まとめて編集 ─
   if (planKey === 'edit-long' || planKey === 'long-single') {
-    const durationPrice = { '〜10分': 10000, '10〜15分': 15000, '15〜20分': 20000 };
+    const durationPrice = { '〜10分': 15000, '10〜15分': 20000, '15〜20分': 30000 };
     const unitPrice = durationPrice[duration];
     if (!count || !unitPrice) return { amount: 0, note: `尺「${duration || '未定'}」/ ${count || '?'}本 — 手動で入力してください`, reliable: false };
     const disc = longDisc(count);
@@ -1786,7 +1786,7 @@ function calcEstimate(planKey, answers) {
 
   // ─ 長尺セットパック ─（後払い計算 / 最低4本〜）
   if (planKey === 'set-long') {
-    const basePrices = { '〜10分': 10000, '10〜15分': 15000, '15〜20分': 20000 };
+    const basePrices = { '〜10分': 15000, '10〜15分': 20000, '15〜20分': 30000 };
     const editUnit = basePrices[duration];
     if (!count || !editUnit) return { amount: 0, note: '長尺セット — 尺/本数確認後に手動入力', reliable: false };
     const disc = longDisc(count);
