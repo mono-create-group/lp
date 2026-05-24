@@ -1444,28 +1444,34 @@ function calcEstimate(planKey, answers) {
   // 動画尺パース
   const duration = answers['動画の長さ'] || '';
 
-  // ショート段階割引（15本以下5%、16〜29本10%、30本以上15%）
+  // ショート段階割引（最低10本〜。10〜15本=5%、16〜30本=10%、31本以上=15%）
+  // 10本未満は割引対象外（単品扱い）→ null を返す
   function shortDisc(n) {
-    if (n >= 30) return 0.85;
+    if (n >= 31) return 0.85;
     if (n >= 16) return 0.90;
-    return 0.95;
+    if (n >= 10) return 0.95;
+    return null;
   }
   function shortDiscLabel(n) {
-    if (n >= 30) return '15%割引';
+    if (n >= 31) return '15%割引';
     if (n >= 16) return '10%割引';
-    return '5%割引';
+    if (n >= 10) return '5%割引';
+    return '割引なし（単品扱い）';
   }
 
-  // 長尺段階割引（4本以下5%、5〜8本10%、9本以上は10%、12本以上15%）
+  // 長尺段階割引（最低4本〜。4本=5%、5〜11本=10%、12本以上=15%）
+  // 4本未満は割引対象外（単品扱い）→ null を返す
   function longDisc(n) {
     if (n >= 12) return 0.85;
     if (n >= 5)  return 0.90;
-    return 0.95;
+    if (n >= 4)  return 0.95;
+    return null;
   }
   function longDiscLabel(n) {
     if (n >= 12) return '15%割引';
     if (n >= 5)  return '10%割引';
-    return '5%割引';
+    if (n >= 4)  return '5%割引';
+    return '割引なし（単品扱い）';
   }
 
   // ─ ショート動画まとめて編集 ─
@@ -1473,7 +1479,12 @@ function calcEstimate(planKey, answers) {
     if (!count) return { amount: 0, note: '本数未定 — 手動で入力してください', reliable: false };
     const unit = 4000;
     const disc = shortDisc(count);
-    const amt  = Math.round(unit * count * disc);
+    if (disc === null) {
+      // 10本未満は単品扱い（割引なし）
+      const amt = unit * count;
+      return { amount: amt, note: `¥4,000 × ${count}本（単品扱い・割引なし） = ¥${amt.toLocaleString()} ※ まとめて編集プランは最低10本〜`, reliable: true };
+    }
+    const amt = Math.round(unit * count * disc);
     return { amount: amt, note: `¥4,000 × ${count}本（${shortDiscLabel(count)}） = ¥${amt.toLocaleString()}`, reliable: true };
   }
 
@@ -1483,16 +1494,24 @@ function calcEstimate(planKey, answers) {
     const unitPrice = durationPrice[duration];
     if (!count || !unitPrice) return { amount: 0, note: `尺「${duration || '未定'}」/ ${count || '?'}本 — 手動で入力してください`, reliable: false };
     const disc = longDisc(count);
-    const amt  = Math.round(unitPrice * count * disc);
+    if (disc === null) {
+      // 4本未満は単品扱い（割引なし）
+      const amt = unitPrice * count;
+      return { amount: amt, note: `¥${unitPrice.toLocaleString()} × ${count}本（単品扱い・割引なし） = ¥${amt.toLocaleString()} ※ まとめて編集プランは最低4本〜`, reliable: true };
+    }
+    const amt = Math.round(unitPrice * count * disc);
     return { amount: amt, note: `¥${unitPrice.toLocaleString()} × ${count}本（${longDiscLabel(count)}） = ¥${amt.toLocaleString()}`, reliable: true };
   }
 
-  // ─ 長尺セットパック ─（後払い計算）
+  // ─ 長尺セットパック ─（後払い計算 / 最低4本〜）
   if (planKey === 'set-long') {
     const basePrices = { '〜10分': 10000, '10〜15分': 15000, '15〜20分': 20000 };
     const editUnit = basePrices[duration];
     if (!count || !editUnit) return { amount: 0, note: '長尺セット — 尺/本数確認後に手動入力', reliable: false };
     const disc = longDisc(count);
+    if (disc === null) {
+      return { amount: 0, note: `長尺セットは最低4本〜。現在${count}本のため要相談（手動見積もり）`, reliable: false };
+    }
     const discUnit = Math.round(editUnit * disc);
     const amt = Math.round((discUnit * count + 1000 * count) * 1.3 - 5000);
     return { amount: amt, note: `(¥${discUnit.toLocaleString()}+¥1,000) × ${count}本 × 1.3 − ¥5,000（後払い概算）`, reliable: true };
