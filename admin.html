@@ -726,9 +726,38 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       <div class="modal-row"><p class="modal-label">お名前</p><p class="modal-val" id="pm-name">—</p></div>
       <div class="modal-row"><p class="modal-label">メール</p><p class="modal-val" id="pm-email">—</p></div>
       <div class="modal-row" style="align-items:flex-start;">
-        <p class="modal-label">プラン<br><span style="color:#60a5fa;font-size:0.7rem;font-weight:normal;">（編集可）</span></p>
-        <input type="text" id="pm-plan" placeholder="プラン名"
-          style="flex:1;padding:7px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.88rem;">
+        <p class="modal-label">プラン<br><span style="color:#60a5fa;font-size:0.7rem;font-weight:normal;">（選択式・自由記入も可）</span></p>
+        <div style="display:flex;flex-direction:column;gap:6px;flex:1;">
+          <select id="pm-plan-select" onchange="onPmPlanSelectChange(this.value)"
+            style="width:100%;padding:7px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.88rem;">
+            <optgroup label="🎁 トライアル / 単品">
+              <option value="無料トライアル（初回1本無料）">無料トライアル（初回1本無料）</option>
+              <option value="ショート動画 単品（¥4,000〜）">ショート動画 単品（¥4,000〜）</option>
+              <option value="長尺動画 単品">長尺動画 単品</option>
+            </optgroup>
+            <optgroup label="📦 まとめて編集（割引適用）">
+              <option value="まとめて編集プラン（ショート）">まとめて編集プラン（ショート）</option>
+              <option value="まとめて編集プラン（長尺）">まとめて編集プラン（長尺）</option>
+            </optgroup>
+            <optgroup label="🚀 投稿丸投げプラン">
+              <option value="投稿丸投げプラン ショート8本（¥69,800/月）">投稿丸投げプラン ショート8本（¥69,800/月）</option>
+              <option value="投稿丸投げプラン ショート10本（¥45,000/月）">投稿丸投げプラン ショート10本（¥45,000/月）</option>
+              <option value="投稿丸投げプラン ショート15本（¥75,000/月）">投稿丸投げプラン ショート15本（¥75,000/月）</option>
+              <option value="投稿丸投げプラン ショート30本（¥150,000/月）">投稿丸投げプラン ショート30本（¥150,000/月）</option>
+              <option value="投稿丸投げプラン 長尺動画（後払い・要相談）">投稿丸投げプラン 長尺動画（後払い・要相談）</option>
+            </optgroup>
+            <optgroup label="💎 運用丸投げパック">
+              <option value="運用丸投げパック スタンダード（¥150,000/月）">運用丸投げパック スタンダード（¥150,000/月）</option>
+              <option value="運用丸投げパック プレミアム（¥220,000/月）">運用丸投げパック プレミアム（¥220,000/月）</option>
+            </optgroup>
+            <optgroup label="👥 派遣 / その他">
+              <option value="編集者派遣">編集者派遣</option>
+              <option value="__custom__">✏️ 自由入力</option>
+            </optgroup>
+          </select>
+          <input type="text" id="pm-plan" placeholder="プラン名（必要に応じて編集）"
+            style="width:100%;padding:7px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.88rem;">
+        </div>
       </div>
       <div id="pm-calc-box" style="display:none;padding:10px 12px;border-radius:6px;border:1px solid;font-size:0.82rem;margin-bottom:12px;"></div>
 
@@ -1634,6 +1663,18 @@ function _refreshOptionUI() {
   }
 }
 
+// ── 振込依頼モーダル：プラン選択ハンドラ ─────────────────────
+function onPmPlanSelectChange(val) {
+  const planInput = document.getElementById('pm-plan');
+  if (val === '__custom__') {
+    planInput.value = '';
+    planInput.placeholder = '自由入力（例：ショート編集5本＋当日納品）';
+    planInput.focus();
+  } else {
+    planInput.value = val;
+  }
+}
+
 // ── 振込依頼モーダル ──────────────────────────────────────────
 let _paymentReqRow = null;
 function openPaymentRequestModal(row) {
@@ -1643,6 +1684,10 @@ function openPaymentRequestModal(row) {
   document.getElementById('pm-name').textContent  = h.name  || '—';
   document.getElementById('pm-email').textContent = h.email || '—';
   document.getElementById('pm-plan').value        = h.plan  || '';
+  // セレクトを既存プラン名で初期化（ヒット時はそのオプション、なければ自由入力）
+  const planSel = document.getElementById('pm-plan-select');
+  const hasMatch = Array.from(planSel.options).some(o => o.value === (h.plan||''));
+  planSel.value = hasMatch ? h.plan : '__custom__';
   document.getElementById('pm-due').value   = '3日以内';
   document.getElementById('pm-note').value  = '';
   _pmOptions = [];

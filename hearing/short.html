@@ -95,7 +95,7 @@ a { color: inherit; text-decoration: none; }
 .form-textarea { resize: vertical; min-height: 90px; }
 .form-radio-group { display: flex; flex-direction: column; gap: 8px; }
 .form-radio-item {
-  display: flex; align-items: center; gap: 10px;
+  display: flex; align-items: flex-start; gap: 12px;
   padding: 10px 14px;
   border: 1.5px solid rgba(15,23,42,0.10);
   border-radius: 8px; cursor: pointer;
@@ -105,11 +105,11 @@ a { color: inherit; text-decoration: none; }
   border-color: #2563EB;
   background: rgba(37,99,235,0.05);
 }
-.form-radio-item input { accent-color: #2563EB; width: 16px; height: 16px; }
-.form-radio-item span { font-size: 0.85rem; }
+.form-radio-item input { accent-color: #2563EB; width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; }
+.form-radio-item span { font-size: 0.85rem; flex: 1; line-height: 1.5; word-break: break-word; }
 .form-check-group { display: flex; flex-direction: column; gap: 8px; }
 .form-check-item {
-  display: flex; align-items: center; gap: 10px;
+  display: flex; align-items: flex-start; gap: 12px;
   padding: 9px 14px;
   border: 1.5px solid rgba(15,23,42,0.10);
   border-radius: 8px; cursor: pointer;
@@ -119,8 +119,8 @@ a { color: inherit; text-decoration: none; }
   border-color: #2563EB;
   background: rgba(37,99,235,0.04);
 }
-.form-check-item input { accent-color: #2563EB; width: 16px; height: 16px; }
-.form-check-item span { font-size: 0.85rem; }
+.form-check-item input { accent-color: #2563EB; width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; }
+.form-check-item span { font-size: 0.85rem; flex: 1; line-height: 1.5; word-break: break-word; }
 
 .submit-btn {
   width: 100%; padding: 15px;
@@ -266,11 +266,19 @@ a { color: inherit; text-decoration: none; }
         </div>
       </div>
       <div class="form-group">
-        <label>BGM / SE について</label>
+        <label>BGM について</label>
         <div class="form-radio-group">
           <label class="form-radio-item"><input type="radio" name="bgm" value="あり（おまかせ）"><span>あり（おまかせ）</span></label>
           <label class="form-radio-item"><input type="radio" name="bgm" value="あり（指定あり）"><span>あり（指定あり）</span></label>
           <label class="form-radio-item"><input type="radio" name="bgm" value="なし"><span>なし</span></label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>SE（効果音）について</label>
+        <div class="form-radio-group">
+          <label class="form-radio-item"><input type="radio" name="se" value="あり（おまかせ）"><span>あり（おまかせ）</span></label>
+          <label class="form-radio-item"><input type="radio" name="se" value="あり（指定あり）"><span>あり（指定あり）</span></label>
+          <label class="form-radio-item"><input type="radio" name="se" value="なし"><span>なし</span></label>
         </div>
       </div>
       <div class="form-group">
@@ -285,11 +293,11 @@ a { color: inherit; text-decoration: none; }
       <p class="form-section-title">素材・納品</p>
       <div class="form-group">
         <label>素材の提供方法</label>
-        <p class="hint">素材の受け取りはYouTube限定公開またはギガファイル便にて承ります。</p>
+        <p class="hint">素材の受け取りはYouTube限定公開またはギガファイル便（MP4・プロマネ）にて承ります。</p>
         <div class="form-radio-group">
           <label class="form-radio-item"><input type="radio" name="material" value="YouTube限定公開"><span>YouTube限定公開（動画素材）</span></label>
           <label class="form-radio-item"><input type="radio" name="material" value="ギガファイル便（MP4）"><span>ギガファイル便（MP4）</span></label>
-          <label class="form-radio-item"><input type="radio" name="material" value="ギガファイル便（プロジェクトファイル含む）"><span>ギガファイル便（プロジェクトファイル含む）</span></label>
+          <label class="form-radio-item"><input type="radio" name="material" value="ギガファイル便（プロマネ・プロジェクトファイル含む）"><span>ギガファイル便（プロマネ・プロジェクトファイル含む）</span></label>
         </div>
       </div>
       <div class="form-group">
@@ -406,7 +414,8 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
     '動画の長さ':         fd.get('duration') || '',
     'テロップスタイル':   fd.get('caption_style') || '',
     'アニメーション':     fd.get('animation') || '',
-    'BGM/SE':             fd.get('bgm') || '',
+    'BGM':        fd.get('bgm') || '',
+    'SE（効果音）':fd.get('se')  || '',
     '参考動画URL':        fd.get('ref_url') || '',
     '素材提供方法':       fd.get('material') || '',
     '納期希望':           fd.get('deadline') || '',
