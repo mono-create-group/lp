@@ -146,6 +146,13 @@ label.form-check-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
 .success-box h2 { font-size: 1.2rem; font-weight: 900; color: #15803D; margin-bottom: 12px; }
 .success-box p  { font-size: 0.88rem; color: #166534; line-height: 1.9; }
 .success-icon { font-size: 3rem; margin-bottom: 16px; }
+
+.other-text-input {
+  display: none; margin-top:6px; width:100%;
+  padding:9px 12px; border:1.5px solid #3B82F6; border-radius:8px;
+  font-size:0.83rem; font-family:inherit; color:#0F172A; background:#F8FAFC; outline:none;
+}
+.other-text-input.visible { display:block; }
 </style>
 </head>
 <body>
@@ -220,15 +227,10 @@ label.form-check-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
       <div class="form-group">
         <label>月の希望本数 <span>*</span></label>
         <div class="form-radio-group">
-          <label class="form-radio-item"><input type="radio" name="monthly_count" value="1本"><span>1本</span></label>
-          <label class="form-radio-item"><input type="radio" name="monthly_count" value="2本"><span>2本</span></label>
-          <label class="form-radio-item"><input type="radio" name="monthly_count" value="3本"><span>3本</span></label>
-          <label class="form-radio-item"><input type="radio" name="monthly_count" value="5本"><span>5本</span></label>
-          <label class="form-radio-item"><input type="radio" name="monthly_count" value="10本"><span>10本</span></label>
-          <label class="form-radio-item"><input type="radio" name="monthly_count" value="15本"><span>15本</span></label>
-          <label class="form-radio-item"><input type="radio" name="monthly_count" value="20本"><span>20本</span></label>
-          <label class="form-radio-item"><input type="radio" name="monthly_count" value="30本"><span>30本</span></label>
-          <label class="form-radio-item"><input type="radio" name="monthly_count" value="30本以上"><span>30本以上</span></label>
+          <label class="form-radio-item"><input type="radio" name="monthly_count" value="〜9本"><span>〜9本（割引なし · ¥4,000/本）</span></label>
+          <label class="form-radio-item"><input type="radio" name="monthly_count" value="10〜15本"><span>10〜15本（5%割引）</span></label>
+          <label class="form-radio-item"><input type="radio" name="monthly_count" value="16〜30本"><span>16〜30本（10%割引）</span></label>
+          <label class="form-radio-item"><input type="radio" name="monthly_count" value="31本以上"><span>31本以上（15%割引）</span></label>
           <label class="form-radio-item"><input type="radio" name="monthly_count" value="未定・相談したい"><span>未定・相談したい</span></label>
         </div>
       </div>
@@ -256,6 +258,8 @@ label.form-check-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
           <label class="form-radio-item"><input type="radio" name="caption_style" value="参考動画と近しいもの"><span>参考動画と近しいもの</span></label>
           <label class="form-radio-item"><input type="radio" name="caption_style" value="プロマネの提示あり"><span>プロマネの提示あり</span></label>
           <label class="form-radio-item"><input type="radio" name="caption_style" value="おまかせ"><span>おまかせ</span></label>
+          <label class="form-radio-item"><input type="radio" name="caption_style" value="その他"><span>その他</span></label>
+          <input type="text" class="other-text-input" name="caption_style_other" placeholder="自由にご記入ください">
         </div>
       </div>
       <div class="form-group">
@@ -266,6 +270,8 @@ label.form-check-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
           <label class="form-radio-item"><input type="radio" name="animation" value="エフェクト多め（派手・賑やか系）"><span>エフェクト多め（派手・賑やか系）</span></label>
           <label class="form-radio-item"><input type="radio" name="animation" value="参考動画に合わせて"><span>参考動画に合わせて</span></label>
           <label class="form-radio-item"><input type="radio" name="animation" value="おまかせ"><span>おまかせ</span></label>
+          <label class="form-radio-item"><input type="radio" name="animation" value="その他"><span>その他</span></label>
+          <input type="text" class="other-text-input" name="animation_other" placeholder="自由にご記入ください">
         </div>
       </div>
       <div class="form-group">
@@ -291,6 +297,28 @@ label.form-check-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
       </div>
     </div>
 
+    <!-- その他 -->
+    <div class="form-section">
+      <p class="form-section-title">その他</p>
+      <div class="form-group">
+        <label>ご要望・特記事項</label>
+        <textarea class="form-textarea" name="note" placeholder="NGな表現・使用ソフトの指定・過去の制作で気になった点など、何でもご記載ください。"></textarea>
+      </div>
+      <div class="form-group">
+        <label>このサービスを知ったきっかけ</label>
+        <div class="form-radio-group">
+          <label class="form-radio-item"><input type="radio" name="source" value="X（Twitter）"><span>X（Twitter）</span></label>
+          <label class="form-radio-item"><input type="radio" name="source" value="Threads（スレッズ）"><span>Threads（スレッズ）</span></label>
+          <label class="form-radio-item"><input type="radio" name="source" value="Instagram"><span>Instagram</span></label>
+          <label class="form-radio-item"><input type="radio" name="source" value="DM（ダイレクトメッセージ）"><span>DM（ダイレクトメッセージ）</span></label>
+          <label class="form-radio-item"><input type="radio" name="source" value="知人の紹介"><span>知人の紹介</span></label>
+          <label class="form-radio-item"><input type="radio" name="source" value="Google検索"><span>Google検索</span></label>
+          <label class="form-radio-item"><input type="radio" name="source" value="その他"><span>その他</span></label>
+        </div>
+      </div>
+    </div>
+
+
     <!-- 素材・納品 -->
     <div class="form-section">
       <p class="form-section-title">素材・納品</p>
@@ -310,8 +338,6 @@ label.form-check-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
           </p>
         </div>
       </div>
-      </div>
-      </div>
       <div class="form-group">
         <label>納期の希望</label>
         <div class="form-radio-group">
@@ -319,27 +345,6 @@ label.form-check-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
           <label class="form-radio-item"><input type="radio" name="deadline" value="通常2〜3日"><span>通常2〜3日</span></label>
           <label class="form-radio-item"><input type="radio" name="deadline" value="余裕あり（1週間以上）"><span>余裕あり（1週間以上）</span></label>
           <label class="form-radio-item"><input type="radio" name="deadline" value="相談したい"><span>相談したい</span></label>
-        </div>
-      </div>
-    </div>
-
-    <!-- その他 -->
-    <div class="form-section">
-      <p class="form-section-title">その他</p>
-      <div class="form-group">
-        <label>ご要望・特記事項</label>
-        <textarea class="form-textarea" name="note" placeholder="NGな表現・使用ソフトの指定・過去の制作で気になった点など、何でもご記載ください。"></textarea>
-      </div>
-      <div class="form-group">
-        <label>このサービスを知ったきっかけ</label>
-        <div class="form-radio-group">
-          <label class="form-radio-item"><input type="radio" name="source" value="X（Twitter）"><span>X（Twitter）</span></label>
-          <label class="form-radio-item"><input type="radio" name="source" value="Threads（スレッズ）"><span>Threads（スレッズ）</span></label>
-          <label class="form-radio-item"><input type="radio" name="source" value="Instagram"><span>Instagram</span></label>
-          <label class="form-radio-item"><input type="radio" name="source" value="DM（ダイレクトメッセージ）"><span>DM（ダイレクトメッセージ）</span></label>
-          <label class="form-radio-item"><input type="radio" name="source" value="知人の紹介"><span>知人の紹介</span></label>
-          <label class="form-radio-item"><input type="radio" name="source" value="Google検索"><span>Google検索</span></label>
-          <label class="form-radio-item"><input type="radio" name="source" value="その他"><span>その他</span></label>
         </div>
       </div>
     </div>
@@ -370,63 +375,69 @@ const paramPlanKey = params.get('planKey') || 'edit-short';
 
 // ── プラン詳細マップ ──────────────────────────────────────────
 const PLAN_DETAILS = {
-  'trial': {
-    title: '🎁 無料トライアル', summary: '初回1本を完全無料で制作（全プラン対象）',
-    items: ['ショート動画 or 長尺動画 1本まで', '通常クオリティで制作', '継続を希望されなければ費用は一切不要', '気に入っていただければ正式契約へ進めます'],
-    recommend: 'まずはクオリティを見たい方'
-  },
   'edit-short': {
     title: '📦 まとめて編集プラン（ショート）', summary: 'ショート動画10本〜の段階割引パック',
-    items: ['基本¥4,000/本', '10〜15本：5%割引', '16〜30本：10%割引', '31本以上：15%割引', 'テロップ・BGM・SE付き', '修正3回まで無料'],
+    services: '編集のみ',
+    items: ['¥4,000/本', '10〜15本：5%割引', '16〜30本：10%割引', '31本以上：15%割引', 'テロップ・BGM・SE付き', '修正3回まで無料'],
     recommend: '月10本以上のSNS運用者・継続的に発信したい方'
   },
   'edit-long':  {
     title: '🎬 まとめて編集プラン（長尺）', summary: 'YouTube長尺動画4本〜の段階割引パック',
-    items: ['〜10分¥10,000、10〜15分¥15,000、15〜20分¥20,000', '4本：5%割引', '5〜11本：10%割引', '12本以上：15%割引', 'カット・テロップ・効果音込み', '修正3回まで無料'],
+    services: '編集のみ（長尺）',
+    items: ['〜10分¥15,000、10〜15分¥20,000、15〜20分¥30,000、20分〜+¥1,200/分', '4本以上：5%割引', '8本以上：10%割引', '12本以上：15%割引', 'カット・テロップ・効果音込み', '修正3回まで無料'],
     recommend: 'YouTuber・教育系・解説系チャンネル運営者'
   },
   'long-single':{
     title: '🎬 長尺動画 単品', summary: 'YouTube長尺を1本から依頼可能',
-    items: ['〜10分¥10,000、10〜15分¥15,000、15〜20分¥20,000', '単品でもクオリティ妥協なし', '修正3回まで無料'],
+    services: '編集のみ（長尺・単品）',
+    items: ['〜10分¥15,000、10〜15分¥20,000、15〜20分¥30,000、20分〜+¥1,200/分', '修正3回まで無料'],
     recommend: 'まず1本だけ試したい方'
   },
   'set-8':  {
-    title: '🚀 投稿丸投げ ショート8本', summary: '編集+投稿代行のオールインワン（月¥69,800）',
-    items: ['ショート編集 8本/月', 'SNS投稿代行込み', 'アカウント分析レポート', '月1回のミーティング'],
-    recommend: '副業フリーランス・週2本ペース運用者'
+    title: '🚀 投稿丸投げ ショート8本', summary: '¥69,800/月',
+    services: '編集＋投稿代行',
+    items: ['ショート動画編集 × 8本/月', 'SNS投稿代行 × 8本', '修正3回まで無料'],
+    recommend: '週2本ペースで安定運用したい方'
   },
   'set-10': {
-    title: '🚀 投稿丸投げ ショート10本', summary: '編集+投稿代行（月¥45,000）',
-    items: ['ショート編集 10本/月', 'SNS投稿代行込み', '基本ジャンルOK', '修正3回まで無料'],
+    title: '🚀 投稿丸投げ ショート10本', summary: '¥45,000/月',
+    services: '編集＋投稿代行',
+    items: ['ショート動画編集 × 10本/月', 'SNS投稿代行 × 10本', '修正3回まで無料'],
     recommend: 'コスパ重視の継続発信者'
   },
   'set-15': {
-    title: '⭐ 投稿丸投げ ショート15本（1番人気）', summary: '編集+投稿代行（月¥75,000）',
-    items: ['ショート編集 15本/月', 'SNS投稿代行込み', 'アカウント分析レポート', 'チャプターTC設計', '優先サポート'],
+    title: '⭐ 投稿丸投げ ショート15本（1番人気）', summary: '¥75,000/月',
+    services: '編集＋投稿代行',
+    items: ['ショート動画編集 × 15本/月', 'SNS投稿代行 × 15本', '修正3回まで無料'],
     recommend: '週3〜4本ペースで本気で伸ばしたい方'
   },
   'set-30': {
-    title: '🔥 投稿丸投げ ショート30本', summary: '毎日投稿レベルのフルパック（月¥150,000）',
-    items: ['ショート編集 30本/月', 'SNS投稿代行込み', '毎月アカウント分析', 'チャンネル戦略MTG', '優先対応'],
-    recommend: '法人・本格運用者・複数アカウント運営'
+    title: '🔥 投稿丸投げ ショート30本', summary: '¥150,000/月',
+    services: '編集＋投稿代行',
+    items: ['ショート動画編集 × 30本/月', 'SNS投稿代行 × 30本', '修正3回まで無料'],
+    recommend: '法人・本格運用者・毎日投稿を目指す方'
   },
   'set-long': {
-    title: '🎞️ 投稿丸投げ 長尺パック', summary: '長尺動画の編集+投稿代行（後払い・要相談）',
-    items: ['長尺編集（〜20分対応）', '投稿スケジューリング', '後払い対応可', '本数・尺はご相談'],
+    title: '🎞️ 投稿丸投げ 長尺パック', summary: '後払い・要相談',
+    services: '編集＋投稿代行（長尺）',
+    items: ['長尺動画編集（〜20分対応）', '投稿スケジューリング込み', '後払い対応', '本数・尺はご相談'],
     recommend: 'YouTube本気運営チャンネル'
   },
   'mixed-std': {
-    title: '💎 運用丸投げ スタンダード', summary: 'ショート+長尺+分析の総合パック（月¥150,000）',
-    items: ['ショート15本+長尺2本/月', 'SNS投稿代行', 'アカウント分析+市場分析', '月1MTG', '優先サポート'],
+    title: '💎 運用丸投げ スタンダード', summary: '¥150,000/月',
+    services: '編集＋投稿代行＋分析（ショート＆長尺）',
+    items: ['ショート8本＋YouTube長尺4本/月', 'SNS投稿代行込み', '分析レポート付き', '修正3回まで無料'],
     recommend: '複数SNSを横断運用する個人事業主・法人'
   },
   'mixed-pre': {
-    title: '💎 運用丸投げ プレミアム', summary: 'フルカスタム総合パック（月¥220,000）',
-    items: ['ショート30本+長尺4本/月', 'SNS投稿代行', '専属ディレクター', 'バズ施策・SEO対応', '隔週MTG', '24時間対応Chat'],
+    title: '💎 運用丸投げ プレミアム', summary: '¥220,000/月',
+    services: '編集＋投稿代行＋分析（ショート＆長尺）',
+    items: ['ショート15本＋YouTube長尺8本/月', 'SNS投稿代行込み', '分析レポート付き', '修正3回まで無料'],
     recommend: '事業として本気で取り組みたい法人'
   },
   'dispatch': {
-    title: '👥 編集者派遣', summary: 'チームへの編集者派遣（要相談）',
+    title: '👥 編集者派遣', summary: '要相談',
+    services: '編集者派遣（チームへ）',
     items: ['編集者を1〜複数名アサイン', '使用ツール・ジャンルに合わせて選定', '月単位契約', '直接やり取り可'],
     recommend: 'インハウスチームに編集者を入れたい企業'
   },
@@ -439,15 +450,15 @@ function renderPlanDetails() {
   const box = document.getElementById('plan-details-card');
   if (!box) return;
   box.innerHTML = `
-    <p style="font-size:0.72rem;font-weight:700;letter-spacing:0.06em;color:#B45309;margin-bottom:4px;">あなたが選択したプラン</p>
-    <h2 style="font-size:1.05rem;font-weight:900;color:#0F172A;margin-bottom:4px;">${d.title}</h2>
-    <p style="font-size:0.85rem;color:#475569;margin-bottom:12px;">${d.summary}</p>
-    <p style="font-size:0.78rem;font-weight:700;color:#0369A1;margin-bottom:6px;">📋 プラン内容</p>
-    <ul style="margin:0 0 12px 18px;padding:0;font-size:0.82rem;color:#0F172A;line-height:1.85;">
+    <p style="font-size:0.72rem;font-weight:700;letter-spacing:0.06em;color:#B45309;margin-bottom:4px;">ご選択のプラン</p>
+    <h2 style="font-size:1.05rem;font-weight:900;color:#0F172A;margin-bottom:6px;">${d.title}</h2>
+    <div style="display:inline-block;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:20px;padding:3px 12px;font-size:0.78rem;font-weight:700;color:#1D4ED8;margin-bottom:10px;">📌 ${d.services}</div>
+    <p style="font-size:0.83rem;color:#475569;margin-bottom:10px;">${d.summary}</p>
+    <p style="font-size:0.78rem;font-weight:700;color:#0369A1;margin-bottom:5px;">📋 プラン内容</p>
+    <ul style="margin:0 0 10px 18px;padding:0;font-size:0.82rem;color:#0F172A;line-height:1.85;">
       ${d.items.map(i=>'<li>'+i+'</li>').join('')}
     </ul>
-    <p style="font-size:0.78rem;font-weight:700;color:#15803D;margin-bottom:4px;">🎯 こんな方におすすめ</p>
-    <p style="font-size:0.82rem;color:#166534;">${d.recommend}</p>
+    <p style="font-size:0.75rem;color:#059669;font-weight:700;margin-top:8px;padding:6px 10px;background:#F0FDF4;border-radius:6px;">🎁 初回1本無料トライアル対象 — どのプランでも最初の1本は無料で制作します</p>
   `;
   box.style.display = 'block';
 }
@@ -462,31 +473,21 @@ document.getElementById('plan-badge').textContent = paramPlan;
 // ── プラン自動提示ロジック ─────────────────────────────────
 function suggestPlan() {
   const countVal = (document.querySelector('input[name=monthly_count]:checked') || {}).value || '';
-  const countMatch = countVal.match(/(\d+)/);
-  const count = countMatch ? parseInt(countMatch[1]) : 0;
-
   const box  = document.getElementById('plan-suggest-box');
   const text = document.getElementById('plan-suggest-text');
-
-  if (!count) { box.style.display = 'none'; return; }
-
+  if (!countVal) { box.style.display = 'none'; return; }
   let msg = '';
-  if (count === 1) {
-    msg = '<strong>まとめて編集プラン（単品）</strong> — 初回1本無料トライアルでお試しいただけます！';
-  } else if (count <= 4) {
-    msg = '<strong>まとめて編集プラン ショート動画</strong>（¥4,000/本） — ¥' + (4000 * count).toLocaleString() + '（' + count + '本）が目安です。';
-  } else if (count <= 7) {
-    msg = '<strong>まとめて編集プラン ショート動画</strong>（¥4,000/本・5%割引） — ¥' + Math.round(4000 * count * 0.95).toLocaleString() + '（' + count + '本）が目安です。';
-  } else if (count <= 10) {
-    msg = '<strong>投稿丸投げプラン ショート10本（¥45,000/月）</strong> — 編集＋投稿代行込みでコスパ◎';
-  } else if (count <= 15) {
-    msg = '<strong>投稿丸投げプラン ショート15本（¥75,000/月）</strong> — 月15本の運用に最適です。';
-  } else if (count <= 30) {
-    msg = '<strong>投稿丸投げプラン ショート30本（¥150,000/月）</strong> — 本格運用プランです。';
+  if (countVal === '〜9本') {
+    msg = '<strong>まとめて編集プラン ショート動画（¥4,000/本）</strong> — 割引なし。初回1本は無料でお試しいただけます。';
+  } else if (countVal === '10〜15本') {
+    msg = '<strong>まとめて編集プラン ショート動画（5%割引）</strong> — 10本以上で割引スタート。担当者よりご提案します。';
+  } else if (countVal === '16〜30本') {
+    msg = '<strong>まとめて編集プラン ショート動画（10%割引）</strong> — 16本以上でさらにお得。担当者よりご提案します。';
+  } else if (countVal === '31本以上') {
+    msg = '<strong>まとめて編集プラン ショート動画（15%割引）</strong> — 最大割引率。担当者よりご提案します。';
   } else {
-    msg = '本数が多い場合は<strong>運用丸投げパック</strong>または個別お見積もりをご検討ください。';
+    msg = '本数・ご希望は担当者よりご提案いたします。まずはご回答ください。';
   }
-
   text.innerHTML = msg;
   box.style.display = 'block';
 }
@@ -544,6 +545,17 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
   document.getElementById('success-name').textContent  = fd.get('name');
   document.getElementById('success-email').textContent = fd.get('email');
   window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// その他テキスト入力の表示制御
+document.querySelectorAll('input[value="その他"]').forEach(function(inp){
+  inp.addEventListener('change', function(){
+    var next = this.closest('label').nextElementSibling;
+    if(next && next.classList.contains('other-text-input')){
+      next.classList.toggle('visible', this.checked);
+      if(!this.checked) next.value='';
+    }
+  });
 });
 </script>
 </body>
