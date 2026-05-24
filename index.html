@@ -1682,17 +1682,22 @@ footer {
   <p class="footer-copy">© 2025 mono.create All Rights Reserved.</p>
 </footer>
 
-<!-- ── Contract Agreement Modal ── -->
+<!-- ── お問い合わせ確認モーダル（サービス内容＋利用規約 確認用） ── -->
 <div class="contract-overlay" id="contractOverlay">
   <div class="contract-box">
     <div class="contract-header">
-      <h3>📄 業務委託契約書 — ご確認・同意</h3>
+      <h3>📋 お問い合わせ — サービス内容のご確認</h3>
       <button class="contract-close-btn" onclick="closeContract()">✕</button>
     </div>
     <div class="contract-body">
       <p class="contract-plan-tag" id="contractPlanTag"></p>
-      <h4 style="text-align:center;font-size:1rem;margin-bottom:4px;">動画制作・SNS運用支援 業務委託契約書</h4>
-      <p style="font-size:0.78rem;color:var(--sub);text-align:center;margin-bottom:16px;">本契約は、甲（委託者）と乙（受託者：中村 航汰 / mono.create）との間で締結されます。</p>
+      <div style="background:#FEF3C7;border:1.5px solid #F59E0B;border-radius:10px;padding:12px 16px;margin-bottom:18px;font-size:0.83rem;color:#78350F;line-height:1.7;">
+        💡 <strong>このフォームは「お問い合わせ送信」です。</strong><br>
+        この段階ではまだ契約成立ではありません。下記のサービス内容（業務委託契約書）を事前にご確認いただき、ご納得いただいた上で送信ください。<br>
+        <strong style="color:#92400E;">正式な契約は、お見積もりご確認・お支払い前に改めて締結します。</strong>
+      </div>
+      <h4 style="text-align:center;font-size:1rem;margin-bottom:4px;">【参考】業務委託契約書（サービス内容・条件）</h4>
+      <p style="font-size:0.78rem;color:var(--sub);text-align:center;margin-bottom:16px;">受託者：中村 航汰 / mono.create</p>
 
       <h4>第1条（目的）</h4>
       <p>本契約は、甲が乙に対して動画制作・編集・SNS運用支援に関する業務を委託し、乙がこれを受託することを目的とします。</p>
@@ -1825,11 +1830,12 @@ footer {
       </div>
       <label class="contract-agree-row">
         <input type="checkbox" id="ctrAgree" onchange="_updateCtrBtn()">
-        <span>上記の契約内容を全て確認し、同意します</span>
+        <span>サービス内容を確認しました。お問い合わせを送信します（利用規約・プライバシーポリシーに同意）</span>
       </label>
       <button class="contract-submit-btn" id="ctrSubmitBtn" disabled onclick="submitContract()">
-        同意してヒアリングシートへ進む →
+        📨 お問い合わせを送信する →
       </button>
+      <p style="text-align:center;margin-top:10px;font-size:0.75rem;color:var(--sub);">送信後すぐにヒアリングシートのURLをメールでお送りします</p>
     </div>
   </div>
 </div>
@@ -1976,6 +1982,9 @@ async function submitContract() {
   const btn = document.getElementById('ctrSubmitBtn');
   btn.disabled = true; btn.textContent = '送信中...';
   const info = PLAN_MAP[_ctrPlan] || [_ctrPlan, 'hearing/short.html'];
+  // 完全なヒアリングURLを構築してGASとリダイレクトの両方で使う
+  const qs = new URLSearchParams({ name, email, plan: info[0], planKey: _ctrPlan });
+  const hearingFullUrl = location.origin + location.pathname.replace(/[^/]*$/, '') + info[1] + '?' + qs.toString();
   try {
     await fetch(GAS_URL, {
       method: 'POST', mode: 'no-cors',
@@ -1983,12 +1992,13 @@ async function submitContract() {
       body: JSON.stringify({
         type: 'contract', name, email,
         plan: info[0],
+        planKey: _ctrPlan,
+        hearingUrl: hearingFullUrl,
         agreedAt: new Date().toLocaleString('ja-JP'),
         contractVer: 'v2025-05',
       }),
     });
   } catch(e) { /* no-cors */ }
-  const qs = new URLSearchParams({ name, email, plan: info[0], planKey: _ctrPlan });
   window.location.href = info[1] + '?' + qs.toString();
 }
 document.addEventListener('DOMContentLoaded', () => {
