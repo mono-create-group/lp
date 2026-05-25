@@ -10,7 +10,7 @@
 <script>
 // ── キャッシュ自動更新 ──────────────────────────────────────────
 (function(){
-  var BUILT = 'v20260525-3';
+  var BUILT = 'v20260525-4';
   fetch('/lp/version.json?_=' + Date.now(), {cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(d){
@@ -493,16 +493,71 @@ nav {
 /* Loading */
 #portfolio-loading-txt { color: var(--sub); font-size:0.85rem; padding:32px 0; }
 
-/* ── Portfolio Mobile ── */
-@media (max-width: 480px) {
-  .pf-nav { width: 36px; height: 36px; font-size: 1.1rem; }
-  .pf-nav-prev { left: 6px; }
-  .pf-nav-next { right: 6px; }
-  .pf-player-gradient { padding: 32px 12px 14px; }
-  .pf-overlay-title { font-size: 0.88rem; }
-  .pf-overlay-genre { font-size: 0.7rem; }
-  .pf-thumb { flex: 0 0 110px; }
-  .pf-thumbs-wrap { padding: 10px 0 0; }
+/* ── Portfolio Mobile Card Grid ── */
+.pf-mobile-grid {
+  display: none;
+}
+.pf-card-item {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+  transition: transform 0.2s;
+}
+.pf-card-item:active { transform: scale(0.97); }
+.pf-card-thumb {
+  position: relative;
+  aspect-ratio: 16/9;
+  background: #000;
+  overflow: hidden;
+}
+.pf-card-thumb img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+}
+.pf-card-play {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.28);
+}
+.pf-card-play-btn {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: rgba(0,0,0,0.72);
+  border: 2px solid rgba(255,255,255,0.8);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; color: #fff;
+}
+.pf-card-info {
+  padding: 10px 12px 12px;
+}
+.pf-card-num {
+  font-size: 0.62rem; font-weight: 800; letter-spacing: 0.12em;
+  color: var(--lt); margin-bottom: 3px; text-transform: uppercase;
+}
+.pf-card-title {
+  font-size: 0.82rem; font-weight: 700; color: var(--text);
+  line-height: 1.4; margin-bottom: 2px;
+}
+.pf-card-genre {
+  font-size: 0.72rem; color: var(--sub);
+}
+@media (max-width: 640px) {
+  /* PCプレイヤーを非表示 */
+  .pf-showcase .pf-main-wrap,
+  .pf-showcase .pf-thumbs-wrap,
+  #portfolio-loading-txt { display: none !important; }
+  /* モバイルカードグリッドを表示 */
+  .pf-mobile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .pf-count { display: block; text-align: right; margin-top: 10px; font-size: 0.72rem; color: var(--sub); }
 }
 
 /* ── Service Stop Badge ── */
@@ -1193,7 +1248,11 @@ footer {
     <div class="pf-showcase">
       <p id="portfolio-loading-txt" style="color:var(--sub);font-size:0.85rem;padding:32px 0;">読み込み中...</p>
 
-      <!-- メインプレイヤー -->
+      <!-- モバイル専用カードグリッド -->
+      <div class="pf-mobile-grid" id="pf-mobile-grid"></div>
+      <p class="pf-count" id="pf-count-mobile" style="display:none;"></p>
+
+      <!-- PC メインプレイヤー -->
       <div id="pf-main-wrap" class="pf-main-wrap" style="display:none;">
         <div class="pf-player" id="pf-player">
           <!-- iframe / img がここに入る -->
@@ -2208,6 +2267,27 @@ function pfNav(dir) {
   pfRenderPlayer(next, true);
 }
 
+function pfBuildMobileCards(items) {
+  return items.map(function(item, i) {
+    var src = pfThumbSrc(item);
+    var url = item.url || '#';
+    var imgHtml = src
+      ? '<img src="' + src + '" alt="' + (item.title||'') + '" loading="lazy">'
+      : '<div style="width:100%;height:100%;background:#222;"></div>';
+    return '<a class="pf-card-item" href="' + url + '" target="_blank" rel="noopener">'
+      + '<div class="pf-card-thumb">'
+      + imgHtml
+      + '<div class="pf-card-play"><div class="pf-card-play-btn">&#9654;</div></div>'
+      + '</div>'
+      + '<div class="pf-card-info">'
+      + '<p class="pf-card-num">WORKS ' + String(i+1).padStart(2,'0') + '</p>'
+      + '<p class="pf-card-title">' + (item.title||'') + '</p>'
+      + '<p class="pf-card-genre">' + (item.genre||'') + '</p>'
+      + '</div>'
+      + '</a>';
+  }).join('');
+}
+
 function pfInit(items) {
   _pfItems = items;
   if (!items.length) {
@@ -2215,12 +2295,20 @@ function pfInit(items) {
     return;
   }
   document.getElementById('portfolio-loading-txt').style.display = 'none';
+
+  // モバイルカードグリッド（スマホ専用）
+  var mobileGrid = document.getElementById('pf-mobile-grid');
+  var mobileCount = document.getElementById('pf-count-mobile');
+  if (mobileGrid) {
+    mobileGrid.innerHTML = pfBuildMobileCards(items);
+    if (mobileCount) { mobileCount.textContent = items.length + '本の実績'; mobileCount.style.display = ''; }
+  }
+
+  // PCショーケース
   document.getElementById('pf-main-wrap').style.display = '';
   document.getElementById('pf-thumbs-wrap').style.display = '';
   document.getElementById('pf-thumbs').innerHTML = pfBuildThumbs();
   document.getElementById('pf-count').textContent = items.length + '本の実績';
-  // 最初はサムネ表示（再生はスクロール時）
-  // 常にカバー表示（autoplay廃止 — iOS/Android/PCすべて同じ挙動）
   pfShowCover(0);
 }
 
