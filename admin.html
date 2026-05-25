@@ -725,11 +725,11 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;" id="portfolio-form-grid">
           <div>
             <label style="font-size:0.78rem;color:var(--sub);display:block;margin-bottom:4px;">動画URL（YouTube / Google Drive） <span style="color:#EF4444;">*</span></label>
-            <input type="url" id="pf-url" placeholder="https://www.youtube.com/watch?v=... または https://drive.google.com/..." style="width:100%;padding:10px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;">
-            <p style="font-size:0.72rem;color:#60A5FA;margin-top:4px;">💡 YouTubeのURLでもGoogleドライブの共有リンクでもどちらでも入力できます</p>
+            <input type="url" id="pf-url" placeholder="https://www.youtube.com/watch?v=... または https://drive.google.com/..." style="width:100%;padding:10px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;" onblur="autoFillDriveTitle(this.value)">
+            <p style="font-size:0.72rem;color:#60A5FA;margin-top:4px;">💡 GoogleドライブURLを入力するとファイル名が自動でタイトルに入ります</p>
           </div>
           <div>
-            <label style="font-size:0.78rem;color:var(--sub);display:block;margin-bottom:4px;">タイトル</label>
+            <label style="font-size:0.78rem;color:var(--sub);display:block;margin-bottom:4px;">タイトル <span id="pf-title-fetching" style="font-size:0.7rem;color:#F59E0B;display:none;">取得中...</span></label>
             <input type="text" id="pf-title" placeholder="例：ビジネス系チャンネル編集" style="width:100%;padding:10px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;">
           </div>
           <div>
@@ -2236,6 +2236,27 @@ function downloadCSV(rows, filename) {
 
 // ── Portfolio ──
 let portfolioItems = [];
+
+// GoogleドライブURLからファイル名を自動取得してタイトル欄へ
+async function autoFillDriveTitle(url) {
+  if (!url) return;
+  const driveMatch = url.match(/\/file\/d\/([^/?#]+)/);
+  if (!driveMatch) return; // DriveのURLでなければスキップ
+  const titleEl = document.getElementById('pf-title');
+  if (titleEl.value.trim()) return; // すでに入力済みならスキップ
+  const fetching = document.getElementById('pf-title-fetching');
+  if (fetching) fetching.style.display = '';
+  try {
+    const res = await fetch(`${GAS_URL}?action=drive_file_info&url=${encodeURIComponent(url)}&key=${encodeURIComponent(getAdminPw())}`);
+    const json = await res.json();
+    if (json.name) {
+      titleEl.value = json.name;
+      titleEl.style.borderColor = '#10B981';
+      setTimeout(() => { titleEl.style.borderColor = ''; }, 2000);
+    }
+  } catch(e) {}
+  if (fetching) fetching.style.display = 'none';
+}
 
 async function loadPortfolioAdmin() {
   document.getElementById('pf-list').innerHTML = '<span class="spinner"></span>';

@@ -1867,17 +1867,33 @@ function getYtId(url) {
   var m = url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)([^&?/]+)/);
   return m ? m[1] : null;
 }
+function getDriveId(url) {
+  var m = url.match(/\/file\/d\/([^/?#]+)/);
+  return m ? m[1] : null;
+}
 
 function buildWorkCard(item, idx) {
-  var ytId = getYtId(item.url);
-  var thumb = ytId
-    ? '<img src="https://img.youtube.com/vi/' + ytId + '/hqdefault.jpg" alt="' + item.title + '" style="width:100%;height:100%;object-fit:cover;">'
-    : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--bg3);color:var(--sub);font-size:0.75rem;">サムネなし</div>';
+  var ytId    = getYtId(item.url);
+  var driveId = getDriveId(item.url);
+  var thumb, clickAction;
+
+  if (ytId) {
+    thumb = '<img src="https://img.youtube.com/vi/' + ytId + '/hqdefault.jpg" alt="' + item.title + '" style="width:100%;height:100%;object-fit:cover;">';
+    clickAction = 'onclick="openVideoPlayer(\'' + item.url.replace(/'/g, "\\'") + '\')" style="cursor:pointer;"';
+  } else if (driveId) {
+    thumb = '<img src="https://drive.google.com/thumbnail?id=' + driveId + '&sz=w400-h225" alt="' + item.title + '" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentNode.innerHTML=\'<div style=\\\'width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--bg3);color:var(--sub);font-size:0.75rem;\\\'>サムネなし</div>\'">';
+    clickAction = 'onclick="window.open(\'' + item.url.replace(/'/g, "\\'") + '\',\'_blank\')" style="cursor:pointer;"';
+  } else {
+    thumb = '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--bg3);color:var(--sub);font-size:0.75rem;">サムネなし</div>';
+    clickAction = item.url ? 'onclick="window.open(\'' + item.url.replace(/'/g, "\\'") + '\',\'_blank\')" style="cursor:pointer;"' : '';
+  }
+
   var link = item.url
     ? '<a href="' + item.url + '" target="_blank" rel="noopener" class="work-link">動画を見る <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>'
     : '<a href="#contact" class="work-link">詳細はお問い合わせ <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>';
+
   return '<div class="work-card visible">'
-    + '<div class="work-thumb"><div class="work-thumb-inner" style="overflow:hidden;">'
+    + '<div class="work-thumb"><div class="work-thumb-inner" style="overflow:hidden;" ' + clickAction + '>'
     + thumb
     + '<div class="play-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>'
     + '<span class="work-type-badge">WORKS ' + String(idx + 1).padStart(2, '0') + '</span>'
@@ -1885,6 +1901,21 @@ function buildWorkCard(item, idx) {
     + '<div class="work-body"><p class="work-genre">' + (item.genre || 'ジャンル') + '</p>'
     + '<p class="work-title">' + (item.title || '—') + '</p>'
     + link + '</div></div>';
+}
+
+// YouTube モーダル再生
+function openVideoPlayer(url) {
+  var ytId = getYtId(url);
+  if (!ytId) { window.open(url, '_blank'); return; }
+  var overlay = document.createElement('div');
+  overlay.id = 'yt-modal';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:9999;display:flex;align-items:center;justify-content:center;';
+  overlay.innerHTML = '<div style="position:relative;width:min(90vw,800px);aspect-ratio:16/9;">'
+    + '<iframe src="https://www.youtube.com/embed/' + ytId + '?autoplay=1" style="width:100%;height:100%;border:none;border-radius:12px;" allow="autoplay;encrypted-media" allowfullscreen></iframe>'
+    + '<button onclick="document.getElementById(\'yt-modal\').remove()" style="position:absolute;top:-36px;right:0;background:none;border:none;color:#fff;font-size:1.6rem;cursor:pointer;">✕</button>'
+    + '</div>';
+  overlay.addEventListener('click', function(e){ if(e.target === overlay) overlay.remove(); });
+  document.body.appendChild(overlay);
 }
 
 async function loadPortfolio() {
