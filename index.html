@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- v20260525-ios -->
+<!-- build:v20260525-3 -->
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -7,6 +7,19 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
+<script>
+// ── キャッシュ自動更新 ──────────────────────────────────────────
+(function(){
+  var BUILT = 'v20260525-3';
+  fetch('/lp/version.json?_=' + Date.now(), {cache:'no-store'})
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (d.v && d.v !== BUILT) {
+        location.replace(location.pathname + '?_=' + d.v);
+      }
+    }).catch(function(){});
+})();
+</script>
 <title>動画編集代行・SNS運用代行 | mono.create</title>
 <meta name="description" content="ショート動画編集・YouTube長尺動画編集・SNS投稿代行のプロチーム。月10本から丸投げOK。編集のみ¥4,000〜、まとめて編集プランあり。最短当日納品対応。">
 <meta name="keywords" content="動画編集代行,ショート動画編集,YouTube動画編集,SNS運用代行,投稿代行,動画編集外注,TikTok編集,Instagram リール編集,動画編集チーム">
@@ -2207,22 +2220,8 @@ function pfInit(items) {
   document.getElementById('pf-thumbs').innerHTML = pfBuildThumbs();
   document.getElementById('pf-count').textContent = items.length + '本の実績';
   // 最初はサムネ表示（再生はスクロール時）
-  pfRenderPlayer(0, false);
-
-  // IntersectionObserver: worksセクションが画面に入ったら自動再生
-  var worksSection = document.getElementById('works');
-  if (worksSection) {
-    var pfObs = new IntersectionObserver(function(entries) {
-      entries.forEach(function(e) {
-        if (e.isIntersecting && !_pfStarted) {
-          _pfStarted = true;
-          setTimeout(function() { pfRenderPlayer(0, true); }, 300);
-          pfObs.disconnect();
-        }
-      });
-    }, { threshold: 0.35 });
-    pfObs.observe(worksSection);
-  }
+  // 常にカバー表示（autoplay廃止 — iOS/Android/PCすべて同じ挙動）
+  pfShowCover(0);
 }
 
 async function loadPortfolio() {
