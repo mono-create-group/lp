@@ -1506,11 +1506,10 @@ async function toggleService(key, trackEl) {
   // GASに保存
   const msg = document.getElementById('service-save-msg');
   try {
-    const body = { action: 'update_service_status', key: ADMIN_KEY };
+    const body = { action: 'update_service_status', key: getAdminPw() };
     body[key] = newVal;
     await fetch(GAS_URL, {
       method: 'POST', mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     });
     msg.textContent = '✅ 保存しました（LPに即時反映されます）';
