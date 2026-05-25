@@ -479,6 +479,18 @@ nav {
 /* Loading */
 #portfolio-loading-txt { color: var(--sub); font-size:0.85rem; padding:32px 0; }
 
+/* ── Portfolio Mobile ── */
+@media (max-width: 480px) {
+  .pf-nav { width: 36px; height: 36px; font-size: 1.1rem; }
+  .pf-nav-prev { left: 6px; }
+  .pf-nav-next { right: 6px; }
+  .pf-player-gradient { padding: 32px 12px 14px; }
+  .pf-overlay-title { font-size: 0.88rem; }
+  .pf-overlay-genre { font-size: 0.7rem; }
+  .pf-thumb { flex: 0 0 110px; }
+  .pf-thumbs-wrap { padding: 10px 0 0; }
+}
+
 /* ── Service Stop Badge ── */
 .svc-stop-badge {
   background: rgba(239,68,68,0.1);
@@ -1455,6 +1467,7 @@ footer {
         <p style="font-size:0.8rem;color:var(--sub);margin-bottom:20px;">※ YouTube長尺動画は最低4本以上</p>
 
         <!-- ショート版 -->
+        <div id="svc-post-short">
         <p style="font-size:0.8rem;font-weight:700;margin-bottom:12px;color:var(--sub);padding-left:8px;">◎ ショート動画</p>
         <div class="pack-grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr));margin-bottom:32px;">
           <div class="pack-card fade-up">
@@ -1523,8 +1536,10 @@ footer {
             <p class="pack-note">※ 契約同意後すぐにヒアリングシートへ進みます。</p>
           </div>
         </div>
+        </div><!-- /svc-post-short -->
 
         <!-- 長尺版 -->
+        <div id="svc-post-long">
         <p style="font-size:0.8rem;font-weight:700;margin-bottom:8px;color:var(--sub);padding-left:8px;">◎ YouTube長尺動画（最低4本以上）</p>
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;padding:10px 14px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);border-radius:8px;">
           <span style="font-size:1rem;">⚠️</span>
@@ -1577,6 +1592,7 @@ footer {
           <a href="#" onclick="openContract('set-long');return false;" class="btn btn-gold" style="width:100%;justify-content:center;margin-top:16px;">相談して申し込む →</a>
           <p class="pack-note" style="margin-top:12px;">※ 契約同意後すぐにヒアリングシートへ進みます。</p>
         </div>
+        </div><!-- /svc-post-long -->
 
         <!-- 運用丸投げパック -->
         <p style="font-size:0.9rem;font-weight:700;margin-bottom:8px;color:var(--sub);">── 運用丸投げパック</p>
@@ -1963,7 +1979,9 @@ var SVC_MAP = {
   'posting':     { ids: ['svc-posting'],                   label: '投稿代行' },
   'pack_short':  { ids: ['svc-pack-short'],                label: 'まとめて編集プラン（ショート）' },
   'pack_manage_short': { ids: ['svc-pack-manage-short'],   label: '運用まるごとお任せパック（ショート）' },
-  'pack_manage_long':  { ids: ['svc-pack-manage-long'],    label: '運用まるごとお任せパック（長尺）' }
+  'pack_manage_long':  { ids: ['svc-pack-manage-long'],    label: '運用まるごとお任せパック（長尺）' },
+  'post_short':        { ids: ['svc-post-short'],           label: '投稿丸投げプラン（ショート動画）' },
+  'post_long':         { ids: ['svc-post-long'],            label: '投稿丸投げプラン（YouTube長尺）' }
 };
 
 (function applyServiceStatus() {
@@ -2096,6 +2114,44 @@ function pfUpdateActiveThumbs(idx) {
   if (activeEl) activeEl.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
 }
 
+var _pfIsIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+function pfShowCover(idx) {
+  // サムネ + タップで再生できる▶ボタンを表示
+  _pfCurrent = idx;
+  var item = _pfItems[idx];
+  var player = document.getElementById('pf-player');
+  var src = pfThumbSrc(item);
+  var imgHtml = src
+    ? '<img class="pf-cover" src="' + src + '" alt="' + (item.title||'') + '" style="cursor:pointer;" onclick="pfPlay(' + idx + ')">'
+    : '<div style="width:100%;height:100%;background:#111;cursor:pointer;" onclick="pfPlay(' + idx + ')"></div>';
+  player.innerHTML = imgHtml
+    + '<button onclick="pfPlay(' + idx + ')" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);'
+    + 'width:64px;height:64px;border-radius:50%;background:rgba(0,0,0,0.72);border:2px solid rgba(255,255,255,0.7);'
+    + 'color:#fff;font-size:1.8rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:8;'
+    + 'backdrop-filter:blur(4px);">&#9654;</button>';
+  pfUpdateInfo(idx);
+  pfUpdateActiveThumbs(idx);
+}
+
+function pfPlay(idx) {
+  _pfCurrent = idx;
+  var item = _pfItems[idx];
+  var ytId = getYtId(item.url);
+  var driveId = getDriveId(item.url);
+  var player = document.getElementById('pf-player');
+  if (ytId) {
+    player.innerHTML = '<iframe src="https://www.youtube.com/embed/' + ytId
+      + '?autoplay=1&mute=0&controls=1&modestbranding=1&rel=0&playsinline=1'
+      + '" frameborder="0" allow="autoplay;encrypted-media;picture-in-picture" allowfullscreen playsinline></iframe>';
+  } else if (driveId) {
+    player.innerHTML = '<iframe src="https://drive.google.com/file/d/' + driveId
+      + '/preview" frameborder="0" allow="autoplay;encrypted-media" allowfullscreen></iframe>';
+  }
+  pfUpdateInfo(idx);
+  pfUpdateActiveThumbs(idx);
+}
+
 function pfRenderPlayer(idx, autoplay) {
   _pfCurrent = idx;
   var item = _pfItems[idx];
@@ -2103,28 +2159,34 @@ function pfRenderPlayer(idx, autoplay) {
   var driveId = getDriveId(item.url);
   var player = document.getElementById('pf-player');
 
+  // iOS はautoplayブロックされるため常にカバー表示
+  if (_pfIsIOS) {
+    pfShowCover(idx);
+    return;
+  }
+
   if (autoplay && ytId) {
     player.innerHTML = '<iframe src="https://www.youtube.com/embed/' + ytId
       + '?autoplay=1&mute=1&controls=1&modestbranding=1&rel=0&loop=1&playlist=' + ytId
-      + '" frameborder="0" allow="autoplay;encrypted-media;picture-in-picture" allowfullscreen></iframe>';
+      + '&playsinline=1'
+      + '" frameborder="0" allow="autoplay;encrypted-media;picture-in-picture" allowfullscreen playsinline></iframe>';
   } else if (autoplay && driveId) {
     player.innerHTML = '<iframe src="https://drive.google.com/file/d/' + driveId
       + '/preview" frameborder="0" allow="autoplay;encrypted-media" allowfullscreen></iframe>';
   } else {
-    // スタティックサムネイル（再生前）
-    var src = pfThumbSrc(item);
-    if (src) {
-      player.innerHTML = '<img class="pf-cover" src="' + src + '" alt="' + (item.title||'') + '">';
-    } else {
-      player.innerHTML = '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--sub);font-size:2rem;">▶</div>';
-    }
+    pfShowCover(idx);
   }
   pfUpdateInfo(idx);
   pfUpdateActiveThumbs(idx);
 }
 
 function pfSelect(idx) {
-  pfRenderPlayer(idx, true);
+  if (_pfIsIOS) {
+    pfShowCover(idx);
+    // カバー表示に切り替えるだけ（タップで再生）
+  } else {
+    pfRenderPlayer(idx, true);
+  }
 }
 
 function pfNav(dir) {

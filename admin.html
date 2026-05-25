@@ -1106,6 +1106,7 @@ function renderTable() {
           <button class="action-btn btn-expand" onclick="openModal(${i.row})">詳細</button>
           ${i.email ? `<button class="action-btn" style="background:#1a3a2a;color:#4ade80;border:1px solid #166534;" onclick="openHearingLinkModal(${i.row})">📋 ヒアリング案内</button>` : ''}
           ${i.email ? `<button class="action-btn" style="background:#1a2a3a;color:#60a5fa;border:1px solid #1d4ed8;" onclick="openManualPaymentFromInquiry(${i.row})">💳 振込依頼</button>` : ''}
+          <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="deleteInquiry(${i.row}, '${esc(i.name)}')">🗑 削除</button>
         </div>
       </td>
     </tr>
@@ -1190,6 +1191,7 @@ function renderModal(row) {
     <div class="modal-actions">
       ${i.chatwork_id ? `<button class="modal-btn cw" onclick="openCW('${esc(i.chatwork_id)}')">💬 Chatworkで返信</button>` : ''}
       <button class="modal-btn mail" onclick="openMail('${esc(i.email)}')">✉ メール返信</button>
+      <button class="modal-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;margin-left:auto;" onclick="deleteInquiry(${i.row}, '${esc(i.name)}')">🗑 削除</button>
     </div>
   `;
 }
@@ -1205,6 +1207,21 @@ function openCW(id) {
 }
 function openMail(email) {
   window.open(`mailto:${email}?subject=【mono.create】お問い合わせありがとうございます`, '_blank');
+}
+
+// ── Delete inquiry ──
+async function deleteInquiry(row, name) {
+  if (!confirm(`「${name}」のお問い合わせを削除しますか？\n\nこの操作は元に戻せません。`)) return;
+  try {
+    await fetch(`${GAS_URL}?action=inquiry_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    // ローカルデータからも除去してテーブル再描画
+    inquiries = inquiries.filter(i => i.row !== row);
+    renderTable();
+    closeModal();
+    showToast('削除しました');
+  } catch(e) {
+    alert('削除に失敗しました。');
+  }
 }
 
 // ── CSV export ──
@@ -1471,7 +1488,9 @@ const SERVICE_LABELS = {
   'posting':           { label: '投稿代行',                       desc: 'Instagram/YouTube/TikTok ¥1,000/本' },
   'pack_short':        { label: 'まとめて編集（ショート）セット',  desc: '10本〜 セット割引プラン' },
   'pack_manage_short': { label: '運用まるごとお任せ（ショート）', desc: '編集＋投稿代行セット（ショート）' },
-  'pack_manage_long':  { label: '運用まるごとお任せ（長尺）',     desc: '編集＋投稿代行セット（長尺）' }
+  'pack_manage_long':  { label: '運用まるごとお任せ（長尺）',     desc: '編集＋投稿代行セット（長尺）' },
+  'post_short':        { label: '投稿丸投げ（ショート動画）',      desc: '編集＋投稿代行 8本〜30本/月' },
+  'post_long':         { label: '投稿丸投げ（YouTube長尺）',       desc: '編集＋投稿代行 4本〜/月 後払い' }
 };
 
 async function loadServiceStatus() {
