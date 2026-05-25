@@ -794,6 +794,17 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         ※ パスワードはこのブラウザのローカルストレージに保存されます。<br>
         ※ 別のブラウザやデバイスからログインする場合は、同じパスワードを設定してください。
       </p>
+
+      <!-- サービス受付管理 -->
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-top:28px;">
+        <h3 style="font-size:0.9rem;font-weight:700;margin-bottom:6px;color:var(--lt);">🔧 サービス受付管理</h3>
+        <p style="font-size:0.76rem;color:var(--sub);margin-bottom:20px;">OFFにするとLPで「受付停止中」と表示され、申込ボタンが無効になります。</p>
+        <div id="service-status-list">
+          <p style="font-size:0.82rem;color:var(--sub);">読み込み中...</p>
+        </div>
+        <p id="service-save-msg" style="font-size:0.8rem;margin-top:12px;display:none;"></p>
+      </div>
+
     </div><!-- /tab-settings -->
 
   </main>
@@ -1220,6 +1231,7 @@ function switchAdminTab(tab) {
   if (tab === 'hearings')  loadHearings();
   if (tab === 'sales')     loadSales();
   if (tab === 'schedule')  loadSchedule();
+  if (tab === 'settings')  loadServiceStatus();
 }
 
 // ── 制作スケジュール（納期管理） ──────────────────────────────
@@ -1442,6 +1454,74 @@ function changePassword() {
   document.getElementById('pw-new').value = '';
   document.getElementById('pw-confirm').value = '';
   showMsg('✅ パスワードを変更しました。次回ログインから反映されます。', '#10B981');
+}
+
+// ── サービス受付管理 ──────────────────────────────────────────────
+const SERVICE_LABELS = {
+  'edit_long': { label: '長尺動画 単品受託', desc: 'まとめて編集プラン（長尺）・単品長尺動画編集' }
+};
+
+async function loadServiceStatus() {
+  const list = document.getElementById('service-status-list');
+  if (!list) return;
+  try {
+    const res = await fetch(GAS_URL + '?action=service_status');
+    const status = await res.json();
+    list.innerHTML = Object.keys(SERVICE_LABELS).map(key => {
+      const info = SERVICE_LABELS[key];
+      const isOn = status[key] !== false;
+      return `
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);">
+          <div>
+            <p style="font-size:0.87rem;font-weight:700;color:var(--lt);margin:0 0 2px;">${info.label}</p>
+            <p style="font-size:0.74rem;color:var(--sub);margin:0;">${info.desc}</p>
+          </div>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;flex-shrink:0;margin-left:16px;">
+            <span style="font-size:0.78rem;color:${isOn ? '#10B981' : '#EF4444'};font-weight:700;" id="svc-label-${key}">${isOn ? '受付中' : '停止中'}</span>
+            <div style="position:relative;width:44px;height:24px;" onclick="toggleService('${key}', this)">
+              <div id="svc-track-${key}" style="width:44px;height:24px;border-radius:12px;background:${isOn ? '#10B981' : '#4B5563'};transition:background 0.2s;"></div>
+              <div id="svc-thumb-${key}" style="position:absolute;top:3px;left:${isOn ? '23px' : '3px'};width:18px;height:18px;border-radius:50%;background:#fff;transition:left 0.2s;"></div>
+            </div>
+          </label>
+        </div>`;
+    }).join('');
+  } catch(e) {
+    list.innerHTML = '<p style="font-size:0.82rem;color:#EF4444;">読み込みエラー</p>';
+  }
+}
+
+async function toggleService(key, trackEl) {
+  const track = document.getElementById('svc-track-' + key);
+  const thumb = document.getElementById('svc-thumb-' + key);
+  const label = document.getElementById('svc-label-' + key);
+  const isCurrentlyOn = track.style.background === 'rgb(16, 185, 129)';
+  const newVal = !isCurrentlyOn;
+
+  // UIを即時更新
+  track.style.background = newVal ? '#10B981' : '#4B5563';
+  thumb.style.left = newVal ? '23px' : '3px';
+  label.textContent = newVal ? '受付中' : '停止中';
+  label.style.color = newVal ? '#10B981' : '#EF4444';
+
+  // GASに保存
+  const msg = document.getElementById('service-save-msg');
+  try {
+    const body = { action: 'update_service_status', key: ADMIN_KEY };
+    body[key] = newVal;
+    await fetch(GAS_URL, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    msg.textContent = '✅ 保存しました（LPに即時反映されます）';
+    msg.style.color = '#10B981';
+    msg.style.display = 'block';
+    setTimeout(() => { msg.style.display = 'none'; }, 3000);
+  } catch(e) {
+    msg.textContent = '❌ 保存に失敗しました';
+    msg.style.color = '#EF4444';
+    msg.style.display = 'block';
+  }
 }
 
 // ── Contracts ──

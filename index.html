@@ -1158,7 +1158,7 @@ footer {
           </div>
           <p class="pricing-price">¥4,000〜</p>
         </div>
-        <div class="pricing-row pricing-row--group fade-up" onclick="toggleLongform(this)">
+        <div id="service-edit-long-single" class="pricing-row pricing-row--group fade-up" onclick="toggleLongform(this)">
           <div style="flex:1;">
             <div style="display:flex;align-items:center;gap:10px;">
               <p class="pricing-row-name">長尺動画編集</p>
@@ -1259,6 +1259,7 @@ footer {
         </div>
 
         <!-- まとめて編集プラン 長尺 -->
+        <div id="service-edit-long-pack">
         <p style="font-size:0.8rem;font-weight:700;margin-bottom:12px;color:var(--sub);padding-left:8px;">◎ YouTube長尺動画</p>
         <div class="pack-card fade-up" style="margin-bottom:48px;">
           <p class="pack-name" style="margin-bottom:4px;">まとめて編集プラン（長尺）</p>
@@ -1285,6 +1286,7 @@ footer {
           <a href="#" onclick="openContract('edit-long');return false;" class="btn btn-gold" style="width:100%;justify-content:center;margin-top:16px;">申し込む →</a>
           <p class="pack-note" style="margin-top:12px;">※ 契約同意後すぐにヒアリングシートへ進みます。</p>
         </div>
+        </div><!-- /service-edit-long-pack -->
 
         <!-- 投稿丸投げプラン -->
         <p style="font-size:0.9rem;font-weight:700;margin-bottom:4px;color:var(--sub);">── 投稿丸投げプラン（編集 + 投稿代行）</p>
@@ -1784,6 +1786,46 @@ footer {
 <script>
 // ─── 設定 ──────────────────────────────────────────────
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
+// ───────────────────────────────────────────────────────
+
+// ── サービス受付ステータス適用 ──────────────────────────────────
+(function applyServiceStatus() {
+  fetch(GAS_URL + '?action=service_status')
+    .then(function(r){ return r.json(); })
+    .then(function(status) {
+      // 長尺受託が停止中の場合
+      if (status.edit_long === false) {
+        var banner = '<div style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.4);border-radius:10px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;gap:10px;">'
+          + '<span style="font-size:1.1rem;">🚫</span>'
+          + '<div><p style="font-size:0.83rem;font-weight:700;color:#F87171;margin:0;">現在、長尺動画の単品受託は受付を停止しています</p>'
+          + '<p style="font-size:0.76rem;color:var(--sub);margin:2px 0 0;">担当編集者が集まり次第、再開予定です。運用代行プランは引き続き受付中です。</p>'
+          + '</div></div>';
+        // 単品プライシング行をグレーアウト
+        var single = document.getElementById('service-edit-long-single');
+        if (single) {
+          single.style.opacity = '0.45';
+          single.style.pointerEvents = 'none';
+          single.style.cursor = 'not-allowed';
+          single.insertAdjacentHTML('beforebegin',
+            '<div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.35);border-radius:8px;padding:10px 14px;margin-bottom:6px;font-size:0.8rem;color:#F87171;font-weight:600;">🚫 長尺動画編集（単品）は現在受付停止中です</div>'
+          );
+        }
+        // まとめて編集プラン 長尺セクション
+        var pack = document.getElementById('service-edit-long-pack');
+        if (pack) {
+          pack.style.position = 'relative';
+          pack.insertAdjacentHTML('afterbegin', banner);
+          var btn = pack.querySelector('a[onclick*="edit-long"]');
+          if (btn) {
+            btn.style.opacity = '0.45';
+            btn.style.pointerEvents = 'none';
+            btn.textContent = '現在受付停止中';
+          }
+        }
+      }
+    })
+    .catch(function(){});
+})();
 // ───────────────────────────────────────────────────────
 
 function toggleLongform(row) {
