@@ -1301,25 +1301,63 @@ footer {
         <p style="font-size:0.8rem;font-weight:700;margin-bottom:12px;color:var(--sub);padding-left:8px;">◎ ショート動画</p>
         <div class="pack-card fade-up" style="margin-bottom:32px;">
           <p class="pack-name" style="margin-bottom:4px;">まとめて編集プラン（ショート）</p>
-          <p style="font-size:0.75rem;color:var(--sub);margin-bottom:12px;">15本まで 5%引き ／ 30本まで 10%引き ／ 30本以上 15%引き</p>
-          <div style="overflow-x:auto;">
-            <table style="width:100%;border-collapse:collapse;font-size:0.83rem;">
-              <thead>
-                <tr style="border-bottom:1px solid var(--border);">
-                  <th style="padding:8px 6px;text-align:left;color:var(--sub);font-weight:600;">本数 / 月</th>
-                  <th style="padding:8px 6px;text-align:center;color:var(--sub);font-weight:600;">割引率</th>
-                  <th style="padding:8px 6px;text-align:right;color:var(--sub);font-weight:600;">月額</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr style="border-bottom:1px solid var(--border);"><td style="padding:10px 6px;color:var(--text);">10〜15本</td><td style="padding:10px 6px;text-align:center;color:var(--sub);font-size:0.78rem;">5%引き</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥3,800/本</td></tr>
-                <tr style="border-bottom:1px solid var(--border);"><td style="padding:10px 6px;color:var(--text);">16〜29本</td><td style="padding:10px 6px;text-align:center;color:#60A5FA;font-size:0.78rem;font-weight:700;">10%引き</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥3,600/本</td></tr>
-                <tr><td style="padding:10px 6px;color:var(--text);">30本〜</td><td style="padding:10px 6px;text-align:center;color:#10B981;font-size:0.78rem;font-weight:700;">15%引き</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥3,400/本</td></tr>
-              </tbody>
-            </table>
+          <p style="font-size:0.74rem;color:var(--sub);margin-bottom:18px;">定価¥4,000/本 → 本数に応じて最大15%割引。月額合計と節約額の目安です。</p>
+
+          <!-- ショートプラン 月額合計テーブル -->
+          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;">
+
+            <!-- 10本 / 5%OFF -->
+            <div style="display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:12px;padding:14px 16px;background:var(--bg3);border-radius:12px;border:1px solid var(--border);">
+              <div>
+                <p style="font-size:0.78rem;color:var(--sub);margin:0 0 2px;">10〜15本 / 月</p>
+                <p style="font-size:0.72rem;margin:0;"><span style="background:rgba(148,163,184,0.15);color:var(--sub);padding:2px 7px;border-radius:4px;font-weight:700;">5% OFF</span></p>
+              </div>
+              <div style="text-align:right;">
+                <p style="font-size:0.7rem;color:var(--sub);text-decoration:line-through;margin:0;">¥40,000〜</p>
+                <p style="font-size:1.15rem;font-weight:800;color:var(--gold);margin:0;">¥38,000<span style="font-size:0.72rem;font-weight:500;color:var(--sub);">/月〜</span></p>
+              </div>
+              <div style="text-align:center;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);border-radius:8px;padding:6px 10px;min-width:72px;">
+                <p style="font-size:0.63rem;color:#10B981;margin:0;font-weight:700;">節約額</p>
+                <p style="font-size:0.98rem;font-weight:800;color:#10B981;margin:0;">¥2,000〜</p>
+              </div>
+            </div>
+
+            <!-- 20本 / 10%OFF -->
+            <div style="display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:12px;padding:14px 16px;background:var(--bg3);border-radius:12px;border:1px solid rgba(59,130,246,0.2);">
+              <div>
+                <p style="font-size:0.78rem;color:var(--sub);margin:0 0 2px;">16〜29本 / 月</p>
+                <p style="font-size:0.72rem;margin:0;"><span style="background:rgba(59,130,246,0.15);color:#60A5FA;padding:2px 7px;border-radius:4px;font-weight:700;">10% OFF</span></p>
+              </div>
+              <div style="text-align:right;">
+                <p style="font-size:0.7rem;color:var(--sub);text-decoration:line-through;margin:0;">¥80,000〜</p>
+                <p style="font-size:1.15rem;font-weight:800;color:var(--gold);margin:0;">¥72,000<span style="font-size:0.72rem;font-weight:500;color:var(--sub);">/月〜</span></p>
+              </div>
+              <div style="text-align:center;background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.4);border-radius:8px;padding:6px 10px;min-width:72px;">
+                <p style="font-size:0.63rem;color:#10B981;margin:0;font-weight:700;">節約額</p>
+                <p style="font-size:0.98rem;font-weight:800;color:#10B981;margin:0;">¥8,000〜</p>
+              </div>
+            </div>
+
+            <!-- 30本 / 15%OFF (BEST) -->
+            <div style="display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:12px;padding:14px 16px;background:linear-gradient(135deg,rgba(16,185,129,0.1),rgba(16,185,129,0.05));border-radius:12px;border:2px solid rgba(16,185,129,0.4);position:relative;">
+              <div style="position:absolute;top:-10px;left:14px;background:#10B981;color:#fff;font-size:0.65rem;font-weight:800;padding:2px 10px;border-radius:20px;letter-spacing:0.05em;">一番お得</div>
+              <div style="margin-top:4px;">
+                <p style="font-size:0.78rem;color:var(--sub);margin:0 0 2px;">30本〜 / 月</p>
+                <p style="font-size:0.72rem;margin:0;"><span style="background:rgba(16,185,129,0.2);color:#10B981;padding:2px 7px;border-radius:4px;font-weight:700;">15% OFF</span></p>
+              </div>
+              <div style="text-align:right;">
+                <p style="font-size:0.7rem;color:var(--sub);text-decoration:line-through;margin:0;">¥120,000〜</p>
+                <p style="font-size:1.15rem;font-weight:800;color:var(--gold);margin:0;">¥102,000<span style="font-size:0.72rem;font-weight:500;color:var(--sub);">/月〜</span></p>
+              </div>
+              <div style="text-align:center;background:rgba(16,185,129,0.2);border:1px solid rgba(16,185,129,0.5);border-radius:8px;padding:6px 10px;min-width:72px;">
+                <p style="font-size:0.63rem;color:#10B981;margin:0;font-weight:700;">節約額</p>
+                <p style="font-size:1.05rem;font-weight:800;color:#10B981;margin:0;">¥18,000〜</p>
+              </div>
+            </div>
           </div>
-          <p style="font-size:0.75rem;color:var(--sub);margin-top:12px;">※ 最低10本以上から本数を細かく調整可能。上記以外の本数はご相談ください。</p>
-          <a href="#" onclick="openContract('edit-short');return false;" class="btn btn-gold" style="width:100%;justify-content:center;margin-top:16px;">申し込む →</a>
+
+          <p style="font-size:0.73rem;color:var(--sub);margin-bottom:16px;line-height:1.7;">※ 月額は10本の例（定価¥4,000/本）。本数は10本以上1本単位で調整可能。本数が増えるほど節約額も拡大。</p>
+          <a href="#" onclick="openContract('edit-short');return false;" class="btn btn-gold" style="width:100%;justify-content:center;">申し込む →</a>
           <p class="pack-note" style="margin-top:12px;">※ 契約同意後すぐにヒアリングシートへ進みます。</p>
         </div>
 
@@ -1328,27 +1366,85 @@ footer {
         <p style="font-size:0.8rem;font-weight:700;margin-bottom:12px;color:var(--sub);padding-left:8px;">◎ YouTube長尺動画</p>
         <div class="pack-card fade-up" style="margin-bottom:48px;">
           <p class="pack-name" style="margin-bottom:4px;">まとめて編集プラン（長尺）</p>
-          <p style="font-size:0.75rem;color:var(--sub);margin-bottom:12px;">4〜7本：5%引き ／ 8〜11本：10%引き ／ 12本〜：15%引き　※ 最低4本以上</p>
-          <div style="overflow-x:auto;">
-            <table style="width:100%;border-collapse:collapse;font-size:0.83rem;">
-              <thead>
-                <tr style="border-bottom:1px solid var(--border);">
-                  <th style="padding:8px 6px;text-align:left;color:var(--sub);font-weight:600;">本数 / 月</th>
-                  <th style="padding:8px 6px;text-align:center;color:var(--sub);font-weight:600;">割引率</th>
-                  <th style="padding:8px 6px;text-align:right;color:var(--sub);font-weight:600;">単価（〜10分）</th>
-                  <th style="padding:8px 6px;text-align:right;color:var(--sub);font-weight:600;">単価（10〜15分）</th>
-                  <th style="padding:8px 6px;text-align:right;color:var(--sub);font-weight:600;">単価（15〜20分）</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr style="border-bottom:1px solid var(--border);"><td style="padding:10px 6px;color:var(--text);">4〜7本</td><td style="padding:10px 6px;text-align:center;color:var(--sub);font-size:0.78rem;">5%引き</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥14,250</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥19,000</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥28,500</td></tr>
-                <tr style="border-bottom:1px solid var(--border);"><td style="padding:10px 6px;color:var(--text);">8〜11本</td><td style="padding:10px 6px;text-align:center;color:#60A5FA;font-size:0.78rem;font-weight:700;">10%引き</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥13,500</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥18,000</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥27,000</td></tr>
-                <tr><td style="padding:10px 6px;color:var(--text);">12本〜</td><td style="padding:10px 6px;text-align:center;color:#10B981;font-size:0.78rem;font-weight:700;">15%引き</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥12,750</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥17,000</td><td style="padding:10px 6px;text-align:right;font-weight:700;color:var(--gold);">¥25,500</td></tr>
-              </tbody>
-            </table>
+          <p style="font-size:0.74rem;color:var(--sub);margin-bottom:18px;">定価¥15,000/本（〜10分）→ 本数に応じて最大15%割引。月額合計と節約額の目安です。</p>
+
+          <!-- 長尺 月額合計テーブル（〜10分の動画基準） -->
+          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:6px;">
+
+            <!-- 4本 / 5%OFF -->
+            <div style="display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:12px;padding:14px 16px;background:var(--bg3);border-radius:12px;border:1px solid var(--border);">
+              <div>
+                <p style="font-size:0.78rem;color:var(--sub);margin:0 0 2px;">4〜7本 / 月</p>
+                <p style="font-size:0.72rem;margin:0;"><span style="background:rgba(148,163,184,0.15);color:var(--sub);padding:2px 7px;border-radius:4px;font-weight:700;">5% OFF</span></p>
+              </div>
+              <div style="text-align:right;">
+                <p style="font-size:0.7rem;color:var(--sub);text-decoration:line-through;margin:0;">¥60,000〜</p>
+                <p style="font-size:1.15rem;font-weight:800;color:var(--gold);margin:0;">¥57,000<span style="font-size:0.72rem;font-weight:500;color:var(--sub);">/月〜</span></p>
+              </div>
+              <div style="text-align:center;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);border-radius:8px;padding:6px 10px;min-width:72px;">
+                <p style="font-size:0.63rem;color:#10B981;margin:0;font-weight:700;">節約額</p>
+                <p style="font-size:0.98rem;font-weight:800;color:#10B981;margin:0;">¥3,000〜</p>
+              </div>
+            </div>
+
+            <!-- 8本 / 10%OFF -->
+            <div style="display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:12px;padding:14px 16px;background:var(--bg3);border-radius:12px;border:1px solid rgba(59,130,246,0.2);">
+              <div>
+                <p style="font-size:0.78rem;color:var(--sub);margin:0 0 2px;">8〜11本 / 月</p>
+                <p style="font-size:0.72rem;margin:0;"><span style="background:rgba(59,130,246,0.15);color:#60A5FA;padding:2px 7px;border-radius:4px;font-weight:700;">10% OFF</span></p>
+              </div>
+              <div style="text-align:right;">
+                <p style="font-size:0.7rem;color:var(--sub);text-decoration:line-through;margin:0;">¥120,000〜</p>
+                <p style="font-size:1.15rem;font-weight:800;color:var(--gold);margin:0;">¥108,000<span style="font-size:0.72rem;font-weight:500;color:var(--sub);">/月〜</span></p>
+              </div>
+              <div style="text-align:center;background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.4);border-radius:8px;padding:6px 10px;min-width:72px;">
+                <p style="font-size:0.63rem;color:#10B981;margin:0;font-weight:700;">節約額</p>
+                <p style="font-size:0.98rem;font-weight:800;color:#10B981;margin:0;">¥12,000〜</p>
+              </div>
+            </div>
+
+            <!-- 12本 / 15%OFF (BEST) -->
+            <div style="display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:12px;padding:14px 16px;background:linear-gradient(135deg,rgba(16,185,129,0.1),rgba(16,185,129,0.05));border-radius:12px;border:2px solid rgba(16,185,129,0.4);position:relative;">
+              <div style="position:absolute;top:-10px;left:14px;background:#10B981;color:#fff;font-size:0.65rem;font-weight:800;padding:2px 10px;border-radius:20px;letter-spacing:0.05em;">一番お得</div>
+              <div style="margin-top:4px;">
+                <p style="font-size:0.78rem;color:var(--sub);margin:0 0 2px;">12本〜 / 月</p>
+                <p style="font-size:0.72rem;margin:0;"><span style="background:rgba(16,185,129,0.2);color:#10B981;padding:2px 7px;border-radius:4px;font-weight:700;">15% OFF</span></p>
+              </div>
+              <div style="text-align:right;">
+                <p style="font-size:0.7rem;color:var(--sub);text-decoration:line-through;margin:0;">¥180,000〜</p>
+                <p style="font-size:1.15rem;font-weight:800;color:var(--gold);margin:0;">¥153,000<span style="font-size:0.72rem;font-weight:500;color:var(--sub);">/月〜</span></p>
+              </div>
+              <div style="text-align:center;background:rgba(16,185,129,0.2);border:1px solid rgba(16,185,129,0.5);border-radius:8px;padding:6px 10px;min-width:72px;">
+                <p style="font-size:0.63rem;color:#10B981;margin:0;font-weight:700;">節約額</p>
+                <p style="font-size:1.05rem;font-weight:800;color:#10B981;margin:0;">¥27,000〜</p>
+              </div>
+            </div>
           </div>
-          <p style="font-size:0.75rem;color:var(--sub);margin-top:12px;">※ 最低4本以上から。上記以外の本数はご相談ください。上記は目安金額です。</p>
-          <a href="#" onclick="openContract('edit-long');return false;" class="btn btn-gold" style="width:100%;justify-content:center;margin-top:16px;">申し込む →</a>
+
+          <!-- 動画の長さ別 単価早見表 -->
+          <details style="margin:14px 0;cursor:pointer;">
+            <summary style="font-size:0.75rem;color:var(--sub);font-weight:700;padding:8px 0;user-select:none;">▶ 動画の長さ別の単価を見る</summary>
+            <div style="overflow-x:auto;margin-top:10px;">
+              <table style="width:100%;border-collapse:collapse;font-size:0.78rem;">
+                <thead>
+                  <tr style="border-bottom:1px solid var(--border);">
+                    <th style="padding:6px 6px;text-align:left;color:var(--sub);font-weight:600;">本数 / 月</th>
+                    <th style="padding:6px;text-align:right;color:var(--sub);font-weight:600;">〜10分</th>
+                    <th style="padding:6px;text-align:right;color:var(--sub);font-weight:600;">10〜15分</th>
+                    <th style="padding:6px;text-align:right;color:var(--sub);font-weight:600;">15〜20分</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px 6px;color:var(--text);">4〜7本 <span style="color:var(--sub);font-size:0.72rem;">5%OFF</span></td><td style="padding:8px 6px;text-align:right;color:var(--gold);">¥14,250</td><td style="padding:8px 6px;text-align:right;color:var(--gold);">¥19,000</td><td style="padding:8px 6px;text-align:right;color:var(--gold);">¥28,500</td></tr>
+                  <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px 6px;color:var(--text);">8〜11本 <span style="color:#60A5FA;font-size:0.72rem;font-weight:700;">10%OFF</span></td><td style="padding:8px 6px;text-align:right;color:var(--gold);">¥13,500</td><td style="padding:8px 6px;text-align:right;color:var(--gold);">¥18,000</td><td style="padding:8px 6px;text-align:right;color:var(--gold);">¥27,000</td></tr>
+                  <tr><td style="padding:8px 6px;color:var(--text);">12本〜 <span style="color:#10B981;font-size:0.72rem;font-weight:700;">15%OFF</span></td><td style="padding:8px 6px;text-align:right;color:var(--gold);">¥12,750</td><td style="padding:8px 6px;text-align:right;color:var(--gold);">¥17,000</td><td style="padding:8px 6px;text-align:right;color:var(--gold);">¥25,500</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </details>
+
+          <p style="font-size:0.73rem;color:var(--sub);margin-bottom:16px;line-height:1.7;">※ 月額は4本（〜10分）の例。動画が長くなるほど節約額も拡大。20分超は+¥1,200/分。本数はご相談ください。</p>
+          <a href="#" onclick="openContract('edit-long');return false;" class="btn btn-gold" style="width:100%;justify-content:center;">申し込む →</a>
           <p class="pack-note" style="margin-top:12px;">※ 契約同意後すぐにヒアリングシートへ進みます。</p>
         </div>
         </div><!-- /service-edit-long-pack -->
