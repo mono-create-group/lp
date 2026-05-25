@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>動画編集代行・SNS運用代行 | mono.create</title>
 <meta name="description" content="ショート動画編集・YouTube長尺動画編集・SNS投稿代行のプロチーム。月10本から丸投げOK。編集のみ¥4,000〜、まとめて編集プランあり。最短当日納品対応。">
 <meta name="keywords" content="動画編集代行,ショート動画編集,YouTube動画編集,SNS運用代行,投稿代行,動画編集外注,TikTok編集,Instagram リール編集,動画編集チーム">
@@ -382,61 +385,111 @@ nav {
 .strength-label { font-size: 0.9rem; color: var(--sub); line-height: 1.6; }
 
 /* ── Works ── */
-.works-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 24px;
-  margin-top: 48px;
-}
-.work-card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  transition: border-color 0.25s, transform 0.25s;
-}
-.work-card:hover { border-color: rgba(37,99,235,0.35); transform: translateY(-4px); }
-.work-thumb {
-  width: 100%;
-  aspect-ratio: 16/9;
-  background: var(--bg3);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 2.5rem;
+/* ── Portfolio Showcase ── */
+.pf-showcase { margin-top: 40px; }
+.pf-main-wrap {
   position: relative;
+  background: #000;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(37,99,235,0.25);
+  box-shadow: 0 0 80px rgba(37,99,235,0.1), 0 32px 64px rgba(0,0,0,0.5);
+}
+.pf-player {
+  position: relative;
+  aspect-ratio: 16/9;
+  background: #000;
   overflow: hidden;
 }
-.work-thumb-inner {
+.pf-player iframe,
+.pf-player img.pf-cover {
   position: absolute; inset: 0;
-  background: linear-gradient(135deg, var(--bg3) 0%, var(--bg2) 100%);
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 10px;
+  width: 100%; height: 100%;
+  border: none; object-fit: cover;
 }
-.play-btn {
-  width: 56px; height: 56px;
-  background: rgba(37,99,235,0.9);
-  border-radius: 50%;
+.pf-player-gradient {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);
+  padding: 60px 28px 24px;
+  pointer-events: none; z-index: 5;
+}
+.pf-badge {
+  font-size: 0.68rem; font-weight: 800; letter-spacing: 0.14em;
+  color: var(--lt); margin-bottom: 4px; text-transform: uppercase;
+}
+.pf-overlay-genre { font-size: 0.78rem; color: rgba(255,255,255,0.6); margin-bottom: 2px; }
+.pf-overlay-title { font-size: 1.1rem; font-weight: 800; color: #fff; }
+.pf-nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 48px; height: 48px; border-radius: 50%;
+  background: rgba(255,255,255,0.08); backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.14); color: #fff;
+  font-size: 1.5rem; cursor: pointer; z-index: 10;
   display: flex; align-items: center; justify-content: center;
-  transition: transform 0.2s, background 0.2s;
+  transition: all 0.2s; line-height: 1;
 }
-.work-card:hover .play-btn { transform: scale(1.1); background: var(--accent-lt); }
-.play-btn svg { margin-left: 4px; }
-.work-type-badge {
-  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em;
-  padding: 4px 10px; border-radius: 4px;
-  background: rgba(255,255,255,0.88); color: var(--text);
-  border: 1px solid rgba(15,23,42,0.12);
+.pf-nav:hover { background: rgba(255,255,255,0.18); transform: translateY(-50%) scale(1.08); }
+.pf-nav-prev { left: 16px; } .pf-nav-next { right: 16px; }
+/* Thumbnails strip */
+.pf-thumbs-wrap { padding: 16px 0 0; }
+.pf-thumbs {
+  display: flex; gap: 10px;
+  overflow-x: auto; padding-bottom: 4px;
+  scrollbar-width: none; -ms-overflow-style: none;
+  scroll-behavior: smooth;
 }
-.work-body { padding: 20px 24px; }
-.work-genre { font-size: 0.72rem; color: var(--sub); margin-bottom: 6px; letter-spacing: 0.04em; }
-.work-title { font-size: 0.95rem; font-weight: 700; }
-.work-link {
-  display: inline-flex; align-items: center; gap: 6px;
-  margin-top: 12px;
-  font-size: 0.8rem; color: var(--accent-lt);
-  transition: gap 0.2s;
+.pf-thumbs::-webkit-scrollbar { display: none; }
+.pf-thumb {
+  flex: 0 0 150px; aspect-ratio: 16/9;
+  border-radius: 10px; overflow: hidden; cursor: pointer;
+  border: 2px solid transparent; position: relative;
+  background: var(--bg3); transition: all 0.22s;
 }
-.work-card:hover .work-link { gap: 10px; }
+.pf-thumb:hover { transform: translateY(-3px); border-color: rgba(59,130,246,0.45); }
+.pf-thumb.pf-active {
+  border-color: var(--lt);
+  box-shadow: 0 0 16px rgba(59,130,246,0.35);
+}
+.pf-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pf-thumb-blank {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--sub); font-size: 1.4rem;
+}
+.pf-thumb-footer {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.72));
+  padding: 14px 7px 6px;
+  font-size: 0.63rem; font-weight: 700;
+  color: rgba(255,255,255,0.88); letter-spacing: 0.05em;
+}
+.pf-playing-dot {
+  position: absolute; top: 6px; right: 6px;
+  width: 8px; height: 8px; border-radius: 50%; background: #10B981;
+  animation: pfPulse 1.4s ease-in-out infinite;
+}
+@keyframes pfPulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50% { opacity:0.45; transform:scale(0.75); }
+}
+.pf-count {
+  font-size: 0.72rem; color: var(--sub);
+  text-align: right; margin-top: 12px; letter-spacing: 0.05em;
+}
+/* Loading */
+#portfolio-loading-txt { color: var(--sub); font-size:0.85rem; padding:32px 0; }
 
+/* ── Service Stop Badge ── */
+.svc-stop-badge {
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.35);
+  border-radius: 8px;
+  padding: 9px 14px;
+  margin-bottom: 6px;
+  font-size: 0.78rem;
+  color: #F87171;
+  font-weight: 700;
+}
 /* ── Pricing ── */
 .pricing { background: var(--bg2); }
 .pricing-tabs {
@@ -1110,16 +1163,29 @@ footer {
     <h2 class="section-title fade-up">制作実績</h2>
     <p class="section-sub fade-up">ビジネス系からエンタメ系まで、採用や集客を目的にした多様なジャンルに対応しております。</p>
 
-    <!-- ポートフォリオ動的エリア -->
-    <div id="portfolio-short-wrap">
-      <p style="font-size:0.8rem;color:var(--sub);margin:24px 0 8px;font-weight:700;">── ショート動画</p>
-      <div class="works-grid" id="portfolio-short">
-        <p style="color:var(--sub);font-size:0.85rem;padding:16px 0;" id="portfolio-loading">読み込み中...</p>
+    <!-- ポートフォリオ ショーケース -->
+    <div class="pf-showcase">
+      <p id="portfolio-loading-txt" style="color:var(--sub);font-size:0.85rem;padding:32px 0;">読み込み中...</p>
+
+      <!-- メインプレイヤー -->
+      <div id="pf-main-wrap" class="pf-main-wrap" style="display:none;">
+        <div class="pf-player" id="pf-player">
+          <!-- iframe / img がここに入る -->
+        </div>
+        <div class="pf-player-gradient">
+          <p class="pf-badge" id="pf-badge">WORKS 01 / 1</p>
+          <p class="pf-overlay-genre" id="pf-genre"></p>
+          <p class="pf-overlay-title" id="pf-title"></p>
+        </div>
+        <button class="pf-nav pf-nav-prev" onclick="pfNav(-1)" aria-label="前の動画">&#8249;</button>
+        <button class="pf-nav pf-nav-next" onclick="pfNav(1)" aria-label="次の動画">&#8250;</button>
       </div>
-    </div>
-    <div id="portfolio-long-wrap" style="display:none;">
-      <p style="font-size:0.8rem;color:var(--sub);margin:40px 0 8px;font-weight:700;">── 長尺動画</p>
-      <div class="works-grid" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr))" id="portfolio-long"></div>
+
+      <!-- サムネイルストリップ -->
+      <div class="pf-thumbs-wrap" id="pf-thumbs-wrap" style="display:none;">
+        <div class="pf-thumbs" id="pf-thumbs"></div>
+        <p class="pf-count" id="pf-count"></p>
+      </div>
     </div>
   </div>
 </section>
@@ -1139,7 +1205,6 @@ footer {
         品質を確認してからご契約いただけるので、安心してスタートできます。<br>
         まずはお気軽にご相談ください。
       </p>
-      <a href="#pricing" class="btn btn-primary" style="display:inline-flex;padding:13px 36px;font-size:1rem;font-weight:700;">プランを選んで無料で試す →</a>
     </div>
 
     <div style="margin-top:40px;">
@@ -1151,7 +1216,7 @@ footer {
 
       <!-- Single -->
       <div class="pricing-single active" id="tab-single">
-        <div class="pricing-row fade-up">
+        <div id="svc-edit-short" class="pricing-row fade-up">
           <div>
             <p class="pricing-row-name">ショート動画編集</p>
             <p class="pricing-row-desc">縦型1本。テロップ・SE・BGM・エフェクト込み。最短当日〜3日納品。</p>
@@ -1176,14 +1241,14 @@ footer {
           </div>
           <p class="pricing-price" style="white-space:nowrap;">¥15,000〜</p>
         </div>
-        <div class="pricing-row fade-up">
+        <div id="svc-consulting" class="pricing-row fade-up">
           <div>
             <p class="pricing-row-name">編集コンサルティング</p>
             <p class="pricing-row-desc">1時間のオンライン相談。アカウント分析→改善提案。</p>
           </div>
           <p class="pricing-price">¥5,000 / h</p>
         </div>
-        <div class="pricing-row fade-up">
+        <div id="svc-manual" class="pricing-row fade-up">
           <div>
             <p class="pricing-row-name">編集マニュアル作成</p>
             <p class="pricing-row-desc">即外注可能なマニュアルを編集者目線で作成。</p>
@@ -1195,28 +1260,28 @@ footer {
 
       <!-- Option -->
       <div class="pricing-option" id="tab-option">
-        <div class="pricing-row fade-up">
+        <div id="svc-same-day" class="pricing-row fade-up">
           <div>
             <p class="pricing-row-name">当日納品</p>
             <p class="pricing-row-desc">12:00までのご依頼に限り、当日中に仕上げます。<br>場合によってはお受けできない場合もございますので、ご了承ください。</p>
           </div>
           <p class="pricing-price">+¥2,000<br><span style="font-size:0.72rem;color:var(--sub);font-weight:500;">長尺 +¥5,000</span></p>
         </div>
-        <div class="pricing-row fade-up">
+        <div id="svc-analysis" class="pricing-row fade-up">
           <div>
             <p class="pricing-row-name">アカウント分析</p>
             <p class="pricing-row-desc">アカウントの分析結果を成果物に落とし込みます。</p>
           </div>
           <p class="pricing-price">¥5,000</p>
         </div>
-        <div class="pricing-row fade-up">
+        <div id="svc-market" class="pricing-row fade-up">
           <div>
             <p class="pricing-row-name">市場分析</p>
             <p class="pricing-row-desc">トレンド・参入業界の勝ち筋を分析。</p>
           </div>
           <p class="pricing-price">¥5,000</p>
         </div>
-        <div class="pricing-row fade-up">
+        <div id="svc-posting" class="pricing-row fade-up">
           <div>
             <p class="pricing-row-name">投稿代行</p>
             <p class="pricing-row-desc">Instagram / YouTube / TikTokへの投稿業務を代行。</p>
@@ -1789,40 +1854,50 @@ const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtk
 // ───────────────────────────────────────────────────────
 
 // ── サービス受付ステータス適用 ──────────────────────────────────
+// ── サービス受付状態適用 ─────────────────────────────────────
+// key → [element IDs], packBtnSelector (長尺のみ申込ボタン無効化)
+var SVC_MAP = {
+  'edit_short':  { ids: ['svc-edit-short'],                label: 'ショート動画編集（単品）' },
+  'edit_long':   { ids: ['service-edit-long-single','service-edit-long-pack'], label: '長尺動画編集', packBtns: true },
+  'consulting':  { ids: ['svc-consulting'],                label: '編集コンサルティング' },
+  'manual':      { ids: ['svc-manual'],                    label: '編集マニュアル作成' },
+  'same_day':    { ids: ['svc-same-day'],                  label: '当日納品オプション' },
+  'analysis':    { ids: ['svc-analysis'],                  label: 'アカウント分析' },
+  'market':      { ids: ['svc-market'],                    label: '市場分析' },
+  'posting':     { ids: ['svc-posting'],                   label: '投稿代行' },
+  'pack_short':  { ids: ['svc-pack-short'],                label: 'まとめて編集プラン（ショート）' },
+  'pack_manage_short': { ids: ['svc-pack-manage-short'],   label: '運用まるごとお任せパック（ショート）' },
+  'pack_manage_long':  { ids: ['svc-pack-manage-long'],    label: '運用まるごとお任せパック（長尺）' }
+};
+
 (function applyServiceStatus() {
+  if (!GAS_URL) return;
   fetch(GAS_URL + '?action=service_status')
     .then(function(r){ return r.json(); })
     .then(function(status) {
-      // 長尺受託が停止中の場合
-      if (status.edit_long === false) {
-        var banner = '<div style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.4);border-radius:10px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;gap:10px;">'
-          + '<span style="font-size:1.1rem;">🚫</span>'
-          + '<div><p style="font-size:0.83rem;font-weight:700;color:#F87171;margin:0;">現在、長尺動画の単品受託は受付を停止しています</p>'
-          + '<p style="font-size:0.76rem;color:var(--sub);margin:2px 0 0;">担当編集者が集まり次第、再開予定です。運用代行プランは引き続き受付中です。</p>'
-          + '</div></div>';
-        // 単品プライシング行をグレーアウト
-        var single = document.getElementById('service-edit-long-single');
-        if (single) {
-          single.style.opacity = '0.45';
-          single.style.pointerEvents = 'none';
-          single.style.cursor = 'not-allowed';
-          single.insertAdjacentHTML('beforebegin',
-            '<div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.35);border-radius:8px;padding:10px 14px;margin-bottom:6px;font-size:0.8rem;color:#F87171;font-weight:600;">🚫 長尺動画編集（単品）は現在受付停止中です</div>'
-          );
-        }
-        // まとめて編集プラン 長尺セクション
-        var pack = document.getElementById('service-edit-long-pack');
-        if (pack) {
-          pack.style.position = 'relative';
-          pack.insertAdjacentHTML('afterbegin', banner);
-          var btn = pack.querySelector('a[onclick*="edit-long"]');
-          if (btn) {
-            btn.style.opacity = '0.45';
-            btn.style.pointerEvents = 'none';
-            btn.textContent = '現在受付停止中';
+      Object.keys(SVC_MAP).forEach(function(key) {
+        var isOn = status[key] !== false;
+        if (isOn) return; // 受付中はそのまま
+        var cfg = SVC_MAP[key];
+        var stopBanner = '<div class="svc-stop-badge">🚫 ' + cfg.label + ' は現在受付停止中です</div>';
+        cfg.ids.forEach(function(id) {
+          var el = document.getElementById(id);
+          if (!el) return;
+          el.style.opacity = '0.42';
+          el.style.pointerEvents = 'none';
+          el.style.cursor = 'not-allowed';
+          // バナー追加（重複防止）
+          if (!el.previousElementSibling || !el.previousElementSibling.classList.contains('svc-stop-badge')) {
+            el.insertAdjacentHTML('beforebegin', stopBanner);
           }
-        }
-      }
+          // 申込ボタンを無効化
+          el.querySelectorAll('a.btn, button.btn').forEach(function(b) {
+            b.style.opacity = '0.4';
+            b.style.pointerEvents = 'none';
+            b.textContent = '受付停止中';
+          });
+        });
+      });
     })
     .catch(function(){});
 })();
@@ -1862,85 +1937,146 @@ function toggleFaq(el) {
   if (!isOpen) item.classList.add('open');
 }
 
-// ── ポートフォリオ読み込み ──────────────────────────────────
+// ── ポートフォリオ ショーケース ──────────────────────────────
 function getYtId(url) {
+  if (!url) return null;
   var m = url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)([^&?/]+)/);
   return m ? m[1] : null;
 }
 function getDriveId(url) {
+  if (!url) return null;
   var m = url.match(/\/file\/d\/([^/?#]+)/);
   return m ? m[1] : null;
 }
 
-function buildWorkCard(item, idx) {
-  var ytId    = getYtId(item.url);
+var _pfItems = [];
+var _pfCurrent = 0;
+var _pfStarted = false;
+
+function pfThumbSrc(item) {
+  var ytId = getYtId(item.url);
   var driveId = getDriveId(item.url);
-  var thumb, clickAction;
-
-  if (ytId) {
-    thumb = '<img src="https://img.youtube.com/vi/' + ytId + '/hqdefault.jpg" alt="' + item.title + '" style="width:100%;height:100%;object-fit:cover;">';
-    clickAction = 'onclick="openVideoPlayer(\'' + item.url.replace(/'/g, "\\'") + '\')" style="cursor:pointer;"';
-  } else if (driveId) {
-    thumb = '<img src="https://drive.google.com/thumbnail?id=' + driveId + '&sz=w400-h225" alt="' + item.title + '" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentNode.innerHTML=\'<div style=\\\'width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--bg3);color:var(--sub);font-size:0.75rem;\\\'>サムネなし</div>\'">';
-    clickAction = 'onclick="window.open(\'' + item.url.replace(/'/g, "\\'") + '\',\'_blank\')" style="cursor:pointer;"';
-  } else {
-    thumb = '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--bg3);color:var(--sub);font-size:0.75rem;">サムネなし</div>';
-    clickAction = item.url ? 'onclick="window.open(\'' + item.url.replace(/'/g, "\\'") + '\',\'_blank\')" style="cursor:pointer;"' : '';
-  }
-
-  var link = item.url
-    ? '<a href="' + item.url + '" target="_blank" rel="noopener" class="work-link">動画を見る <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>'
-    : '<a href="#contact" class="work-link">詳細はお問い合わせ <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>';
-
-  return '<div class="work-card visible">'
-    + '<div class="work-thumb"><div class="work-thumb-inner" style="overflow:hidden;" ' + clickAction + '>'
-    + thumb
-    + '<div class="play-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>'
-    + '<span class="work-type-badge">WORKS ' + String(idx + 1).padStart(2, '0') + '</span>'
-    + '</div></div>'
-    + '<div class="work-body"><p class="work-genre">' + (item.genre || 'ジャンル') + '</p>'
-    + '<p class="work-title">' + (item.title || '—') + '</p>'
-    + link + '</div></div>';
+  if (ytId) return 'https://img.youtube.com/vi/' + ytId + '/hqdefault.jpg';
+  if (driveId) return 'https://drive.google.com/thumbnail?id=' + driveId + '&sz=w320-h180';
+  return '';
 }
 
-// YouTube モーダル再生
-function openVideoPlayer(url) {
-  var ytId = getYtId(url);
-  if (!ytId) { window.open(url, '_blank'); return; }
-  var overlay = document.createElement('div');
-  overlay.id = 'yt-modal';
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:9999;display:flex;align-items:center;justify-content:center;';
-  overlay.innerHTML = '<div style="position:relative;width:min(90vw,800px);aspect-ratio:16/9;">'
-    + '<iframe src="https://www.youtube.com/embed/' + ytId + '?autoplay=1" style="width:100%;height:100%;border:none;border-radius:12px;" allow="autoplay;encrypted-media" allowfullscreen></iframe>'
-    + '<button onclick="document.getElementById(\'yt-modal\').remove()" style="position:absolute;top:-36px;right:0;background:none;border:none;color:#fff;font-size:1.6rem;cursor:pointer;">✕</button>'
-    + '</div>';
-  overlay.addEventListener('click', function(e){ if(e.target === overlay) overlay.remove(); });
-  document.body.appendChild(overlay);
+function pfBuildThumbs() {
+  return _pfItems.map(function(item, i) {
+    var src = pfThumbSrc(item);
+    var imgHtml = src
+      ? '<img src="' + src + '" alt="' + (item.title||'') + '" loading="lazy">'
+      : '<div class="pf-thumb-blank">▶</div>';
+    return '<div class="pf-thumb' + (i===0?' pf-active':'') + '" onclick="pfSelect(' + i + ')" data-idx="' + i + '">'
+      + imgHtml
+      + '<div class="pf-thumb-footer">WORKS ' + String(i+1).padStart(2,'0') + '</div>'
+      + (i===0 ? '<div class="pf-playing-dot"></div>' : '')
+      + '</div>';
+  }).join('');
+}
+
+function pfUpdateInfo(idx) {
+  var item = _pfItems[idx];
+  document.getElementById('pf-badge').textContent = 'WORKS ' + String(idx+1).padStart(2,'0') + ' / ' + _pfItems.length;
+  document.getElementById('pf-genre').textContent = item.genre || '';
+  document.getElementById('pf-title').textContent = item.title || '';
+}
+
+function pfUpdateActiveThumbs(idx) {
+  document.querySelectorAll('.pf-thumb').forEach(function(t, i) {
+    var active = (i === idx);
+    t.classList.toggle('pf-active', active);
+    var dot = t.querySelector('.pf-playing-dot');
+    if (active && !dot) {
+      var d = document.createElement('div');
+      d.className = 'pf-playing-dot';
+      t.appendChild(d);
+    } else if (!active && dot) {
+      dot.remove();
+    }
+  });
+  // active thumbをスクロール
+  var activeEl = document.querySelector('.pf-thumb.pf-active');
+  if (activeEl) activeEl.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
+}
+
+function pfRenderPlayer(idx, autoplay) {
+  _pfCurrent = idx;
+  var item = _pfItems[idx];
+  var ytId = getYtId(item.url);
+  var driveId = getDriveId(item.url);
+  var player = document.getElementById('pf-player');
+
+  if (autoplay && ytId) {
+    player.innerHTML = '<iframe src="https://www.youtube.com/embed/' + ytId
+      + '?autoplay=1&mute=1&controls=1&modestbranding=1&rel=0&loop=1&playlist=' + ytId
+      + '" frameborder="0" allow="autoplay;encrypted-media;picture-in-picture" allowfullscreen></iframe>';
+  } else if (autoplay && driveId) {
+    player.innerHTML = '<iframe src="https://drive.google.com/file/d/' + driveId
+      + '/preview" frameborder="0" allow="autoplay;encrypted-media" allowfullscreen></iframe>';
+  } else {
+    // スタティックサムネイル（再生前）
+    var src = pfThumbSrc(item);
+    if (src) {
+      player.innerHTML = '<img class="pf-cover" src="' + src + '" alt="' + (item.title||'') + '">';
+    } else {
+      player.innerHTML = '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--sub);font-size:2rem;">▶</div>';
+    }
+  }
+  pfUpdateInfo(idx);
+  pfUpdateActiveThumbs(idx);
+}
+
+function pfSelect(idx) {
+  pfRenderPlayer(idx, true);
+}
+
+function pfNav(dir) {
+  var next = (_pfCurrent + dir + _pfItems.length) % _pfItems.length;
+  pfRenderPlayer(next, true);
+}
+
+function pfInit(items) {
+  _pfItems = items;
+  if (!items.length) {
+    document.getElementById('portfolio-loading-txt').textContent = 'ポートフォリオは準備中です。';
+    return;
+  }
+  document.getElementById('portfolio-loading-txt').style.display = 'none';
+  document.getElementById('pf-main-wrap').style.display = '';
+  document.getElementById('pf-thumbs-wrap').style.display = '';
+  document.getElementById('pf-thumbs').innerHTML = pfBuildThumbs();
+  document.getElementById('pf-count').textContent = items.length + '本の実績';
+  // 最初はサムネ表示（再生はスクロール時）
+  pfRenderPlayer(0, false);
+
+  // IntersectionObserver: worksセクションが画面に入ったら自動再生
+  var worksSection = document.getElementById('works');
+  if (worksSection) {
+    var pfObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting && !_pfStarted) {
+          _pfStarted = true;
+          setTimeout(function() { pfRenderPlayer(0, true); }, 300);
+          pfObs.disconnect();
+        }
+      });
+    }, { threshold: 0.35 });
+    pfObs.observe(worksSection);
+  }
 }
 
 async function loadPortfolio() {
   if (!GAS_URL) {
-    document.getElementById('portfolio-loading').textContent = 'ポートフォリオは準備中です。';
+    document.getElementById('portfolio-loading-txt').textContent = 'ポートフォリオは準備中です。';
     return;
   }
   try {
     var res = await fetch(GAS_URL + '?action=portfolio');
     var json = await res.json();
-    var shorts = (json.data || []).filter(function(d){ return d.type !== '長尺'; });
-    var longs  = (json.data || []).filter(function(d){ return d.type === '長尺'; });
-    var shortEl = document.getElementById('portfolio-short');
-    var longEl  = document.getElementById('portfolio-long');
-    if (shorts.length) {
-      shortEl.innerHTML = shorts.map(function(d, i){ return buildWorkCard(d, i); }).join('');
-    } else {
-      shortEl.innerHTML = '<p style="color:var(--sub);font-size:0.85rem;padding:16px 0;">ポートフォリオは準備中です。</p>';
-    }
-    if (longs.length) {
-      longEl.innerHTML = longs.map(function(d, i){ return buildWorkCard(d, i); }).join('');
-      document.getElementById('portfolio-long-wrap').style.display = '';
-    }
+    pfInit(json.data || []);
   } catch(e) {
-    document.getElementById('portfolio-loading').textContent = 'ポートフォリオの読み込みに失敗しました。';
+    document.getElementById('portfolio-loading-txt').textContent = 'ポートフォリオの読み込みに失敗しました。';
   }
 }
 loadPortfolio();

@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>管理画面 | mono.create</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -1458,7 +1461,17 @@ function changePassword() {
 
 // ── サービス受付管理 ──────────────────────────────────────────────
 const SERVICE_LABELS = {
-  'edit_long': { label: '長尺動画 単品受託', desc: 'まとめて編集プラン（長尺）・単品長尺動画編集' }
+  'edit_short':        { label: 'ショート動画編集',               desc: '単品ショート動画編集（縦型・¥4,000〜）' },
+  'edit_long':         { label: '長尺動画編集',                   desc: '単品長尺・まとめて編集プラン（長尺）' },
+  'consulting':        { label: '編集コンサルティング',            desc: '1時間オンライン相談 ¥5,000/h' },
+  'manual':            { label: '編集マニュアル作成',              desc: '即外注可能なマニュアル ¥5,000〜' },
+  'same_day':          { label: '当日納品オプション',              desc: '+¥2,000（12:00までのご依頼）' },
+  'analysis':          { label: 'アカウント分析',                  desc: '分析結果を成果物に反映 ¥5,000' },
+  'market':            { label: '市場分析',                       desc: 'トレンド・勝ち筋分析 ¥5,000' },
+  'posting':           { label: '投稿代行',                       desc: 'Instagram/YouTube/TikTok ¥1,000/本' },
+  'pack_short':        { label: 'まとめて編集（ショート）セット',  desc: '10本〜 セット割引プラン' },
+  'pack_manage_short': { label: '運用まるごとお任せ（ショート）', desc: '編集＋投稿代行セット（ショート）' },
+  'pack_manage_long':  { label: '運用まるごとお任せ（長尺）',     desc: '編集＋投稿代行セット（長尺）' }
 };
 
 async function loadServiceStatus() {
