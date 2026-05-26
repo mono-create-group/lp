@@ -10,7 +10,7 @@
 <script>
 // ── キャッシュ自動更新 ──────────────────────────────────────────
 (function(){
-  var BUILT = 'v20260526-1';
+  var BUILT = 'v20260526-2';
   fetch('/lp/version.json?_=' + Date.now(), {cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(d){
@@ -1386,7 +1386,7 @@ footer {
         <p style="font-size:0.8rem;font-weight:700;margin-bottom:12px;color:var(--sub);padding-left:8px;">◎ ショート動画</p>
         <div class="pack-card fade-up" style="margin-bottom:32px;">
           <p class="pack-name" style="margin-bottom:4px;">まとめて編集プラン（ショート）</p>
-          <p style="font-size:0.74rem;color:var(--sub);margin-bottom:18px;">定価¥4,000/本 → 本数に応じて最大15%割引。月額合計と節約額の目安です。</p>
+          <p style="font-size:0.74rem;color:var(--sub);margin-bottom:18px;">定価¥4,000/本 → 本数に応じて最大10%割引。月額合計と節約額の目安です。</p>
 
           <!-- ショートプラン 月額合計テーブル -->
           <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;">
@@ -1428,15 +1428,15 @@ footer {
               <div style="position:absolute;top:-10px;left:14px;background:#10B981;color:#fff;font-size:0.65rem;font-weight:800;padding:2px 10px;border-radius:20px;letter-spacing:0.05em;">一番お得</div>
               <div style="margin-top:4px;">
                 <p style="font-size:0.78rem;color:var(--sub);margin:0 0 2px;">30本〜 / 月</p>
-                <p style="font-size:0.72rem;margin:0;"><span style="background:rgba(16,185,129,0.2);color:#10B981;padding:2px 7px;border-radius:4px;font-weight:700;">15% OFF</span></p>
+                <p style="font-size:0.72rem;margin:0;"><span style="background:rgba(16,185,129,0.2);color:#10B981;padding:2px 7px;border-radius:4px;font-weight:700;">10% OFF</span></p>
               </div>
               <div style="text-align:right;">
                 <p style="font-size:0.7rem;color:var(--sub);text-decoration:line-through;margin:0;">¥120,000〜</p>
-                <p style="font-size:1.15rem;font-weight:800;color:var(--gold);margin:0;">¥102,000<span style="font-size:0.72rem;font-weight:500;color:var(--sub);">/月〜</span></p>
+                <p style="font-size:1.15rem;font-weight:800;color:var(--gold);margin:0;">¥108,000<span style="font-size:0.72rem;font-weight:500;color:var(--sub);">/月〜</span></p>
               </div>
               <div style="text-align:center;background:rgba(16,185,129,0.2);border:1px solid rgba(16,185,129,0.5);border-radius:8px;padding:6px 10px;min-width:72px;">
                 <p style="font-size:0.63rem;color:#10B981;margin:0;font-weight:700;">節約額</p>
-                <p style="font-size:1.05rem;font-weight:800;color:#10B981;margin:0;">¥18,000〜</p>
+                <p style="font-size:1.05rem;font-weight:800;color:#10B981;margin:0;">¥12,000〜</p>
               </div>
             </div>
           </div>
