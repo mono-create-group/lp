@@ -273,6 +273,23 @@ function doGet(e) {
     return deleteSales(row);
   }
 
+  if (action === 'contract_delete') {
+    var row = parseInt(e.parameter.row, 10);
+    return deleteContract(row);
+  }
+
+  if (action === 'hearing_delete') {
+    var row = parseInt(e.parameter.row, 10);
+    return deleteHearing(row);
+  }
+
+  // ── 一括削除 ──
+  if (action === 'clear_inquiries')  return clearSheet(SHEET_NAME);
+  if (action === 'clear_payments')   return clearSheet('payments');
+  if (action === 'clear_sales')      return clearSheet('uriage');
+  if (action === 'clear_contracts')  return clearSheet('contracts');
+  if (action === 'clear_hearings')   return clearSheet('hearings');
+
   if (action === 'contracts') {
     return listContracts();
   }
@@ -542,6 +559,34 @@ function deletePortfolio(row) {
   if (!row) return jsonResponse({ error: 'invalid row' });
   var sheet = getOrCreatePortfolioSheet();
   sheet.deleteRow(row);
+  return jsonResponse({ success: true });
+}
+
+function deleteContract(row) {
+  var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName('contracts');
+  if (!sheet) return jsonResponse({ error: 'sheet not found' });
+  sheet.deleteRow(row);
+  return jsonResponse({ success: true });
+}
+
+function deleteHearing(row) {
+  var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName('hearings');
+  if (!sheet) return jsonResponse({ error: 'sheet not found' });
+  sheet.deleteRow(row);
+  return jsonResponse({ success: true });
+}
+
+// ヘッダー行（1行目）を残してデータ行を全削除
+function clearSheet(sheetName) {
+  var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName(sheetName);
+  if (!sheet) return jsonResponse({ error: 'sheet not found' });
+  var lastRow = sheet.getLastRow();
+  if (lastRow > 1) {
+    sheet.deleteRows(2, lastRow - 1);
+  }
   return jsonResponse({ success: true });
 }
 
