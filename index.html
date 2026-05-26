@@ -10,7 +10,7 @@
 <script>
 // ── キャッシュ自動更新 ──────────────────────────────────────────
 (function(){
-  var BUILT = 'v20260526-5';
+  var BUILT = 'v20260526-6';
   fetch('/lp/version.json?_=' + Date.now(), {cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(d){
@@ -2104,6 +2104,7 @@ function getDriveId(url) {
 var _pfItems = [];
 var _pfCurrent = 0;
 var _pfStarted = false;
+var _pfInitialized = false; // 初期ロード中はscrollIntoViewを無効化
 
 function pfThumbSrc(item) {
   var ytId = getYtId(item.url);
@@ -2147,9 +2148,11 @@ function pfUpdateActiveThumbs(idx) {
       dot.remove();
     }
   });
-  // active thumbをスクロール
-  var activeEl = document.querySelector('.pf-thumb.pf-active');
-  if (activeEl) activeEl.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
+  // active thumbをスクロール（ユーザー操作時のみ。初期ロードでページが飛ばないよう制御）
+  if (_pfInitialized) {
+    var activeEl = document.querySelector('.pf-thumb.pf-active');
+    if (activeEl) activeEl.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
+  }
 }
 
 var _pfIsIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -2275,6 +2278,7 @@ function pfInit(items) {
   document.getElementById('pf-thumbs').innerHTML = pfBuildThumbs();
   document.getElementById('pf-count').textContent = items.length + '本の実績';
   pfShowCover(0);
+  _pfInitialized = true; // 初期ロード完了 → 以降のthumb切替でscrollIntoView有効
 }
 
 async function loadPortfolio() {
