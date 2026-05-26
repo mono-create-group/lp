@@ -10,7 +10,7 @@
 <script>
 // ── キャッシュ自動更新 ──────────────────────────────────────────
 (function(){
-  var BUILT = 'v20260526-3';
+  var BUILT = 'v20260526-4';
   fetch('/lp/version.json?_=' + Date.now(), {cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(d){
@@ -1391,10 +1391,10 @@ footer {
           <!-- ショートプラン 月額合計テーブル -->
           <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;">
 
-            <!-- 10〜29本 / 5%OFF -->
+            <!-- 10〜15本 / 5%OFF -->
             <div style="display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:12px;padding:14px 16px;background:var(--bg3);border-radius:12px;border:1px solid var(--border);">
               <div>
-                <p style="font-size:0.78rem;color:var(--sub);margin:0 0 2px;">10〜29本 / 月</p>
+                <p style="font-size:0.78rem;color:var(--sub);margin:0 0 2px;">10〜15本 / 月</p>
                 <p style="font-size:0.72rem;margin:0;"><span style="background:rgba(148,163,184,0.15);color:var(--sub);padding:2px 7px;border-radius:4px;font-weight:700;">5% OFF</span></p>
               </div>
               <div style="text-align:right;">
@@ -1407,25 +1407,25 @@ footer {
               </div>
             </div>
 
-            <!-- 30本〜 / 10%OFF (BEST) -->
+            <!-- 16本〜 / 10%OFF (BEST) -->
             <div style="display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:12px;padding:14px 16px;background:linear-gradient(135deg,rgba(16,185,129,0.1),rgba(16,185,129,0.05));border-radius:12px;border:2px solid rgba(16,185,129,0.4);position:relative;">
               <div style="position:absolute;top:-10px;left:14px;background:#10B981;color:#fff;font-size:0.65rem;font-weight:800;padding:2px 10px;border-radius:20px;letter-spacing:0.05em;">一番お得</div>
               <div style="margin-top:4px;">
-                <p style="font-size:0.78rem;color:var(--sub);margin:0 0 2px;">30本〜 / 月</p>
+                <p style="font-size:0.78rem;color:var(--sub);margin:0 0 2px;">16本〜 / 月</p>
                 <p style="font-size:0.72rem;margin:0;"><span style="background:rgba(16,185,129,0.2);color:#10B981;padding:2px 7px;border-radius:4px;font-weight:700;">10% OFF</span></p>
               </div>
               <div style="text-align:right;">
-                <p style="font-size:0.7rem;color:var(--sub);text-decoration:line-through;margin:0;">¥120,000〜</p>
-                <p style="font-size:1.15rem;font-weight:800;color:var(--gold);margin:0;">¥108,000<span style="font-size:0.72rem;font-weight:500;color:var(--sub);">/月〜</span></p>
+                <p style="font-size:0.7rem;color:var(--sub);text-decoration:line-through;margin:0;">¥64,000〜</p>
+                <p style="font-size:1.15rem;font-weight:800;color:var(--gold);margin:0;">¥57,600<span style="font-size:0.72rem;font-weight:500;color:var(--sub);">/月〜</span></p>
               </div>
               <div style="text-align:center;background:rgba(16,185,129,0.2);border:1px solid rgba(16,185,129,0.5);border-radius:8px;padding:6px 10px;min-width:72px;">
                 <p style="font-size:0.63rem;color:#10B981;margin:0;font-weight:700;">節約額</p>
-                <p style="font-size:1.05rem;font-weight:800;color:#10B981;margin:0;">¥12,000〜</p>
+                <p style="font-size:1.05rem;font-weight:800;color:#10B981;margin:0;">¥6,400〜</p>
               </div>
             </div>
           </div>
 
-          <p style="font-size:0.73rem;color:var(--sub);margin-bottom:16px;line-height:1.7;">※ 月額は10本の例（定価¥4,000/本）。本数は10本以上1本単位で調整可能。本数が増えるほど節約額も拡大。</p>
+          <p style="font-size:0.73rem;color:var(--sub);margin-bottom:16px;line-height:1.7;">※ 月額は各ティア最低本数の例（定価¥4,000/本）。本数は10本以上1本単位で調整可能。本数が増えるほど節約額も拡大。</p>
           <a href="#" onclick="openContract('edit-short');return false;" class="btn btn-gold" style="width:100%;justify-content:center;">申し込む →</a>
           <p class="pack-note" style="margin-top:12px;">※ 契約同意後すぐにヒアリングシートへ進みます。</p>
         </div>
