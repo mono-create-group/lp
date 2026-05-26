@@ -10,7 +10,7 @@
 <script>
 // ── キャッシュ自動更新 ──────────────────────────────────────────
 (function(){
-  var BUILT = 'v20260526-6';
+  var BUILT = 'v20260526-7';
   fetch('/lp/version.json?_=' + Date.now(), {cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(d){
@@ -1867,7 +1867,6 @@ footer {
                 <option>編集コンサルティング（¥5,000/h）</option>
                 <option>編集ディレクション・外注管理</option>
                 <option>SNS運用代行（北海道のみ ¥69,800〜）</option>
-                <option>無料トライアル（初回1本無料）</option>
                 <option>その他・まずは相談したい</option>
               </optgroup>
             </select>
