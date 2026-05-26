@@ -642,7 +642,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       <div class="table-wrap">
         <table>
           <thead><tr>
-            <th>取引日</th><th>取引先</th><th>プラン</th><th>税抜</th><th>消費税</th><th>税込</th><th>入金日</th><th>入金確認</th>
+            <th>取引日</th><th>取引先</th><th>プラン</th><th>税抜</th><th>消費税</th><th>税込</th><th>入金日</th><th>入金確認</th><th></th>
           </tr></thead>
           <tbody id="sales-body">
             <tr><td colspan="8" class="table-empty"><span class="spinner"></span></td></tr>
@@ -1557,6 +1557,10 @@ function renderPayments() {
            ✅ 承認・記帳
          </button>`
       : `<span style="font-size:0.75rem;color:#10B981;font-weight:700;">記帳済み</span>`;
+    const delBtn = `<button onclick="deletePayment(${p.row},'${p.name.replace(/'/g,'\\\'')}')"
+      style="padding:5px 10px;background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;margin-left:6px;">
+      🗑
+    </button>`;
     return `<tr>
       <td>${p.date}</td>
       <td style="font-weight:600;">${p.name}</td>
@@ -1565,9 +1569,20 @@ function renderPayments() {
       <td style="font-weight:700;color:var(--gold);">${p.amount}</td>
       <td>${p.payDate}</td>
       <td style="color:${statusColor};font-weight:700;">${p.status}</td>
-      <td>${btn}</td>
+      <td style="white-space:nowrap;">${btn}${delBtn}</td>
     </tr>`;
   }).join('');
+}
+
+async function deletePayment(row, name) {
+  if (!confirm(`「${name}」の振込記録を削除しますか？\n\nこの操作は元に戻せません。`)) return;
+  try {
+    await fetch(`${GAS_URL}?action=payment_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    showToast('削除しました');
+    loadPayments();
+  } catch(e) {
+    alert('削除に失敗しました。');
+  }
 }
 
 async function approvePayment(row) {
@@ -2366,8 +2381,23 @@ function renderSales() {
       <td style="text-align:right;font-family:'Inter',sans-serif;font-weight:700;color:var(--green);">¥${Number(s.taxInc).toLocaleString()}</td>
       <td class="td-date">${esc(s.payDate)}</td>
       <td><span class="status-badge ${s.confirmed==='確認済み'?'status-完了':'status-未対応'}">${esc(s.confirmed)}</span></td>
+      <td><button onclick="deleteSalesRecord(${s.row},'${esc(s.client).replace(/'/g,'\\\'')}')"
+        style="padding:4px 9px;background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;">
+        🗑
+      </button></td>
     </tr>`).join('');
 }
+async function deleteSalesRecord(row, client) {
+  if (!confirm(`「${client}」の売上記録を削除しますか？\n\nこの操作は元に戻せません。`)) return;
+  try {
+    await fetch(`${GAS_URL}?action=sales_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    showToast('削除しました');
+    loadSales();
+  } catch(e) {
+    alert('削除に失敗しました。');
+  }
+}
+
 async function addSalesRecord() {
   const dateRaw = document.getElementById('sl-date').value;
   const date    = dateRaw.replace(/-/g, '/');   // "2026-05-24" → "2026/05/24" に統一

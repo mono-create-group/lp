@@ -263,6 +263,16 @@ function doGet(e) {
     return deleteInquiry(row);
   }
 
+  if (action === 'payment_delete') {
+    var row = parseInt(e.parameter.row, 10);
+    return deletePayment(row);
+  }
+
+  if (action === 'sales_delete') {
+    var row = parseInt(e.parameter.row, 10);
+    return deleteSales(row);
+  }
+
   if (action === 'contracts') {
     return listContracts();
   }
@@ -531,6 +541,22 @@ function updatePortfolio(data) {
 function deletePortfolio(row) {
   if (!row) return jsonResponse({ error: 'invalid row' });
   var sheet = getOrCreatePortfolioSheet();
+  sheet.deleteRow(row);
+  return jsonResponse({ success: true });
+}
+
+function deletePayment(row) {
+  var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName('payments');
+  if (!sheet) return jsonResponse({ error: 'sheet not found' });
+  sheet.deleteRow(row);
+  return jsonResponse({ success: true });
+}
+
+function deleteSales(row) {
+  var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName('uriage');
+  if (!sheet) return jsonResponse({ error: 'sheet not found' });
   sheet.deleteRow(row);
   return jsonResponse({ success: true });
 }
