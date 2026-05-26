@@ -421,6 +421,10 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
         ⚙️ 設定
       </button>
+      <button id="tab-content-btn" onclick="switchAdminTab('content')"
+        style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
+        ✏️ テキスト編集
+      </button>
     </div>
 
     <!-- ── 問い合わせタブ ── -->
@@ -809,6 +813,23 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       </div>
 
     </div><!-- /tab-settings -->
+
+    <!-- ── コンテンツ管理タブ ── -->
+    <div id="tab-content" style="display:none;max-width:760px;margin:0 auto;padding:32px 0;">
+      <h2 style="font-size:1.2rem;font-weight:800;margin-bottom:6px;">✏️ LP テキスト・価格 編集</h2>
+      <p style="font-size:0.82rem;color:var(--sub);margin-bottom:24px;">変更後「保存」を押すとLPに即反映されます。空欄のまま保存するとデフォルト値に戻ります。</p>
+
+      <div id="content-form-area">
+        <p style="color:var(--sub);font-size:0.85rem;">読み込み中...</p>
+      </div>
+
+      <div style="margin-top:28px;display:flex;align-items:center;gap:16px;">
+        <button onclick="saveContent()" style="padding:12px 32px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;">
+          💾 保存してLPに反映
+        </button>
+        <span id="content-save-msg" style="font-size:0.82rem;display:none;"></span>
+      </div>
+    </div><!-- /tab-content -->
 
   </main>
 </div>
@@ -1237,7 +1258,7 @@ function exportCSV() {
 }
 
 // ── Tab switch ──
-const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','settings'];
+const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','settings','content'];
 function switchAdminTab(tab) {
   ADMIN_TABS.forEach(t => {
     document.getElementById('tab-' + t).style.display = t === tab ? '' : 'none';
@@ -1252,6 +1273,129 @@ function switchAdminTab(tab) {
   if (tab === 'sales')     loadSales();
   if (tab === 'schedule')  loadSchedule();
   if (tab === 'settings')  loadServiceStatus();
+  if (tab === 'content')   loadLpContent();
+}
+
+// ── LP コンテンツ編集 ─────────────────────────────────────────
+const CONTENT_FIELDS = [
+  { section: 'ヒーロー', fields: [
+    { key: 'hero_h1_line1',   label: 'キャッチコピー 1行目',   placeholder: '編集を外注して' },
+    { key: 'hero_h1_em',      label: 'キャッチコピー 2行目（強調）', placeholder: '運用に全集中。' },
+    { key: 'hero_desc',       label: 'サブコピー',             placeholder: 'プロのフリーランスチームが...' },
+  ]},
+  { section: 'ヒーローカード（右側の数値）', fields: [
+    { key: 'hero_stat1_val',   label: 'ショート編集 価格',      placeholder: '¥4,000' },
+    { key: 'hero_stat1_label', label: 'ショート編集 ラベル',    placeholder: 'ショート動画編集（縦型）' },
+    { key: 'hero_stat3_val',   label: '丸投げパック 価格',      placeholder: '¥45,000' },
+    { key: 'hero_stat3_label', label: '丸投げパック ラベル',    placeholder: '投稿丸投げパック（10本 / 月）' },
+    { key: 'hero_stat5_val',   label: '長尺編集 価格',          placeholder: '¥15,000' },
+    { key: 'hero_stat5_label', label: '長尺編集 ラベル',        placeholder: '長尺動画編集（YouTube・セミナー等）' },
+  ]},
+  { section: '料金表（単品）', fields: [
+    { key: 'price_edit_short',   label: 'ショート動画編集',     placeholder: '¥4,000〜' },
+    { key: 'price_edit_long',    label: '長尺動画編集（目安）', placeholder: '¥15,000〜' },
+    { key: 'price_long_10min',   label: '長尺 〜10分',          placeholder: '¥15,000' },
+    { key: 'price_long_15min',   label: '長尺 10〜15分',        placeholder: '¥20,000' },
+    { key: 'price_long_20min',   label: '長尺 15〜20分',        placeholder: '¥30,000' },
+    { key: 'price_long_over',    label: '長尺 20分〜',          placeholder: '+¥1,200/分' },
+    { key: 'price_consulting',   label: '編集コンサルティング', placeholder: '¥5,000 / h' },
+    { key: 'price_manual',       label: '編集マニュアル作成',   placeholder: '¥5,000〜' },
+    { key: 'price_sameday',      label: '当日納品（ショート）', placeholder: '+¥2,000' },
+    { key: 'price_sameday_long', label: '当日納品（長尺）',     placeholder: '長尺 +¥5,000' },
+    { key: 'price_analysis',     label: 'アカウント分析',       placeholder: '¥5,000' },
+    { key: 'price_market',       label: '市場分析',             placeholder: '¥5,000' },
+    { key: 'price_posting',      label: '投稿代行',             placeholder: '¥1,000 / 本' },
+  ]},
+  { section: '投稿丸投げプラン（ショート）', fields: [
+    { key: 'pack_post8_name',   label: '8本 プラン名',    placeholder: '8本投稿パック' },
+    { key: 'pack_post8_price',  label: '8本 価格',        placeholder: '¥69,800' },
+    { key: 'pack_post10_name',  label: '10本 プラン名',   placeholder: '10本投稿パック' },
+    { key: 'pack_post10_price', label: '10本 価格',       placeholder: '¥45,000' },
+    { key: 'pack_post15_name',  label: '15本 プラン名',   placeholder: '15本投稿パック' },
+    { key: 'pack_post15_price', label: '15本 価格',       placeholder: '¥75,000' },
+    { key: 'pack_post30_name',  label: '30本 プラン名',   placeholder: '30本投稿パック' },
+    { key: 'pack_post30_price', label: '30本 価格',       placeholder: '¥150,000' },
+  ]},
+  { section: '運用丸投げパック', fields: [
+    { key: 'pack_manage_std_name',  label: 'スタンダード プラン名', placeholder: 'スタンダードパック' },
+    { key: 'pack_manage_std_title', label: 'スタンダード 内容',     placeholder: 'ショート8本 + YouTube長尺4本' },
+    { key: 'pack_manage_std_price', label: 'スタンダード 価格',     placeholder: '¥150,000' },
+    { key: 'pack_manage_pre_name',  label: 'プレミアム プラン名',   placeholder: 'プレミアムパック' },
+    { key: 'pack_manage_pre_title', label: 'プレミアム 内容',       placeholder: 'ショート15本 + YouTube長尺8本' },
+    { key: 'pack_manage_pre_price', label: 'プレミアム 価格',       placeholder: '¥220,000' },
+  ]},
+];
+
+let _currentContent = {};
+
+async function loadLpContent() {
+  const area = document.getElementById('content-form-area');
+  area.innerHTML = '<p style="color:var(--sub);font-size:0.85rem;">読み込み中...</p>';
+  try {
+    const res = await fetch(`${GAS_URL}?action=content_get`);
+    const d = await res.json();
+    _currentContent = d.content || {};
+    renderContentForm();
+  } catch(e) {
+    area.innerHTML = '<p style="color:var(--red);">読み込みに失敗しました。</p>';
+  }
+}
+
+function renderContentForm() {
+  const area = document.getElementById('content-form-area');
+  const fieldStyle = 'display:flex;flex-direction:column;gap:4px;';
+  const labelStyle = 'font-size:0.76rem;color:var(--sub);font-weight:600;';
+  const inputStyle = 'background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:0.85rem;font-family:inherit;outline:none;width:100%;';
+
+  area.innerHTML = CONTENT_FIELDS.map(section => `
+    <div style="margin-bottom:28px;">
+      <p style="font-size:0.82rem;font-weight:800;color:var(--lt);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--border);">
+        ${section.section}
+      </p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;">
+        ${section.fields.map(f => `
+          <div style="${fieldStyle}">
+            <label style="${labelStyle}">${f.label}</label>
+            <input type="text" data-content-key="${f.key}"
+              value="${esc(_currentContent[f.key] || '')}"
+              placeholder="${f.placeholder}"
+              style="${inputStyle}">
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+async function saveContent() {
+  const inputs = document.querySelectorAll('[data-content-key]');
+  const content = {};
+  inputs.forEach(el => {
+    const key = el.getAttribute('data-content-key');
+    const val = el.value.trim();
+    if (val) content[key] = val;
+    else delete content[key]; // 空欄はキー削除（デフォルト値に戻る）
+  });
+
+  const msg = document.getElementById('content-save-msg');
+  msg.style.display = '';
+  msg.style.color = 'var(--sub)';
+  msg.textContent = '保存中...';
+
+  try {
+    // まず全クリアしてから保存（空欄キーも反映するため）
+    await fetch(GAS_URL, {
+      method: 'POST', mode: 'no-cors',
+      body: JSON.stringify({ action: 'content_update', key: getAdminPw(), content })
+    });
+    _currentContent = content;
+    msg.style.color = 'var(--green)';
+    msg.textContent = '✅ 保存しました。LPに反映されました。';
+    setTimeout(() => { msg.style.display = 'none'; }, 3000);
+  } catch(e) {
+    msg.style.color = 'var(--red)';
+    msg.textContent = '❌ 保存に失敗しました。';
+  }
 }
 
 // ── 制作スケジュール（納期管理） ──────────────────────────────

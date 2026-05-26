@@ -10,7 +10,7 @@
 <script>
 // ── キャッシュ自動更新 ──────────────────────────────────────────
 (function(){
-  var BUILT = 'v20260525-4';
+  var BUILT = 'v20260526-1';
   fetch('/lp/version.json?_=' + Date.now(), {cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(d){
@@ -1055,10 +1055,10 @@ footer {
     <div>
       <p class="hero-eyebrow">VIDEO EDITING &amp; SNS MARKETING</p>
       <h1>
-        編集を外注して<br>
-        <em>運用に全集中。</em>
+        <span data-ck="hero_h1_line1">編集を外注して</span><br>
+        <em data-ck="hero_h1_em">運用に全集中。</em>
       </h1>
-      <p class="hero-desc">
+      <p class="hero-desc" data-ck="hero_desc">
         プロのフリーランスチームが最短当日で仕上げます。<br>
         編集から運用代行まで、丸ごとお任せください。
       </p>
@@ -1088,24 +1088,24 @@ footer {
     <div class="hero-card fade-up">
       <p class="hero-card-label">SERVICE OVERVIEW</p>
       <div class="hero-stat">
-        <p class="hero-stat-value">¥4,000 <span>〜 / 1本</span></p>
-        <p class="hero-stat-label">ショート動画編集（縦型）</p>
+        <p class="hero-stat-value"><span data-ck="hero_stat1_val">¥4,000</span> <span data-ck="hero_stat1_sub">〜 / 1本</span></p>
+        <p class="hero-stat-label" data-ck="hero_stat1_label">ショート動画編集（縦型）</p>
       </div>
       <div class="hero-stat">
-        <p class="hero-stat-value">当日 <span>〜3日</span></p>
-        <p class="hero-stat-label">納品スピード（最短当日）</p>
+        <p class="hero-stat-value"><span data-ck="hero_stat2_val">当日</span> <span data-ck="hero_stat2_sub">〜3日</span></p>
+        <p class="hero-stat-label" data-ck="hero_stat2_label">納品スピード（最短当日）</p>
       </div>
       <div class="hero-stat">
-        <p class="hero-stat-value">¥45,000 <span>〜 / 月</span></p>
-        <p class="hero-stat-label">投稿丸投げパック（10本 / 月）</p>
+        <p class="hero-stat-value"><span data-ck="hero_stat3_val">¥45,000</span> <span data-ck="hero_stat3_sub">〜 / 月</span></p>
+        <p class="hero-stat-label" data-ck="hero_stat3_label">投稿丸投げパック（10本 / 月）</p>
       </div>
       <div class="hero-stat">
-        <p class="hero-stat-value">3<span>回</span></p>
-        <p class="hero-stat-label">修正無料回数（4回目〜¥1,000）</p>
+        <p class="hero-stat-value"><span data-ck="hero_stat4_val">3</span><span data-ck="hero_stat4_sub">回</span></p>
+        <p class="hero-stat-label" data-ck="hero_stat4_label">修正無料回数（4回目〜¥1,000）</p>
       </div>
       <div class="hero-stat">
-        <p class="hero-stat-value">¥15,000 <span>〜 / 1本</span></p>
-        <p class="hero-stat-label">長尺動画編集（YouTube・セミナー等）</p>
+        <p class="hero-stat-value"><span data-ck="hero_stat5_val">¥15,000</span> <span data-ck="hero_stat5_sub">〜 / 1本</span></p>
+        <p class="hero-stat-label" data-ck="hero_stat5_label">長尺動画編集（YouTube・セミナー等）</p>
       </div>
     </div>
   </div>
@@ -1306,7 +1306,7 @@ footer {
             <p class="pricing-row-name">ショート動画編集</p>
             <p class="pricing-row-desc">縦型1本。テロップ・SE・BGM・エフェクト込み。最短当日〜3日納品。</p>
           </div>
-          <p class="pricing-price">¥4,000〜</p>
+          <p class="pricing-price" data-ck="price_edit_short">¥4,000〜</p>
         </div>
         <div id="service-edit-long-single" class="pricing-row pricing-row--group fade-up" onclick="toggleLongform(this)">
           <div style="flex:1;">
@@ -1317,28 +1317,28 @@ footer {
             <p class="pricing-row-desc">納品5〜7日。動画の長さによって料金が変わります。<span class="longform-toggle-hint">▼ 詳細を見る</span></p>
             <div class="longform-detail">
               <table class="longform-table">
-                <tr><td>〜10分</td><td class="longform-price">¥15,000</td></tr>
-                <tr><td>10〜15分</td><td class="longform-price">¥20,000</td></tr>
-                <tr><td>15〜20分</td><td class="longform-price">¥30,000</td></tr>
-                <tr><td>20分〜</td><td class="longform-price">+¥1,200/分</td></tr>
+                <tr><td>〜10分</td><td class="longform-price" data-ck="price_long_10min">¥15,000</td></tr>
+                <tr><td>10〜15分</td><td class="longform-price" data-ck="price_long_15min">¥20,000</td></tr>
+                <tr><td>15〜20分</td><td class="longform-price" data-ck="price_long_20min">¥30,000</td></tr>
+                <tr><td>20分〜</td><td class="longform-price" data-ck="price_long_over">+¥1,200/分</td></tr>
               </table>
             </div>
           </div>
-          <p class="pricing-price" style="white-space:nowrap;">¥15,000〜</p>
+          <p class="pricing-price" style="white-space:nowrap;" data-ck="price_edit_long">¥15,000〜</p>
         </div>
         <div id="svc-consulting" class="pricing-row fade-up">
           <div>
             <p class="pricing-row-name">編集コンサルティング</p>
             <p class="pricing-row-desc">1時間のオンライン相談。アカウント分析→改善提案。</p>
           </div>
-          <p class="pricing-price">¥5,000 / h</p>
+          <p class="pricing-price" data-ck="price_consulting">¥5,000 / h</p>
         </div>
         <div id="svc-manual" class="pricing-row fade-up">
           <div>
             <p class="pricing-row-name">編集マニュアル作成</p>
             <p class="pricing-row-desc">即外注可能なマニュアルを編集者目線で作成。</p>
           </div>
-          <p class="pricing-price">¥5,000〜</p>
+          <p class="pricing-price" data-ck="price_manual">¥5,000〜</p>
         </div>
         <p style="font-size:0.8rem;color:var(--sub);margin-top:20px;padding:0 8px;">※ 修正3回まで無料。4回目以降¥1,000/回（長尺動画は¥3,000/回）。こちら側のミスは無制限対応。</p>
       </div>
@@ -1350,28 +1350,28 @@ footer {
             <p class="pricing-row-name">当日納品</p>
             <p class="pricing-row-desc">12:00までのご依頼に限り、当日中に仕上げます。<br>場合によってはお受けできない場合もございますので、ご了承ください。</p>
           </div>
-          <p class="pricing-price">+¥2,000<br><span style="font-size:0.72rem;color:var(--sub);font-weight:500;">長尺 +¥5,000</span></p>
+          <p class="pricing-price"><span data-ck="price_sameday">+¥2,000</span><br><span style="font-size:0.72rem;color:var(--sub);font-weight:500;" data-ck="price_sameday_long">長尺 +¥5,000</span></p>
         </div>
         <div id="svc-analysis" class="pricing-row fade-up">
           <div>
             <p class="pricing-row-name">アカウント分析</p>
             <p class="pricing-row-desc">アカウントの分析結果を成果物に落とし込みます。</p>
           </div>
-          <p class="pricing-price">¥5,000</p>
+          <p class="pricing-price" data-ck="price_analysis">¥5,000</p>
         </div>
         <div id="svc-market" class="pricing-row fade-up">
           <div>
             <p class="pricing-row-name">市場分析</p>
             <p class="pricing-row-desc">トレンド・参入業界の勝ち筋を分析。</p>
           </div>
-          <p class="pricing-price">¥5,000</p>
+          <p class="pricing-price" data-ck="price_market">¥5,000</p>
         </div>
         <div id="svc-posting" class="pricing-row fade-up">
           <div>
             <p class="pricing-row-name">投稿代行</p>
             <p class="pricing-row-desc">Instagram / YouTube / TikTokへの投稿業務を代行。</p>
           </div>
-          <p class="pricing-price">¥1,000 / 本</p>
+          <p class="pricing-price" data-ck="price_posting">¥1,000 / 本</p>
         </div>
       </div>
 
@@ -1544,11 +1544,11 @@ footer {
         <p style="font-size:0.8rem;font-weight:700;margin-bottom:12px;color:var(--sub);padding-left:8px;">◎ ショート動画</p>
         <div class="pack-grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr));margin-bottom:32px;">
           <div class="pack-card fade-up">
-            <p class="pack-name">8本投稿パック</p>
+            <p class="pack-name" data-ck="pack_post8_name">8本投稿パック</p>
             <p class="pack-title">ショート動画 + 投稿代行</p>
             <p class="pack-volume">8本 / 月</p>
             <div class="pack-price-row">
-              <p class="pack-price">¥69,800</p>
+              <p class="pack-price" data-ck="pack_post8_price">¥69,800</p>
               <p class="pack-price-label">/ 月</p>
             </div>
             <ul class="pack-features">
@@ -1560,11 +1560,11 @@ footer {
             <p class="pack-note">※ 契約同意後すぐにヒアリングシートへ進みます。</p>
           </div>
           <div class="pack-card fade-up">
-            <p class="pack-name">10本投稿パック</p>
+            <p class="pack-name" data-ck="pack_post10_name">10本投稿パック</p>
             <p class="pack-title">ショート動画 + 投稿代行</p>
             <p class="pack-volume">10本 / 月</p>
             <div class="pack-price-row">
-              <p class="pack-price">¥45,000</p>
+              <p class="pack-price" data-ck="pack_post10_price">¥45,000</p>
               <p class="pack-price-label">/ 月</p>
             </div>
             <ul class="pack-features">
@@ -1577,11 +1577,11 @@ footer {
           </div>
           <div class="pack-card featured fade-up">
             <span class="pack-badge">1番人気</span>
-            <p class="pack-name">15本投稿パック</p>
+            <p class="pack-name" data-ck="pack_post15_name">15本投稿パック</p>
             <p class="pack-title">ショート動画 + 投稿代行</p>
             <p class="pack-volume">15本 / 月</p>
             <div class="pack-price-row">
-              <p class="pack-price">¥75,000</p>
+              <p class="pack-price" data-ck="pack_post15_price">¥75,000</p>
               <p class="pack-price-label">/ 月</p>
             </div>
             <ul class="pack-features">
@@ -1593,11 +1593,11 @@ footer {
             <p class="pack-note">※ 契約同意後すぐにヒアリングシートへ進みます。</p>
           </div>
           <div class="pack-card fade-up">
-            <p class="pack-name">30本投稿パック</p>
+            <p class="pack-name" data-ck="pack_post30_name">30本投稿パック</p>
             <p class="pack-title">ショート動画 + 投稿代行</p>
             <p class="pack-volume">30本 / 月</p>
             <div class="pack-price-row">
-              <p class="pack-price">¥150,000</p>
+              <p class="pack-price" data-ck="pack_post30_price">¥150,000</p>
               <p class="pack-price-label">/ 月</p>
             </div>
             <ul class="pack-features">
@@ -1674,10 +1674,10 @@ footer {
         <p style="font-size:0.78rem;font-weight:700;color:#fff;background:#1E40AF;display:inline-block;padding:3px 12px;border-radius:20px;margin-bottom:20px;">📍 北海道エリアのみ対応</p>
         <div class="pack-grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr));margin-bottom:48px;">
           <div class="pack-card fade-up">
-            <p class="pack-name">スタンダードパック</p>
-            <p class="pack-title">ショート8本 + YouTube長尺4本</p>
+            <p class="pack-name" data-ck="pack_manage_std_name">スタンダードパック</p>
+            <p class="pack-title" data-ck="pack_manage_std_title">ショート8本 + YouTube長尺4本</p>
             <div class="pack-price-row">
-              <p class="pack-price">¥150,000</p>
+              <p class="pack-price" data-ck="pack_manage_std_price">¥150,000</p>
               <p class="pack-price-label">/ 月</p>
             </div>
             <ul class="pack-features">
@@ -1691,10 +1691,10 @@ footer {
           </div>
           <div class="pack-card featured fade-up">
             <span class="pack-badge">おすすめ</span>
-            <p class="pack-name">プレミアムパック</p>
-            <p class="pack-title">ショート15本 + YouTube長尺8本</p>
+            <p class="pack-name" data-ck="pack_manage_pre_name">プレミアムパック</p>
+            <p class="pack-title" data-ck="pack_manage_pre_title">ショート15本 + YouTube長尺8本</p>
             <div class="pack-price-row">
-              <p class="pack-price">¥220,000</p>
+              <p class="pack-price" data-ck="pack_manage_pre_price">¥220,000</p>
               <p class="pack-price-label">/ 月</p>
             </div>
             <ul class="pack-features">
@@ -2326,6 +2326,22 @@ async function loadPortfolio() {
   }
 }
 loadPortfolio();
+
+// ── LP コンテンツ動的反映 ────────────────────────────────────
+function applyContent(content) {
+  Object.keys(content).forEach(function(key) {
+    document.querySelectorAll('[data-ck="' + key + '"]').forEach(function(el) {
+      el.textContent = content[key];
+    });
+  });
+}
+(function loadLpContent() {
+  if (!GAS_URL) return;
+  fetch(GAS_URL + '?action=content_get', {cache:'no-store'})
+    .then(function(r){ return r.json(); })
+    .then(function(d){ if (d.content && Object.keys(d.content).length) applyContent(d.content); })
+    .catch(function(){});
+})();
 
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
