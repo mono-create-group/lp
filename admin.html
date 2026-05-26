@@ -1981,32 +1981,28 @@ function calcEstimate(planKey, answers) {
   // 動画尺パース
   const duration = answers['動画の長さ'] || '';
 
-  // ショート段階割引（最低10本〜。10〜15本=5%、16〜30本=10%、31本以上=15%）
+  // ショート段階割引（最低10本〜。10〜29本=5%、30本以上=10%）
   // 10本未満は割引対象外（単品扱い）→ null を返す
   function shortDisc(n) {
-    if (n >= 31) return 0.85;
-    if (n >= 16) return 0.90;
+    if (n >= 30) return 0.90;
     if (n >= 10) return 0.95;
     return null;
   }
   function shortDiscLabel(n) {
-    if (n >= 31) return '15%割引';
-    if (n >= 16) return '10%割引';
+    if (n >= 30) return '10%割引';
     if (n >= 10) return '5%割引';
     return '割引なし（単品扱い）';
   }
 
-  // 長尺段階割引（最低4本〜。4本=5%、5〜11本=10%、12本以上=15%）
+  // 長尺段階割引（最低4本〜。4〜7本=5%、8本以上=10%）
   // 4本未満は割引対象外（単品扱い）→ null を返す
   function longDisc(n) {
-    if (n >= 12) return 0.85;
-    if (n >= 5)  return 0.90;
+    if (n >= 8)  return 0.90;
     if (n >= 4)  return 0.95;
     return null;
   }
   function longDiscLabel(n) {
-    if (n >= 12) return '15%割引';
-    if (n >= 5)  return '10%割引';
+    if (n >= 8)  return '10%割引';
     if (n >= 4)  return '5%割引';
     return '割引なし（単品扱い）';
   }
