@@ -286,6 +286,12 @@ function doGet(e) {
     return deleteHearing(row);
   }
 
+  if (action === 'update_hearing_status') {
+    var row    = parseInt(e.parameter.row, 10);
+    var status = e.parameter.status || '';
+    return updateHearingStatus(row, status);
+  }
+
   if (action === 'set_trial') {
     var row       = parseInt(e.parameter.row, 10);
     var sheetName = e.parameter.sheet || 'inquiries';
@@ -408,6 +414,19 @@ function updateStatus(row, status) {
   }
   var sheet = getOrCreateSheet();
   sheet.getRange(row, 8).setValue(status); // 8列目=ステータス
+  return jsonResponse({ success: true });
+}
+
+// ── ヒアリング ステータス更新 ────────────────────────────────────
+function updateHearingStatus(row, status) {
+  var allowed = ['未対応', '対応中', '完了'];
+  if (!row || allowed.indexOf(status) === -1) {
+    return jsonResponse({ error: 'invalid params' });
+  }
+  var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName('hearings');
+  if (!sheet) return jsonResponse({ error: 'hearings sheet not found' });
+  sheet.getRange(row, 6).setValue(status); // 6列目=ステータス
   return jsonResponse({ success: true });
 }
 

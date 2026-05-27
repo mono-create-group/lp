@@ -1287,6 +1287,21 @@ async function updateStatusGAS(row, status) {
   }
 }
 
+// ── ヒアリング ステータスサイクル ─────────────────────────────
+async function cycleHearingStatus(row) {
+  const h = hearings.find(x => x.row === row);
+  if (!h) return;
+  const order = ['未対応', '対応中', '完了'];
+  h.status = order[(order.indexOf(h.status) + 1) % 3];
+  renderHearings();
+  try {
+    await fetch(`${GAS_URL}?action=update_hearing_status&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(h.status)}`);
+    showToast(`✅ ステータスを「${h.status}」に更新`);
+  } catch(e) {
+    showToast('⚠ GAS未接続 — ステータスはローカルのみ変更');
+  }
+}
+
 // ── Modal ──
 function openModal(row) {
   currentRow = row;
@@ -1994,7 +2009,7 @@ function renderHearings() {
         ${esc(h.plan)}
         ${trialBadge(h, 'hearings')}
       </td>
-      <td><span class="status-badge status-${esc(h.status)}">${statusDot(h.status)} ${esc(h.status)}</span></td>
+      <td><span class="status-badge status-${esc(h.status)}" style="cursor:pointer;" onclick="cycleHearingStatus(${h.row})" title="クリックでステータス変更">${statusDot(h.status)} ${esc(h.status)}</span></td>
       <td>
         <div class="td-actions">
           <button class="action-btn btn-expand" onclick="openHearingDetail(${h.row})">詳細</button>
