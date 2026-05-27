@@ -370,10 +370,16 @@ const params = new URLSearchParams(location.search);
 const paramName  = params.get('name')  || '';
 const paramEmail = params.get('email') || '';
 const paramPlan    = params.get('plan')    || 'ショート動画編集';
-const paramPlanKey = params.get('planKey') || 'edit-short';
+const paramPlanKey = params.get('planKey') || 'short-single';
 
 // ── プラン詳細マップ ──────────────────────────────────────────
 const PLAN_DETAILS = {
+  'short-single': {
+    title: '🎬 ショート動画編集（単品）', summary: '縦型1本からOK。テロップ・BGM・SE込み',
+    services: '編集のみ（単品）',
+    items: ['¥4,000〜/本', 'テロップ・BGM・SE付き', '最短当日〜3日納品', '修正3回まで無料'],
+    recommend: 'まず1本試したい方・スポット依頼の方'
+  },
   'edit-short': {
     title: '📦 まとめて編集プラン（ショート）', summary: 'ショート動画10本〜の段階割引パック',
     services: '編集のみ',

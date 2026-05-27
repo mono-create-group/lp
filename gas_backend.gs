@@ -43,6 +43,7 @@ var BANK_INFO = [
 
 // ─── プラン→ヒアリングURL マッピング ─────────────────────────────
 var HEARING_MAP = {
+  'short-single':'hearing/short.html',
   'edit-short':  'hearing/short.html',
   'long-single': 'hearing/long-single.html',
   'edit-long':   'hearing/set-long.html',
