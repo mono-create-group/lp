@@ -108,6 +108,21 @@ label.form-radio-item:has(input:checked) {
 }
 label.form-radio-item input { accent-color: #2563EB; width: 18px; height: 18px; flex: 0 0 18px; margin: 1px 0 0 0; }
 label.form-radio-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.5; word-break: break-word; }
+.form-check-group { display: flex; flex-direction: column; gap: 8px; }
+label.form-check-item {
+  display: flex !important; align-items: flex-start; gap: 14px;
+  padding: 10px 14px;
+  border: 1.5px solid rgba(15,23,42,0.10);
+  border-radius: 8px; cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  margin-bottom: 0;
+}
+label.form-check-item:has(input:checked) {
+  border-color: #2563EB;
+  background: rgba(37,99,235,0.04);
+}
+label.form-check-item input { accent-color: #2563EB; width: 18px; height: 18px; flex: 0 0 18px; margin: 1px 0 0 0; }
+label.form-check-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.5; word-break: break-word; }
 /* 必須ラジオグループのエラー枠 */
 .radio-group-required.error .form-radio-group {
   outline: 2px solid #DC2626;
@@ -236,7 +251,7 @@ label.form-radio-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
 
     <!-- 動画仕様 -->
     <div class="form-section">
-      <p class="form-section-title">動画の仕様</p>
+      <p class="form-section-title">長尺動画の仕様</p>
 
       <!-- 動画の長さ：必須 -->
       <div class="form-group radio-group-required" id="group-length">
@@ -267,15 +282,27 @@ label.form-radio-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
       </div>
 
       <div class="form-group">
-        <label>テロップスタイルの希望</label>
+        <label>動画の種類</label>
+        <div class="form-check-group">
+          <label class="form-check-item"><input type="checkbox" name="video_type" value="トーク系（顔出し）"><span>トーク系（顔出し）</span></label>
+          <label class="form-check-item"><input type="checkbox" name="video_type" value="セミナー・講義録画"><span>セミナー・講義録画</span></label>
+          <label class="form-check-item"><input type="checkbox" name="video_type" value="解説・スライド系"><span>解説・スライド系</span></label>
+          <label class="form-check-item"><input type="checkbox" name="video_type" value="インタビュー"><span>インタビュー</span></label>
+          <label class="form-check-item"><input type="checkbox" name="video_type" value="Vlog・ドキュメンタリー"><span>Vlog・ドキュメンタリー</span></label>
+          <label class="form-check-item"><input type="checkbox" name="video_type" value="その他"><span>その他</span></label>
+          <input type="text" class="other-text-input" name="video_type_other" placeholder="自由にご記入ください">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>テロップ（字幕）について</label>
         <div class="form-radio-group">
-          <label class="form-radio-item"><input type="radio" name="caption_style" value="シンプル（白文字）"><span>シンプル（白文字）</span></label>
-          <label class="form-radio-item"><input type="radio" name="caption_style" value="アニメーション付き"><span>アニメーション付き</span></label>
-          <label class="form-radio-item"><input type="radio" name="caption_style" value="参考動画と近しいもの"><span>参考動画と近しいもの</span></label>
-          <label class="form-radio-item"><input type="radio" name="caption_style" value="プロマネの提示あり"><span>プロマネの提示あり</span></label>
+          <label class="form-radio-item"><input type="radio" name="caption_style" value="フルテロップ希望"><span>フルテロップ希望</span></label>
+          <label class="form-radio-item"><input type="radio" name="caption_style" value="キーワードのみ"><span>キーワードのみ</span></label>
+          <label class="form-radio-item"><input type="radio" name="caption_style" value="不要"><span>不要</span></label>
           <label class="form-radio-item"><input type="radio" name="caption_style" value="おまかせ"><span>おまかせ</span></label>
           <label class="form-radio-item"><input type="radio" name="caption_style" value="その他"><span>その他</span></label>
-          <input type="text" class="other-text-input" id="caption-style-other" name="caption_style_other" placeholder="具体的にご記入ください（例：テロップ量少なめ・英語併記 等）">
+          <input type="text" class="other-text-input" id="caption-style-other" name="caption_style_other" placeholder="自由にご記入ください">
         </div>
       </div>
       <div class="form-group">
@@ -292,6 +319,14 @@ label.form-radio-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
           <label class="form-radio-item"><input type="radio" name="se" value="あり（おまかせ）"><span>あり（おまかせ）</span></label>
           <label class="form-radio-item"><input type="radio" name="se" value="あり（指定あり）"><span>あり（指定あり）</span></label>
           <label class="form-radio-item"><input type="radio" name="se" value="なし"><span>なし</span></label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>サムネイル制作</label>
+        <div class="form-radio-group">
+          <label class="form-radio-item"><input type="radio" name="thumbnail" value="希望する（別途見積）"><span>希望する（別途見積）</span></label>
+          <label class="form-radio-item"><input type="radio" name="thumbnail" value="自分で用意する"><span>自分で用意する</span></label>
+          <label class="form-radio-item"><input type="radio" name="thumbnail" value="相談したい"><span>相談したい</span></label>
         </div>
       </div>
       <div class="form-group">
@@ -396,7 +431,7 @@ const params = new URLSearchParams(location.search);
 const paramName    = params.get('name')    || '';
 const paramEmail   = params.get('email')   || '';
 const paramPlan    = params.get('plan')    || 'YouTube長尺動画編集';
-const paramPlanKey = params.get('planKey') || 'edit-long';
+const paramPlanKey = params.get('planKey') || 'long-single';
 
 // ── プラン詳細マップ ──────────────────────────────────────────
 const PLAN_DETAILS = {
@@ -599,7 +634,7 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
 
   btn.disabled = true; btn.textContent = '送信中...';
 
-  // caption_style_other（テロップその他の詳細）
+  // caption_style（テロップその他の詳細）
   const captionStyle = getRadioValue('caption_style');
   const captionStyleOther = (document.getElementById('caption-style-other') || {}).value || '';
   const captionStyleFinal = captionStyle === 'その他' && captionStyleOther
@@ -613,6 +648,9 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
     ? 'その他：' + sourceOther
     : sourceVal;
 
+  // 動画の種類（チェックボックス）
+  const videoTypes = [...form.querySelectorAll('input[name=video_type]:checked')].map(i => i.value);
+
   const answers = {
     '__planKey':        paramPlanKey,
     '会社名/屋号':     fd.get('company')    || '',
@@ -621,10 +659,12 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
     'チャンネル登録者数':   fd.get('subscribers') || '',
     'ジャンル/テーマ':  fd.get('genre')      || '',
     '動画の長さ':       fd.get('動画の長さ') || '',
+    '動画の種類':       videoTypes.join(' / ') || '',
     '月の希望本数':     fd.get('月の希望本数') || '',
-    'テロップスタイル': captionStyleFinal,
+    'テロップ':         captionStyleFinal,
     'BGM':        fd.get('bgm') || '',
     'SE（効果音）':fd.get('se')  || '',
+    'サムネイル':       fd.get('thumbnail')  || '',
     'チャプター設定':   fd.get('chapter')    || '',
     '参考動画URL':      fd.get('ref_url')    || '',
     '素材提供方法':     fd.get('material')   || '',
@@ -665,35 +705,26 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-// その他テキスト入力の表示制御
-document.querySelectorAll('input[type="radio"][value="その他"]').forEach(function(inp){
+// その他テキスト入力の表示制御（ラジオ・チェックボックス共通）
+document.querySelectorAll('input[value="その他"]').forEach(function(inp){
   inp.addEventListener('change', function(){
-    const name = this.name;
-    // caption_style → caption-style-other
-    // source → source-other
-    const targetId = name === 'caption_style' ? 'caption-style-other'
-                   : name === 'source'        ? 'source-other'
-                   : null;
-    if (!targetId) return;
-    const target = document.getElementById(targetId);
-    if (!target) return;
-    target.classList.add('visible');
-    target.focus();
+    var next = this.closest('label').nextElementSibling;
+    if (next && next.classList.contains('other-text-input')) {
+      next.classList.toggle('visible', this.checked);
+      if (!this.checked) next.value = '';
+    }
   });
 });
-// その他以外を選んだら自由入力を隠す
+// ラジオボタンで「その他」以外を選択したとき自由入力を非表示
 document.querySelectorAll('input[type="radio"]').forEach(function(inp){
   if (inp.value === 'その他') return;
   inp.addEventListener('change', function(){
-    const name = this.name;
-    const targetId = name === 'caption_style' ? 'caption-style-other'
-                   : name === 'source'        ? 'source-other'
-                   : null;
-    if (!targetId) return;
-    const target = document.getElementById(targetId);
-    if (!target) return;
-    target.classList.remove('visible');
-    target.value = '';
+    const grp = this.closest('.form-radio-group');
+    if (!grp) return;
+    const other = grp.querySelector('.other-text-input');
+    if (!other) return;
+    other.classList.remove('visible');
+    other.value = '';
   });
 });
 </script>
