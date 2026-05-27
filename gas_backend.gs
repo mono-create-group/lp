@@ -43,6 +43,7 @@ var BANK_INFO = [
 
 // ─── プラン→ヒアリングURL マッピング ─────────────────────────────
 var HEARING_MAP = {
+  'trial':       'hearing/short.html',
   'short-single':'hearing/short.html',
   'edit-short':  'hearing/short.html',
   'long-single': 'hearing/long-single.html',
@@ -52,8 +53,8 @@ var HEARING_MAP = {
   'set-15':      'hearing/set-short.html',
   'set-30':      'hearing/set-short.html',
   'set-long':    'hearing/set-long.html',
-  'mixed-std':   'hearing/set-long.html',
-  'mixed-pre':   'hearing/set-long.html',
+  'mixed-std':   'hearing/ops-pack.html',
+  'mixed-pre':   'hearing/ops-pack.html',
   'dispatch':    'hearing/dispatch.html',
 };
 // ────────────────────────────────────────────────────────────────
