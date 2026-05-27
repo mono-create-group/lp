@@ -1233,17 +1233,55 @@ function closeModal() {
 function openCW(id) {
   window.open(`https://www.chatwork.com/#!rid${id}`, '_blank');
 }
-function openMail(email, name, plan) {
-  const to   = encodeURIComponent(email);
-  const subj = encodeURIComponent('【mono.create】お問い合わせありがとうございます');
-  const body = encodeURIComponent(
-    (name ? name + ' 様\n\n' : '') +
-    'この度はmono.createへのお問い合わせありがとうございます。\n\n' +
-    (plan ? '▼ ご関心のプラン\n' + plan + '\n\n' : '') +
-    '----\nmono.create\nhttps://mono-create-group.github.io/lp/'
-  );
+function openMail(email, name, plan, type) {
+  const n    = name || '';
+  const p    = plan || '';
+  const sig  = '\n\n----\nmono.create\nhttps://mono-create-group.github.io/lp/';
+  const fill = '\n\n▼ ここに追記してください\n\n';
+
+  let subj, body;
+
+  if (type === 'hearing') {
+    // ─ ヒアリング回答後
+    subj = '【mono.create】ヒアリング内容を確認しました';
+    body =
+      (n ? n + ' 様\n\n' : '') +
+      'ヒアリングシートのご回答ありがとうございます。\n' +
+      '内容を拝見いたしました。\n\n' +
+      (p ? '▼ ご選択プラン\n' + p + '\n\n' : '') +
+      '以下の通りご確認・ご連絡いたします。' +
+      fill +
+      'ご不明な点がございましたら、お気軽にご返信ください。' +
+      sig;
+
+  } else if (type === 'contract') {
+    // ─ 契約関連
+    subj = '【mono.create】ご契約について';
+    body =
+      (n ? n + ' 様\n\n' : '') +
+      'この度はmono.createとのご契約、誠にありがとうございます。\n\n' +
+      (p ? '▼ ご契約プラン\n' + p + '\n\n' : '') +
+      '以下の通りご連絡いたします。' +
+      fill +
+      'ご不明な点がございましたら、お気軽にご返信ください。' +
+      sig;
+
+  } else {
+    // ─ 問い合わせ受付（デフォルト）
+    subj = '【mono.create】お問い合わせありがとうございます';
+    body =
+      (n ? n + ' 様\n\n' : '') +
+      'この度はmono.createへのお問い合わせありがとうございます。\n' +
+      'ご関心をお持ちいただき、大変光栄です。\n\n' +
+      (p ? '▼ ご希望プラン\n' + p + '\n\n' : '') +
+      'ご内容を確認のうえ、以下の通りご案内いたします。' +
+      fill +
+      'ご不明な点がございましたら、お気軽にご相談ください。' +
+      sig;
+  }
+
   window.open(
-    `https://mail.google.com/mail/?view=cm&fs=1&to=${to}&su=${subj}&body=${body}`,
+    `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}&su=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`,
     '_blank'
   );
 }
@@ -1803,7 +1841,7 @@ function renderContracts() {
       <td class="td-plan" style="font-size:0.78rem;">${esc(c.plan)}</td>
       <td>${stageBadge}</td>
       <td>${pdfCell}</td>
-      <td><button class="action-btn btn-mail" onclick="openMail('${esc(c.email)}')">✉ メール</button></td>
+      <td><button class="action-btn btn-mail" onclick="openMail('${esc(c.email)}','${esc(c.name)}','${esc(c.plan)}','contract')">✉ メール</button></td>
       <td><button onclick="deleteContract(${c.row},'${esc(c.name).replace(/'/g,'\\\'')}')"
         style="padding:4px 9px;background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;">🗑</button></td>
     </tr>`;
@@ -1846,7 +1884,7 @@ function renderHearings() {
       <td>
         <div class="td-actions">
           <button class="action-btn btn-expand" onclick="openHearingDetail(${h.row})">詳細</button>
-          <button class="action-btn btn-mail" onclick="openMail('${esc(h.email)}')">✉ メール</button>
+          <button class="action-btn btn-mail" onclick="openMail('${esc(h.email)}','${esc(h.name)}','${esc(h.plan)}','hearing')">✉ メール</button>
           ${h.email ? `<button class="action-btn" style="background:#1a2a3a;color:#60a5fa;border:1px solid #1d4ed8;" onclick="openPaymentRequestModal(${h.row})">💳 振込依頼</button>` : ''}
           <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="deleteHearing(${h.row},'${esc(h.name).replace(/'/g,'\\\'').replace(/`/g,'\\`')}')">🗑</button>
         </div>
@@ -1966,7 +2004,7 @@ function openHearingDetail(row) {
     ${_renderHearingAnswers(ans)}
     <!-- アクション -->
     <div class="modal-actions" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;">
-      <button class="modal-btn mail" onclick="openMail('${esc(h.email)}','${esc(h.name)}','${esc(h.plan)}')">✉ メール返信</button>
+      <button class="modal-btn mail" onclick="openMail('${esc(h.email)}','${esc(h.name)}','${esc(h.plan)}','hearing')">✉ メール返信</button>
       <button class="modal-btn" style="background:rgba(96,165,250,0.15);color:#60a5fa;border:1px solid #1d4ed8;"
         onclick="closeModal();openPaymentRequestModal(${row})">💳 振込依頼へ</button>
       <button class="modal-btn" style="background:rgba(255,255,255,0.06);color:var(--sub);border:1px solid var(--border);"
