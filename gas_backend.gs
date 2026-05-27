@@ -286,6 +286,18 @@ function doGet(e) {
     return deleteHearing(row);
   }
 
+  if (action === 'set_trial') {
+    var row       = parseInt(e.parameter.row, 10);
+    var sheetName = e.parameter.sheet || 'inquiries';
+    var value     = e.parameter.value || '';
+    return setTrial(sheetName, row, value);
+  }
+
+  if (action === 'create_trial_folder') {
+    var clientName = e.parameter.name || 'unknown';
+    return jsonResponse(createClientMaterialFolder(clientName));
+  }
+
   // ── 一括削除 ──
   if (action === 'clear_inquiries')  return clearSheet(SHEET_NAME);
   if (action === 'clear_payments')   return clearSheet('payments');
@@ -377,7 +389,8 @@ function listInquiries() {
       chatwork_id: row[4] || '',
       plan:        row[5] || '',
       message:     row[6] || '',
-      status:      row[7] || '未対応'
+      status:      row[7] || '未対応',
+      trial:       row[8] || ''    // 'トライアル' or '' (9列目)
     });
   }
 
@@ -395,6 +408,19 @@ function updateStatus(row, status) {
   }
   var sheet = getOrCreateSheet();
   sheet.getRange(row, 8).setValue(status); // 8列目=ステータス
+  return jsonResponse({ success: true });
+}
+
+// ── トライアルフラグ更新 ──────────────────────────────────────
+function setTrial(sheetName, row, value) {
+  // sheetName: 'inquiries' or 'hearings'
+  // value: 'トライアル' or ''
+  if (!row) return jsonResponse({ error: 'invalid row' });
+  var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = sheetName === 'hearings' ? ss.getSheetByName('hearings') : getOrCreateSheet();
+  if (!sheet) return jsonResponse({ error: 'sheet not found' });
+  var col = sheetName === 'hearings' ? 7 : 9; // hearings:7列目, inquiries:9列目
+  sheet.getRange(row, col).setValue(value || '');
   return jsonResponse({ success: true });
 }
 
@@ -1209,7 +1235,7 @@ function listHearings() {
     var row = values[i];
     var answers = {};
     try { answers = JSON.parse(row[4]); } catch(e) {}
-    data.push({ row:i+1, date:row[0]||'', name:row[1]||'', email:row[2]||'', plan:row[3]||'', answers:answers, status:row[5]||'未対応' });
+    data.push({ row:i+1, date:row[0]||'', name:row[1]||'', email:row[2]||'', plan:row[3]||'', answers:answers, status:row[5]||'未対応', trial:row[6]||'' });
   }
   data.sort(function(a,b){ return b.date > a.date ? 1 : -1; });
   return jsonResponse({ data: data });

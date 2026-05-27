@@ -207,6 +207,23 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
 .status-対応中 { background: rgba(245,158,11,0.12); color: var(--yellow); border-color: rgba(245,158,11,0.25); }
 .status-完了   { background: rgba(16,185,129,0.12); color: var(--green); border-color: rgba(16,185,129,0.25); }
 
+/* Trial badge */
+.trial-badge {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 2px 7px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid;
+  transition: opacity 0.15s;
+  white-space: nowrap;
+}
+.trial-badge:hover { opacity: 0.7; }
+.trial-yes { background: rgba(59,130,246,0.12); color: #60a5fa; border-color: rgba(59,130,246,0.3); }
+.trial-no  { background: rgba(100,116,139,0.1); color: #94a3b8; border-color: rgba(100,116,139,0.2); }
+
 /* Actions */
 .td-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .action-btn {
@@ -1120,7 +1137,10 @@ function renderTable() {
         <p class="td-email">${esc(i.email)}</p>
         ${i.chatwork_id ? `<p style="font-size:0.78rem;color:var(--sub);">CW: ${esc(i.chatwork_id)}</p>` : ''}
       </td>
-      <td class="td-plan">${esc(i.plan)}</td>
+      <td class="td-plan">
+        ${esc(i.plan)}
+        ${trialBadge(i, 'inquiries')}
+      </td>
       <td class="td-message" title="${esc(i.message)}">${esc(i.message)}</td>
       <td>
         <span class="status-badge status-${esc(i.status)}" onclick="cycleStatus(${i.row})">
@@ -1143,6 +1163,97 @@ function renderTable() {
 
 function statusDot(s) {
   return s === '未対応' ? '🔴' : s === '対応中' ? '🟡' : '🟢';
+}
+
+// ── トライアルバッジ ──────────────────────────────────────────
+function isTrial(item) {
+  // GASのtrial列が'トライアル' OR planKey='trial' OR plan名に'トライアル'を含む
+  if (item.trial === 'トライアル') return true;
+  if (item.answers && item.answers['__planKey'] === 'trial') return true;
+  if (item.plan && item.plan.includes('トライアル')) return true;
+  return false;
+}
+
+function trialBadge(item, sheet) {
+  const flag = isTrial(item);
+  if (flag) {
+    return `<span class="trial-badge trial-yes" onclick="toggleTrial(event,${item.row},'${sheet}',true)" title="クリックで通常に変更">🎁 トライアル</span>`;
+  } else {
+    return `<span class="trial-badge trial-no" onclick="toggleTrial(event,${item.row},'${sheet}',false)" title="クリックでトライアルに変更">💰 通常</span>`;
+  }
+}
+
+async function toggleTrial(e, row, sheet, currentIsTrial) {
+  e.stopPropagation();
+  const newVal = currentIsTrial ? '' : 'トライアル';
+  try {
+    await fetch(`${GAS_URL}?action=set_trial&key=${encodeURIComponent(getAdminPw())}&row=${row}&sheet=${sheet}&value=${encodeURIComponent(newVal)}`);
+    // ローカル状態を更新して再描画
+    if (sheet === 'inquiries') {
+      const item = inquiries.find(x => x.row === row);
+      if (item) item.trial = newVal;
+      renderTable();
+    } else {
+      const item = hearings.find(x => x.row === row);
+      if (item) item.trial = newVal;
+      renderHearings();
+    }
+    showToast(newVal ? '🎁 トライアルに設定しました' : '💰 通常案件に変更しました');
+  } catch(err) {
+    showToast('⚠ 更新に失敗しました');
+  }
+}
+
+// ── トライアル用 Drive作成 + メール送信 ─────────────────────────
+async function openTrialMail(row) {
+  const h = hearings.find(x => x.row === row);
+  if (!h) return;
+
+  showToast('📁 Driveフォルダを作成中...');
+
+  let folderUrl = '';
+  try {
+    const res  = await fetch(`${GAS_URL}?action=create_trial_folder&key=${encodeURIComponent(getAdminPw())}&name=${encodeURIComponent(h.name || 'unknown')}`);
+    const json = await res.json();
+    if (json.success) {
+      folderUrl = json.url || '';
+      showToast('✅ Driveフォルダを作成しました');
+    } else {
+      showToast('⚠ フォルダ作成失敗。URLを手動で入力してください');
+    }
+  } catch(e) {
+    showToast('⚠ フォルダ作成に失敗しました');
+  }
+
+  const isLong = h.plan && (h.plan.includes('長尺') || h.plan.includes('long'));
+  const step3  = isLong ? '③30秒までの編集' : '③1本の無料編集';
+  const n = h.name || '';
+  const p = h.plan || '';
+  const sig  = '\n\n----\nmono.create\nhttps://mono-create-group.github.io/lp/';
+  const subj = '【mono.create】ヒアリング内容を確認しました';
+  const body =
+    (n ? n + ' 様\n\n' : '') +
+    'ヒアリングシートのご回答ありがとうございます。\n内容を拝見いたしました。\n\n' +
+    (p ? '▼ ご選択プラン\n' + p + '\n\n' : '') +
+    '▼ トライアルについて\n' +
+    'ショート動画：1本無料で編集させていただきます\n' +
+    '長尺動画：30秒まで編集させていただき、双方問題がなければ、契約させていただきます。\n\n' +
+    '▼ 特記事項\n\n' +
+    '以下の通りトライアルを進めさせていただきます。\n\n' +
+    '①素材を共有いただく\n\n' +
+    '以下のドライブにアップロードをお願いいたします。\n\n' +
+    (folderUrl || '（※ ドライブURLをここに貼り付けてください）') +
+    '\n\n②納期の設定\n\n' +
+    step3 + '\n\n' +
+    '④クオリティに問題がないかを確認していただく\n\n' +
+    '⑤契約判断\n\n' +
+    '素材を共有いただけましたら、ご連絡をよろしくお願いいたします。\nその際に、編集に関するご指示をいただけますと幸いです。\nご不明な点がございましたら、お気軽にご返信ください。' +
+    sig;
+
+  window.open(
+    `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(h.email)}&su=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`,
+    '_blank'
+  );
 }
 
 // ── Status cycle ──
@@ -1879,13 +1990,19 @@ function renderHearings() {
       <td class="td-date">${esc(h.date)}</td>
       <td class="td-name">${esc(h.name)}</td>
       <td class="td-email">${esc(h.email)}</td>
-      <td class="td-plan" style="font-size:0.78rem;">${esc(h.plan)}</td>
+      <td class="td-plan" style="font-size:0.78rem;">
+        ${esc(h.plan)}
+        ${trialBadge(h, 'hearings')}
+      </td>
       <td><span class="status-badge status-${esc(h.status)}">${statusDot(h.status)} ${esc(h.status)}</span></td>
       <td>
         <div class="td-actions">
           <button class="action-btn btn-expand" onclick="openHearingDetail(${h.row})">詳細</button>
-          <button class="action-btn btn-mail" onclick="openMail('${esc(h.email)}','${esc(h.name)}','${esc(h.plan)}','hearing')">✉ メール</button>
-          ${h.email ? `<button class="action-btn" style="background:#1a2a3a;color:#60a5fa;border:1px solid #1d4ed8;" onclick="openPaymentRequestModal(${h.row})">💳 振込依頼</button>` : ''}
+          ${isTrial(h)
+            ? `<button class="action-btn" style="background:#1e3a5f;color:#93c5fd;border:1px solid #3b82f6;font-weight:700;" onclick="openTrialMail(${h.row})">📁 Drive+メール</button>`
+            : `<button class="action-btn btn-mail" onclick="openMail('${esc(h.email)}','${esc(h.name)}','${esc(h.plan)}','hearing')">✉ メール</button>`
+          }
+          ${!isTrial(h) && h.email ? `<button class="action-btn" style="background:#1a2a3a;color:#60a5fa;border:1px solid #1d4ed8;" onclick="openPaymentRequestModal(${h.row})">💳 振込依頼</button>` : ''}
           <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="deleteHearing(${h.row},'${esc(h.name).replace(/'/g,'\\\'').replace(/`/g,'\\`')}')">🗑</button>
         </div>
       </td>
