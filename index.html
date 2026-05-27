@@ -10,7 +10,7 @@
 <script>
 // ── キャッシュ自動更新 ──────────────────────────────────────────
 (function(){
-  var BUILT = 'v20260526-7';
+  var BUILT = 'v20260526-8';
   fetch('/lp/version.json?_=' + Date.now(), {cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(d){
@@ -1104,7 +1104,7 @@ footer {
         <p class="hero-stat-label" data-ck="hero_stat4_label">修正無料回数（4回目〜¥1,000）</p>
       </div>
       <div class="hero-stat">
-        <p class="hero-stat-value"><span data-ck="hero_stat5_val">¥15,000</span> <span data-ck="hero_stat5_sub">〜 / 1本</span></p>
+        <p class="hero-stat-value"><span data-ck="hero_stat5_val">¥20,000</span> <span data-ck="hero_stat5_sub">〜 / 1本</span></p>
         <p class="hero-stat-label" data-ck="hero_stat5_label">長尺動画編集（YouTube・セミナー等）</p>
       </div>
     </div>
@@ -1181,7 +1181,7 @@ footer {
         <div class="service-icon">🎬</div>
         <h3>YouTube長尺動画編集</h3>
         <p>解説・セミナー・Vlogなど10〜30分超の長尺動画に対応。<br>カット・テロップ・BGM・SE・チャプター設定まで一括対応。</p>
-        <span class="service-badge">¥15,000〜 / 1本</span>
+        <span class="service-badge">¥20,000〜 / 1本</span>
       </div>
       <div class="service-card fade-up">
         <div class="service-icon">🎯</div>
@@ -1317,14 +1317,14 @@ footer {
             <p class="pricing-row-desc">納品5〜7日。動画の長さによって料金が変わります。<span class="longform-toggle-hint">▼ 詳細を見る</span></p>
             <div class="longform-detail">
               <table class="longform-table">
-                <tr><td>〜10分</td><td class="longform-price" data-ck="price_long_10min">¥15,000</td></tr>
-                <tr><td>10〜15分</td><td class="longform-price" data-ck="price_long_15min">¥20,000</td></tr>
+                <tr><td>〜10分</td><td class="longform-price" data-ck="price_long_10min">¥20,000</td></tr>
+                <tr><td>10〜15分</td><td class="longform-price" data-ck="price_long_15min">¥25,000</td></tr>
                 <tr><td>15〜20分</td><td class="longform-price" data-ck="price_long_20min">¥30,000</td></tr>
                 <tr><td>20分〜</td><td class="longform-price" data-ck="price_long_over">+¥1,200/分</td></tr>
               </table>
             </div>
           </div>
-          <p class="pricing-price" style="white-space:nowrap;" data-ck="price_edit_long">¥15,000〜</p>
+          <p class="pricing-price" style="white-space:nowrap;" data-ck="price_edit_long">¥20,000〜</p>
         </div>
         <div id="svc-consulting" class="pricing-row fade-up">
           <div>
@@ -1434,7 +1434,7 @@ footer {
         <p style="font-size:0.8rem;font-weight:700;margin-bottom:12px;color:var(--sub);padding-left:8px;">◎ YouTube長尺動画</p>
         <div class="pack-card fade-up" style="margin-bottom:48px;">
           <p class="pack-name" style="margin-bottom:4px;">まとめて編集プラン（長尺）</p>
-          <p style="font-size:0.74rem;color:var(--sub);margin-bottom:18px;">定価¥15,000/本（〜10分）→ 本数に応じて最大10%割引。月額合計と節約額の目安です。</p>
+          <p style="font-size:0.74rem;color:var(--sub);margin-bottom:18px;">定価¥20,000/本（〜10分）→ 本数に応じて最大10%割引。月額合計と節約額の目安です。</p>
 
           <!-- 長尺 月額合計テーブル（〜10分の動画基準） -->
           <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:6px;">
@@ -1446,12 +1446,12 @@ footer {
                 <p style="font-size:0.72rem;margin:0;"><span style="background:rgba(148,163,184,0.15);color:var(--sub);padding:2px 7px;border-radius:4px;font-weight:700;">5% OFF</span></p>
               </div>
               <div style="text-align:right;">
-                <p style="font-size:0.7rem;color:var(--sub);text-decoration:line-through;margin:0;">¥60,000〜</p>
-                <p style="font-size:1.15rem;font-weight:800;color:var(--gold);margin:0;">¥57,000<span style="font-size:0.72rem;font-weight:500;color:var(--sub);">/月〜</span></p>
+                <p style="font-size:0.7rem;color:var(--sub);text-decoration:line-through;margin:0;">¥80,000〜</p>
+                <p style="font-size:1.15rem;font-weight:800;color:var(--gold);margin:0;">¥76,000<span style="font-size:0.72rem;font-weight:500;color:var(--sub);">/月〜</span></p>
               </div>
               <div style="text-align:center;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);border-radius:8px;padding:6px 10px;min-width:72px;">
                 <p style="font-size:0.63rem;color:#10B981;margin:0;font-weight:700;">節約額</p>
-                <p style="font-size:0.98rem;font-weight:800;color:#10B981;margin:0;">¥3,000〜</p>
+                <p style="font-size:0.98rem;font-weight:800;color:#10B981;margin:0;">¥4,000〜</p>
               </div>
             </div>
 
@@ -1462,12 +1462,12 @@ footer {
                 <p style="font-size:0.72rem;margin:0;"><span style="background:rgba(16,185,129,0.2);color:#10B981;padding:2px 7px;border-radius:4px;font-weight:700;">10% OFF</span></p>
               </div>
               <div style="text-align:right;">
-                <p style="font-size:0.7rem;color:var(--sub);text-decoration:line-through;margin:0;">¥120,000〜</p>
-                <p style="font-size:1.15rem;font-weight:800;color:var(--gold);margin:0;">¥108,000<span style="font-size:0.72rem;font-weight:500;color:var(--sub);">/月〜</span></p>
+                <p style="font-size:0.7rem;color:var(--sub);text-decoration:line-through;margin:0;">¥160,000〜</p>
+                <p style="font-size:1.15rem;font-weight:800;color:var(--gold);margin:0;">¥144,000<span style="font-size:0.72rem;font-weight:500;color:var(--sub);">/月〜</span></p>
               </div>
               <div style="text-align:center;background:rgba(16,185,129,0.2);border:1px solid rgba(16,185,129,0.5);border-radius:8px;padding:6px 10px;min-width:72px;">
                 <p style="font-size:0.63rem;color:#10B981;margin:0;font-weight:700;">節約額</p>
-                <p style="font-size:1.05rem;font-weight:800;color:#10B981;margin:0;">¥12,000〜</p>
+                <p style="font-size:1.05rem;font-weight:800;color:#10B981;margin:0;">¥16,000〜</p>
               </div>
             </div>
           </div>
@@ -1486,8 +1486,8 @@ footer {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px 6px;color:var(--text);">4〜7本 <span style="color:var(--sub);font-size:0.72rem;">5%OFF</span></td><td style="padding:8px 6px;text-align:right;color:var(--gold);">¥14,250</td><td style="padding:8px 6px;text-align:right;color:var(--gold);">¥19,000</td><td style="padding:8px 6px;text-align:right;color:var(--gold);">¥28,500</td></tr>
-                  <tr><td style="padding:8px 6px;color:var(--text);">8本〜 <span style="color:#10B981;font-size:0.72rem;font-weight:700;">10%OFF</span></td><td style="padding:8px 6px;text-align:right;color:var(--gold);">¥13,500</td><td style="padding:8px 6px;text-align:right;color:var(--gold);">¥18,000</td><td style="padding:8px 6px;text-align:right;color:var(--gold);">¥27,000</td></tr>
+                  <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px 6px;color:var(--text);">4〜7本 <span style="color:var(--sub);font-size:0.72rem;">5%OFF</span></td><td style="padding:8px 6px;text-align:right;color:var(--gold);">¥19,000</td><td style="padding:8px 6px;text-align:right;color:var(--gold);">¥23,750</td><td style="padding:8px 6px;text-align:right;color:var(--gold);">¥28,500</td></tr>
+                  <tr><td style="padding:8px 6px;color:var(--text);">8本〜 <span style="color:#10B981;font-size:0.72rem;font-weight:700;">10%OFF</span></td><td style="padding:8px 6px;text-align:right;color:var(--gold);">¥18,000</td><td style="padding:8px 6px;text-align:right;color:var(--gold);">¥22,500</td><td style="padding:8px 6px;text-align:right;color:var(--gold);">¥27,000</td></tr>
                 </tbody>
               </table>
             </div>
@@ -1845,7 +1845,7 @@ footer {
               <option value="">-- 選択してください --</option>
               <optgroup label="── 単品">
                 <option>ショート動画編集（単品 ¥4,000〜）</option>
-                <option>長尺動画編集（単品 ¥15,000〜）</option>
+                <option>長尺動画編集（単品 ¥20,000〜）</option>
               </optgroup>
               <optgroup label="── まとめて編集プラン（編集のみ）">
                 <option>まとめて編集プラン ショート（10本〜）</option>
