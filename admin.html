@@ -1932,7 +1932,7 @@ function _renderHearingItem(k, v) {
     <div style="display:grid;grid-template-columns:160px 1fr auto;gap:10px;padding:8px 14px;border-bottom:1px dashed rgba(255,255,255,0.06);align-items:start;">
       <div style="font-size:0.75rem;color:var(--sub);padding-top:2px;">${esc(k)}</div>
       <div style="font-size:0.86rem;color:var(--text);line-height:1.5;">${valHtml}</div>
-      <button onclick="navigator.clipboard.writeText(${JSON.stringify(String(v))}).then(()=>showToast('📋 コピーしました'))" title="コピー"
+      <button data-copy="${esc(String(v))}" onclick="navigator.clipboard.writeText(this.dataset.copy).then(()=>showToast('📋 コピーしました'))" title="コピー"
         style="background:none;border:none;color:var(--sub);cursor:pointer;font-size:0.85rem;padding:0;line-height:1;">📋</button>
     </div>`;
 }
@@ -1959,7 +1959,7 @@ function openHearingDetail(row) {
       <button class="modal-btn" style="background:rgba(96,165,250,0.15);color:#60a5fa;border:1px solid #1d4ed8;"
         onclick="closeModal();openPaymentRequestModal(${row})">💳 振込依頼へ</button>
       <button class="modal-btn" style="background:rgba(255,255,255,0.06);color:var(--sub);border:1px solid var(--border);"
-        onclick='navigator.clipboard.writeText(${JSON.stringify(allText)}).then(()=>showToast("📋 全項目をコピーしました"))'>📋 全文コピー</button>
+        data-copy="${esc(allText)}" onclick='navigator.clipboard.writeText(this.dataset.copy).then(()=>showToast("📋 全項目をコピーしました"))'>📋 全文コピー</button>
     </div>`;
   document.getElementById('modal-overlay').classList.add('open');
 }
