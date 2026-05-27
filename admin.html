@@ -1130,7 +1130,7 @@ function renderTable() {
       <td>
         <div class="td-actions">
           ${i.chatwork_id ? `<button class="action-btn btn-cw" onclick="openCW('${esc(i.chatwork_id)}')">💬 CW</button>` : ''}
-          <button class="action-btn btn-mail" onclick="openMail('${esc(i.email)}')">✉ メール</button>
+          <button class="action-btn btn-mail" onclick="openMail('${esc(i.email)}','${esc(i.name)}','${esc(i.plan)}')">✉ メール</button>
           <button class="action-btn btn-expand" onclick="openModal(${i.row})">詳細</button>
           ${i.email ? `<button class="action-btn" style="background:#1a3a2a;color:#4ade80;border:1px solid #166534;" onclick="openHearingLinkModal(${i.row})">📋 ヒアリング案内</button>` : ''}
           ${i.email ? `<button class="action-btn" style="background:#1a2a3a;color:#60a5fa;border:1px solid #1d4ed8;" onclick="openManualPaymentFromInquiry(${i.row})">💳 振込依頼</button>` : ''}
@@ -1218,7 +1218,7 @@ function renderModal(row) {
     </div>
     <div class="modal-actions">
       ${i.chatwork_id ? `<button class="modal-btn cw" onclick="openCW('${esc(i.chatwork_id)}')">💬 Chatworkで返信</button>` : ''}
-      <button class="modal-btn mail" onclick="openMail('${esc(i.email)}')">✉ メール返信</button>
+      <button class="modal-btn mail" onclick="openMail('${esc(i.email)}','${esc(i.name)}','${esc(i.plan)}')">✉ メール返信</button>
       <button class="modal-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;margin-left:auto;" onclick="deleteInquiry(${i.row}, '${esc(i.name)}')">🗑 削除</button>
     </div>
   `;
@@ -1233,8 +1233,19 @@ function closeModal() {
 function openCW(id) {
   window.open(`https://www.chatwork.com/#!rid${id}`, '_blank');
 }
-function openMail(email) {
-  window.open(`mailto:${email}?subject=【mono.create】お問い合わせありがとうございます`, '_blank');
+function openMail(email, name, plan) {
+  const to   = encodeURIComponent(email);
+  const subj = encodeURIComponent('【mono.create】お問い合わせありがとうございます');
+  const body = encodeURIComponent(
+    (name ? name + ' 様\n\n' : '') +
+    'この度はmono.createへのお問い合わせありがとうございます。\n\n' +
+    (plan ? '▼ ご関心のプラン\n' + plan + '\n\n' : '') +
+    '----\nmono.create\nhttps://mono-create-group.github.io/lp/'
+  );
+  window.open(
+    `https://mail.google.com/mail/?view=cm&fs=1&to=${to}&su=${subj}&body=${body}`,
+    '_blank'
+  );
 }
 
 // ── Delete inquiry ──
@@ -1955,7 +1966,7 @@ function openHearingDetail(row) {
     ${_renderHearingAnswers(ans)}
     <!-- アクション -->
     <div class="modal-actions" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;">
-      <button class="modal-btn mail" onclick="openMail('${esc(h.email)}')">✉ メール返信</button>
+      <button class="modal-btn mail" onclick="openMail('${esc(h.email)}','${esc(h.name)}','${esc(h.plan)}')">✉ メール返信</button>
       <button class="modal-btn" style="background:rgba(96,165,250,0.15);color:#60a5fa;border:1px solid #1d4ed8;"
         onclick="closeModal();openPaymentRequestModal(${row})">💳 振込依頼へ</button>
       <button class="modal-btn" style="background:rgba(255,255,255,0.06);color:var(--sub);border:1px solid var(--border);"
