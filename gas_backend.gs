@@ -43,19 +43,20 @@ var BANK_INFO = [
 
 // ─── プラン→ヒアリングURL マッピング ─────────────────────────────
 var HEARING_MAP = {
-  'trial':       'hearing/short.html',
-  'short-single':'hearing/short.html',
-  'edit-short':  'hearing/short.html',
-  'long-single': 'hearing/long-single.html',
-  'edit-long':   'hearing/set-long.html',
-  'set-8':       'hearing/set-short.html',
-  'set-10':      'hearing/set-short.html',
-  'set-15':      'hearing/set-short.html',
-  'set-30':      'hearing/set-short.html',
-  'set-long':    'hearing/set-long.html',
-  'mixed-std':   'hearing/ops-pack.html',
-  'mixed-pre':   'hearing/ops-pack.html',
-  'dispatch':    'hearing/dispatch.html',
+  'trial':           'hearing/short.html',
+  'short-single':    'hearing/short.html',
+  'edit-short':      'hearing/short.html',
+  'long-single':     'hearing/long-single.html',
+  'edit-long':       'hearing/set-long.html',
+  'set-8':           'hearing/set-short.html',
+  'set-10':          'hearing/set-short.html',
+  'set-15':          'hearing/set-short.html',
+  'set-30':          'hearing/set-short.html',
+  'set-long':        'hearing/set-long.html',
+  'mixed-std':       'hearing/ops-pack.html',
+  'mixed-pre':       'hearing/ops-pack.html',
+  'dispatch':        'hearing/dispatch.html',
+  'portfolio-free':  'hearing/portfolio-free.html',
 };
 // ────────────────────────────────────────────────────────────────
 
@@ -124,6 +125,17 @@ function doPost(e) {
     if (data.action === 'portfolio_update') {
       if (data.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
       return updatePortfolio(data);
+    }
+
+    // 無料PF制作 申込
+    if (data.action === 'pf_submit') {
+      return submitPFInquiry(data);
+    }
+
+    // 無料PF制作 設定更新
+    if (data.action === 'pf_config_update') {
+      if (data.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+      return updatePFConfig(data);
     }
 
     // 編集者 保存（追加・更新）
@@ -241,6 +253,11 @@ function doGet(e) {
     return getServiceStatus();
   }
 
+  // 無料PF制作設定（LP側からkeyなしで呼ばれるため認証不要）
+  if (action === 'pf_config') {
+    return getPFConfig();
+  }
+
   // 編集者一覧（LP側からも呼ばれるため認証不要）
   if (action === 'editors') {
     return listEditors();
@@ -295,6 +312,19 @@ function doGet(e) {
   if (action === 'hearing_delete') {
     var row = parseInt(e.parameter.row, 10);
     return deleteHearing(row);
+  }
+
+  if (action === 'pf_inquiries') {
+    return listPFInquiries();
+  }
+  if (action === 'pf_status') {
+    var row = parseInt(e.parameter.row, 10);
+    var status = e.parameter.status || '';
+    return updatePFStatus(row, status);
+  }
+  if (action === 'pf_delete') {
+    var row = parseInt(e.parameter.row, 10);
+    return deletePFInquiry(row);
   }
 
   if (action === 'update_hearing_status') {
@@ -1732,6 +1762,203 @@ function sendPaymentRequest(email, name, plan, amount, due, note) {
     ].filter(function(l){ return l !== ''; })
   );
 
+  return jsonResponse({ success: true });
+}
+
+// ================================================================
+// 無料ポートフォリオ制作 管理
+// pf_config シート: key | value の2列
+// Keys: max_slots(合計), genres(JSON配列)
+// genres JSON: [{name:"Vlog系", active:true, max:3, count:0}, ...]
+// ================================================================
+
+function getOrCreatePFConfigSheet() {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName('pf_config');
+  if (!sheet) {
+    sheet = ss.insertSheet('pf_config');
+    sheet.appendRow(['key','value']);
+    sheet.appendRow(['max_slots','5']);
+    var defaultGenres = [
+      {name:'Vlog系',active:true,max:3,count:0},
+      {name:'ビジネストーク系',active:true,max:3,count:0},
+      {name:'エンタメトーク系',active:true,max:3,count:0},
+      {name:'広告系',active:true,max:3,count:0},
+      {name:'切り抜き系',active:true,max:3,count:0},
+      {name:'企画系',active:true,max:3,count:0}
+    ];
+    sheet.appendRow(['genres', JSON.stringify(defaultGenres)]);
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+
+function getOrCreatePFSheet() {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName('portfolio_free');
+  if (!sheet) {
+    sheet = ss.insertSheet('portfolio_free');
+    sheet.appendRow(['日時','名前','メール','ジャンル','詳細','ステータス']);
+    sheet.setFrozenRows(1);
+    sheet.getRange(1,1,1,6).setFontWeight('bold');
+  }
+  return sheet;
+}
+
+// config読み込み（実際のカウントをportfolio_freeシートから計算）
+function getPFConfig() {
+  var cfgSheet = getOrCreatePFConfigSheet();
+  var pfSheet = getOrCreatePFSheet();
+  var cfgValues = cfgSheet.getDataRange().getValues();
+  var cfg = {};
+  for (var i = 1; i < cfgValues.length; i++) {
+    cfg[cfgValues[i][0]] = cfgValues[i][1];
+  }
+  var maxSlots = parseInt(cfg['max_slots']) || 5;
+  var genres = [];
+  try { genres = JSON.parse(cfg['genres']); } catch(e) {}
+
+  // portfolio_freeシートからジャンルごとのカウントを実際に計算
+  var pfValues = pfSheet.getDataRange().getValues();
+  var genreCount = {};
+  for (var j = 1; j < pfValues.length; j++) {
+    var genre = pfValues[j][3] || '';
+    if (genre) genreCount[genre] = (genreCount[genre] || 0) + 1;
+  }
+  var totalCount = pfValues.length - 1;
+
+  // genresにcountを注入
+  genres = genres.map(function(g) {
+    return {
+      name: g.name,
+      active: g.active !== false,
+      max: g.max || 3,
+      count: genreCount[g.name] || 0
+    };
+  });
+
+  return jsonResponse({
+    max_slots: maxSlots,
+    total_count: totalCount,
+    remaining: Math.max(0, maxSlots - totalCount),
+    genres: genres
+  });
+}
+
+function updatePFConfig(data) {
+  var sheet = getOrCreatePFConfigSheet();
+  var values = sheet.getDataRange().getValues();
+  for (var i = 1; i < values.length; i++) {
+    if (values[i][0] === 'max_slots' && data.max_slots !== undefined) {
+      sheet.getRange(i+1, 2).setValue(String(data.max_slots));
+    }
+    if (values[i][0] === 'genres' && data.genres !== undefined) {
+      sheet.getRange(i+1, 2).setValue(JSON.stringify(data.genres));
+    }
+  }
+  return jsonResponse({ success: true });
+}
+
+function submitPFInquiry(data) {
+  // スロットチェック（シートを直接参照）
+  var pfSheet = getOrCreatePFSheet();
+  var cfgSheet = getOrCreatePFConfigSheet();
+  var cfgValues = cfgSheet.getDataRange().getValues();
+  var cfg = {};
+  for (var i = 1; i < cfgValues.length; i++) {
+    cfg[cfgValues[i][0]] = cfgValues[i][1];
+  }
+  var maxSlots = parseInt(cfg['max_slots']) || 5;
+  var genres = [];
+  try { genres = JSON.parse(cfg['genres']); } catch(e) {}
+
+  var pfValues = pfSheet.getDataRange().getValues();
+  var genreCount = {};
+  for (var j = 1; j < pfValues.length; j++) {
+    var g = pfValues[j][3] || '';
+    if (g) genreCount[g] = (genreCount[g] || 0) + 1;
+  }
+  var totalCount = pfValues.length - 1;
+
+  if (totalCount >= maxSlots) {
+    return jsonResponse({ error: 'full', message: '受付が終了しました' });
+  }
+
+  var genre = data.genre || '';
+  var genreObj = null;
+  for (var k = 0; k < genres.length; k++) {
+    if (genres[k].name === genre) { genreObj = genres[k]; break; }
+  }
+  if (!genreObj || genreObj.active === false) {
+    return jsonResponse({ error: 'genre_unavailable', message: 'このジャンルは現在受け付けていません' });
+  }
+  var currentGenreCount = genreCount[genre] || 0;
+  if (currentGenreCount >= (genreObj.max || 3)) {
+    return jsonResponse({ error: 'genre_full', message: 'このジャンルは満席です' });
+  }
+
+  var now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
+  pfSheet.appendRow([now, data.name||'', data.email||'', genre, data.message||'', '未対応']);
+
+  // Chatwork通知
+  if (CHATWORK_ROOM_ID) {
+    var msg = '[info][title]📸 無料PF制作：新規申込[/title]' +
+      '名前: ' + (data.name||'') + '\n' +
+      'メール: ' + (data.email||'') + '\n' +
+      'ジャンル: ' + genre + '\n' +
+      '詳細: ' + (data.message||'') + '[/info]';
+    try {
+      UrlFetchApp.fetch('https://api.chatwork.com/v2/rooms/' + CHATWORK_ROOM_ID + '/messages', {
+        method:'POST', headers:{'X-ChatWorkToken':CHATWORK_TOKEN},
+        payload:'body=' + encodeURIComponent(msg)
+      });
+    } catch(e){}
+  }
+
+  // 自動返信
+  if (data.email && data.email.indexOf('@') !== -1) {
+    sendAutoReply(data.email, data.name,
+      '【mono.create】無料ポートフォリオ制作のお申し込みを受け付けました',
+      [
+        'この度は無料ポートフォリオ制作にお申し込みいただき、誠にありがとうございます。',
+        '',
+        '▼ ご申込内容',
+        'ジャンル: ' + genre,
+        '',
+        '内容を確認の上、1〜2営業日以内にヒアリングシートURLをお送りします。',
+        'いましばらくお待ちください。',
+        '',
+        '【ご確認事項】',
+        '・制作した動画はmono.createのポートフォリオとして掲載させていただきます',
+        '・素材のご提供・ご指示をいただいた後、5〜7営業日以内に納品いたします',
+      ]
+    );
+  }
+
+  return jsonResponse({ success: true });
+}
+
+function listPFInquiries() {
+  var sheet = getOrCreatePFSheet();
+  var values = sheet.getDataRange().getValues();
+  var data = [];
+  for (var i = 1; i < values.length; i++) {
+    var r = values[i];
+    data.push({ row:i+1, date:r[0]||'', name:r[1]||'', email:r[2]||'', genre:r[3]||'', message:r[4]||'', status:r[5]||'未対応' });
+  }
+  data.sort(function(a,b){ return b.date > a.date ? 1 : -1; });
+  return jsonResponse({ data: data });
+}
+
+function updatePFStatus(row, status) {
+  var sheet = getOrCreatePFSheet();
+  sheet.getRange(row, 6).setValue(status);
+  return jsonResponse({ success: true });
+}
+
+function deletePFInquiry(row) {
+  var sheet = getOrCreatePFSheet();
+  sheet.deleteRow(row);
   return jsonResponse({ success: true });
 }
 

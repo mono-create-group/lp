@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ヒアリングシート — 無料ポートフォリオ制作 | mono.create</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: #FAF9F6;
+  color: #0F172A;
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  padding-bottom: 60px;
+}
+a { color: inherit; text-decoration: none; }
+
+.header {
+  background: #fff;
+  border-bottom: 1px solid rgba(15,23,42,0.09);
+  padding: 16px 24px;
+  display: flex; align-items: center; gap: 12px;
+}
+.header-logo { font-weight: 900; font-size: 1.1rem; }
+.header-logo span { color: #D97706; }
+.header-plan {
+  font-size: 0.75rem; font-weight: 700; color: #B45309;
+  background: #FEF3C7; border: 1px solid #D97706;
+  padding: 4px 12px; border-radius: 20px; margin-left: auto;
+}
+
+.container { max-width: 680px; margin: 40px auto; padding: 0 24px; }
+
+.intro-card {
+  background: #fff;
+  border: 1px solid rgba(15,23,42,0.09);
+  border-radius: 16px;
+  padding: 28px 32px;
+  margin-bottom: 32px;
+}
+.intro-card h1 { font-size: 1.25rem; font-weight: 900; margin-bottom: 8px; }
+.intro-card p  { font-size: 0.88rem; color: #64748B; line-height: 1.8; }
+.intro-plan {
+  display: inline-block; margin-bottom: 16px;
+  font-size: 0.75rem; font-weight: 700; color: #B45309;
+  background: #FEF3C7; border: 1px solid #D97706;
+  padding: 4px 14px; border-radius: 20px;
+}
+
+.form-card {
+  background: #fff;
+  border: 1px solid rgba(15,23,42,0.09);
+  border-radius: 16px;
+  padding: 32px;
+}
+.form-section {
+  border-top: 1px solid rgba(15,23,42,0.07);
+  padding-top: 24px;
+  margin-top: 24px;
+}
+.form-section:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+.form-section-title {
+  font-size: 0.8rem; font-weight: 800; letter-spacing: 0.1em;
+  text-transform: uppercase; color: #D97706;
+  margin-bottom: 20px;
+}
+.form-group { margin-bottom: 20px; }
+.form-group label {
+  display: block; font-size: 0.82rem; font-weight: 700;
+  color: #0F172A; margin-bottom: 6px;
+}
+.form-group label span { color: #DC2626; font-size: 0.75rem; }
+.form-group .hint { font-size: 0.75rem; color: #64748B; margin-bottom: 6px; }
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid rgba(15,23,42,0.12);
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-family: inherit;
+  color: #0F172A;
+  background: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: #D97706;
+  box-shadow: 0 0 0 3px rgba(217,119,6,0.10);
+}
+.form-input[readonly] {
+  background: #F8FAFC;
+  color: #64748B;
+  cursor: not-allowed;
+}
+.form-textarea { resize: vertical; min-height: 90px; }
+.form-radio-group { display: flex; flex-direction: column; gap: 8px; }
+label.form-radio-item {
+  display: flex !important; align-items: flex-start; gap: 14px;
+  padding: 10px 14px;
+  border: 1.5px solid rgba(15,23,42,0.10);
+  border-radius: 8px; cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  margin-bottom: 0;
+}
+label.form-radio-item:has(input:checked) {
+  border-color: #D97706;
+  background: rgba(217,119,6,0.05);
+}
+label.form-radio-item input { accent-color: #D97706; width: 18px; height: 18px; flex: 0 0 18px; margin: 1px 0 0 0; }
+label.form-radio-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.5; word-break: break-word; }
+.form-check-group { display: flex; flex-direction: column; gap: 8px; }
+label.form-check-item {
+  display: flex !important; align-items: flex-start; gap: 14px;
+  padding: 9px 14px;
+  border: 1.5px solid rgba(15,23,42,0.10);
+  border-radius: 8px; cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  margin-bottom: 0;
+}
+label.form-check-item:has(input:checked) {
+  border-color: #D97706;
+  background: rgba(217,119,6,0.04);
+}
+label.form-check-item input { accent-color: #D97706; width: 18px; height: 18px; flex: 0 0 18px; margin: 1px 0 0 0; }
+label.form-check-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.5; word-break: break-word; }
+
+.submit-btn {
+  width: 100%; padding: 15px;
+  background: #D97706; color: #fff;
+  border: none; border-radius: 12px;
+  font-size: 1rem; font-weight: 800;
+  cursor: pointer; font-family: inherit;
+  margin-top: 32px;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.submit-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+.submit-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+.success-box {
+  display: none;
+  background: #FFFBEB; border: 1.5px solid #D97706;
+  border-radius: 16px; padding: 40px 32px; text-align: center;
+  margin-top: 32px;
+}
+.success-box.visible { display: block; }
+.success-box h2 { font-size: 1.2rem; font-weight: 900; color: #B45309; margin-bottom: 12px; }
+.success-box p  { font-size: 0.88rem; color: #92400E; line-height: 1.9; }
+.success-icon { font-size: 3rem; margin-bottom: 16px; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-logo">mono<span>.</span>create</div>
+  <span class="header-plan" id="plan-badge">無料ポートフォリオ制作</span>
+</header>
+
+<div class="container">
+
+  <div class="intro-card">
+    <p class="intro-plan" id="plan-display">📸 無料ポートフォリオ制作</p>
+    <h1>📋 無料ポートフォリオ制作 ヒアリングシート</h1>
+    <p>お申し込みいただきありがとうございます。以下の項目にご回答ください。<br>
+    回答後、2営業日以内にChatworkまたはメールにてご連絡いたします。</p>
+    <!-- ポートフォリオ掲載バナー -->
+    <div style="margin-top:16px;padding:14px 18px;background:#EFF6FF;border:1px solid #3B82F6;border-radius:10px;font-size:0.82rem;color:#1E3A8A;line-height:1.8;">
+      <p style="font-weight:800;margin-bottom:6px;">📸 ポートフォリオ掲載条件について</p>
+      <ul style="margin:0 0 0 16px;padding:0;">
+        <li>制作した動画はmono.createの制作実績・ポートフォリオとして掲載させていただきます</li>
+        <li>LP・SNS（X/Instagram/TikTok等）への掲載が含まれます</li>
+        <li>費用は<strong>完全無料</strong>です（素材のご提供のみお願いします）</li>
+        <li>掲載範囲など詳細はヒアリング後に改めてご相談します</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="plan-details-card" style="display:none;background:#FFFBEB;border:1.5px solid #F59E0B;border-radius:16px;padding:24px 28px;margin-bottom:32px;"></div>
+
+  <form class="form-card" id="hearing-form">
+
+    <!-- 基本情報 -->
+    <div class="form-section">
+      <p class="form-section-title">基本情報</p>
+      <div class="form-group">
+        <label>お名前 <span>*</span></label>
+        <input type="text" class="form-input" id="f-name" name="name" required placeholder="山田 太郎">
+      </div>
+      <div class="form-group">
+        <label>メールアドレス <span>*</span></label>
+        <input type="email" class="form-input" id="f-email" name="email" required placeholder="email@example.com">
+      </div>
+      <div class="form-group">
+        <label>Chatwork ID（お持ちの場合）</label>
+        <input type="text" class="form-input" name="chatwork_id" placeholder="例: yamada_taro">
+      </div>
+    </div>
+
+    <!-- SNS情報 -->
+    <div class="form-section">
+      <p class="form-section-title">SNSアカウント情報</p>
+      <div class="form-group">
+        <label>SNSアカウントURL（YouTube / TikTok / Instagram等）</label>
+        <p class="hint">実際に投稿しているアカウントのURLを記載ください（任意）</p>
+        <input type="url" class="form-input" name="sns_url" placeholder="https://www.tiktok.com/@username">
+      </div>
+      <div class="form-group">
+        <label>チャンネル・アカウントのジャンル</label>
+        <input type="text" class="form-input" name="account_genre" placeholder="例：日常Vlog / ビジネス解説 / ゲーム実況">
+      </div>
+    </div>
+
+    <!-- 動画仕様 -->
+    <div class="form-section">
+      <p class="form-section-title">動画の仕様</p>
+      <div class="form-group">
+        <label>ジャンル</label>
+        <p class="hint">申込時に選択されたジャンルが自動でセットされます</p>
+        <input type="text" class="form-input" id="f-genre" name="genre" readonly>
+      </div>
+      <div class="form-group">
+        <label>動画の長さ（目安）</label>
+        <div class="form-radio-group">
+          <label class="form-radio-item"><input type="radio" name="duration" value="30秒以内"><span>30秒以内</span></label>
+          <label class="form-radio-item"><input type="radio" name="duration" value="30秒〜1分"><span>30秒〜1分</span></label>
+          <label class="form-radio-item"><input type="radio" name="duration" value="1分〜3分"><span>1分〜3分</span></label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>希望する編集内容（複数選択可）</label>
+        <div class="form-check-group">
+          <label class="form-check-item"><input type="checkbox" name="edit_options" value="テロップあり"><span>テロップあり</span></label>
+          <label class="form-check-item"><input type="checkbox" name="edit_options" value="BGM"><span>BGM</span></label>
+          <label class="form-check-item"><input type="checkbox" name="edit_options" value="SE（効果音）"><span>SE（効果音）</span></label>
+          <label class="form-check-item"><input type="checkbox" name="edit_options" value="エフェクト"><span>エフェクト</span></label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>テロップスタイル</label>
+        <div class="form-radio-group">
+          <label class="form-radio-item"><input type="radio" name="caption_style" value="シンプル"><span>シンプル</span></label>
+          <label class="form-radio-item"><input type="radio" name="caption_style" value="ポップ"><span>ポップ</span></label>
+          <label class="form-radio-item"><input type="radio" name="caption_style" value="クール"><span>クール</span></label>
+          <label class="form-radio-item"><input type="radio" name="caption_style" value="おまかせ"><span>おまかせ</span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- 素材・参考 -->
+    <div class="form-section">
+      <p class="form-section-title">素材・参考</p>
+      <div class="form-group">
+        <label>素材の渡し方</label>
+        <div class="form-radio-group">
+          <label class="form-radio-item"><input type="radio" name="material_status" value="すでに撮影済み"><span>すでに撮影済み</span></label>
+          <label class="form-radio-item"><input type="radio" name="material_status" value="今後撮影予定"><span>今後撮影予定</span></label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>参考動画URL（あれば）</label>
+        <p class="hint">雰囲気・スタイルが近い動画があれば貼ってください</p>
+        <input type="text" class="form-input" name="ref_url" placeholder="https://www.tiktok.com/...">
+      </div>
+      <div class="form-group">
+        <label>希望テイスト・イメージ</label>
+        <textarea class="form-textarea" name="image_note" placeholder="例：明るくポップな雰囲気で、テロップはカラフルにしてほしい。BGMはノリのいい曲を希望します。"></textarea>
+      </div>
+    </div>
+
+    <!-- その他 -->
+    <div class="form-section">
+      <p class="form-section-title">その他</p>
+      <div class="form-group">
+        <label>備考・ご要望</label>
+        <textarea class="form-textarea" name="note" placeholder="その他、ご要望があればご記入ください。"></textarea>
+      </div>
+      <div class="form-group">
+        <label>投稿予定SNS（複数選択可）</label>
+        <div class="form-check-group">
+          <label class="form-check-item"><input type="checkbox" name="post_sns" value="TikTok"><span>TikTok</span></label>
+          <label class="form-check-item"><input type="checkbox" name="post_sns" value="Instagram"><span>Instagram</span></label>
+          <label class="form-check-item"><input type="checkbox" name="post_sns" value="YouTube Shorts"><span>YouTube Shorts</span></label>
+          <label class="form-check-item"><input type="checkbox" name="post_sns" value="その他"><span>その他</span></label>
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" class="submit-btn" id="submit-btn">ヒアリングシートを送信する →</button>
+  </form>
+
+  <div class="success-box" id="success-box">
+    <div class="success-icon">📸</div>
+    <h2>回答を受け付けました！</h2>
+    <p>ありがとうございます。<strong id="success-name"></strong> 様のご回答を確認いたしました。<br>
+    2営業日以内に <strong id="success-email"></strong> またはChatworkにてご連絡いたします。<br><br>
+    お急ぎの場合はメール（mono.create.group@gmail.com）またはChatwork（ID: wl0b2t4akjur）までご連絡ください。</p>
+    <a href="https://mono-create-group.github.io/lp/" style="display:inline-block;margin-top:24px;padding:12px 28px;background:#D97706;color:#fff;border-radius:10px;font-weight:700;text-decoration:none;font-size:0.9rem;">🏠 ホームに戻る</a>
+  </div>
+
+</div>
+
+<script>
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
+
+// URLパラメータから事前入力
+const params = new URLSearchParams(location.search);
+const paramName    = params.get('name')    || '';
+const paramEmail   = params.get('email')   || '';
+const paramPlan    = params.get('plan')    || '無料ポートフォリオ制作';
+const paramPlanKey = params.get('planKey') || 'portfolio-free';
+const paramGenre   = params.get('genre')   || '';
+
+// ── プラン詳細マップ ──────────────────────────────────────────
+const PLAN_DETAILS = {
+  'portfolio-free': {
+    title: '📸 無料ポートフォリオ制作',
+    summary: 'ポートフォリオ掲載を条件に1本無料編集',
+    services: '無料（ポートフォリオ掲載条件）',
+    items: ['完全無料', 'ショート動画1本', 'テロップ・BGM・SE込み', '5〜7営業日納品'],
+    recommend: 'ポートフォリオを活用してほしい方'
+  },
+};
+
+function renderPlanDetails() {
+  const key = paramPlanKey;
+  const d = PLAN_DETAILS[key];
+  if (!d) return;
+  const box = document.getElementById('plan-details-card');
+  if (!box) return;
+  box.innerHTML = `
+    <p style="font-size:0.72rem;font-weight:700;letter-spacing:0.06em;color:#B45309;margin-bottom:4px;">ご選択のプラン</p>
+    <h2 style="font-size:1.05rem;font-weight:900;color:#0F172A;margin-bottom:6px;">${d.title}</h2>
+    <div style="display:inline-block;background:#FEF3C7;border:1px solid #D97706;border-radius:20px;padding:3px 12px;font-size:0.78rem;font-weight:700;color:#B45309;margin-bottom:10px;">📌 ${d.services}</div>
+    <p style="font-size:0.83rem;color:#475569;margin-bottom:10px;">${d.summary}</p>
+    <p style="font-size:0.78rem;font-weight:700;color:#B45309;margin-bottom:5px;">📋 プラン内容</p>
+    <ul style="margin:0 0 10px 18px;padding:0;font-size:0.82rem;color:#0F172A;line-height:1.85;">
+      ${d.items.map(i=>'<li>'+i+'</li>').join('')}
+    </ul>
+    <p style="font-size:0.75rem;color:#B45309;font-weight:700;margin-top:8px;padding:6px 10px;background:#FEF3C7;border-radius:6px;">📌 おすすめ：${d.recommend}</p>
+  `;
+  box.style.display = 'block';
+}
+
+if (paramName)  document.getElementById('f-name').value  = paramName;
+if (paramEmail) document.getElementById('f-email').value = paramEmail;
+if (paramGenre) document.getElementById('f-genre').value = paramGenre;
+document.getElementById('plan-display').textContent = paramPlan;
+document.getElementById('plan-badge').textContent   = paramPlan;
+renderPlanDetails();
+
+document.getElementById('hearing-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true; btn.textContent = '送信中...';
+
+  const form = e.target;
+  const fd = new FormData(form);
+
+  // チェックボックス（複数選択）
+  const editOptions = [...form.querySelectorAll('input[name=edit_options]:checked')].map(i => i.value);
+  const postSns     = [...form.querySelectorAll('input[name=post_sns]:checked')].map(i => i.value);
+
+  const answers = {
+    '__planKey':           paramPlanKey,
+    'ジャンル':            fd.get('genre') || paramGenre,
+    'Chatwork ID':        fd.get('chatwork_id') || '',
+    'SNSアカウントURL':   fd.get('sns_url') || '',
+    'アカウントジャンル': fd.get('account_genre') || '',
+    '動画の長さ':         fd.get('duration') || '',
+    '編集内容':           editOptions.join(' / ') || '',
+    'テロップスタイル':   fd.get('caption_style') || '',
+    '素材状況':           fd.get('material_status') || '',
+    '参考動画URL':        fd.get('ref_url') || '',
+    '希望テイスト':       fd.get('image_note') || '',
+    '備考・ご要望':       fd.get('note') || '',
+    '投稿予定SNS':        postSns.join(' / ') || '',
+  };
+
+  try {
+    await fetch(GAS_URL, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: 'hearing',
+        name:  fd.get('name'),
+        email: fd.get('email'),
+        plan:  paramPlan,
+        planKey: paramPlanKey,
+        genre: fd.get('genre') || paramGenre,
+        answers,
+      }),
+    });
+  } catch(err) { /* no-cors */ }
+
+  document.getElementById('hearing-form').style.display = 'none';
+  const sb = document.getElementById('success-box');
+  sb.classList.add('visible');
+  document.getElementById('success-name').textContent  = fd.get('name');
+  document.getElementById('success-email').textContent = fd.get('email');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+</script>
+</body>
+</html>

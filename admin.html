@@ -442,6 +442,10 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
         ⚙️ 設定
       </button>
+      <button id="tab-pf-btn" onclick="switchAdminTab('pf')"
+        style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
+        📸 無料PF制作
+      </button>
       <button id="tab-content-btn" onclick="switchAdminTab('content')"
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
         ✏️ テキスト編集
@@ -935,6 +939,43 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       </div>
 
     </div><!-- /tab-settings -->
+
+    <!-- ── 無料PF制作タブ ── -->
+    <div id="tab-pf" style="display:none;max-width:680px;margin:0 auto;padding:32px 0;">
+      <h2 style="font-size:1rem;font-weight:700;margin-bottom:24px;">📸 無料ポートフォリオ制作 管理</h2>
+
+      <!-- 無料PF制作設定 -->
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px;">
+        <h3 style="font-size:0.9rem;font-weight:700;margin-bottom:16px;color:var(--lt);">📸 設定</h3>
+
+        <div style="margin-bottom:16px;">
+          <label style="display:block;font-size:0.78rem;color:var(--sub);margin-bottom:6px;">先着受付人数（合計）</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="number" id="pf-max-slots" min="1" max="100" value="5" style="width:80px;padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--lt);font-family:inherit;font-size:0.88rem;">
+            <span style="font-size:0.82rem;color:var(--sub);">名</span>
+            <button onclick="savePFMaxSlots()" style="padding:8px 16px;background:#1a3a2a;color:#4ade80;border:1px solid #166534;border-radius:6px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">保存</button>
+          </div>
+        </div>
+
+        <div style="margin-bottom:16px;">
+          <label style="display:block;font-size:0.78rem;color:var(--sub);margin-bottom:10px;">ジャンル管理（ON/OFFと上限人数）</label>
+          <div id="pf-genres-admin" style="display:flex;flex-direction:column;gap:8px;"></div>
+          <div style="display:flex;gap:8px;margin-top:12px;">
+            <input id="pf-new-genre" type="text" placeholder="新しいジャンル名" style="flex:1;padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--lt);font-family:inherit;font-size:0.85rem;">
+            <button onclick="addPFGenre()" style="padding:8px 14px;background:#1a2a3a;color:#60a5fa;border:1px solid #1d4ed8;border-radius:6px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">追加</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 無料PF申込一覧 -->
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <h3 style="font-size:0.9rem;font-weight:700;color:var(--lt);">📋 申込一覧</h3>
+          <button onclick="loadPFAdmin()" style="padding:6px 12px;background:var(--bg3);color:var(--sub);border:1px solid var(--border);border-radius:6px;font-size:0.75rem;cursor:pointer;font-family:inherit;">更新</button>
+        </div>
+        <div id="pf-admin-list" style="font-size:0.82rem;"></div>
+      </div>
+    </div><!-- /tab-pf -->
 
     <!-- ── コンテンツ管理タブ ── -->
     <div id="tab-content" style="display:none;max-width:760px;margin:0 auto;padding:32px 0;">
@@ -1538,7 +1579,7 @@ function exportCSV() {
 }
 
 // ── Tab switch ──
-const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','content'];
+const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content'];
 function switchAdminTab(tab) {
   ADMIN_TABS.forEach(t => {
     document.getElementById('tab-' + t).style.display = t === tab ? '' : 'none';
@@ -1553,7 +1594,8 @@ function switchAdminTab(tab) {
   if (tab === 'hearings')  loadHearings();
   if (tab === 'sales')     loadSales();
   if (tab === 'schedule')  loadSchedule();
-  if (tab === 'settings')  loadServiceStatus();
+  if (tab === 'settings')  { loadServiceStatus(); loadPFAdmin(); }
+  if (tab === 'pf')        loadPFAdmin();
   if (tab === 'content')   loadLpContent();
 }
 
@@ -2998,6 +3040,135 @@ async function deletePortfolioItem(row) {
     showToast('削除しました');
     loadPortfolioAdmin();
   } catch(e) { alert('削除に失敗しました。'); }
+}
+
+// ── 無料PF制作 管理 ──────────────────────────────────────────
+let _pfConfig = { max_slots: 5, genres: [], total_count: 0, remaining: 5 };
+
+async function loadPFAdmin() {
+  try {
+    const res  = await fetch(`${GAS_URL}?action=pf_config&key=${encodeURIComponent(getAdminPw())}`);
+    const json = await res.json();
+    _pfConfig  = json;
+    const el = document.getElementById('pf-max-slots');
+    if (el) el.value = json.max_slots || 5;
+    renderPFGenresAdmin();
+    await loadPFInquiriesAdmin();
+  } catch(e) {}
+}
+
+function renderPFGenresAdmin() {
+  const el = document.getElementById('pf-genres-admin');
+  if (!el) return;
+  if (!_pfConfig.genres || !_pfConfig.genres.length) { el.innerHTML = '<p style="color:var(--sub);font-size:0.8rem;">ジャンルなし</p>'; return; }
+  el.innerHTML = _pfConfig.genres.map((g, idx) => `
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;">
+      <input type="checkbox" ${g.active?'checked':''} onchange="togglePFGenre(${idx},this.checked)" style="cursor:pointer;">
+      <span style="flex:1;font-size:0.83rem;color:${g.active?'var(--lt)':'var(--sub)'};">${esc(g.name)}</span>
+      <span style="font-size:0.72rem;color:var(--sub);">申込: ${g.count||0}/${g.max||3}</span>
+      <input type="number" value="${g.max||3}" min="1" max="99" style="width:48px;padding:4px 6px;background:var(--bg2);border:1px solid var(--border);border-radius:4px;color:var(--lt);font-family:inherit;font-size:0.78rem;" onchange="setPFGenreMax(${idx},this.value)">
+      <button onclick="removePFGenre(${idx})" style="padding:3px 8px;background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;border-radius:4px;font-size:0.72rem;cursor:pointer;font-family:inherit;">削除</button>
+    </div>
+  `).join('');
+}
+
+async function savePFMaxSlots() {
+  const val = parseInt(document.getElementById('pf-max-slots').value);
+  if (!val || val < 1) return;
+  _pfConfig.max_slots = val;
+  await savePFConfig();
+}
+
+function togglePFGenre(idx, active) {
+  _pfConfig.genres[idx].active = active;
+  savePFConfig();
+}
+
+function setPFGenreMax(idx, val) {
+  _pfConfig.genres[idx].max = parseInt(val) || 3;
+  savePFConfig();
+}
+
+function removePFGenre(idx) {
+  if (!confirm('このジャンルを削除しますか？')) return;
+  _pfConfig.genres.splice(idx, 1);
+  savePFConfig();
+  renderPFGenresAdmin();
+}
+
+function addPFGenre() {
+  const name = document.getElementById('pf-new-genre').value.trim();
+  if (!name) return;
+  _pfConfig.genres.push({ name, active: true, max: 3, count: 0 });
+  document.getElementById('pf-new-genre').value = '';
+  savePFConfig();
+  renderPFGenresAdmin();
+}
+
+async function savePFConfig() {
+  try {
+    await fetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'pf_config_update',
+        key: getAdminPw(),
+        max_slots: _pfConfig.max_slots,
+        genres: _pfConfig.genres
+      })
+    });
+    showToast('✅ 設定を保存しました');
+    renderPFGenresAdmin();
+  } catch(e) {
+    showToast('⚠ 保存に失敗しました');
+  }
+}
+
+async function loadPFInquiriesAdmin() {
+  const el = document.getElementById('pf-admin-list');
+  if (!el) return;
+  try {
+    const res  = await fetch(`${GAS_URL}?action=pf_inquiries&key=${encodeURIComponent(getAdminPw())}`);
+    const json = await res.json();
+    const items = json.data || [];
+    if (!items.length) { el.innerHTML = '<p style="color:var(--sub);">申込がありません。</p>'; return; }
+    el.innerHTML = `<table style="width:100%;border-collapse:collapse;">
+      <tr style="font-size:0.72rem;color:var(--sub);">
+        <th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--border);">日時</th>
+        <th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--border);">名前</th>
+        <th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--border);">メール</th>
+        <th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--border);">ジャンル</th>
+        <th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--border);">ステータス</th>
+        <th style="padding:6px 8px;border-bottom:1px solid var(--border);"></th>
+      </tr>
+      ${items.map(i => `
+        <tr style="font-size:0.78rem;border-bottom:1px solid var(--border);">
+          <td style="padding:8px;">${esc(i.date)}</td>
+          <td style="padding:8px;font-weight:700;">${esc(i.name)}</td>
+          <td style="padding:8px;color:#60a5fa;">${esc(i.email)}</td>
+          <td style="padding:8px;"><span style="background:rgba(217,119,6,0.1);color:#D97706;border:1px solid rgba(217,119,6,0.3);padding:2px 8px;border-radius:10px;font-size:0.72rem;font-weight:700;">${esc(i.genre)}</span></td>
+          <td style="padding:8px;"><span class="status-badge status-${esc(i.status)}" style="cursor:pointer;" onclick="cyclePFStatus(${i.row}, '${esc(i.status)}')">${statusDot(i.status)} ${esc(i.status)}</span></td>
+          <td style="padding:8px;"><button onclick="deletePFItem(${i.row},'${esc(i.name).replace(/'/g,'\\\'')}')" style="padding:3px 8px;background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;border-radius:4px;font-size:0.72rem;cursor:pointer;font-family:inherit;">🗑</button></td>
+        </tr>
+      `).join('')}
+    </table>`;
+  } catch(e) {
+    el.innerHTML = '<p style="color:var(--red);">読み込みに失敗しました。</p>';
+  }
+}
+
+async function cyclePFStatus(row, currentStatus) {
+  const order = ['未対応','対応中','完了'];
+  const idx = order.indexOf(currentStatus);
+  const nextStatus = order[(idx + 1) % order.length];
+  await fetch(`${GAS_URL}?action=pf_status&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(nextStatus)}`);
+  await loadPFInquiriesAdmin();
+}
+
+async function deletePFItem(row, name) {
+  if (!confirm(`「${name}」の申込を削除しますか？`)) return;
+  await fetch(`${GAS_URL}?action=pf_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+  showToast('🗑 削除しました');
+  await loadPFAdmin();
 }
 
 // ── Toast ──

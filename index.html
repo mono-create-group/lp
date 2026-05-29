@@ -1044,6 +1044,7 @@ footer {
     <a href="#services">サービス</a>
     <a href="#works">実績</a>
     <a href="#pricing">料金</a>
+    <a href="#section-pf-free">無料PF制作</a>
     <a href="#faq">FAQ</a>
     <a href="#contact" class="btn btn-primary" style="padding:9px 22px;font-size:0.82rem;color:#fff;">無料で相談する →</a>
   </div>
@@ -1274,6 +1275,72 @@ footer {
     </div>
   </div>
 </section>
+
+<!-- ═══ 無料ポートフォリオ制作 ═══ -->
+<section id="section-pf-free" class="section" style="background:#fff;">
+  <div class="container">
+    <div class="fade-up" style="text-align:center;margin-bottom:32px;">
+      <span style="display:inline-block;background:#FEF3C7;border:1px solid #D97706;color:#B45309;font-size:0.78rem;font-weight:800;padding:4px 16px;border-radius:20px;margin-bottom:12px;">期間限定</span>
+      <h2 class="section-title" style="font-size:1.5rem;">📸 無料ポートフォリオ制作</h2>
+      <p style="color:#64748B;font-size:0.9rem;line-height:1.8;max-width:520px;margin:12px auto 0;">ポートフォリオへの掲載を条件に、<strong>ショート動画1本を完全無料</strong>で編集します。<br>まず品質を体感してください。</p>
+    </div>
+
+    <!-- 先着表示 & ジャンルグリッド -->
+    <div id="pf-section-inner" style="max-width:640px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:24px;">
+        <span id="pf-slots-badge" style="display:inline-block;background:#FEF3C7;border:2px solid #D97706;color:#92400E;font-size:1rem;font-weight:900;padding:8px 24px;border-radius:40px;">
+          先着 <span id="pf-remaining">...</span> 名
+        </span>
+      </div>
+
+      <!-- 条件説明 -->
+      <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:16px 20px;margin-bottom:24px;font-size:0.82rem;color:#475569;line-height:2;">
+        <div>✅ 完全無料（素材のご提供をお願いします）</div>
+        <div>✅ テロップ・BGM・SE込み</div>
+        <div>✅ 5〜7営業日納品</div>
+        <div>📌 制作した動画はmono.createのポートフォリオとして掲載させていただきます</div>
+      </div>
+
+      <!-- ジャンルカード -->
+      <p style="font-size:0.82rem;font-weight:800;color:#374151;margin-bottom:12px;">受付中のジャンル（1ジャンルにつき1本）</p>
+      <div id="pf-genres-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:24px;">
+        <!-- JSで描画 -->
+        <div style="padding:20px;text-align:center;color:#94A3B8;font-size:0.85rem;">読み込み中...</div>
+      </div>
+
+      <div id="pf-full-banner" style="display:none;text-align:center;padding:20px;background:#FEF2F2;border:1px solid #FECACA;border-radius:12px;color:#B91C1C;font-weight:700;font-size:0.9rem;">
+        現在、受付は満席です。次回募集をお待ちください。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 無料PF制作 申込モーダル -->
+<div id="pf-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:300;overflow-y:auto;padding:24px 16px;">
+  <div style="background:#fff;border-radius:16px;max-width:480px;margin:0 auto;padding:28px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h3 style="font-size:1rem;font-weight:800;color:#1e293b;">📸 無料ポートフォリオ制作 申込</h3>
+      <button onclick="closePFModal()" style="background:none;border:none;font-size:1.3rem;cursor:pointer;color:#94a3b8;">✕</button>
+    </div>
+    <div style="background:#FEF3C7;border:1px solid #D97706;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:0.78rem;color:#92400E;">
+      ジャンル：<strong id="pf-modal-genre"></strong>
+    </div>
+    <div style="margin-bottom:14px;">
+      <label style="display:block;font-size:0.8rem;font-weight:700;color:#374151;margin-bottom:5px;">お名前 <span style="color:#DC2626;">*</span></label>
+      <input id="pf-name" type="text" placeholder="山田 太郎" style="width:100%;padding:10px 12px;border:1px solid #CBD5E1;border-radius:8px;font-size:0.88rem;font-family:inherit;outline:none;">
+    </div>
+    <div style="margin-bottom:14px;">
+      <label style="display:block;font-size:0.8rem;font-weight:700;color:#374151;margin-bottom:5px;">メールアドレス <span style="color:#DC2626;">*</span></label>
+      <input id="pf-email" type="email" placeholder="example@email.com" style="width:100%;padding:10px 12px;border:1px solid #CBD5E1;border-radius:8px;font-size:0.88rem;font-family:inherit;outline:none;">
+    </div>
+    <div style="margin-bottom:20px;">
+      <label style="display:block;font-size:0.8rem;font-weight:700;color:#374151;margin-bottom:5px;">ご相談内容・動画の概要（任意）</label>
+      <textarea id="pf-message" rows="3" placeholder="例：TikTok用のVlogを編集してほしいです。素材は撮影済みです。" style="width:100%;padding:10px 12px;border:1px solid #CBD5E1;border-radius:8px;font-size:0.88rem;font-family:inherit;resize:vertical;outline:none;"></textarea>
+    </div>
+    <p style="font-size:0.72rem;color:#94A3B8;margin-bottom:16px;">※ 申込後、1〜2営業日以内にヒアリングシートURLをメールでお送りします。<br>※ 制作した動画はmono.createのポートフォリオとして掲載されます。</p>
+    <button id="pf-submit-btn" onclick="submitPFForm()" style="width:100%;padding:14px;background:#D97706;color:#fff;border:none;border-radius:10px;font-size:0.95rem;font-weight:800;cursor:pointer;font-family:inherit;">申し込む →</button>
+  </div>
+</div>
 
 <!-- ── Pricing ── -->
 <section class="section pricing" id="pricing">
@@ -1816,6 +1883,27 @@ footer {
           <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         </div>
         <div class="faq-a">稼働時間は月〜土 9:00〜19:00（日曜除く）です。時間外のご連絡は翌営業日に確認・返信いたします。</div>
+      </div>
+      <div class="faq-item fade-up">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span>無料ポートフォリオ制作とは何ですか？</span>
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+        <div class="faq-a">制作した動画をmono.createのポートフォリオとして掲載させていただくことを条件に、ショート動画1本を完全無料で編集するサービスです。テロップ・BGM・SE込みで5〜7営業日以内に納品します。先着制で定員に達し次第終了します。</div>
+      </div>
+      <div class="faq-item fade-up">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span>無料ポートフォリオ制作はどんな動画でも対応できますか？</span>
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+        <div class="faq-a">Vlog系・ビジネストーク系・エンタメトーク系・広告系・切り抜き系・企画系の6ジャンルに対応しています。各ジャンル受付人数の上限があり、満席になったジャンルは受付終了となります。ショート動画（縦型・横型問わず）が対象です。</div>
+      </div>
+      <div class="faq-item fade-up">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span>「ポートフォリオ掲載」とはどういう意味ですか？</span>
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+        <div class="faq-a">制作した動画を、mono.createの実績・制作事例としてこのLPや各種SNSに掲載させていただくことを意味します。お客様のアカウント名やURLを掲載することもありますが、プライバシーに関わる内容は事前にご確認のうえ対応します。掲載範囲など詳細はヒアリング時にご相談ください。</div>
       </div>
     </div>
   </div>
@@ -2372,7 +2460,8 @@ const PLAN_MAP = {
   'set-long':   ['投稿丸投げプラン 長尺動画（後払い・要相談）',      'hearing/set-long.html'],
   'mixed-std':  ['運用丸投げパック スタンダード（¥150,000/月）',     'hearing/ops-pack.html'],
   'mixed-pre':  ['運用丸投げパック プレミアム（¥220,000/月）',       'hearing/ops-pack.html'],
-  'dispatch':   ['編集者派遣',                                       'hearing/dispatch.html'],
+  'dispatch':       ['編集者派遣',                                       'hearing/dispatch.html'],
+  'portfolio-free': ['無料ポートフォリオ制作',                            'hearing/portfolio-free.html'],
 };
 
 function openContract(planId) {
@@ -2431,7 +2520,103 @@ document.addEventListener('DOMContentLoaded', () => {
     if (ev.target === this) closeContract();
   });
   loadDispatchEditors();
+  loadPFSection();
 });
+
+// ── 無料PF制作 ─────────────────────────────────────────────
+let _pfGenres = [];
+let _pfSelectedGenre = '';
+
+async function loadPFSection() {
+  try {
+    const res  = await fetch(`${GAS_URL}?action=pf_config`);
+    const json = await res.json();
+    _pfGenres = json.genres || [];
+    const remaining = json.remaining || 0;
+
+    document.getElementById('pf-remaining').textContent = remaining;
+    if (remaining <= 0) {
+      document.getElementById('pf-genres-grid').style.display = 'none';
+      document.getElementById('pf-full-banner').style.display = '';
+      document.getElementById('pf-slots-badge').style.background = '#FEE2E2';
+      document.getElementById('pf-slots-badge').style.borderColor = '#EF4444';
+      document.getElementById('pf-slots-badge').style.color = '#B91C1C';
+    } else {
+      renderPFGenres();
+    }
+  } catch(e) {
+    document.getElementById('pf-genres-grid').innerHTML = '<p style="color:#94a3b8;font-size:0.82rem;">読み込みに失敗しました。</p>';
+  }
+}
+
+function renderPFGenres() {
+  const grid = document.getElementById('pf-genres-grid');
+  if (!_pfGenres.length) { grid.innerHTML = '<p style="color:#94a3b8;">受付中のジャンルがありません。</p>'; return; }
+  grid.innerHTML = _pfGenres.map(g => {
+    const full   = !g.active || g.count >= g.max;
+    const remain = Math.max(0, g.max - g.count);
+    return `
+      <div onclick="${full ? '' : `openPFModal('${g.name}')`}"
+        style="background:${full?'#F8FAFC':'#FFFBEB'};border:2px solid ${full?'#E2E8F0':'#D97706'};border-radius:12px;padding:14px 12px;text-align:center;cursor:${full?'not-allowed':'pointer'};transition:transform 0.15s;"
+        ${full?'':' onmouseover="this.style.transform=\'scale(1.03)\'" onmouseout="this.style.transform=\'scale(1)\'"'}>
+        <p style="font-size:0.85rem;font-weight:800;color:${full?'#94A3B8':'#374151'};margin-bottom:6px;">${g.name}</p>
+        ${full
+          ? '<span style="font-size:0.7rem;background:#E2E8F0;color:#94A3B8;padding:2px 10px;border-radius:20px;font-weight:700;">受付終了</span>'
+          : `<span style="font-size:0.7rem;background:#FEF3C7;color:#B45309;padding:2px 10px;border-radius:20px;font-weight:700;">残り${remain}名</span>`
+        }
+      </div>
+    `;
+  }).join('');
+}
+
+function openPFModal(genre) {
+  _pfSelectedGenre = genre;
+  document.getElementById('pf-modal-genre').textContent = genre;
+  document.getElementById('pf-name').value = '';
+  document.getElementById('pf-email').value = '';
+  document.getElementById('pf-message').value = '';
+  document.getElementById('pf-submit-btn').disabled = false;
+  document.getElementById('pf-submit-btn').textContent = '申し込む →';
+  document.getElementById('pf-modal').style.display = '';
+}
+
+function closePFModal() {
+  document.getElementById('pf-modal').style.display = 'none';
+}
+
+async function submitPFForm() {
+  const name  = document.getElementById('pf-name').value.trim();
+  const email = document.getElementById('pf-email').value.trim();
+  if (!name || !email) { alert('お名前とメールアドレスを入力してください。'); return; }
+  const btn = document.getElementById('pf-submit-btn');
+  btn.disabled = true;
+  btn.textContent = '送信中...';
+  try {
+    const res  = await fetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'pf_submit',
+        name, email,
+        genre: _pfSelectedGenre,
+        message: document.getElementById('pf-message').value.trim()
+      })
+    });
+    const json = await res.json();
+    if (json.success) {
+      closePFModal();
+      alert('お申し込みありがとうございます！\n1〜2営業日以内にメールをお送りします。');
+      await loadPFSection(); // 再読込
+    } else {
+      btn.disabled = false;
+      btn.textContent = '申し込む →';
+      alert(json.message || 'エラーが発生しました。');
+    }
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = '申し込む →';
+    alert('送信に失敗しました。しばらくしてから再度お試しください。');
+  }
+}
 
 // ── 編集者派遣：所属編集者カードをGASから取得して表示 ─────────────
 async function loadDispatchEditors() {
