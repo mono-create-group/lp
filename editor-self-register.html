@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>編集者プロフィール登録 | mono.create</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Inter:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Noto Sans JP',sans-serif;
+  background:#F8FAFC;color:#0F172A;
+  min-height:100vh;padding:32px 20px 60px;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:520px;margin:0 auto;}
+
+/* ─── ヘッダー ─── */
+.page-header{
+  text-align:center;margin-bottom:28px;
+  background:linear-gradient(145deg,#EFF6FF,#DBEAFE);
+  border:1.5px solid #BFDBFE;border-radius:20px;
+  padding:28px 24px 22px;
+}
+.page-header .icon{font-size:2.4rem;margin-bottom:8px;}
+.page-header h1{font-family:'Inter',sans-serif;font-size:1.35rem;font-weight:900;color:#0F172A;margin-bottom:6px;}
+.page-header p{font-size:0.82rem;color:#475569;line-height:1.8;}
+
+/* ─── カード ─── */
+.card{
+  background:#fff;border:1.5px solid #E2E8F0;
+  border-radius:16px;padding:24px;margin-bottom:16px;
+  box-shadow:0 2px 12px rgba(15,23,42,0.06);
+}
+.card-title{
+  font-size:0.78rem;font-weight:800;letter-spacing:0.1em;
+  color:#2563EB;text-transform:uppercase;margin-bottom:16px;
+  padding-bottom:10px;border-bottom:1px solid #EFF6FF;
+}
+
+/* ─── フォーム部品 ─── */
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:0.78rem;font-weight:700;color:#334155;margin-bottom:6px;}
+.field .hint{font-size:0.7rem;color:#94A3B8;margin-top:4px;}
+.field input[type="text"],
+.field input[type="url"],
+.field input[type="number"],
+.field textarea,
+.field select{
+  width:100%;padding:10px 12px;border-radius:8px;
+  border:1.5px solid #E2E8F0;background:#F8FAFC;
+  font-size:0.85rem;color:#0F172A;font-family:'Noto Sans JP',sans-serif;
+  transition:border-color 0.2s,box-shadow 0.2s;
+  appearance:none;-webkit-appearance:none;
+}
+.field input:focus,.field textarea:focus,.field select:focus{
+  outline:none;border-color:#2563EB;
+  box-shadow:0 0 0 3px rgba(37,99,235,0.08);background:#fff;
+}
+.field input[readonly]{background:#F1F5F9;color:#64748B;}
+.field textarea{resize:vertical;min-height:80px;line-height:1.6;}
+
+/* チェックボックスグループ */
+.check-group{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
+.check-item{
+  display:flex;align-items:center;gap:6px;
+  background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:8px;
+  padding:7px 12px;cursor:pointer;font-size:0.78rem;font-weight:700;color:#475569;
+  transition:border-color 0.15s,background 0.15s;user-select:none;
+}
+.check-item:has(input:checked){
+  background:#EFF6FF;border-color:#2563EB;color:#1E40AF;
+}
+.check-item input[type="checkbox"]{display:none;}
+
+/* ポートフォリオ追加 */
+.pf-list{display:flex;flex-direction:column;gap:8px;margin-bottom:8px;}
+.pf-row{display:flex;gap:8px;align-items:center;}
+.pf-row input{flex:1;padding:9px 12px;border-radius:8px;border:1.5px solid #E2E8F0;background:#F8FAFC;font-size:0.83rem;color:#0F172A;font-family:'Noto Sans JP',sans-serif;}
+.pf-row input:focus{outline:none;border-color:#2563EB;box-shadow:0 0 0 3px rgba(37,99,235,0.08);background:#fff;}
+.pf-del{background:rgba(239,68,68,0.08);border:1.5px solid rgba(239,68,68,0.2);color:#EF4444;border-radius:6px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;flex-shrink:0;}
+.pf-del:hover{background:rgba(239,68,68,0.15);}
+.add-pf-btn{display:inline-flex;align-items:center;gap:5px;background:#EFF6FF;border:1.5px solid #BFDBFE;color:#2563EB;border-radius:8px;padding:7px 14px;font-size:0.78rem;font-weight:700;cursor:pointer;}
+.add-pf-btn:hover{background:#DBEAFE;}
+
+/* 送信 */
+.submit-btn{
+  width:100%;padding:16px;border:none;border-radius:12px;
+  background:linear-gradient(135deg,#1E40AF,#2563EB);
+  color:#fff;font-size:1rem;font-weight:900;letter-spacing:0.05em;
+  cursor:pointer;transition:opacity 0.2s,transform 0.15s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.submit-btn:hover{opacity:0.9;transform:translateY(-1px);}
+.submit-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+
+/* 完了画面 */
+#done{display:none;text-align:center;padding:40px 20px;}
+#done .done-icon{font-size:3rem;margin-bottom:16px;}
+#done h2{font-size:1.3rem;font-weight:900;margin-bottom:8px;}
+#done p{font-size:0.85rem;color:#475569;line-height:1.8;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="page-header">
+    <div class="icon">🎬</div>
+    <h1>編集者プロフィール登録</h1>
+    <p>採用おめでとうございます！<br>
+    以下のフォームにプロフィール情報を入力してください。<br>
+    入力内容はLPの「編集者紹介」に掲載されます。</p>
+  </div>
+
+  <form id="selfRegForm">
+
+    <!-- 基本情報 -->
+    <div class="card">
+      <div class="card-title">👤 基本情報</div>
+
+      <div class="field">
+        <label>お名前（表示名）</label>
+        <input type="text" id="name" name="name" placeholder="例：田中 太郎（LP掲載名）" required>
+        <p class="hint">LPに表示される名前です。ニックネーム可。</p>
+      </div>
+
+      <div class="field">
+        <label>アイコン画像URL（任意）</label>
+        <input type="url" id="icon" name="icon" placeholder="https://... （Googleドライブ共有URL等）">
+        <p class="hint">正方形推奨。設定しない場合はデフォルトアイコンが使われます。</p>
+      </div>
+
+      <div class="field">
+        <label>肩書き・職業</label>
+        <input type="text" id="occupation" name="occupation" placeholder="例：フリーランス動画クリエイター" required>
+      </div>
+
+      <div class="field">
+        <label>編集歴</label>
+        <input type="text" id="experience" name="experience" placeholder="例：2年 / 500本以上" required>
+      </div>
+    </div>
+
+    <!-- スキル -->
+    <div class="card">
+      <div class="card-title">🛠 スキル・専門分野</div>
+
+      <div class="field">
+        <label>得意ジャンル（複数選択可）</label>
+        <div class="check-group" id="genreGroup">
+          <label class="check-item"><input type="checkbox" name="genre" value="ショート動画（TikTok・Reels）">📱 ショート動画</label>
+          <label class="check-item"><input type="checkbox" name="genre" value="YouTube長尺">🎥 YouTube長尺</label>
+          <label class="check-item"><input type="checkbox" name="genre" value="インタビュー・対談">🎙 インタビュー</label>
+          <label class="check-item"><input type="checkbox" name="genre" value="Vlog・旅行動画">✈️ Vlog・旅行</label>
+          <label class="check-item"><input type="checkbox" name="genre" value="ビジネス・セミナー">💼 ビジネス・セミナー</label>
+          <label class="check-item"><input type="checkbox" name="genre" value="エンタメ・バラエティ">🎭 エンタメ</label>
+          <label class="check-item"><input type="checkbox" name="genre" value="料理・グルメ">🍳 料理・グルメ</label>
+          <label class="check-item"><input type="checkbox" name="genre" value="美容・ファッション">💄 美容・ファッション</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>得意な編集スタイル</label>
+        <input type="text" id="style" name="style" placeholder="例：テンポ感のあるテロップ編集・エモーショナルな演出">
+      </div>
+
+      <div class="field">
+        <label>対応ソフト（複数選択可）</label>
+        <div class="check-group" id="softwareGroup">
+          <label class="check-item"><input type="checkbox" name="software" value="Premiere Pro">Premiere Pro</label>
+          <label class="check-item"><input type="checkbox" name="software" value="Final Cut Pro">Final Cut Pro</label>
+          <label class="check-item"><input type="checkbox" name="software" value="DaVinci Resolve">DaVinci Resolve</label>
+          <label class="check-item"><input type="checkbox" name="software" value="CapCut">CapCut</label>
+          <label class="check-item"><input type="checkbox" name="software" value="After Effects">After Effects</label>
+          <label class="check-item"><input type="checkbox" name="software" value="Filmora">Filmora</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- 稼働条件 -->
+    <div class="card">
+      <div class="card-title">📅 稼働条件</div>
+
+      <div class="field">
+        <label>月の対応可能本数（ショート換算）</label>
+        <input type="text" id="monthly_capacity" name="monthly_capacity" placeholder="例：30本 / 20〜30本">
+      </div>
+
+      <div class="field">
+        <label>稼働時間帯</label>
+        <input type="text" id="work_hours" name="work_hours" placeholder="例：平日夜・土日終日 / 朝9時〜夜22時">
+      </div>
+    </div>
+
+    <!-- ポートフォリオ -->
+    <div class="card">
+      <div class="card-title">🎞 ポートフォリオ（任意・最大4件）</div>
+      <p style="font-size:0.78rem;color:#64748B;margin-bottom:12px;line-height:1.7;">YouTubeやGoogle DriveなどのURLを入力してください。<br>サムネイルは自動取得されます。</p>
+
+      <div class="pf-list" id="pfList">
+        <div class="pf-row">
+          <input type="url" placeholder="https://www.youtube.com/watch?v=..." class="pf-url">
+          <button type="button" class="pf-del" onclick="removePf(this)">✕</button>
+        </div>
+      </div>
+      <button type="button" class="add-pf-btn" onclick="addPf()">＋ URLを追加</button>
+    </div>
+
+    <!-- 自己PR -->
+    <div class="card">
+      <div class="card-title">💬 一言コメント</div>
+      <div class="field">
+        <label>自己PR・アピールポイント</label>
+        <textarea id="comment" name="comment" placeholder="例：スピード感を大事にしつつ、クライアントの意図を汲み取った編集が得意です。依頼から最短当日の納品実績あり。" rows="4"></textarea>
+        <p class="hint">LP上に表示されます。100〜150文字程度が見やすいです。</p>
+      </div>
+    </div>
+
+    <button type="submit" class="submit-btn" id="submitBtn">
+      <span>✅</span> プロフィールを登録する
+    </button>
+  </form>
+
+  <!-- 完了画面 -->
+  <div id="done">
+    <div class="done-icon">🎉</div>
+    <h2>登録が完了しました！</h2>
+    <p>
+      プロフィールを受け付けました。<br>
+      内容確認後、LPの編集者紹介ページに掲載されます。<br><br>
+      案件のご案内はChatworkにてお送りします。<br>
+      グループに参加済みでない方はメールに記載のリンクからご参加ください。
+    </p>
+  </div>
+
+</div>
+
+<script>
+// ─── GAS URL（admin.htmlと同じ値に自動合わせ） ─────────────────
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbw9b3Z5yOJ-j3DG3bkNBdwmjNB3_FgflVbnJWr0qcvmBF5iuNOSHmrH3Ij7JTcW9LXw/exec';
+
+// ─── URLパラメータから名前・メールを取得 ──────────────────────
+(function(){
+  var p = new URLSearchParams(location.search);
+  var name  = p.get('name')  || '';
+  var email = p.get('email') || '';
+  if (name)  document.getElementById('name').value  = name;
+  if (email) document.getElementById('_email').value = email;
+})();
+
+// ─── ポートフォリオ追加・削除 ──────────────────────────────────
+function addPf(){
+  var list = document.getElementById('pfList');
+  if (list.querySelectorAll('.pf-row').length >= 4) {
+    alert('ポートフォリオは最大4件です');
+    return;
+  }
+  var row = document.createElement('div');
+  row.className = 'pf-row';
+  row.innerHTML = '<input type="url" placeholder="https://..." class="pf-url">' +
+                  '<button type="button" class="pf-del" onclick="removePf(this)">✕</button>';
+  list.appendChild(row);
+}
+function removePf(btn){
+  var list = document.getElementById('pfList');
+  if (list.querySelectorAll('.pf-row').length <= 1) {
+    btn.closest('.pf-row').querySelector('input').value = '';
+    return;
+  }
+  btn.closest('.pf-row').remove();
+}
+
+// ─── フォーム送信 ─────────────────────────────────────────────
+document.getElementById('selfRegForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  var btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span>⏳</span> 送信中...';
+
+  // チェックボックスの値を収集
+  function getChecked(name){
+    return Array.from(document.querySelectorAll('input[name="' + name + '"]:checked'))
+      .map(function(el){ return el.value; }).join('、');
+  }
+
+  // ポートフォリオ収集
+  var pfUrls = Array.from(document.querySelectorAll('.pf-url'))
+    .map(function(el){ return el.value.trim(); })
+    .filter(function(v){ return v; });
+  var portfolios = pfUrls.map(function(url){ return { url: url, title: '' }; });
+
+  var params = new URLSearchParams(location.search);
+  var data = {
+    action:           'editor_self_register',
+    editor_email:     params.get('email') || '',
+    name:             document.getElementById('name').value.trim(),
+    icon:             document.getElementById('icon').value.trim(),
+    occupation:       document.getElementById('occupation').value.trim(),
+    experience:       document.getElementById('experience').value.trim(),
+    genres:           getChecked('genre'),
+    style:            document.getElementById('style').value.trim(),
+    software:         getChecked('software'),
+    monthly_capacity: document.getElementById('monthly_capacity').value.trim(),
+    work_hours:       document.getElementById('work_hours').value.trim(),
+    comment:          document.getElementById('comment').value.trim(),
+    portfolios:       portfolios
+  };
+
+  try {
+    var res = await fetch(GAS_URL, {
+      method:  'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body:    JSON.stringify(data)
+    });
+    var json = await res.json();
+    if (json.success) {
+      document.getElementById('selfRegForm').style.display = 'none';
+      document.getElementById('done').style.display = 'block';
+      window.scrollTo(0,0);
+    } else {
+      alert('エラーが発生しました: ' + (json.error || '不明なエラー'));
+      btn.disabled = false;
+      btn.innerHTML = '<span>✅</span> プロフィールを登録する';
+    }
+  } catch(err) {
+    alert('通信エラーが発生しました。もう一度お試しください。');
+    btn.disabled = false;
+    btn.innerHTML = '<span>✅</span> プロフィールを登録する';
+  }
+});
+</script>
+</body>
+</html>

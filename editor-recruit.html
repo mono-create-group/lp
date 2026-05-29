@@ -11,7 +11,7 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-body { font-family: 'Noto Sans JP', sans-serif; background: #0B1120; color: #F1F5F9; line-height: 1.8; -webkit-font-smoothing: antialiased; }
+body { font-family: 'Noto Sans JP', sans-serif; background: #F8FAFC; color: #0F172A; line-height: 1.8; -webkit-font-smoothing: antialiased; }
 a { text-decoration: none; color: inherit; }
 .page { max-width: 480px; margin: 0 auto; padding: 28px 20px 80px; }
 .back-link { display:inline-flex;align-items:center;gap:6px;font-size:0.75rem;color:#475569;margin-bottom:20px; }
@@ -21,96 +21,98 @@ a { text-decoration: none; color: inherit; }
 .hero {
   text-align: center;
   padding: 36px 20px 28px;
-  background: linear-gradient(145deg,#0F2A1F,#14381A);
-  border: 2px solid #166534; border-radius: 20px; margin-bottom: 20px;
+  background: linear-gradient(145deg, #EFF6FF, #DBEAFE);
+  border: 2px solid #BFDBFE; border-radius: 20px; margin-bottom: 20px;
+  box-shadow: 0 4px 20px rgba(30,64,175,0.08);
 }
-.hero-badge { display:inline-block; background:#15803D; color:#fff; font-size:0.68rem; font-weight:800; padding:3px 12px; border-radius:20px; letter-spacing:0.08em; margin-bottom:12px; }
-.hero-title { font-size:1.5rem; font-weight:900; color:#ECFDF5; margin-bottom:8px; line-height:1.3; }
-.hero-desc { font-size:0.82rem; color:#86EFAC; line-height:1.8; }
+.hero-badge { display:inline-block; background:linear-gradient(135deg,#1E40AF,#2563EB); color:#fff; font-size:0.68rem; font-weight:800; padding:3px 12px; border-radius:20px; letter-spacing:0.08em; margin-bottom:12px; }
+.hero-title { font-size:1.5rem; font-weight:900; color:#1E3A8A; margin-bottom:8px; line-height:1.3; }
+.hero-desc { font-size:0.82rem; color:#1E40AF; line-height:1.8; }
 
 /* ── Card ── */
-.card { background:#131F35; border:1px solid #1E2D4A; border-radius:16px; padding:22px 20px; margin-bottom:16px; }
-.card-title { font-size:0.68rem; font-weight:800; letter-spacing:0.12em; color:#34D399; margin-bottom:14px; }
+.card { background:#fff; border:1.5px solid #E2E8F0; border-radius:16px; padding:22px 20px; margin-bottom:16px; box-shadow:0 2px 12px rgba(15,23,42,0.06); }
+.card-title { font-size:0.68rem; font-weight:800; letter-spacing:0.12em; color:#2563EB; margin-bottom:14px; }
 
 /* ── 案件カード ── */
 .case-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; }
 .case-card {
   border-radius:14px; padding:16px 14px;
   border:2px solid;
+  background:#fff;
 }
 .case-card.short {
-  background:linear-gradient(145deg,#0F2035,#0F1C2E);
-  border-color:#2563EB;
+  background: linear-gradient(145deg, #EFF6FF, #DBEAFE);
+  border-color:#BFDBFE;
 }
 .case-card.long {
-  background:linear-gradient(145deg,#1A1F0F,#1C2410);
-  border-color:#16A34A;
+  background: linear-gradient(145deg, #F0FDF4, #DCFCE7);
+  border-color:#BBF7D0;
 }
 .case-label {
   font-size:0.62rem; font-weight:800; letter-spacing:0.1em;
   padding:2px 8px; border-radius:10px; display:inline-block; margin-bottom:10px;
 }
-.short .case-label { background:rgba(37,99,235,0.2); color:#60A5FA; }
-.long .case-label  { background:rgba(22,163,74,0.2); color:#4ADE80; }
+.short .case-label { background:rgba(37,99,235,0.12); color:#1D4ED8; }
+.long .case-label  { background:rgba(5,150,105,0.12); color:#047857; }
 .case-pay { font-family:'Inter'; font-size:1.3rem; font-weight:900; line-height:1.1; margin-bottom:8px; }
-.short .case-pay { color:#60A5FA; }
-.long .case-pay  { color:#4ADE80; }
-.case-row { font-size:0.72rem; color:#94A3B8; line-height:1.7; }
-.case-row strong { color:#CBD5E1; }
+.short .case-pay { color:#1D4ED8; }
+.long .case-pay  { color:#047857; }
+.case-row { font-size:0.72rem; color:#64748B; line-height:1.7; }
+.case-row strong { color:#0F172A; }
 
 /* ── Requirements ── */
 .req-list { display:flex; flex-direction:column; gap:8px; }
-.req-item { display:flex; align-items:flex-start; gap:10px; font-size:0.8rem; color:#94A3B8; }
-.req-icon { color:#34D399; flex-shrink:0; }
+.req-item { display:flex; align-items:flex-start; gap:10px; font-size:0.8rem; color:#475569; }
+.req-icon { color:#059669; flex-shrink:0; }
 
 /* ── Form ── */
-.form-section { background:#131F35; border:2px solid #166534; border-radius:16px; padding:24px 20px; margin-bottom:16px; }
-.form-title { font-size:1rem; font-weight:900; color:#ECFDF5; margin-bottom:4px; }
-.form-subtitle { font-size:0.75rem; color:#6EE7B7; margin-bottom:20px; }
+.form-section { background:#fff; border:2px solid #BFDBFE; border-radius:16px; padding:24px 20px; margin-bottom:16px; box-shadow:0 4px 20px rgba(30,64,175,0.06); }
+.form-title { font-size:1rem; font-weight:900; color:#1E3A8A; margin-bottom:4px; }
+.form-subtitle { font-size:0.75rem; color:#2563EB; margin-bottom:20px; }
 .form-row { margin-bottom:16px; }
-.form-row label { display:block; font-size:0.78rem; font-weight:700; color:#94A3B8; margin-bottom:6px; }
-.form-row label span.req { color:#F87171; }
+.form-row label { display:block; font-size:0.78rem; font-weight:700; color:#475569; margin-bottom:6px; }
+.form-row label span.req { color:#EF4444; }
 .form-control {
   width:100%; padding:10px 14px;
-  background:#0F1C2E; border:1px solid #243347; border-radius:8px;
-  color:#F1F5F9; font-family:inherit; font-size:0.85rem;
+  background:#F8FAFC; border:1.5px solid #E2E8F0; border-radius:8px;
+  color:#0F172A; font-family:inherit; font-size:0.85rem;
   transition:border-color 0.2s;
 }
-.form-control:focus { outline:none; border-color:#059669; }
-.form-control::placeholder { color:#334155; }
+.form-control:focus { outline:none; border-color:#2563EB; box-shadow:0 0 0 3px rgba(37,99,235,0.1); }
+.form-control::placeholder { color:#CBD5E1; }
 textarea.form-control { min-height:80px; resize:vertical; }
 
 /* ラジオ・チェックボックス */
 .radio-group { display:flex; flex-wrap:wrap; gap:8px; }
 .radio-item { display:flex; align-items:center; gap:6px; }
 .radio-item input[type=radio],
-.radio-item input[type=checkbox] { width:16px; height:16px; accent-color:#059669; }
-.radio-item label { font-size:0.82rem; color:#94A3B8; cursor:pointer; }
+.radio-item input[type=checkbox] { width:16px; height:16px; accent-color:#2563EB; }
+.radio-item label { font-size:0.82rem; color:#475569; cursor:pointer; }
 
 /* 2列グリッド */
 .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 @media(max-width:480px){ .form-grid { grid-template-columns:1fr; } }
 
 .dispatch-banner {
-  background:linear-gradient(135deg,#1A2840,#1E3A2A);
-  border:1px solid #166534; border-radius:10px;
+  background: linear-gradient(135deg, #EFF6FF, #DBEAFE);
+  border:1.5px solid #BFDBFE; border-radius:10px;
   padding:12px 14px; margin-bottom:16px;
-  font-size:0.78rem; color:#86EFAC; line-height:1.7;
+  font-size:0.78rem; color:#1E40AF; line-height:1.7;
 }
-.dispatch-banner strong { color:#34D399; }
+.dispatch-banner strong { color:#1E3A8A; }
 
 .form-submit {
   display:block; width:100%;
-  background:linear-gradient(135deg,#047857,#059669);
+  background:linear-gradient(135deg,#1E40AF,#2563EB);
   color:#fff; border:none; border-radius:12px;
   padding:14px 20px; font-size:0.9rem; font-weight:800;
   cursor:pointer; font-family:inherit;
-  box-shadow:0 4px 20px rgba(5,150,105,0.35);
+  box-shadow:0 4px 20px rgba(30,64,175,0.3);
   transition:opacity 0.2s,transform 0.15s;
 }
 .form-submit:hover { opacity:0.9; transform:translateY(-2px); }
 .form-submit:disabled { opacity:0.5; transform:none; cursor:not-allowed; }
-.form-note { font-size:0.72rem; color:#475569; text-align:center; margin-top:10px; }
+.form-note { font-size:0.72rem; color:#94A3B8; text-align:center; margin-top:10px; }
 
 /* ── Success ── */
 .form-success { display:none; text-align:center; padding:32px 20px; }
@@ -118,8 +120,8 @@ textarea.form-control { min-height:80px; resize:vertical; }
 .form-success-icon { font-size:3rem; margin-bottom:12px; }
 
 /* ── Footer ── */
-.footer { text-align:center; margin-top:24px; font-size:0.68rem; color:#334155; }
-.footer a { color:#34D399; }
+.footer { text-align:center; margin-top:24px; font-size:0.68rem; color:#94A3B8; }
+.footer a { color:#2563EB; }
 </style>
 </head>
 <body>
@@ -150,7 +152,7 @@ textarea.form-control { min-height:80px; resize:vertical; }
           <strong>作業目安</strong>：1〜2時間<br>
           <strong>ソフト</strong>：Premiere Pro<br>
           <strong>PC</strong>：Mac<br>
-          <span style="color:#60A5FA;font-size:0.68rem;">初心者向け案件多め</span>
+          <span style="color:#1D4ED8;font-size:0.68rem;">初心者向け案件多め</span>
         </div>
       </div>
       <!-- 長尺 -->
@@ -260,10 +262,10 @@ textarea.form-control { min-height:80px; resize:vertical; }
         <div style="margin-top:10px;margin-bottom:10px;">
           <div class="radio-item">
             <input type="checkbox" id="dispatch" name="dispatch" value="希望する">
-            <label for="dispatch" style="color:#86EFAC;font-weight:700;">編集者派遣にも登録を希望する</label>
+            <label for="dispatch" style="color:#1E40AF;font-weight:700;">編集者派遣にも登録を希望する</label>
           </div>
         </div>
-        <p style="font-size:0.72rem;color:#6EE7B7;line-height:1.8;border-top:1px solid rgba(52,211,153,0.2);padding-top:10px;">
+        <p style="font-size:0.72rem;color:#2563EB;line-height:1.8;border-top:1px solid rgba(37,99,235,0.2);padding-top:10px;">
           ※ 希望いただいた場合、管理者が内容を確認のうえ審査を行います。<br>
           承認後にメールが届き、編集者派遣ページへご自身の情報を登録いただけます。
         </p>
@@ -281,8 +283,8 @@ textarea.form-control { min-height:80px; resize:vertical; }
 
     <div class="form-success" id="form-success">
       <div class="form-success-icon">🎉</div>
-      <h3 style="font-size:1.1rem;font-weight:900;color:#ECFDF5;margin-bottom:8px;">ご応募ありがとうございます！</h3>
-      <p style="font-size:0.82rem;color:#6EE7B7;line-height:1.8;">
+      <h3 style="font-size:1.1rem;font-weight:900;color:#1E3A8A;margin-bottom:8px;">ご応募ありがとうございます！</h3>
+      <p style="font-size:0.82rem;color:#2563EB;line-height:1.8;">
         内容を確認のうえ、2〜3営業日以内にメールでご連絡します。<br>
         案件の状況によってはお時間をいただく場合がございますが、<br>
         いましばらくお待ちください。
@@ -295,20 +297,20 @@ textarea.form-control { min-height:80px; resize:vertical; }
     <p class="card-title">FAQ</p>
     <div style="display:flex;flex-direction:column;gap:14px;">
       <div>
-        <p style="font-size:0.82rem;font-weight:700;color:#86EFAC;margin-bottom:4px;">Q. 経験が浅くても応募できますか？</p>
-        <p style="font-size:0.78rem;color:#94A3B8;line-height:1.7;">はい。スキルがあれば実績なしでもOKです。まずはテスト編集をお願いする場合があります。</p>
+        <p style="font-size:0.82rem;font-weight:700;color:#1E40AF;margin-bottom:4px;">Q. 経験が浅くても応募できますか？</p>
+        <p style="font-size:0.78rem;color:#475569;line-height:1.7;">はい。スキルがあれば実績なしでもOKです。まずはテスト編集をお願いする場合があります。</p>
       </div>
       <div>
-        <p style="font-size:0.82rem;font-weight:700;color:#86EFAC;margin-bottom:4px;">Q. 最低稼働本数はありますか？</p>
-        <p style="font-size:0.78rem;color:#94A3B8;line-height:1.7;">ありません。案件が発生したときにご連絡するスタイルです。</p>
+        <p style="font-size:0.82rem;font-weight:700;color:#1E40AF;margin-bottom:4px;">Q. 最低稼働本数はありますか？</p>
+        <p style="font-size:0.78rem;color:#475569;line-height:1.7;">ありません。案件が発生したときにご連絡するスタイルです。</p>
       </div>
       <div>
-        <p style="font-size:0.82rem;font-weight:700;color:#86EFAC;margin-bottom:4px;">Q. 報酬の支払いはいつですか？</p>
-        <p style="font-size:0.78rem;color:#94A3B8;line-height:1.7;">納品確認後、月末締め翌月払いが基本です。詳細は契約時にご確認ください。</p>
+        <p style="font-size:0.82rem;font-weight:700;color:#1E40AF;margin-bottom:4px;">Q. 報酬の支払いはいつですか？</p>
+        <p style="font-size:0.78rem;color:#475569;line-height:1.7;">納品確認後、月末締め翌月払いが基本です。詳細は契約時にご確認ください。</p>
       </div>
       <div>
-        <p style="font-size:0.82rem;font-weight:700;color:#86EFAC;margin-bottom:4px;">Q. 編集者派遣とは何ですか？</p>
-        <p style="font-size:0.78rem;color:#94A3B8;line-height:1.7;">クライアントに直接あなたのプロフィールを紹介するサービスです。継続案件を直接受けたい方に向いています。</p>
+        <p style="font-size:0.82rem;font-weight:700;color:#1E40AF;margin-bottom:4px;">Q. 編集者派遣とは何ですか？</p>
+        <p style="font-size:0.78rem;color:#475569;line-height:1.7;">クライアントに直接あなたのプロフィールを紹介するサービスです。継続案件を直接受けたい方に向いています。</p>
       </div>
     </div>
   </div>
