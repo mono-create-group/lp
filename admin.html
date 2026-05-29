@@ -450,6 +450,10 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
         ✏️ テキスト編集
       </button>
+      <button id="tab-editor-apps-btn" onclick="switchAdminTab('editor-apps')"
+        style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
+        📝 編集者応募
+      </button>
     </div>
 
     <!-- ── 問い合わせタブ ── -->
@@ -993,6 +997,64 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         <span id="content-save-msg" style="font-size:0.82rem;display:none;"></span>
       </div>
     </div><!-- /tab-content -->
+
+    <!-- ── 編集者応募タブ ── -->
+    <div id="tab-editor-apps" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
+        <h2 style="font-size:1rem;font-weight:700;">📝 編集者応募管理</h2>
+        <div style="display:flex;gap:10px;">
+          <button class="refresh-btn" onclick="loadEditorApps()">更新</button>
+          <button class="export-btn" onclick="exportEditorAppsCSV()">CSV出力</button>
+        </div>
+      </div>
+
+      <!-- 集計バー -->
+      <div class="stats-bar" id="editor-apps-stats" style="margin-bottom:24px;">
+        <div class="stat-card"><p class="stat-label">総件数</p><p class="stat-val blue" id="ea-total">—</p></div>
+        <div class="stat-card"><p class="stat-label">未対応</p><p class="stat-val red" id="ea-new">—</p></div>
+        <div class="stat-card"><p class="stat-label">採用検討中</p><p class="stat-val yellow" id="ea-review">—</p></div>
+        <div class="stat-card"><p class="stat-label">採用決定</p><p class="stat-val green" id="ea-hired">—</p></div>
+      </div>
+
+      <!-- フィルター -->
+      <div class="toolbar" style="margin-bottom:20px;">
+        <input type="text" class="search-input" id="ea-search" placeholder="名前・メール・ソフト・ジャンルで検索..." oninput="renderEditorApps()">
+        <select class="filter-select" id="ea-status-filter" onchange="renderEditorApps()">
+          <option value="">すべてのステータス</option>
+          <option value="未対応">未対応</option>
+          <option value="採用検討中">採用検討中</option>
+          <option value="採用決定">採用決定</option>
+          <option value="見送り">見送り</option>
+        </select>
+        <select class="filter-select" id="ea-dispatch-filter" onchange="renderEditorApps()">
+          <option value="">すべて</option>
+          <option value="希望あり">派遣希望あり</option>
+          <option value="希望なし">派遣希望なし</option>
+        </select>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>受信日時</th>
+              <th>名前</th>
+              <th>メール</th>
+              <th>使用ソフト</th>
+              <th>得意ジャンル</th>
+              <th>月本数</th>
+              <th>PF</th>
+              <th>派遣</th>
+              <th>ステータス</th>
+              <th>アクション</th>
+            </tr>
+          </thead>
+          <tbody id="ea-body">
+            <tr><td colspan="10" class="table-empty"><span class="spinner"></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div><!-- /tab-editor-apps -->
 
   </main>
 </div>
@@ -1580,7 +1642,7 @@ function exportCSV() {
 }
 
 // ── Tab switch ──
-const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content'];
+const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps'];
 function switchAdminTab(tab) {
   ADMIN_TABS.forEach(t => {
     document.getElementById('tab-' + t).style.display = t === tab ? '' : 'none';
@@ -1596,8 +1658,9 @@ function switchAdminTab(tab) {
   if (tab === 'sales')     loadSales();
   if (tab === 'schedule')  loadSchedule();
   if (tab === 'settings')  { loadServiceStatus(); loadPFAdmin(); }
-  if (tab === 'pf')        loadPFAdmin();
-  if (tab === 'content')   loadLpContent();
+  if (tab === 'pf')          loadPFAdmin();
+  if (tab === 'content')     loadLpContent();
+  if (tab === 'editor-apps') loadEditorApps();
 }
 
 // ── LP コンテンツ編集 ─────────────────────────────────────────
@@ -3170,6 +3233,198 @@ async function deletePFItem(row, name) {
   await fetch(`${GAS_URL}?action=pf_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
   showToast('🗑 削除しました');
   await loadPFAdmin();
+}
+
+// ── 編集者応募管理 ────────────────────────────────────────────────
+let editorApps = [];
+
+async function loadEditorApps() {
+  document.getElementById('ea-body').innerHTML =
+    '<tr><td colspan="10" class="table-empty"><span class="spinner"></span></td></tr>';
+  try {
+    const res  = await fetch(`${GAS_URL}?action=editor_applications&key=${encodeURIComponent(getAdminPw())}`);
+    const json = await res.json();
+    editorApps = json.data || [];
+    updateEditorAppsStats();
+    renderEditorApps();
+  } catch(e) {
+    document.getElementById('ea-body').innerHTML =
+      '<tr><td colspan="10" class="table-empty">読み込みに失敗しました。</td></tr>';
+  }
+}
+
+function updateEditorAppsStats() {
+  document.getElementById('ea-total').textContent  = editorApps.length;
+  document.getElementById('ea-new').textContent    = editorApps.filter(a => a.status === '未対応').length;
+  document.getElementById('ea-review').textContent = editorApps.filter(a => a.status === '採用検討中').length;
+  document.getElementById('ea-hired').textContent  = editorApps.filter(a => a.status === '採用決定').length;
+}
+
+function renderEditorApps() {
+  const q        = (document.getElementById('ea-search').value || '').toLowerCase();
+  const stFilter = document.getElementById('ea-status-filter').value;
+  const dpFilter = document.getElementById('ea-dispatch-filter').value;
+
+  const filtered = editorApps.filter(a => {
+    const matchQ = !q || [a.name, a.email, a.software, a.genres, a.portfolio].some(v => v && v.toLowerCase().includes(q));
+    const matchS = !stFilter || a.status === stFilter;
+    const matchD = !dpFilter ||
+      (dpFilter === '希望あり' && a.dispatch === '希望する') ||
+      (dpFilter === '希望なし' && a.dispatch !== '希望する');
+    return matchQ && matchS && matchD;
+  });
+
+  const tbody = document.getElementById('ea-body');
+  if (!filtered.length) {
+    tbody.innerHTML = '<tr><td colspan="10" class="table-empty">該当する応募はありません。</td></tr>';
+    return;
+  }
+
+  const statusColor = {
+    '未対応': 'var(--red)', '採用検討中': 'var(--yellow)',
+    '採用決定': 'var(--green)', '見送り': 'var(--sub)'
+  };
+
+  tbody.innerHTML = filtered.map(a => {
+    const sc = statusColor[a.status] || 'var(--sub)';
+    const dispatchBadge = a.dispatch === '希望する'
+      ? '<span style="background:rgba(168,85,247,0.12);color:#c084fc;border:1px solid rgba(168,85,247,0.3);padding:2px 7px;border-radius:10px;font-size:0.7rem;font-weight:700;">派遣希望</span>'
+      : '<span style="color:var(--sub);font-size:0.75rem;">—</span>';
+    const pfLink = a.portfolio
+      ? `<a href="${esc(a.portfolio)}" target="_blank" rel="noopener" style="color:#60a5fa;font-size:0.78rem;word-break:break-all;">🔗 見る</a>`
+      : '<span style="color:var(--sub);font-size:0.75rem;">—</span>';
+    return `
+      <tr>
+        <td class="td-date">${esc(a.date)}</td>
+        <td class="td-name">${esc(a.name)}</td>
+        <td class="td-email" style="font-size:0.78rem;">${esc(a.email)}</td>
+        <td style="font-size:0.78rem;max-width:160px;">${esc(a.software || '—')}</td>
+        <td style="font-size:0.78rem;max-width:140px;">${esc(a.genres || '—')}</td>
+        <td style="font-size:0.8rem;white-space:nowrap;">${esc(a.monthly_vol || '—')}</td>
+        <td>${pfLink}</td>
+        <td>${dispatchBadge}</td>
+        <td>
+          <select onchange="updateEditorAppStatus(${a.row}, this.value)"
+            style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:${sc};font-size:0.75rem;padding:4px 8px;font-family:inherit;font-weight:700;cursor:pointer;">
+            <option value="未対応"      ${a.status==='未対応'      ?'selected':''}>🔴 未対応</option>
+            <option value="採用検討中"  ${a.status==='採用検討中'  ?'selected':''}>🟡 採用検討中</option>
+            <option value="採用決定"    ${a.status==='採用決定'    ?'selected':''}>🟢 採用決定</option>
+            <option value="見送り"      ${a.status==='見送り'      ?'selected':''}>⚫ 見送り</option>
+          </select>
+        </td>
+        <td>
+          <div class="td-actions">
+            <button class="action-btn btn-mail" onclick="openEditorAppMail('${esc(a.email)}','${esc(a.name)}')">✉ メール</button>
+            <button class="action-btn btn-expand" onclick="openEditorAppDetail(${a.row})">詳細</button>
+            ${a.dispatch === '希望する'
+              ? `<button class="action-btn" style="background:rgba(168,85,247,0.1);color:#c084fc;border:1px solid rgba(168,85,247,0.3);" onclick="addEditorFromApp(${a.row})">👥 編集者登録</button>`
+              : ''}
+            <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="deleteEditorApp(${a.row},'${esc(a.name).replace(/'/g,"\\'")}')">🗑</button>
+          </div>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+async function updateEditorAppStatus(row, status) {
+  try {
+    await fetch(`${GAS_URL}?action=editor_app_status&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(status)}`);
+    const item = editorApps.find(a => a.row === row);
+    if (item) item.status = status;
+    updateEditorAppsStats();
+    showToast(`✅ ステータスを「${status}」に更新`);
+  } catch(e) {
+    showToast('⚠ 更新に失敗しました');
+  }
+}
+
+async function deleteEditorApp(row, name) {
+  if (!confirm(`「${name}」の応募を削除しますか？\n\nこの操作は元に戻せません。`)) return;
+  try {
+    await fetch(`${GAS_URL}?action=editor_app_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    editorApps = editorApps.filter(a => a.row !== row);
+    updateEditorAppsStats();
+    renderEditorApps();
+    showToast('削除しました');
+  } catch(e) {
+    alert('削除に失敗しました。');
+  }
+}
+
+function openEditorAppMail(email, name) {
+  const n = name || '';
+  const sig = '\n\n----\nmono.create\nhttps://mono-create-group.github.io/lp/';
+  const subj = '【mono.create】編集者応募について';
+  const body =
+    (n ? n + ' さん\n\n' : '') +
+    'この度はmono.createへの編集者応募ありがとうございます。\n\n' +
+    '内容を確認いたしました。\n以下の通りご案内いたします。\n\n' +
+    '▼ ここに追記\n\n' +
+    'ご不明な点がございましたら、お気軽にご返信ください。' +
+    sig;
+  window.open(
+    `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}&su=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`,
+    '_blank'
+  );
+}
+
+function openEditorAppDetail(row) {
+  const a = editorApps.find(x => x.row === row);
+  if (!a) return;
+  const pfLink = a.portfolio
+    ? `<a href="${esc(a.portfolio)}" target="_blank" rel="noopener" style="color:#60a5fa;word-break:break-all;">${esc(a.portfolio)}</a>`
+    : '—';
+  document.getElementById('modal-body').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;padding:16px 20px;background:linear-gradient(135deg,rgba(59,130,246,0.08),rgba(168,85,247,0.05));border:1px solid var(--border);border-radius:10px;margin-bottom:16px;">
+      <div><span style="font-size:0.7rem;color:var(--sub);">受信日時</span><br><span style="font-size:0.85rem;">${esc(a.date)}</span></div>
+      <div><span style="font-size:0.7rem;color:var(--sub);">ステータス</span><br><span style="font-weight:700;color:var(--lt);">${esc(a.status)}</span></div>
+      <div><span style="font-size:0.7rem;color:var(--sub);">名前</span><br><span style="font-size:1rem;font-weight:700;">${esc(a.name)}</span></div>
+      <div><span style="font-size:0.7rem;color:var(--sub);">メール</span><br><a href="mailto:${esc(a.email)}" style="color:#60a5fa;font-size:0.85rem;">${esc(a.email)}</a></div>
+    </div>
+    <div class="modal-row"><p class="modal-label">使用ソフト</p><p class="modal-val">${esc(a.software || '—')}</p></div>
+    <div class="modal-row"><p class="modal-label">得意ジャンル</p><p class="modal-val">${esc(a.genres || '—')}</p></div>
+    <div class="modal-row"><p class="modal-label">月の対応本数</p><p class="modal-val">${esc(a.monthly_vol || '—')}</p></div>
+    <div class="modal-row"><p class="modal-label">稼働時間帯</p><p class="modal-val">${esc(a.hours || '—')}</p></div>
+    <div class="modal-row"><p class="modal-label">ポートフォリオ</p><p class="modal-val">${pfLink}</p></div>
+    <div class="modal-row"><p class="modal-label">派遣希望</p><p class="modal-val">${esc(a.dispatch || '—')}</p></div>
+    ${a.message ? `<div class="modal-row"><p class="modal-label">一言メッセージ</p><p class="modal-val modal-message">${esc(a.message)}</p></div>` : ''}
+    <div class="modal-actions" style="margin-top:16px;">
+      <button class="modal-btn mail" onclick="openEditorAppMail('${esc(a.email)}','${esc(a.name)}')">✉ メール返信</button>
+      ${a.dispatch === '希望する'
+        ? `<button class="modal-btn" style="background:rgba(168,85,247,0.15);color:#c084fc;border:1px solid rgba(168,85,247,0.3);" onclick="closeModal();addEditorFromApp(${a.row})">👥 編集者として登録</button>`
+        : ''}
+      <button class="modal-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;margin-left:auto;" onclick="deleteEditorApp(${a.row},'${esc(a.name).replace(/'/g,"\\'")}')" >🗑 削除</button>
+    </div>`;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function addEditorFromApp(row) {
+  const a = editorApps.find(x => x.row === row);
+  if (!a) return;
+  // 編集者管理タブに自動入力してモーダルを開く
+  switchAdminTab('editors');
+  openEditorModal(null);
+  document.getElementById('em-name').value     = a.name || '';
+  document.getElementById('em-software').value = a.software || '';
+  document.getElementById('em-genres').value   = a.genres || '';
+  document.getElementById('em-monthly').value  = a.monthly_vol || '';
+  document.getElementById('em-work-hours').value = a.hours || '';
+  // ポートフォリオURL
+  const pfContainer = document.getElementById('em-portfolios');
+  if (pfContainer && a.portfolio) {
+    pfContainer.innerHTML = `<input type="url" class="form-input" value="${esc(a.portfolio)}" placeholder="https://" style="margin-bottom:8px;">`;
+  }
+  showToast('📋 応募情報を編集者フォームに転記しました');
+}
+
+function exportEditorAppsCSV() {
+  const rows = [['受信日時','名前','メール','使用ソフト','得意ジャンル','月本数','稼働時間帯','PF URL','メッセージ','派遣希望','ステータス']];
+  editorApps.forEach(a => rows.push([
+    a.date, a.name, a.email, a.software||'', a.genres||'',
+    a.monthly_vol||'', a.hours||'', a.portfolio||'', a.message||'',
+    a.dispatch||'', a.status||''
+  ]));
+  downloadCSV(rows, 'monocreate_editor_apps');
 }
 
 // ── Toast ──
