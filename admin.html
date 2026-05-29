@@ -1064,6 +1064,58 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
 
     <!-- ── パートナー申請タブ ── -->
     <div id="tab-partner-apps" style="display:none;">
+
+      <!-- ══════════════════════════════════════════════════════
+           💰 自動計算 報酬管理セクション
+      ══════════════════════════════════════════════════════ -->
+      <div style="margin-bottom:32px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+          <h2 style="font-size:1rem;font-weight:700;">💰 パートナー報酬管理（自動計算）</h2>
+          <button class="refresh-btn" onclick="loadPartnerRewards()">更新</button>
+        </div>
+
+        <!-- 報酬サマリーバー -->
+        <div class="stats-bar" style="margin-bottom:20px;">
+          <div class="stat-card"><p class="stat-label">未送信</p><p class="stat-val red" id="rw-unsent">—</p></div>
+          <div class="stat-card"><p class="stat-label">メール済み</p><p class="stat-val yellow" id="rw-mailed">—</p></div>
+          <div class="stat-card"><p class="stat-label">支払済み</p><p class="stat-val green" id="rw-paid">—</p></div>
+          <div class="stat-card"><p class="stat-label">未払い総額</p><p class="stat-val" style="color:#F59E0B;" id="rw-amount">—</p></div>
+        </div>
+
+        <!-- フロー説明 -->
+        <div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:0.78rem;color:#FCD34D;line-height:1.8;">
+          <strong>自動フロー：</strong> 振込承認 → 紹介コードを自動検索 → 報酬額を自動計算 →
+          ここに表示 → <strong>「📧 送信」</strong>でメール自動送信 → PayPay送金（手動） → <strong>「✅ 支払済」</strong>クリック
+        </div>
+
+        <!-- 報酬テーブル -->
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>日時</th>
+                <th>パートナー</th>
+                <th>クライアント</th>
+                <th>プラン</th>
+                <th>基本</th>
+                <th>ボーナス</th>
+                <th>合計</th>
+                <th>ステータス</th>
+                <th>アクション</th>
+              </tr>
+            </thead>
+            <tbody id="rw-body">
+              <tr><td colspan="9" class="table-empty"><span class="spinner"></span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <hr style="border-color:var(--border);margin:0 0 28px;">
+
+      <!-- ══════════════════════════════════════════════════════
+           🤝 パートナー申請管理セクション
+      ══════════════════════════════════════════════════════ -->
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
         <h2 style="font-size:1rem;font-weight:700;">🤝 パートナー申請管理</h2>
         <div style="display:flex;gap:10px;">
@@ -1078,12 +1130,6 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         <div class="stat-card"><p class="stat-label">未対応</p><p class="stat-val red" id="pa-new">—</p></div>
         <div class="stat-card"><p class="stat-label">承認済み</p><p class="stat-val green" id="pa-approved">—</p></div>
         <div class="stat-card"><p class="stat-label">却下</p><p class="stat-val" style="color:var(--sub)" id="pa-rejected">—</p></div>
-      </div>
-
-      <!-- 報酬の仕組み説明 -->
-      <div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);border-radius:12px;padding:14px 18px;margin-bottom:20px;font-size:0.8rem;color:#FCD34D;line-height:1.9;">
-        <strong>💰 報酬フロー：</strong> 申請受付 → 審査 → 【承認】ボタンで自動的にコードをメール送信 →
-        成約時に「報酬メール」ボタンで報酬確定メール送信 → PayPayで手動送金 → 確認
       </div>
 
       <!-- フィルター -->
@@ -1736,7 +1782,7 @@ function switchAdminTab(tab) {
   if (tab === 'pf')          loadPFAdmin();
   if (tab === 'content')     loadLpContent();
   if (tab === 'editor-apps')  loadEditorApps();
-  if (tab === 'partner-apps') loadPartnerApps();
+  if (tab === 'partner-apps') { loadPartnerRewards(); loadPartnerApps(); }
 }
 
 // ── LP コンテンツ編集 ─────────────────────────────────────────
@@ -3524,6 +3570,99 @@ function exportEditorAppsCSV() {
 // ═══════════════════════════════════════════════
 // ── パートナー申請管理 ──
 // ═══════════════════════════════════════════════
+// ────────────────────────────────────────────────
+// 💰 パートナー報酬管理（自動計算版）
+// ────────────────────────────────────────────────
+let partnerRewards = [];
+
+async function loadPartnerRewards() {
+  try {
+    const res  = await fetch(`${GAS_URL}?action=partner_rewards`);
+    const json = await res.json();
+    partnerRewards = json.data || [];
+    renderPartnerRewards();
+  } catch(e) {
+    document.getElementById('rw-body').innerHTML = '<tr><td colspan="9" class="table-empty">読み込みエラー</td></tr>';
+  }
+}
+
+function renderPartnerRewards() {
+  const tbody = document.getElementById('rw-body');
+  if (!partnerRewards.length) {
+    tbody.innerHTML = '<tr><td colspan="9" class="table-empty">報酬データなし（振込承認すると自動追加されます）</td></tr>';
+    updateRewardStats();
+    return;
+  }
+  const esc = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  tbody.innerHTML = partnerRewards.map(r => {
+    const sc = r.status === '未送信' ? 'var(--red)' : r.status === 'メール済み' ? 'var(--yellow)' : 'var(--green)';
+    const bonusCell = r.bonus > 0
+      ? `<span style="color:#F59E0B;font-weight:800;">+¥${Number(r.bonus).toLocaleString()}</span>`
+      : '<span style="color:var(--sub)">—</span>';
+    const actions = r.status === '未送信'
+      ? `<button class="action-btn" style="background:rgba(245,158,11,0.15);color:#F59E0B;border:1px solid rgba(245,158,11,0.4);font-weight:800;" onclick="sendRewardEmailAuto(${r.row},'${esc(r.pName)}',${r.total})">📧 送信</button>`
+      : r.status === 'メール済み'
+      ? `<button class="action-btn" style="background:rgba(16,185,129,0.15);color:#10B981;border:1px solid rgba(16,185,129,0.4);font-weight:800;" onclick="markRewardPaid(${r.row},'${esc(r.pName)}',${r.total})">✅ 支払済</button>`
+      : `<span style="font-size:0.72rem;color:#10B981;font-weight:800;">支払済み✓</span>`;
+    return `<tr>
+      <td style="font-size:0.72rem;color:var(--sub);">${r.date.slice(0,10)}</td>
+      <td><strong>${esc(r.pName)}</strong><br><span style="font-size:0.7rem;color:var(--sub);">${esc(r.code)}</span></td>
+      <td style="font-size:0.8rem;">${esc(r.client)}</td>
+      <td style="font-size:0.78rem;">${esc(r.plan)}</td>
+      <td style="color:#93C5FD;font-weight:800;">¥${Number(r.base).toLocaleString()}</td>
+      <td>${bonusCell}</td>
+      <td style="color:#F59E0B;font-weight:900;font-size:1rem;">¥${Number(r.total).toLocaleString()}</td>
+      <td><span style="color:${sc};font-size:0.75rem;font-weight:800;">${r.status}</span></td>
+      <td><div class="td-actions">${actions}</div></td>
+    </tr>`;
+  }).join('');
+  updateRewardStats();
+}
+
+function updateRewardStats() {
+  const unsent = partnerRewards.filter(r => r.status === '未送信').length;
+  const mailed = partnerRewards.filter(r => r.status === 'メール済み').length;
+  const paid   = partnerRewards.filter(r => r.status === '支払済み').length;
+  const unpaidAmt = partnerRewards
+    .filter(r => r.status !== '支払済み')
+    .reduce((s, r) => s + (Number(r.total) || 0), 0);
+  document.getElementById('rw-unsent').textContent = unsent;
+  document.getElementById('rw-mailed').textContent = mailed;
+  document.getElementById('rw-paid').textContent   = paid;
+  document.getElementById('rw-amount').textContent = '¥' + unpaidAmt.toLocaleString();
+}
+
+async function sendRewardEmailAuto(row, name, total) {
+  if (!confirm(`「${name}」さんへ報酬確定メール（¥${Number(total).toLocaleString()}）を送信しますか？`)) return;
+  try {
+    const res  = await fetch(`${GAS_URL}?action=partner_reward_email_auto&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    const json = await res.json();
+    if (json.success) {
+      showToast(`✅ 「${name}」さんへ報酬メールを送信しました（¥${Number(total).toLocaleString()}）`);
+      await loadPartnerRewards();
+    } else {
+      showToast('❌ ' + (json.error || '送信失敗'));
+    }
+  } catch(e) { showToast('❌ 通信エラー'); }
+}
+
+async function markRewardPaid(row, name, total) {
+  if (!confirm(`「${name}」さんへの¥${Number(total).toLocaleString()}の支払いを完了しましたか？`)) return;
+  try {
+    const res  = await fetch(`${GAS_URL}?action=partner_reward_paid&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    const json = await res.json();
+    if (json.success) {
+      showToast(`✅ 「${name}」さんの報酬を支払済みにしました`);
+      await loadPartnerRewards();
+    } else {
+      showToast('❌ ' + (json.error || '更新失敗'));
+    }
+  } catch(e) { showToast('❌ 通信エラー'); }
+}
+
+// ────────────────────────────────────────────────
+// 🤝 パートナー申請管理
+// ────────────────────────────────────────────────
 let partnerApps = [];
 let rewardTargetRow = null;
 

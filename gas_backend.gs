@@ -375,6 +375,25 @@ function doGet(e) {
     return sendPartnerReward(row, amount);
   }
 
+  // 報酬一覧（自動計算版）
+  if (action === 'partner_rewards') {
+    return listPartnerRewards();
+  }
+
+  // 報酬確定メール自動送信
+  if (action === 'partner_reward_email_auto') {
+    if (e.parameter.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+    var row = parseInt(e.parameter.row, 10);
+    return sendPartnerRewardEmailAuto(row);
+  }
+
+  // 報酬 支払済みマーク
+  if (action === 'partner_reward_paid') {
+    if (e.parameter.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+    var row = parseInt(e.parameter.row, 10);
+    return markRewardPaid(row);
+  }
+
   if (action === 'editor_app_status') {
     var row = parseInt(e.parameter.row, 10);
     var status = e.parameter.status || '';
@@ -2134,6 +2153,13 @@ function approvePayment(row) {
     ]
   );
 
+  // ⑧ パートナー報酬 自動計算（紹介コードがあれば）
+  try {
+    autoCreatePartnerRewardRecord(name, contact, plan);
+  } catch(e) {
+    Logger.log('パートナー報酬自動計算エラー: ' + e);
+  }
+
   return jsonResponse({
     success: true,
     taxInc: taxInc,
@@ -2570,7 +2596,236 @@ function updatePartnerAppStatus(row, status) {
   return jsonResponse({ success: true });
 }
 
-// 報酬確定メール送信
+// ================================================================
+// ── パートナー報酬 自動計算システム ─────────────────────────────
+// partner_rewards シート:
+// 受信日時|パートナー名|パートナーメール|紹介コード|クライアント名|プラン|基本報酬|継続ボーナス|合計報酬|ステータス
+//    1         2            3              4           5           6      7        8            9         10
+// ================================================================
+
+function getOrCreatePartnerRewardsSheet() {
+  var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName('partner_rewards');
+  if (!sheet) {
+    sheet = ss.insertSheet('partner_rewards');
+    sheet.appendRow([
+      '受信日時','パートナー名','パートナーメール','紹介コード',
+      'クライアント名','プラン','基本報酬','継続ボーナス','合計報酬','ステータス'
+    ]);
+    sheet.setFrozenRows(1);
+    sheet.getRange(1,1,1,10).setFontWeight('bold');
+  }
+  return sheet;
+}
+
+// プラン文字列から基本報酬を返す
+function calcRewardFromPlan(plan) {
+  var p = (plan || '').toString();
+  // 月額パック・運用代行（最優先）
+  if (p.match(/月額|運用|パック|ops|pack/i)) return 3000;
+  // 長尺・YouTube・セット
+  if (p.match(/長尺|youtube|long|セット|set/i)) return 1500;
+  // ショート・単品
+  return 500;
+}
+
+// 同パートナーコードの月額成約件数をカウント → 継続ボーナス判定
+function calcContinuityBonus(partnerCode) {
+  var sheet = getOrCreatePartnerRewardsSheet();
+  var values = sheet.getDataRange().getValues();
+  var count = 0;
+  for (var i = 1; i < values.length; i++) {
+    if (values[i][3] === partnerCode) {                         // 紹介コード一致
+      var plan = (values[i][5] || '').toString();
+      if (plan.match(/月額|運用|パック/)) count++;               // 月額プランのみカウント
+    }
+  }
+  // 4件目以降は継続ボーナス対象（＝過去3件+今回が4件目から）
+  return count >= 3 ? 1000 : 0;
+}
+
+// inquiriesシートからクライアント名/メールで紹介コードを検索
+function findReferralCodeByClient(clientName, clientEmail) {
+  var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) return '';
+  var values = sheet.getDataRange().getValues();
+  for (var i = 1; i < values.length; i++) {
+    var name  = (values[i][1] || '').toString().trim();
+    var email = (values[i][3] || '').toString().trim();
+    var code  = (values[i][9] || '').toString().trim();
+    if (!code) continue;
+    if ((clientName && name === clientName.trim()) ||
+        (clientEmail && email === clientEmail.trim())) {
+      return code;
+    }
+  }
+  return '';
+}
+
+// partner_applicationsシートから紹介コードでパートナー情報を取得
+function findPartnerByCode(code) {
+  if (!code) return null;
+  var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName('partner_applications');
+  if (!sheet) return null;
+  var values = sheet.getDataRange().getValues();
+  for (var i = 1; i < values.length; i++) {
+    if ((values[i][7] || '').toString().trim() === code.trim()) {
+      return { row: i + 1, name: values[i][1] || '', email: values[i][2] || '', code: code };
+    }
+  }
+  return null;
+}
+
+// 振込承認時に自動呼び出し → 報酬レコード作成
+function autoCreatePartnerRewardRecord(clientName, clientEmail, plan) {
+  var code = findReferralCodeByClient(clientName, clientEmail);
+  if (!code) return;  // 紹介コードなし → スキップ
+
+  var partner = findPartnerByCode(code);
+  if (!partner) return;  // パートナー不明 → スキップ
+
+  var base    = calcRewardFromPlan(plan);
+  var bonus   = (plan.match(/月額|運用|パック/i)) ? calcContinuityBonus(code) : 0;
+  var total   = base + bonus;
+  var now     = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
+
+  var sheet = getOrCreatePartnerRewardsSheet();
+  sheet.appendRow([
+    now, partner.name, partner.email, code,
+    clientName, plan, base, bonus, total, '未送信'
+  ]);
+
+  // オーナーへ通知（Chatwork）
+  var msg = '[To:' + CHATWORK_MENTION + '] 中村航汰\n\n' +
+    '━━━━━━━━━━━━━━━━━━━━\n' +
+    '💰 パートナー報酬が自動計算されました\n' +
+    '━━━━━━━━━━━━━━━━━━━━\n' +
+    'パートナー : ' + partner.name + '\n' +
+    'クライアント: ' + clientName + '\n' +
+    'プラン     : ' + plan + '\n' +
+    '報酬額     : ¥' + total + '（基本¥' + base + (bonus ? ' + ボーナス¥' + bonus : '') + '）\n' +
+    '━━━━━━━━━━━━━━━━━━━━\n' +
+    '▶ 管理画面で報酬メールを送信してください\n' +
+    LP_BASE_URL + 'admin.html';
+  try {
+    UrlFetchApp.fetch('https://api.chatwork.com/v2/rooms/' + CHATWORK_ROOM_ID + '/messages', {
+      method: 'POST',
+      headers: { 'X-ChatWorkToken': CHATWORK_TOKEN },
+      payload: { body: msg, self_unread: 1 }
+    });
+  } catch(e) {}
+}
+
+// 報酬一覧を返す
+function listPartnerRewards() {
+  var sheet  = getOrCreatePartnerRewardsSheet();
+  var values = sheet.getDataRange().getValues();
+  var data   = [];
+  for (var i = 1; i < values.length; i++) {
+    var r = values[i];
+    data.push({
+      row:      i + 1,
+      date:     r[0]  || '',
+      pName:    r[1]  || '',
+      pEmail:   r[2]  || '',
+      code:     r[3]  || '',
+      client:   r[4]  || '',
+      plan:     r[5]  || '',
+      base:     r[6]  || 0,
+      bonus:    r[7]  || 0,
+      total:    r[8]  || 0,
+      status:   r[9]  || '未送信'
+    });
+  }
+  data.sort(function(a,b){ return b.date > a.date ? 1 : -1; });
+  return jsonResponse({ data: data });
+}
+
+// 報酬確定メール自動送信（admin操作）
+function sendPartnerRewardEmailAuto(row) {
+  var sheet   = getOrCreatePartnerRewardsSheet();
+  var rowData = sheet.getRange(row, 1, 1, 10).getValues()[0];
+  var pName   = rowData[1] || '';
+  var pEmail  = rowData[2] || '';
+  var code    = rowData[3] || '';
+  var client  = rowData[4] || '';
+  var plan    = rowData[5] || '';
+  var base    = rowData[6] || 0;
+  var bonus   = rowData[7] || 0;
+  var total   = rowData[8] || 0;
+  var now     = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
+
+  if (!pEmail || pEmail.indexOf('@') === -1) return jsonResponse({ error: 'no email' });
+  if (rowData[9] !== '未送信') return jsonResponse({ error: 'already_sent' });
+
+  var bonusLine = bonus > 0
+    ? ['', '⭐ 継続ボーナス（3ヶ月以上）: +¥' + bonus, '   合計報酬            : ¥' + total]
+    : [];
+
+  var body = [
+    pName + ' 様',
+    '',
+    'お世話になっております。mono.createです。',
+    'この度は紹介のご協力、誠にありがとうございます。',
+    '',
+    '━━━━━━━━━━━━━━━━━━━━',
+    '▼ 成約報酬のご連絡',
+    '━━━━━━━━━━━━━━━━━━━━',
+    '紹介コード  : ' + code,
+    'ご成約プラン: ' + plan,
+    'クライアント: ' + client + ' 様',
+    '',
+    '基本報酬    : ¥' + base,
+  ].concat(bonusLine).concat([
+    '',
+    '【お支払い報酬額】 ¥' + total,
+    '【お支払い方法】   PayPay送金',
+    '【お支払い時期】   ' + now + ' より14日以内',
+    '',
+    '━━━━━━━━━━━━━━━━━━━━',
+    'お支払いのため、PayPayのIDまたはQRコードを',
+    'このメールに返信してお知らせください。',
+    '',
+    'ご不明な点はいつでもご返信ください。',
+    'よろしくお願いいたします。',
+    '',
+    '担当：mono.create 運営',
+  ]);
+
+  MailApp.sendEmail({
+    to:      pEmail,
+    subject: '【mono.create】成約報酬のご連絡 — ¥' + total + ' をお支払いします',
+    body:    body.join('\n'),
+    name:    'mono.create',
+    replyTo: OWNER_EMAIL
+  });
+
+  // ステータス更新
+  sheet.getRange(row, 10).setValue('メール済み');
+
+  notifyOwnerEmail(
+    '【報酬メール送信済み】' + pName + ' — ¥' + total,
+    ['パートナー: ' + pName, '報酬額: ¥' + total, 'プラン: ' + plan, 'クライアント: ' + client]
+  );
+
+  return jsonResponse({ success: true });
+}
+
+// 支払済みマーク
+function markRewardPaid(row) {
+  var sheet = getOrCreatePartnerRewardsSheet();
+  var rowData = sheet.getRange(row, 1, 1, 10).getValues()[0];
+  sheet.getRange(row, 10).setValue('支払済み');
+  notifyOwnerEmail(
+    '【報酬支払済み】' + (rowData[1] || '') + ' — ¥' + (rowData[8] || ''),
+    ['パートナー: ' + rowData[1], '報酬額: ¥' + rowData[8], 'プラン: ' + rowData[5]]
+  );
+  return jsonResponse({ success: true });
+}
+
+// 報酬確定メール送信（旧来の手動版・互換性維持）
 function sendPartnerReward(row, amount) {
   var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   var sh = ss.getSheetByName('partner_applications');
