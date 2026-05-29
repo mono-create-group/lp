@@ -155,7 +155,9 @@
   font-weight: 700;
   padding: 9px 16px;
   letter-spacing: 0.02em;
-  position: relative;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 101;
 }
 .referral-bar a { color: #FDE68A; text-decoration: underline; }
 .referral-bar strong { color: #FDE68A; }
@@ -278,7 +280,7 @@ a { text-decoration: none; color: inherit; }
 
 /* ── Nav ── */
 nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  position: fixed; top: 40px; left: 0; right: 0; z-index: 100;
   background: rgba(255,255,255,0.92);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
@@ -296,7 +298,7 @@ nav {
 .hero {
   min-height: 100vh;
   display: flex; align-items: center;
-  padding: 120px 24px 80px;
+  padding: 160px 24px 80px;
   position: relative;
   overflow: hidden;
 }
@@ -1185,6 +1187,7 @@ footer {
     <a href="#pricing">料金</a>
     <a href="#section-pf-free">無料PF制作</a>
     <a href="#faq">FAQ</a>
+    <a href="editor-recruit.html" style="color:#10B981;font-weight:700;">編集者募集</a>
     <a href="#contact" class="btn btn-primary" style="padding:9px 22px;font-size:0.82rem;color:#fff;">無料で相談する →</a>
   </div>
 </nav>
