@@ -3065,8 +3065,8 @@ function renderPFGenresAdmin() {
     <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;">
       <input type="checkbox" ${g.active?'checked':''} onchange="togglePFGenre(${idx},this.checked)" style="cursor:pointer;">
       <span style="flex:1;font-size:0.83rem;color:${g.active?'var(--lt)':'var(--sub)'};">${esc(g.name)}</span>
-      <span style="font-size:0.72rem;color:var(--sub);">申込: ${g.count||0}/${g.max||3}</span>
-      <input type="number" value="${g.max||3}" min="1" max="99" style="width:48px;padding:4px 6px;background:var(--bg2);border:1px solid var(--border);border-radius:4px;color:var(--lt);font-family:inherit;font-size:0.78rem;" onchange="setPFGenreMax(${idx},this.value)">
+      <span style="font-size:0.72rem;color:var(--sub);">申込: ${g.count||0}/${g.max||1}</span>
+      <input type="number" value="${g.max||1}" min="1" max="99" style="width:48px;padding:4px 6px;background:var(--bg2);border:1px solid var(--border);border-radius:4px;color:var(--lt);font-family:inherit;font-size:0.78rem;" onchange="setPFGenreMax(${idx},this.value)">
       <button onclick="removePFGenre(${idx})" style="padding:3px 8px;background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;border-radius:4px;font-size:0.72rem;cursor:pointer;font-family:inherit;">削除</button>
     </div>
   `).join('');
@@ -3085,7 +3085,7 @@ function togglePFGenre(idx, active) {
 }
 
 function setPFGenreMax(idx, val) {
-  _pfConfig.genres[idx].max = parseInt(val) || 3;
+  _pfConfig.genres[idx].max = parseInt(val) || 1;
   savePFConfig();
 }
 
@@ -3099,7 +3099,7 @@ function removePFGenre(idx) {
 function addPFGenre() {
   const name = document.getElementById('pf-new-genre').value.trim();
   if (!name) return;
-  _pfConfig.genres.push({ name, active: true, max: 3, count: 0 });
+  _pfConfig.genres.push({ name, active: true, max: 1, count: 0 });
   document.getElementById('pf-new-genre').value = '';
   savePFConfig();
   renderPFGenresAdmin();
@@ -3157,7 +3157,7 @@ async function loadPFInquiriesAdmin() {
 }
 
 async function cyclePFStatus(row, currentStatus) {
-  const order = ['未対応','対応中','完了'];
+  const order = ['未対応','対応中','成約済み','完了','キャンセル'];
   const idx = order.indexOf(currentStatus);
   const nextStatus = order[(idx + 1) % order.length];
   await fetch(`${GAS_URL}?action=pf_status&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(nextStatus)}`);

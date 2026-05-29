@@ -1780,12 +1780,12 @@ function getOrCreatePFConfigSheet() {
     sheet.appendRow(['key','value']);
     sheet.appendRow(['max_slots','5']);
     var defaultGenres = [
-      {name:'Vlog系',active:true,max:3,count:0},
-      {name:'ビジネストーク系',active:true,max:3,count:0},
-      {name:'エンタメトーク系',active:true,max:3,count:0},
-      {name:'広告系',active:true,max:3,count:0},
-      {name:'切り抜き系',active:true,max:3,count:0},
-      {name:'企画系',active:true,max:3,count:0}
+      {name:'Vlog系',active:true,max:1,count:0},
+      {name:'ビジネストーク系',active:true,max:1,count:0},
+      {name:'エンタメトーク系',active:true,max:1,count:0},
+      {name:'広告系',active:true,max:1,count:0},
+      {name:'切り抜き系',active:true,max:1,count:0},
+      {name:'企画系',active:true,max:1,count:0}
     ];
     sheet.appendRow(['genres', JSON.stringify(defaultGenres)]);
     sheet.setFrozenRows(1);
@@ -1818,22 +1818,31 @@ function getPFConfig() {
   var genres = [];
   try { genres = JSON.parse(cfg['genres']); } catch(e) {}
 
-  // portfolio_freeシートからジャンルごとのカウントを実際に計算
+  // portfolio_freeシートからジャンルごとのカウント・成約数を計算
   var pfValues = pfSheet.getDataRange().getValues();
   var genreCount = {};
+  var genreContracted = {};
   for (var j = 1; j < pfValues.length; j++) {
     var genre = pfValues[j][3] || '';
-    if (genre) genreCount[genre] = (genreCount[genre] || 0) + 1;
+    var status = pfValues[j][5] || '';
+    if (!genre) continue;
+    if (status !== 'キャンセル') {
+      genreCount[genre] = (genreCount[genre] || 0) + 1;
+    }
+    if (status === '成約済み') {
+      genreContracted[genre] = (genreContracted[genre] || 0) + 1;
+    }
   }
   var totalCount = pfValues.length - 1;
 
-  // genresにcountを注入
+  // genresにcount・contractedを注入
   genres = genres.map(function(g) {
     return {
       name: g.name,
       active: g.active !== false,
-      max: g.max || 3,
-      count: genreCount[g.name] || 0
+      max: g.max || 1,
+      count: genreCount[g.name] || 0,
+      contracted: genreContracted[g.name] || 0
     };
   });
 
@@ -1874,11 +1883,15 @@ function submitPFInquiry(data) {
 
   var pfValues = pfSheet.getDataRange().getValues();
   var genreCount = {};
+  var activeCount = 0;
   for (var j = 1; j < pfValues.length; j++) {
     var g = pfValues[j][3] || '';
+    var st = pfValues[j][5] || '';
+    if (st === 'キャンセル') continue;
+    activeCount++;
     if (g) genreCount[g] = (genreCount[g] || 0) + 1;
   }
-  var totalCount = pfValues.length - 1;
+  var totalCount = activeCount;
 
   if (totalCount >= maxSlots) {
     return jsonResponse({ error: 'full', message: '受付が終了しました' });
@@ -1893,7 +1906,7 @@ function submitPFInquiry(data) {
     return jsonResponse({ error: 'genre_unavailable', message: 'このジャンルは現在受け付けていません' });
   }
   var currentGenreCount = genreCount[genre] || 0;
-  if (currentGenreCount >= (genreObj.max || 3)) {
+  if (currentGenreCount >= (genreObj.max || 1)) {
     return jsonResponse({ error: 'genre_full', message: 'このジャンルは満席です' });
   }
 

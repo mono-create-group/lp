@@ -2553,17 +2553,28 @@ function renderPFGenres() {
   const grid = document.getElementById('pf-genres-grid');
   if (!_pfGenres.length) { grid.innerHTML = '<p style="color:#94a3b8;">受付中のジャンルがありません。</p>'; return; }
   grid.innerHTML = _pfGenres.map(g => {
-    const full   = !g.active || g.count >= g.max;
-    const remain = Math.max(0, g.max - g.count);
+    const contracted = g.contracted > 0;
+    const full       = !g.active || g.count >= g.max;
+    const remain     = Math.max(0, g.max - g.count);
+    let badge, bg, border, cursor, textColor, hover;
+    if (contracted) {
+      badge     = '<span style="font-size:0.7rem;background:#DCFCE7;color:#16A34A;padding:2px 10px;border-radius:20px;font-weight:700;">✅ 成約済み</span>';
+      bg        = '#F0FDF4'; border = '#86EFAC'; cursor = 'not-allowed'; textColor = '#6B7280'; hover = '';
+    } else if (full) {
+      badge     = '<span style="font-size:0.7rem;background:#E2E8F0;color:#94A3B8;padding:2px 10px;border-radius:20px;font-weight:700;">受付終了</span>';
+      bg        = '#F8FAFC'; border = '#E2E8F0'; cursor = 'not-allowed'; textColor = '#94A3B8'; hover = '';
+    } else {
+      badge     = `<span style="font-size:0.7rem;background:#FEF3C7;color:#B45309;padding:2px 10px;border-radius:20px;font-weight:700;">残り${remain}名</span>`;
+      bg        = '#FFFBEB'; border = '#D97706'; cursor = 'pointer';    textColor = '#374151';
+      hover     = ' onmouseover="this.style.transform=\'scale(1.03)\'" onmouseout="this.style.transform=\'scale(1)\'"';
+    }
+    const clickable = !contracted && !full;
     return `
-      <div onclick="${full ? '' : `openPFModal('${g.name}')`}"
-        style="background:${full?'#F8FAFC':'#FFFBEB'};border:2px solid ${full?'#E2E8F0':'#D97706'};border-radius:12px;padding:14px 12px;text-align:center;cursor:${full?'not-allowed':'pointer'};transition:transform 0.15s;"
-        ${full?'':' onmouseover="this.style.transform=\'scale(1.03)\'" onmouseout="this.style.transform=\'scale(1)\'"'}>
-        <p style="font-size:0.85rem;font-weight:800;color:${full?'#94A3B8':'#374151'};margin-bottom:6px;">${g.name}</p>
-        ${full
-          ? '<span style="font-size:0.7rem;background:#E2E8F0;color:#94A3B8;padding:2px 10px;border-radius:20px;font-weight:700;">受付終了</span>'
-          : `<span style="font-size:0.7rem;background:#FEF3C7;color:#B45309;padding:2px 10px;border-radius:20px;font-weight:700;">残り${remain}名</span>`
-        }
+      <div onclick="${clickable ? `openPFModal('${g.name}')` : ''}"
+        style="background:${bg};border:2px solid ${border};border-radius:12px;padding:14px 12px;text-align:center;cursor:${cursor};transition:transform 0.15s;"
+        ${hover}>
+        <p style="font-size:0.85rem;font-weight:800;color:${textColor};margin-bottom:6px;">${g.name}</p>
+        ${badge}
       </div>
     `;
   }).join('');
