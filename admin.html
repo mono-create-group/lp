@@ -756,10 +756,10 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
           <div>
             <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">支払方法</label>
             <select id="ex-method" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;">
-              <option>PayPay</option>
-              <option>銀行振込</option>
+              <option selected>銀行振込</option>
               <option>クレジットカード</option>
               <option>現金</option>
+              <option>その他</option>
             </select>
           </div>
           <div>
@@ -1190,7 +1190,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         <!-- フロー説明 -->
         <div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:0.78rem;color:#FCD34D;line-height:1.8;">
           <strong>自動フロー：</strong> 振込承認 → 紹介コードを自動検索 → 報酬額を自動計算 →
-          ここに表示 → <strong>「📧 送信」</strong>でメール自動送信 → PayPay送金（手動） → <strong>「✅ 支払済」</strong>クリック
+          ここに表示 → <strong>「📧 送信」</strong>でメール自動送信 → 銀行振込（手動） → <strong>「✅ 支払済」</strong>クリック
         </div>
 
         <!-- 報酬テーブル -->
@@ -3149,7 +3149,7 @@ async function addExpenseRecord() {
     // フォームリセット
     ['ex-date','ex-name','ex-amount','ex-summary'].forEach(id => { document.getElementById(id).value = ''; });
     document.getElementById('ex-category').value = '外注費';
-    document.getElementById('ex-method').value   = 'PayPay';
+    document.getElementById('ex-method').value   = '銀行振込';
     setTimeout(() => { loadExpenses(); loadMonthlySummary(); }, 800);
   } catch(e) { alert('記録に失敗しました'); }
 }
@@ -4001,7 +4001,7 @@ function openPartnerDetail(row) {
     </div>
     ${a.message ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);"><p style="font-size:0.8rem;color:var(--sub);margin-bottom:6px;">メッセージ</p><p style="font-size:0.85rem;white-space:pre-wrap;">${esc(a.message)}</p></div>` : ''}
   `;
-  modal.style.display = 'flex';
+  modal.classList.add('open');
 }
 
 async function deletePartnerApp(row, name) {
