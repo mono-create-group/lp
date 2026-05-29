@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index, follow">
+<title>中村航汰 | 動画編集者 / mono.create</title>
+<meta name="description" content="フリーランス動画編集チームmono.createの中村航汰。ショート動画・YouTube長尺の編集代行。SNS経由の方限定招待コードあり。今なら無料ポートフォリオ制作も受付中。">
+<link rel="canonical" href="https://mono-create-group.github.io/lp/mypage.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: #0B1120;
+  color: #F1F5F9;
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+a { text-decoration: none; color: inherit; }
+
+/* ── Layout ── */
+.page { max-width: 480px; margin: 0 auto; padding: 32px 20px 80px; }
+
+/* ── Profile Card ── */
+.profile-card {
+  text-align: center;
+  padding: 36px 24px 28px;
+  background: linear-gradient(145deg, #1E2D4A 0%, #162035 100%);
+  border: 1px solid #2A3F5F;
+  border-radius: 20px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.profile-card::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 160px; height: 160px;
+  background: radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.profile-avatar {
+  width: 88px; height: 88px;
+  border-radius: 50%;
+  border: 3px solid #3B82F6;
+  margin: 0 auto 14px;
+  background: linear-gradient(135deg, #1E40AF, #7C3AED);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.2rem;
+  box-shadow: 0 0 24px rgba(59,130,246,0.3);
+}
+.profile-name { font-size: 1.3rem; font-weight: 900; margin-bottom: 2px; color: #F8FAFC; }
+.profile-sub { font-size: 0.8rem; color: #60A5FA; font-weight: 700; margin-bottom: 10px; letter-spacing: 0.04em; }
+.profile-bio { font-size: 0.82rem; color: #94A3B8; line-height: 1.8; margin-bottom: 16px; }
+.status-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(16,185,129,0.12);
+  border: 1px solid rgba(16,185,129,0.3);
+  color: #34D399;
+  font-size: 0.72rem; font-weight: 700;
+  padding: 4px 12px; border-radius: 20px;
+}
+.status-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #10B981;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ── Invite Code Card ── */
+.invite-card {
+  background: linear-gradient(135deg, #78350F 0%, #92400E 50%, #78350F 100%);
+  border: 2px solid #D97706;
+  border-radius: 16px;
+  padding: 24px 20px;
+  margin-bottom: 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.invite-card::after {
+  content: '🎁';
+  position: absolute;
+  font-size: 5rem;
+  right: -8px; top: -8px;
+  opacity: 0.12;
+  line-height: 1;
+}
+.invite-label {
+  font-size: 0.72rem; font-weight: 800; letter-spacing: 0.14em;
+  color: #FDE68A; margin-bottom: 10px;
+}
+.invite-code {
+  font-family: 'Inter', monospace;
+  font-size: 2rem; font-weight: 900;
+  color: #FEF3C7;
+  letter-spacing: 0.12em;
+  margin-bottom: 8px;
+  text-shadow: 0 2px 12px rgba(251,191,36,0.3);
+}
+.invite-desc { font-size: 0.78rem; color: #FDE68A; margin-bottom: 14px; line-height: 1.7; }
+.invite-rule {
+  background: rgba(0,0,0,0.2);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.75rem;
+  color: #FEF3C7;
+  text-align: left;
+  line-height: 1.9;
+  margin-bottom: 14px;
+}
+.copy-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #D97706; color: #fff;
+  border: none; border-radius: 8px;
+  padding: 9px 20px;
+  font-size: 0.8rem; font-weight: 700;
+  cursor: pointer; font-family: inherit;
+  transition: opacity 0.2s;
+}
+.copy-btn:hover { opacity: 0.85; }
+.copy-btn.copied { background: #059669; }
+
+/* ── Free Edit CTA ── */
+.free-cta {
+  background: linear-gradient(135deg, #064E3B 0%, #065F46 100%);
+  border: 2px solid #059669;
+  border-radius: 16px;
+  padding: 22px 20px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.free-badge {
+  display: inline-block;
+  background: #059669; color: #fff;
+  font-size: 0.68rem; font-weight: 800;
+  padding: 3px 10px; border-radius: 20px;
+  letter-spacing: 0.06em; margin-bottom: 10px;
+}
+.free-title { font-size: 1.1rem; font-weight: 900; color: #ECFDF5; margin-bottom: 6px; }
+.free-desc { font-size: 0.8rem; color: #6EE7B7; margin-bottom: 14px; line-height: 1.7; }
+.free-slots {
+  display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+  margin-bottom: 14px;
+}
+.slot-chip {
+  background: rgba(16,185,129,0.12);
+  border: 1px solid rgba(16,185,129,0.3);
+  color: #34D399;
+  font-size: 0.7rem; font-weight: 700;
+  padding: 3px 10px; border-radius: 12px;
+}
+.slot-chip.full {
+  background: rgba(100,116,139,0.1);
+  border-color: rgba(100,116,139,0.2);
+  color: #64748B;
+  text-decoration: line-through;
+}
+
+/* ── Buttons ── */
+.btn-primary {
+  display: block; width: 100%;
+  background: linear-gradient(135deg, #1D4ED8, #3B82F6);
+  color: #fff; border: none; border-radius: 12px;
+  padding: 14px 20px;
+  font-size: 0.9rem; font-weight: 800;
+  cursor: pointer; font-family: inherit;
+  text-align: center; text-decoration: none;
+  transition: transform 0.15s, opacity 0.15s;
+  box-shadow: 0 4px 20px rgba(59,130,246,0.3);
+}
+.btn-primary:hover { opacity: 0.9; transform: translateY(-2px); }
+.btn-green {
+  display: block; width: 100%;
+  background: linear-gradient(135deg, #047857, #059669);
+  color: #fff; border: none; border-radius: 12px;
+  padding: 14px 20px;
+  font-size: 0.9rem; font-weight: 800;
+  cursor: pointer; font-family: inherit;
+  text-align: center; text-decoration: none;
+  transition: transform 0.15s, opacity 0.15s;
+  box-shadow: 0 4px 20px rgba(5,150,105,0.3);
+}
+.btn-green:hover { opacity: 0.9; transform: translateY(-2px); }
+.btn-outline {
+  display: block; width: 100%;
+  background: transparent;
+  color: #94A3B8; border: 1px solid #334155; border-radius: 12px;
+  padding: 12px 20px;
+  font-size: 0.85rem; font-weight: 700;
+  cursor: pointer; font-family: inherit;
+  text-align: center; text-decoration: none;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-outline:hover { border-color: #60A5FA; color: #F1F5F9; }
+
+/* ── Section Card ── */
+.section-card {
+  background: #131F35;
+  border: 1px solid #1E2D4A;
+  border-radius: 16px;
+  padding: 22px 20px;
+  margin-bottom: 16px;
+}
+.section-card-title {
+  font-size: 0.7rem; font-weight: 800; letter-spacing: 0.12em;
+  color: #60A5FA; margin-bottom: 14px;
+}
+
+/* ── Stats ── */
+.stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 4px; }
+.stat-item { text-align: center; }
+.stat-val { font-size: 1.4rem; font-weight: 900; color: #F1F5F9; line-height: 1.1; }
+.stat-sub { font-size: 0.65rem; color: #64748B; margin-top: 2px; }
+
+/* ── Services ── */
+.service-list { display: flex; flex-direction: column; gap: 8px; }
+.service-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 12px;
+  background: #1A2840;
+  border-radius: 10px;
+  font-size: 0.82rem;
+}
+.service-name { color: #CBD5E1; font-weight: 600; }
+.service-price { color: #60A5FA; font-weight: 800; font-size: 0.78rem; }
+
+/* ── Links ── */
+.link-list { display: flex; flex-direction: column; gap: 10px; }
+.link-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px;
+  background: #1A2840;
+  border: 1px solid #243347;
+  border-radius: 12px;
+  font-size: 0.85rem; font-weight: 700;
+  color: #CBD5E1;
+  text-decoration: none;
+  transition: border-color 0.2s, transform 0.15s;
+}
+.link-item:hover { border-color: #3B82F6; transform: translateX(3px); }
+.link-icon { font-size: 1.2rem; width: 28px; text-align: center; flex-shrink: 0; }
+.link-arrow { margin-left: auto; color: #475569; }
+
+/* ── SNS ── */
+.sns-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
+.sns-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  font-size: 0.8rem; font-weight: 700;
+  text-decoration: none;
+  transition: opacity 0.2s;
+  border: 1px solid transparent;
+}
+.sns-btn:hover { opacity: 0.8; }
+.sns-x { background: #000; color: #fff; border-color: #333; }
+.sns-threads { background: #1A1A1A; color: #fff; border-color: #333; }
+
+/* ── Footer ── */
+.mypage-footer {
+  text-align: center;
+  padding: 24px 0 0;
+  font-size: 0.7rem; color: #475569;
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ── Profile Card ── -->
+  <div class="profile-card">
+    <div class="profile-avatar">🎬</div>
+    <p class="profile-name">中村 航汰</p>
+    <p class="profile-sub">VIDEO EDITOR / mono.create</p>
+    <p class="profile-bio">
+      ショート動画・YouTube長尺の編集代行チーム運営。<br>
+      マーケター視点の編集設計で、再生数・CVR向上を狙います。<br>
+      テロップ・BGM・SE込み。最短当日納品。
+    </p>
+    <div class="status-pill">
+      <span class="status-dot"></span>
+      現在受付中・今すぐ対応可
+    </div>
+  </div>
+
+  <!-- ── Invitation Code ── -->
+  <div class="invite-card">
+    <p class="invite-label">🎁 フォロワー限定 招待コード</p>
+    <p class="invite-code" id="invite-code-text">MONO-SNS</p>
+    <p class="invite-desc">
+      このコードをお問い合わせ時に入力するだけで<br>
+      <strong>最大10%OFF</strong>が適用されます
+    </p>
+    <div class="invite-rule">
+      ✅ 通常価格プラン → <strong>5%引き</strong><br>
+      ✅ すでに割引中のプラン → さらに<strong>+5%（合計10%引き）</strong><br>
+      ✅ 無料ポートフォリオ制作の優先案内あり
+    </div>
+    <button class="copy-btn" id="copy-btn" onclick="copyCode()">
+      📋 コードをコピー
+    </button>
+  </div>
+
+  <!-- ── Free Editing CTA ── -->
+  <div class="free-cta">
+    <span class="free-badge">先着制・無料</span>
+    <p class="free-title">📸 ポートフォリオ無料編集</p>
+    <p class="free-desc">
+      掲載許可をいただく代わりに<br>
+      <strong style="color:#ECFDF5;">ショート動画1本を完全無料</strong>で編集します<br>
+      テロップ・BGM・SE込み ／ 3〜4日納品
+    </p>
+    <div class="free-slots" id="free-slots-area">
+      <span class="slot-chip">読み込み中...</span>
+    </div>
+    <a href="https://mono-create-group.github.io/lp/#section-pf-free" class="btn-green">
+      今すぐ無料で申し込む →
+    </a>
+  </div>
+
+  <!-- ── Quick Links ── -->
+  <div class="section-card">
+    <p class="section-card-title">QUICK LINKS</p>
+    <div class="link-list">
+      <a href="https://mono-create-group.github.io/lp/#contact" class="link-item">
+        <span class="link-icon">💬</span>
+        <span>無料相談・お問い合わせ</span>
+        <span class="link-arrow">→</span>
+      </a>
+      <a href="https://mono-create-group.github.io/lp/#pricing" class="link-item">
+        <span class="link-icon">💰</span>
+        <span>料金プランを見る</span>
+        <span class="link-arrow">→</span>
+      </a>
+      <a href="https://mono-create-group.github.io/lp/#works" class="link-item">
+        <span class="link-icon">🎬</span>
+        <span>制作実績・ポートフォリオ</span>
+        <span class="link-arrow">→</span>
+      </a>
+      <a href="https://mono-create-group.github.io/lp/#affiliate" class="link-item">
+        <span class="link-icon">🤝</span>
+        <span>アフィリエイト・紹介パートナー</span>
+        <span class="link-arrow">→</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ── Stats ── -->
+  <div class="section-card">
+    <p class="section-card-title">NUMBERS</p>
+    <div class="stats-grid">
+      <div class="stat-item">
+        <p class="stat-val">¥4,000</p>
+        <p class="stat-sub">ショート単品〜</p>
+      </div>
+      <div class="stat-item">
+        <p class="stat-val">当日</p>
+        <p class="stat-sub">最短納品</p>
+      </div>
+      <div class="stat-item">
+        <p class="stat-val">3回</p>
+        <p class="stat-sub">無料修正</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Services ── -->
+  <div class="section-card">
+    <p class="section-card-title">SERVICES</p>
+    <div class="service-list">
+      <div class="service-item">
+        <span class="service-name">📱 ショート動画編集（単品）</span>
+        <span class="service-price">¥4,000〜/本</span>
+      </div>
+      <div class="service-item">
+        <span class="service-name">🎥 YouTube長尺編集（単品）</span>
+        <span class="service-price">¥20,000〜/本</span>
+      </div>
+      <div class="service-item">
+        <span class="service-name">📦 まとめて編集プラン</span>
+        <span class="service-price">5〜10%割引</span>
+      </div>
+      <div class="service-item">
+        <span class="service-name">🚀 投稿丸投げパック（10本/月）</span>
+        <span class="service-price">¥45,000〜/月</span>
+      </div>
+      <div class="service-item">
+        <span class="service-name">👤 編集者派遣</span>
+        <span class="service-price">¥3,000〜/本</span>
+      </div>
+      <div class="service-item">
+        <span class="service-name">📸 無料ポートフォリオ制作</span>
+        <span class="service-price" style="color:#34D399;">¥0（先着制）</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──対応ジャンル ── -->
+  <div class="section-card">
+    <p class="section-card-title">GENRE</p>
+    <div style="display:flex;flex-wrap:wrap;gap:7px;">
+      <span style="background:#1E2D4A;border:1px solid #2A3F5F;color:#94A3B8;font-size:0.73rem;padding:4px 10px;border-radius:10px;">ビジネス系</span>
+      <span style="background:#1E2D4A;border:1px solid #2A3F5F;color:#94A3B8;font-size:0.73rem;padding:4px 10px;border-radius:10px;">エンタメ系</span>
+      <span style="background:#1E2D4A;border:1px solid #2A3F5F;color:#94A3B8;font-size:0.73rem;padding:4px 10px;border-radius:10px;">Vlog系</span>
+      <span style="background:#1E2D4A;border:1px solid #2A3F5F;color:#94A3B8;font-size:0.73rem;padding:4px 10px;border-radius:10px;">広告系</span>
+      <span style="background:#1E2D4A;border:1px solid #2A3F5F;color:#94A3B8;font-size:0.73rem;padding:4px 10px;border-radius:10px;">美容医療系</span>
+      <span style="background:#1E2D4A;border:1px solid #2A3F5F;color:#94A3B8;font-size:0.73rem;padding:4px 10px;border-radius:10px;">切り抜き系</span>
+      <span style="background:#1E2D4A;border:1px solid #2A3F5F;color:#94A3B8;font-size:0.73rem;padding:4px 10px;border-radius:10px;">企画系</span>
+      <span style="background:#1E2D4A;border:1px solid #2A3F5F;color:#94A3B8;font-size:0.73rem;padding:4px 10px;border-radius:10px;">スポーツ解説</span>
+      <span style="background:#1E2D4A;border:1px solid #2A3F5F;color:#94A3B8;font-size:0.73rem;padding:4px 10px;border-radius:10px;">SNS広告</span>
+      <span style="background:#1E2D4A;border:1px solid #2A3F5F;color:#94A3B8;font-size:0.73rem;padding:4px 10px;border-radius:10px;">ナイト業界</span>
+    </div>
+  </div>
+
+  <!-- ── 信頼性 ── -->
+  <div class="section-card">
+    <p class="section-card-title">安心ポイント</p>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;align-items:flex-start;gap:10px;font-size:0.8rem;color:#94A3B8;">
+        <span style="color:#34D399;flex-shrink:0;">✅</span>
+        <span>修正3回まで無料。こちら側のミスは無制限対応</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:10px;font-size:0.8rem;color:#94A3B8;">
+        <span style="color:#34D399;flex-shrink:0;">✅</span>
+        <span>最短当日納品（ショート・12時までのご依頼）</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:10px;font-size:0.8rem;color:#94A3B8;">
+        <span style="color:#34D399;flex-shrink:0;">✅</span>
+        <span>テロップ・BGM・SE・エフェクトすべて込み</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:10px;font-size:0.8rem;color:#94A3B8;">
+        <span style="color:#34D399;flex-shrink:0;">✅</span>
+        <span>マーケター視点の編集設計でCTR・再生数向上を狙う</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:10px;font-size:0.8rem;color:#94A3B8;">
+        <span style="color:#34D399;flex-shrink:0;">✅</span>
+        <span>稼働時間 月〜土 9:00〜19:00。Chatworkで迅速対応</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SNS ── -->
+  <div class="section-card">
+    <p class="section-card-title">FOLLOW ME</p>
+    <div class="sns-grid">
+      <a href="https://x.com/mono_create_" target="_blank" class="sns-btn sns-x">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        X (Twitter)
+      </a>
+      <a href="https://www.threads.net/@mono_create_" target="_blank" class="sns-btn sns-threads">
+        <svg width="16" height="16" viewBox="0 0 192 192" fill="currentColor"><path d="M141.537 88.9883C140.71 88.5919 139.87 88.2104 139.019 87.8451C137.537 60.5382 122.616 44.905 97.5619 44.745C97.4484 44.7443 97.3355 44.7443 97.222 44.7443C82.2364 44.7443 69.7731 51.1409 62.102 62.7807L75.881 72.2328C81.6116 63.5383 90.6052 61.6848 97.2286 61.6848C97.3051 61.6848 97.3819 61.6848 97.4576 61.6855C105.707 61.7381 111.932 64.1366 115.961 68.814C118.893 72.2193 120.854 76.925 121.825 82.8638C114.511 81.6207 106.601 81.2385 98.145 81.7233C74.3247 83.0954 59.0111 96.9879 60.0396 116.292C60.5615 126.084 65.4397 134.508 73.775 140.011C80.8224 144.663 89.899 146.938 99.3323 146.423C111.79 145.74 121.563 140.987 128.381 132.296C133.559 125.696 136.834 117.143 138.28 106.366C144.217 109.949 148.617 114.664 151.047 120.332C155.179 129.967 155.42 145.8 143.019 158.471C132.049 169.69 118.956 174.195 98.0196 174.35C74.9732 174.187 57.9458 166.943 47.4617 152.799C37.7083 139.579 32.6833 120.032 32.6508 96C32.6833 71.9681 37.7083 52.4209 47.4617 39.2007C57.9458 25.0567 74.9732 17.8127 98.0196 17.6498C121.22 17.8132 138.753 25.1379 150.014 39.2915C155.498 46.2267 159.641 54.8606 162.432 64.9747L178.184 60.6422C174.744 47.9622 169.331 37.0357 161.965 27.974C147.036 9.60668 125.202 0.195148 98.0583 0H97.9475C70.8654 0.195148 49.3046 9.55839 34.3619 27.9019C21.2235 44.4758 14.4982 67.3066 14.2951 95.9999V96.0001C14.4982 124.693 21.2235 147.524 34.3619 164.098C49.3046 182.442 70.8654 191.805 97.9475 192H98.0583C122.305 191.822 141.516 185.166 155.926 172.231C172.753 157.155 173.912 136.647 168.332 123.408C164.236 113.816 156.648 106.077 146.11 100.608C144.539 91.7505 141.538 88.9883 141.537 88.9883Z"/></svg>
+        Threads
+      </a>
+    </div>
+  </div>
+
+  <!-- ── CTA ── -->
+  <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px;">
+    <a href="https://mono-create-group.github.io/lp/#contact" class="btn-primary">
+      💬 無料で相談する →
+    </a>
+    <a href="https://mono-create-group.github.io/lp/" class="btn-outline">
+      サービス詳細ページを見る
+    </a>
+  </div>
+
+  <div class="mypage-footer">
+    <p>© 2026 mono.create / 中村航汰</p>
+    <p style="margin-top:4px;"><a href="https://mono-create-group.github.io/lp/" style="color:#3B82F6;">mono-create-group.github.io/lp</a></p>
+  </div>
+
+</div>
+
+<script>
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
+
+// ── ジャンルスロット読み込み ──
+(async function loadSlots() {
+  try {
+    const res = await fetch(GAS_URL + '?action=pf_config');
+    const json = await res.json();
+    const area = document.getElementById('free-slots-area');
+    if (!json.genres || !json.genres.length) { area.innerHTML = ''; return; }
+    area.innerHTML = json.genres.map(g => {
+      const contracted = g.contracted > 0;
+      const full = !g.active || g.count >= g.max;
+      if (contracted) {
+        return `<span class="slot-chip full">✅ ${g.name}（成約済み）</span>`;
+      } else if (full) {
+        return `<span class="slot-chip full">${g.name}（受付終了）</span>`;
+      } else {
+        return `<span class="slot-chip">${g.name} 残り${Math.max(0, g.max - g.count)}名</span>`;
+      }
+    }).join('');
+  } catch(e) {
+    document.getElementById('free-slots-area').innerHTML = '<span class="slot-chip">スロット確認中...</span>';
+  }
+})();
+
+// ── コードコピー ──
+function copyCode() {
+  const code = document.getElementById('invite-code-text').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = '✅ コピーしました！';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '📋 コードをコピー';
+      btn.classList.remove('copied');
+    }, 2500);
+  }).catch(() => {
+    // fallback
+    const el = document.createElement('textarea');
+    el.value = code;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = '✅ コピーしました！';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '📋 コードをコピー';
+      btn.classList.remove('copied');
+    }, 2500);
+  });
+}
+</script>
+</body>
+</html>
