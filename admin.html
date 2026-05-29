@@ -6,6 +6,11 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
+<!-- ▼ セキュリティヘッダー -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https://script.google.com https://fonts.googleapis.com https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; frame-ancestors 'none';">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="X-Frame-Options" content="DENY">
 <title>管理画面 | mono.create</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -375,6 +380,22 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
 </head>
 <body>
 
+<!-- ── 初回セットアップ画面 ── -->
+<div id="setup-screen" style="display:none;">
+  <div class="login-card">
+    <div class="login-logo">mono<span>.</span>create</div>
+    <p class="login-sub" style="color:#F59E0B;font-weight:700;">🔐 初回セットアップ</p>
+    <p style="font-size:0.8rem;color:var(--sub);margin-bottom:18px;text-align:center;line-height:1.6;">管理者パスワードを設定してください。<br>12文字以上、英数字を含めてください。</p>
+    <input type="password" class="login-input" id="setup-pw1" placeholder="新しいパスワード（12文字以上）"
+           oninput="checkSetupStrength()">
+    <div id="setup-strength" style="font-size:0.75rem;margin-bottom:8px;height:16px;"></div>
+    <input type="password" class="login-input" id="setup-pw2" placeholder="もう一度入力"
+           onkeydown="if(event.key==='Enter') doSetup()">
+    <button class="login-btn" onclick="doSetup()">パスワードを設定する</button>
+    <p class="login-error" id="setup-error"></p>
+  </div>
+</div>
+
 <!-- ── Login ── -->
 <div id="login-screen">
   <div class="login-card">
@@ -384,6 +405,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
            onkeydown="if(event.key==='Enter') doLogin()">
     <button class="login-btn" onclick="doLogin()">ログイン</button>
     <p class="login-error" id="login-error">パスワードが正しくありません。</p>
+    <p id="lockout-msg" style="display:none;font-size:0.78rem;color:#F59E0B;margin-top:8px;text-align:center;"></p>
   </div>
 </div>
 
@@ -1445,44 +1467,142 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
 // ─── 設定 ──────────────────────────────────────────────────────
 // Google Apps Script Web App URL（全LPページ共通のGAS URL）
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
-
-// 管理画面パスワード（初期値。管理画面の設定タブから変更可能）
-const DEFAULT_PASSWORD = '20180412k';
-// ★ 毎回 localStorage から読む（パスワード変更後も即反映）
-function getAdminPw() {
-  return localStorage.getItem('mc_admin_pw') || DEFAULT_PASSWORD;
-}
+// ★ DEFAULT_PASSWORD はソースコードに記述しない（初回は setup-screen で設定）
 // ───────────────────────────────────────────────────────────────
 
-let inquiries = [];
-let currentRow = null;
+// ── セキュリティ定数 ──
+const SESSION_KEY    = 'mc_admin_session';   // sessionStorage
+const PW_STORE_KEY   = 'mc_admin_pw';        // localStorage（実際のパスワード）
+const LOCK_KEY       = 'mc_login_lock';      // localStorage
+const MAX_FAIL       = 3;                    // 連続失敗許容回数
+const LOCK_DURATION  = 5 * 60 * 1000;       // ロックアウト時間（5分）
+const SESSION_TTL    = 24 * 60 * 60 * 1000; // セッション有効期限（24時間）
 
-// ── Auth ──
+function getAdminPw() {
+  return localStorage.getItem(PW_STORE_KEY) || '';
+}
+
+// ── ロックアウト管理 ──
+function getLockState() {
+  try { return JSON.parse(localStorage.getItem(LOCK_KEY)) || { fails: 0, until: 0 }; }
+  catch { return { fails: 0, until: 0 }; }
+}
+function setLockState(state) {
+  localStorage.setItem(LOCK_KEY, JSON.stringify(state));
+}
+function isLockedOut() {
+  const s = getLockState();
+  if (s.until && Date.now() < s.until) return s.until;
+  if (s.until && Date.now() >= s.until) { setLockState({ fails: 0, until: 0 }); }
+  return false;
+}
+function recordLoginFail() {
+  const s = getLockState();
+  s.fails++;
+  if (s.fails >= MAX_FAIL) { s.until = Date.now() + LOCK_DURATION; s.fails = 0; }
+  setLockState(s);
+}
+function clearLoginFails() { setLockState({ fails: 0, until: 0 }); }
+
+// ── パスワード強度チェック ──
+function checkPasswordStrength(pw) {
+  if (pw.length < 12) return { ok: false, msg: '12文字以上が必要です', color: '#EF4444' };
+  const hasNum  = /[0-9]/.test(pw);
+  const hasLow  = /[a-z]/.test(pw);
+  const hasUp   = /[A-Z]/.test(pw);
+  const hasSymb = /[^a-zA-Z0-9]/.test(pw);
+  const score   = [hasNum, hasLow, hasUp, hasSymb].filter(Boolean).length;
+  if (score <= 2) return { ok: true, msg: '強度：弱 — 大文字・記号も加えることを推奨', color: '#F59E0B' };
+  if (score === 3) return { ok: true, msg: '強度：中', color: '#3B82F6' };
+  return { ok: true, msg: '強度：強 ✅', color: '#10B981' };
+}
+
+function checkSetupStrength() {
+  const pw = document.getElementById('setup-pw1').value;
+  const el = document.getElementById('setup-strength');
+  if (!pw) { el.textContent = ''; return; }
+  const r = checkPasswordStrength(pw);
+  el.textContent = r.msg;
+  el.style.color = r.color;
+}
+
+// ── 初回セットアップ ──
+function doSetup() {
+  const pw1 = document.getElementById('setup-pw1').value;
+  const pw2 = document.getElementById('setup-pw2').value;
+  const err = document.getElementById('setup-error');
+  const strength = checkPasswordStrength(pw1);
+  if (!strength.ok) { err.textContent = '❌ ' + strength.msg; err.style.display = 'block'; return; }
+  if (pw1 !== pw2)  { err.textContent = '❌ パスワードが一致しません。'; err.style.display = 'block'; return; }
+  localStorage.setItem(PW_STORE_KEY, pw1);
+  document.getElementById('setup-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('pw-input').focus();
+}
+
+// ── ログイン ──
 function doLogin() {
+  const lockUntil = isLockedOut();
+  if (lockUntil) {
+    const remain = Math.ceil((lockUntil - Date.now()) / 1000);
+    document.getElementById('lockout-msg').style.display = 'block';
+    document.getElementById('lockout-msg').textContent = `⚠️ ${Math.ceil(remain/60)}分間ロックされています（残り${remain}秒）`;
+    return;
+  }
   const val = document.getElementById('pw-input').value;
-  const currentPw = localStorage.getItem('mc_admin_pw') || DEFAULT_PASSWORD;
-  if (val === currentPw) {
-    sessionStorage.setItem('mc_admin', '1');
+  const storedPw = getAdminPw();
+  if (!storedPw) { alert('パスワード未設定です。ページをリロードしてください。'); return; }
+  if (val === storedPw) {
+    clearLoginFails();
+    // セッション：パスワードそのものは保存せず expiry のみ
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify({ exp: Date.now() + SESSION_TTL }));
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     loadData();
   } else {
+    recordLoginFail();
+    const s = getLockState();
+    const remaining = MAX_FAIL - s.fails;
     document.getElementById('login-error').style.display = 'block';
+    if (remaining <= 0 || s.until) {
+      document.getElementById('login-error').textContent = `⚠️ ${MAX_FAIL}回失敗しました。5分間ロックします。`;
+    } else {
+      document.getElementById('login-error').textContent = `パスワードが正しくありません。（残り${remaining}回）`;
+    }
     document.getElementById('pw-input').value = '';
     document.getElementById('pw-input').focus();
   }
 }
 
 function doLogout() {
-  sessionStorage.removeItem('mc_admin');
+  sessionStorage.removeItem(SESSION_KEY);
   location.reload();
 }
 
-// Auto-login if session exists
-if (sessionStorage.getItem('mc_admin') === '1') {
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
+// ── セッション検証 ──
+function isSessionValid() {
+  try {
+    const data = JSON.parse(sessionStorage.getItem(SESSION_KEY));
+    return data && data.exp && Date.now() < data.exp;
+  } catch { return false; }
 }
+
+// ── 初期化：セットアップ or ログイン画面を表示 ──
+(function initAuth() {
+  if (isSessionValid()) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    return;
+  }
+  // パスワード未設定なら初回セットアップへ
+  if (!getAdminPw()) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('setup-screen').style.display = 'flex';
+    return;
+  }
+  // 通常ログイン画面
+  document.getElementById('login-screen').style.display = 'flex';
+})();
 
 // ── Load data from GAS ──
 async function loadData() {
@@ -2171,18 +2291,18 @@ function renderPayments() {
            ✅ 承認・記帳
          </button>`
       : `<span style="font-size:0.75rem;color:#10B981;font-weight:700;">記帳済み</span>`;
-    const delBtn = `<button onclick="deletePayment(${p.row},'${p.name.replace(/'/g,'\\\'')}')"
+    const delBtn = `<button onclick="deletePayment(${p.row},${JSON.stringify(p.name||'')})"
       style="padding:5px 10px;background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;margin-left:6px;">
       🗑
     </button>`;
     return `<tr>
-      <td>${p.date}</td>
-      <td style="font-weight:600;">${p.name}</td>
-      <td>${p.contact}</td>
-      <td>${p.plan}</td>
-      <td style="font-weight:700;color:var(--gold);">${p.amount}</td>
-      <td>${p.payDate}</td>
-      <td style="color:${statusColor};font-weight:700;">${p.status}</td>
+      <td>${esc(p.date)}</td>
+      <td style="font-weight:600;">${esc(p.name)}</td>
+      <td>${esc(p.contact)}</td>
+      <td>${esc(p.plan)}</td>
+      <td style="font-weight:700;color:var(--gold);">${esc(p.amount)}</td>
+      <td>${esc(p.payDate)}</td>
+      <td style="color:${statusColor};font-weight:700;">${esc(p.status)}</td>
       <td style="white-space:nowrap;">${btn}${delBtn}</td>
     </tr>`;
   }).join('');
@@ -2265,7 +2385,7 @@ function changePassword() {
   const newPw    = document.getElementById('pw-new').value;
   const confirm  = document.getElementById('pw-confirm').value;
   const msg      = document.getElementById('pw-msg');
-  const currentPw = localStorage.getItem('mc_admin_pw') || DEFAULT_PASSWORD;
+  const currentPw = getAdminPw();
 
   const showMsg = (text, color) => {
     msg.textContent = text;
@@ -2274,14 +2394,17 @@ function changePassword() {
   };
 
   if (current !== currentPw) { showMsg('❌ 現在のパスワードが違います。', '#EF4444'); return; }
-  if (newPw.length < 4)      { showMsg('❌ 新しいパスワードは4文字以上にしてください。', '#EF4444'); return; }
-  if (newPw !== confirm)     { showMsg('❌ 新しいパスワードが一致しません。', '#EF4444'); return; }
+  const strength = checkPasswordStrength(newPw);
+  if (!strength.ok) { showMsg('❌ ' + strength.msg, '#EF4444'); return; }
+  if (newPw !== confirm) { showMsg('❌ 新しいパスワードが一致しません。', '#EF4444'); return; }
 
-  localStorage.setItem('mc_admin_pw', newPw);
+  localStorage.setItem(PW_STORE_KEY, newPw);
+  // セッションを更新（新パスワードで継続）
+  sessionStorage.setItem(SESSION_KEY, JSON.stringify({ exp: Date.now() + SESSION_TTL }));
   document.getElementById('pw-current').value = '';
   document.getElementById('pw-new').value = '';
   document.getElementById('pw-confirm').value = '';
-  showMsg('✅ パスワードを変更しました。次回ログインから反映されます。', '#10B981');
+  showMsg('✅ パスワードを変更しました（GASのADMIN_KEYも同じ値に更新してください）。', '#10B981');
 }
 
 // ── サービス受付管理 ──────────────────────────────────────────────

@@ -12,8 +12,8 @@
 //   6. デプロイURLを editor.html・admin.html の GAS_URL に貼る
 // ================================================================
 
-// ─── 設定 ───────────────────────────────────────────────────────
-var ADMIN_KEY         = '20180412k';
+// ─── 設定（フォールバック値。ScriptProperties で上書き可能）────────
+var ADMIN_KEY         = '20180418k';
 var SPREADSHEET_ID    = '13RESWCy5tuOqVzzG5aoeIFtyDk--OrLnpaPDep5yjj0';
 var CHATWORK_TOKEN    = 'f79405b3d71215d721e6a9d3f86f55a6';
 var CHATWORK_ROOM_ID  = '437407663';  // HPお問い合わせ
@@ -25,8 +25,31 @@ var OWNER_EMAIL       = 'mono.create.group@gmail.com';  // オーナー通知先
 var LP_BASE_URL       = 'https://mono-create-group.github.io/lp/';
 
 // 素材アップロード用：親フォルダID（mono.create.group@gmail.comが所有）
-// この親フォルダ配下にクライアントごとの専用サブフォルダを自動作成する
 var MATERIAL_PARENT_FOLDER_ID = '1YdwuPGNqYQZiHeseuMtyXF2GKkyqmSvo';
+
+// ─── ScriptProperties で上書き（推奨）──────────────────────────────
+// GAS エディタ → プロジェクトの設定 → スクリプトプロパティ で以下を設定：
+//   ADMIN_KEY / SPREADSHEET_ID / CHATWORK_TOKEN / CHATWORK_ROOM_ID
+//   PAYMENT_ROOM_ID / EDITOR_ROOM_ID / MATERIAL_PARENT_FOLDER_ID
+// 設定するとソースコードからシークレットを完全分離できます。
+(function applyScriptProps() {
+  try {
+    var p = PropertiesService.getScriptProperties();
+    var overrides = {
+      ADMIN_KEY: 'ADMIN_KEY', SPREADSHEET_ID: 'SPREADSHEET_ID',
+      CHATWORK_TOKEN: 'CHATWORK_TOKEN', CHATWORK_ROOM_ID: 'CHATWORK_ROOM_ID',
+      PAYMENT_ROOM_ID: 'PAYMENT_ROOM_ID', EDITOR_ROOM_ID: 'EDITOR_ROOM_ID',
+      MATERIAL_PARENT_FOLDER_ID: 'MATERIAL_PARENT_FOLDER_ID'
+    };
+    if (p.getProperty('ADMIN_KEY'))              ADMIN_KEY              = p.getProperty('ADMIN_KEY');
+    if (p.getProperty('SPREADSHEET_ID'))         SPREADSHEET_ID         = p.getProperty('SPREADSHEET_ID');
+    if (p.getProperty('CHATWORK_TOKEN'))         CHATWORK_TOKEN         = p.getProperty('CHATWORK_TOKEN');
+    if (p.getProperty('CHATWORK_ROOM_ID'))       CHATWORK_ROOM_ID       = p.getProperty('CHATWORK_ROOM_ID');
+    if (p.getProperty('PAYMENT_ROOM_ID'))        PAYMENT_ROOM_ID        = p.getProperty('PAYMENT_ROOM_ID');
+    if (p.getProperty('EDITOR_ROOM_ID'))         EDITOR_ROOM_ID         = p.getProperty('EDITOR_ROOM_ID');
+    if (p.getProperty('MATERIAL_PARENT_FOLDER_ID')) MATERIAL_PARENT_FOLDER_ID = p.getProperty('MATERIAL_PARENT_FOLDER_ID');
+  } catch(e) { Logger.log('ScriptProperties load error: ' + e); }
+})();
 
 // 契約書PDF保管用：親フォルダ配下に「_契約書PDF」サブフォルダを作成・使用
 // 絶対に削除されないよう、専用フォルダで永久保管する
@@ -165,18 +188,21 @@ function doPost(e) {
       return notifyPayment(data);
     }
 
-    // 契約同意記録
+    // 契約同意記録（管理者のみ書き込み可）
     if (data.type === 'contract') {
+      if (data.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
       return saveContract(data);
     }
 
-    // ヒアリングシート回答
+    // ヒアリングシート回答（管理者のみ書き込み可）
     if (data.type === 'hearing') {
+      if (data.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
       return saveHearing(data);
     }
 
-    // 売上記録（青色申告対応）
+    // 売上記録（管理者のみ書き込み可）
     if (data.type === 'sales') {
+      if (data.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
       return saveSales(data);
     }
 
@@ -369,6 +395,7 @@ function doGet(e) {
 
   if (action === 'partner_app_delete') {
     var row = parseInt(e.parameter.row, 10);
+    if (!row || row < 2) return jsonResponse({ error: 'invalid row' });
     var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
     var sh = ss.getSheetByName('partner_applications');
     if (sh) sh.deleteRow(row);
@@ -500,6 +527,7 @@ function doGet(e) {
 
   if (action === 'editor_app_delete') {
     var row = parseInt(e.parameter.row, 10);
+    if (!row || row < 2) return jsonResponse({ error: 'invalid row' });
     var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
     var sh = ss.getSheetByName('editor_applications');
     if (sh) sh.deleteRow(row);
@@ -847,7 +875,7 @@ function updatePortfolio(data) {
 }
 
 function deletePortfolio(row) {
-  if (!row) return jsonResponse({ error: 'invalid row' });
+  if (!row || row < 2) return jsonResponse({ error: 'invalid row' });
   var sheet = getOrCreatePortfolioSheet();
   sheet.deleteRow(row);
   return jsonResponse({ success: true });
@@ -1000,13 +1028,14 @@ function saveEditor(data) {
 }
 
 function deleteEditor(row) {
-  if (!row) return jsonResponse({ error: 'invalid row' });
+  if (!row || row < 2) return jsonResponse({ error: 'invalid row' });
   var sheet = getOrCreateEditorsSheet();
   sheet.deleteRow(row);
   return jsonResponse({ success: true });
 }
 
 function deleteContract(row) {
+  if (!row || row < 2) return jsonResponse({ error: 'invalid row' });
   var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
   var sheet = ss.getSheetByName('contracts');
   if (!sheet) return jsonResponse({ error: 'sheet not found' });
@@ -1015,6 +1044,7 @@ function deleteContract(row) {
 }
 
 function deleteHearing(row) {
+  if (!row || row < 2) return jsonResponse({ error: 'invalid row' });
   var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
   var sheet = ss.getSheetByName('hearings');
   if (!sheet) return jsonResponse({ error: 'sheet not found' });
@@ -1279,6 +1309,7 @@ function clearSheet(sheetName) {
 }
 
 function deletePayment(row) {
+  if (!row || row < 2) return jsonResponse({ error: 'invalid row' });
   var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
   var sheet = ss.getSheetByName('payments');
   if (!sheet) return jsonResponse({ error: 'sheet not found' });
@@ -1287,6 +1318,7 @@ function deletePayment(row) {
 }
 
 function deleteSales(row) {
+  if (!row || row < 2) return jsonResponse({ error: 'invalid row' });
   var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
   var sheet = ss.getSheetByName('uriage');
   if (!sheet) return jsonResponse({ error: 'sheet not found' });
@@ -1295,7 +1327,7 @@ function deleteSales(row) {
 }
 
 function deleteInquiry(row) {
-  if (!row) return jsonResponse({ error: 'invalid row' });
+  if (!row || row < 2) return jsonResponse({ error: 'invalid row' });
   var sheet = getOrCreateSheet(); // inquiries シート
   sheet.deleteRow(row);
   return jsonResponse({ success: true });
@@ -2605,6 +2637,7 @@ function updatePFStatus(row, status) {
 }
 
 function deletePFInquiry(row) {
+  if (!row || row < 2) return jsonResponse({ error: 'invalid row' });
   var sheet = getOrCreatePFSheet();
   sheet.deleteRow(row);
   return jsonResponse({ success: true });
