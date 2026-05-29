@@ -454,6 +454,10 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
         📝 編集者応募
       </button>
+      <button id="tab-partner-apps-btn" onclick="switchAdminTab('partner-apps')"
+        style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
+        🤝 パートナー
+      </button>
     </div>
 
     <!-- ── 問い合わせタブ ── -->
@@ -1058,6 +1062,75 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       </div>
     </div><!-- /tab-editor-apps -->
 
+    <!-- ── パートナー申請タブ ── -->
+    <div id="tab-partner-apps" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
+        <h2 style="font-size:1rem;font-weight:700;">🤝 パートナー申請管理</h2>
+        <div style="display:flex;gap:10px;">
+          <button class="refresh-btn" onclick="loadPartnerApps()">更新</button>
+          <button class="export-btn" onclick="exportPartnerAppsCSV()">CSV出力</button>
+        </div>
+      </div>
+
+      <!-- 集計バー -->
+      <div class="stats-bar" style="margin-bottom:24px;">
+        <div class="stat-card"><p class="stat-label">総件数</p><p class="stat-val blue" id="pa-total">—</p></div>
+        <div class="stat-card"><p class="stat-label">未対応</p><p class="stat-val red" id="pa-new">—</p></div>
+        <div class="stat-card"><p class="stat-label">承認済み</p><p class="stat-val green" id="pa-approved">—</p></div>
+        <div class="stat-card"><p class="stat-label">却下</p><p class="stat-val" style="color:var(--sub)" id="pa-rejected">—</p></div>
+      </div>
+
+      <!-- 報酬の仕組み説明 -->
+      <div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);border-radius:12px;padding:14px 18px;margin-bottom:20px;font-size:0.8rem;color:#FCD34D;line-height:1.9;">
+        <strong>💰 報酬フロー：</strong> 申請受付 → 審査 → 【承認】ボタンで自動的にコードをメール送信 →
+        成約時に「報酬メール」ボタンで報酬確定メール送信 → PayPayで手動送金 → 確認
+      </div>
+
+      <!-- フィルター -->
+      <div class="toolbar" style="margin-bottom:20px;">
+        <input type="text" class="search-input" id="pa-search" placeholder="名前・メール・種別で検索..." oninput="renderPartnerApps()">
+        <select class="filter-select" id="pa-status-filter" onchange="renderPartnerApps()">
+          <option value="">すべてのステータス</option>
+          <option value="未対応">未対応</option>
+          <option value="承認">承認済み</option>
+          <option value="却下">却下</option>
+        </select>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>受信日時</th>
+              <th>名前</th>
+              <th>種別</th>
+              <th>URL</th>
+              <th>PV/フォロワー</th>
+              <th>発行コード</th>
+              <th>ステータス</th>
+              <th>アクション</th>
+            </tr>
+          </thead>
+          <tbody id="pa-body">
+            <tr><td colspan="8" class="table-empty"><span class="spinner"></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 報酬送信モーダル -->
+      <div id="reward-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;align-items:center;justify-content:center;">
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px;max-width:400px;width:90%;">
+          <h3 style="font-weight:800;margin-bottom:16px;">💰 報酬確定メール送信</h3>
+          <p style="font-size:0.82rem;color:var(--sub);margin-bottom:16px;">パートナーへ報酬確定の連絡メールを送信します。</p>
+          <input id="reward-amount" type="number" placeholder="報酬金額（例：500）" style="width:100%;padding:10px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:#fff;font-size:0.9rem;margin-bottom:16px;font-family:inherit;">
+          <div style="display:flex;gap:10px;">
+            <button onclick="submitRewardEmail()" style="flex:1;padding:10px;background:var(--yellow);color:#000;border:none;border-radius:8px;font-weight:800;cursor:pointer;">送信する</button>
+            <button onclick="closeRewardModal()" style="flex:1;padding:10px;background:var(--bg3);color:var(--sub);border:1px solid var(--border);border-radius:8px;cursor:pointer;">キャンセル</button>
+          </div>
+        </div>
+      </div>
+    </div><!-- /tab-partner-apps -->
+
   </main>
 </div>
 
@@ -1644,7 +1717,7 @@ function exportCSV() {
 }
 
 // ── Tab switch ──
-const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps'];
+const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps','partner-apps'];
 function switchAdminTab(tab) {
   ADMIN_TABS.forEach(t => {
     document.getElementById('tab-' + t).style.display = t === tab ? '' : 'none';
@@ -1662,7 +1735,8 @@ function switchAdminTab(tab) {
   if (tab === 'settings')  { loadServiceStatus(); loadPFAdmin(); }
   if (tab === 'pf')          loadPFAdmin();
   if (tab === 'content')     loadLpContent();
-  if (tab === 'editor-apps') loadEditorApps();
+  if (tab === 'editor-apps')  loadEditorApps();
+  if (tab === 'partner-apps') loadPartnerApps();
 }
 
 // ── LP コンテンツ編集 ─────────────────────────────────────────
@@ -3326,6 +3400,9 @@ function renderEditorApps() {
         </td>
         <td>
           <div class="td-actions">
+            ${a.status !== '採用決定'
+              ? `<button class="action-btn" style="background:rgba(16,185,129,0.15);color:#10B981;border:1px solid rgba(16,185,129,0.4);font-weight:800;" onclick="hireEditor(${a.row},'${esc(a.name).replace(/'/g,"\\'")}')">✅ 採用</button>`
+              : `<span style="font-size:0.72rem;color:#10B981;font-weight:800;">採用済み</span>`}
             <button class="action-btn btn-mail" onclick="openEditorAppMail('${esc(a.email)}','${esc(a.name)}')">✉ メール</button>
             <button class="action-btn btn-expand" onclick="openEditorAppDetail(${a.row})">詳細</button>
             ${a.dispatch === '希望する'
@@ -3336,6 +3413,12 @@ function renderEditorApps() {
         </td>
       </tr>`;
   }).join('');
+}
+
+async function hireEditor(row, name) {
+  if (!confirm(`「${name}」さんを採用決定しますか？\nChatwork招待リンクを自動でメール送信します。`)) return;
+  await updateEditorAppStatus(row, '採用決定');
+  showToast(`✅ 「${name}」さんを採用決定！招待メールを自動送信しました`);
 }
 
 async function updateEditorAppStatus(row, status) {
@@ -3436,6 +3519,185 @@ function exportEditorAppsCSV() {
     a.message||'', a.status||''
   ]));
   downloadCSV(rows, 'monocreate_editor_apps');
+}
+
+// ═══════════════════════════════════════════════
+// ── パートナー申請管理 ──
+// ═══════════════════════════════════════════════
+let partnerApps = [];
+let rewardTargetRow = null;
+
+async function loadPartnerApps() {
+  try {
+    const res  = await fetch(`${GAS_URL}?action=partner_applications&key=${encodeURIComponent(getAdminPw())}`);
+    const json = await res.json();
+    partnerApps = json.data || [];
+    updatePartnerAppsStats();
+    renderPartnerApps();
+  } catch(e) {
+    document.getElementById('pa-body').innerHTML = '<tr><td colspan="8" class="table-empty">読み込みエラー</td></tr>';
+  }
+}
+
+function updatePartnerAppsStats() {
+  document.getElementById('pa-total').textContent    = partnerApps.length;
+  document.getElementById('pa-new').textContent      = partnerApps.filter(a => a.status === '未対応').length;
+  document.getElementById('pa-approved').textContent = partnerApps.filter(a => a.status === '承認').length;
+  document.getElementById('pa-rejected').textContent = partnerApps.filter(a => a.status === '却下').length;
+}
+
+function renderPartnerApps() {
+  const tbody  = document.getElementById('pa-body');
+  const q      = (document.getElementById('pa-search')?.value || '').toLowerCase();
+  const sfilt  = document.getElementById('pa-status-filter')?.value || '';
+  const filtered = partnerApps.filter(a => {
+    if (sfilt && a.status !== sfilt) return false;
+    if (q && !`${a.name}${a.email}${a.partner_type}${a.url}`.toLowerCase().includes(q)) return false;
+    return true;
+  });
+
+  if (!filtered.length) {
+    tbody.innerHTML = '<tr><td colspan="8" class="table-empty">該当するデータがありません。</td></tr>';
+    return;
+  }
+
+  const statusColor = { '未対応': 'var(--red)', '承認': 'var(--green)', '却下': 'var(--sub)' };
+
+  tbody.innerHTML = filtered.map(a => {
+    const sc = statusColor[a.status] || 'var(--sub)';
+    const codeDisplay = a.code
+      ? `<span style="font-family:monospace;background:rgba(37,99,235,0.15);color:#60a5fa;padding:3px 8px;border-radius:6px;font-size:0.78rem;">${esc(a.code)}</span>`
+      : '<span style="color:var(--sub);font-size:0.75rem;">—</span>';
+    const urlLink = a.url
+      ? `<a href="${esc(a.url)}" target="_blank" style="color:#60a5fa;font-size:0.75rem;word-break:break-all;">${esc(a.url.replace(/https?:\/\//,''))}</a>`
+      : '—';
+    return `
+      <tr>
+        <td class="td-date">${esc(a.date)}</td>
+        <td class="td-name">
+          ${esc(a.name)}<br>
+          <span style="font-size:0.72rem;color:var(--sub);">${esc(a.email)}</span>
+          ${a.twitter ? `<br><span style="font-size:0.7rem;color:#60a5fa;">@${esc(a.twitter.replace('@',''))}</span>` : ''}
+        </td>
+        <td style="font-size:0.78rem;">${esc(a.partner_type||'—')}</td>
+        <td style="max-width:160px;">${urlLink}<br><span style="font-size:0.72rem;color:var(--sub);">${esc(a.audience||'')}</span></td>
+        <td style="font-size:0.75rem;max-width:140px;color:var(--sub);">${esc((a.method||'').substring(0,50))}${(a.method||'').length>50?'…':''}</td>
+        <td>${codeDisplay}</td>
+        <td>
+          <select onchange="updatePartnerAppStatus(${a.row}, this.value)"
+            style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:${sc};font-size:0.75rem;padding:4px 8px;font-family:inherit;font-weight:700;cursor:pointer;">
+            <option value="未対応" ${a.status==='未対応'?'selected':''}>🔴 未対応</option>
+            <option value="承認"   ${a.status==='承認'  ?'selected':''}>🟢 承認</option>
+            <option value="却下"   ${a.status==='却下'  ?'selected':''}>⚫ 却下</option>
+          </select>
+        </td>
+        <td>
+          <div class="td-actions">
+            ${a.status === '承認'
+              ? `<button class="action-btn" style="background:rgba(245,158,11,0.12);color:#FCD34D;border:1px solid rgba(245,158,11,0.3);font-size:0.7rem;" onclick="openRewardModal(${a.row},'${esc(a.name).replace(/'/g,"\\'")}')">💰 報酬</button>`
+              : `<button class="action-btn btn-mail" onclick="approvePartner(${a.row},'${esc(a.name).replace(/'/g,"\\'")}')">✅ 承認</button>`}
+            <button class="action-btn" onclick="openPartnerDetail(${a.row})">詳細</button>
+            <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="deletePartnerApp(${a.row},'${esc(a.name).replace(/'/g,"\\'")}')">🗑</button>
+          </div>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+async function updatePartnerAppStatus(row, status) {
+  try {
+    await fetch(`${GAS_URL}?action=partner_app_status&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(status)}`);
+    const item = partnerApps.find(a => a.row === row);
+    if (item) item.status = status;
+    updatePartnerAppsStats();
+    renderPartnerApps();
+    if (status === '承認') {
+      showToast('✅ 承認しました！専用コードをメールで自動送信しました');
+    } else {
+      showToast(`ステータスを「${status}」に更新`);
+    }
+  } catch(e) {
+    showToast('⚠ 更新に失敗しました');
+  }
+}
+
+async function approvePartner(row, name) {
+  if (!confirm(`「${name}」さんを承認しますか？\n専用コードを自動でメール送信します。`)) return;
+  await updatePartnerAppStatus(row, '承認');
+}
+
+function openPartnerDetail(row) {
+  const a = partnerApps.find(x => x.row === row);
+  if (!a) return;
+  const modal = document.getElementById('modal-overlay');
+  document.querySelector('.modal-title').textContent = '🤝 パートナー申請詳細';
+  document.getElementById('modal-body').innerHTML = `
+    <dl style="display:grid;grid-template-columns:auto 1fr;gap:8px 16px;font-size:0.85rem;">
+      <dt style="color:var(--sub);">受信日時</dt><dd>${esc(a.date)}</dd>
+      <dt style="color:var(--sub);">名前</dt><dd>${esc(a.name)}</dd>
+      <dt style="color:var(--sub);">メール</dt><dd>${esc(a.email)}</dd>
+      <dt style="color:var(--sub);">X</dt><dd>${esc(a.twitter||'—')}</dd>
+      <dt style="color:var(--sub);">種別</dt><dd>${esc(a.partner_type||'—')}</dd>
+      <dt style="color:var(--sub);">URL</dt><dd><a href="${esc(a.url)}" target="_blank" style="color:#60a5fa;">${esc(a.url||'—')}</a></dd>
+      <dt style="color:var(--sub);">PV/フォロワー</dt><dd>${esc(a.audience||'—')}</dd>
+      <dt style="color:var(--sub);">発行コード</dt><dd><strong style="color:#60a5fa;font-family:monospace;">${esc(a.code||'—')}</strong></dd>
+      <dt style="color:var(--sub);">ステータス</dt><dd>${esc(a.status)}</dd>
+    </dl>
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+      <p style="font-size:0.8rem;color:var(--sub);margin-bottom:6px;">紹介方法</p>
+      <p style="font-size:0.85rem;white-space:pre-wrap;">${esc(a.method||'—')}</p>
+    </div>
+    ${a.message ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);"><p style="font-size:0.8rem;color:var(--sub);margin-bottom:6px;">メッセージ</p><p style="font-size:0.85rem;white-space:pre-wrap;">${esc(a.message)}</p></div>` : ''}
+  `;
+  modal.style.display = 'flex';
+}
+
+async function deletePartnerApp(row, name) {
+  if (!confirm(`「${name}」の申請を削除しますか？\nこの操作は元に戻せません。`)) return;
+  try {
+    await fetch(`${GAS_URL}?action=partner_app_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    partnerApps = partnerApps.filter(a => a.row !== row);
+    updatePartnerAppsStats();
+    renderPartnerApps();
+    showToast('削除しました');
+  } catch(e) {
+    alert('削除に失敗しました。');
+  }
+}
+
+function openRewardModal(row, name) {
+  rewardTargetRow = row;
+  document.getElementById('reward-modal').style.display = 'flex';
+  document.getElementById('reward-amount').value = '';
+  document.getElementById('reward-amount').placeholder = `${name} さんへの報酬金額（例：500）`;
+}
+
+function closeRewardModal() {
+  document.getElementById('reward-modal').style.display = 'none';
+  rewardTargetRow = null;
+}
+
+async function submitRewardEmail() {
+  const amount = document.getElementById('reward-amount').value.trim();
+  if (!amount || isNaN(amount)) { alert('金額を入力してください'); return; }
+  if (!rewardTargetRow) return;
+  try {
+    await fetch(`${GAS_URL}?action=partner_reward_send&key=${encodeURIComponent(getAdminPw())}&row=${rewardTargetRow}&amount=${encodeURIComponent(amount)}`);
+    closeRewardModal();
+    showToast(`✅ 報酬確定メール（¥${amount}）を送信しました`);
+  } catch(e) {
+    alert('送信に失敗しました。');
+  }
+}
+
+function exportPartnerAppsCSV() {
+  const rows = [['受信日時','名前','メール','種別','URL','PV/フォロワー','紹介方法','発行コード','X','メッセージ','ステータス']];
+  partnerApps.forEach(a => rows.push([
+    a.date, a.name, a.email, a.partner_type||'', a.url||'',
+    a.audience||'', a.method||'', a.code||'', a.twitter||'',
+    a.message||'', a.status||''
+  ]));
+  downloadCSV(rows, 'monocreate_partner_apps');
 }
 
 // ── Toast ──

@@ -1453,6 +1453,14 @@ footer {
       <div id="pf-full-banner" style="display:none;text-align:center;padding:20px;background:#FEF2F2;border:1px solid #FECACA;border-radius:12px;color:#B91C1C;font-weight:700;font-size:0.9rem;">
         現在、受付は満席です。次回募集をお待ちください。
       </div>
+
+      <!-- 直接申し込みボタン -->
+      <div id="pf-apply-direct" style="text-align:center;margin-top:20px;">
+        <button onclick="openPFDirect()" style="display:inline-block;background:linear-gradient(135deg,#B45309,#D97706);color:#fff;border:none;border-radius:50px;padding:14px 36px;font-size:0.95rem;font-weight:800;cursor:pointer;box-shadow:0 4px 20px rgba(180,83,9,0.3);transition:opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+          📸 無料ポートフォリオ制作に申し込む →
+        </button>
+        <p style="font-size:0.72rem;color:#94A3B8;margin-top:8px;">ジャンルは申し込み後にご相談いただけます</p>
+      </div>
     </div>
   </div>
 </section>
@@ -2235,6 +2243,7 @@ footer {
                 <option>編集コンサルティング（¥5,000/h）</option>
                 <option>編集ディレクション・外注管理</option>
                 <option>SNS運用代行（北海道のみ ¥69,800〜）</option>
+                <option>📸 無料ポートフォリオ制作（初回無料）</option>
                 <option>その他・まずは相談したい</option>
               </optgroup>
             </select>
@@ -2247,8 +2256,9 @@ footer {
             <label style="color:#92400E;font-weight:800;">🎁 紹介コード（お持ちの方のみ）</label>
             <input type="text" class="form-control" name="referral_code" id="referral-code" placeholder="例：MC-XXXXX" style="border-color:#D97706;background:#fff;">
             <div class="referral-code-badge" id="referral-badge">✅ コードを確認しました。お申し込み後に割引を適用します（+5%OFF）</div>
-            <p style="font-size:0.75rem;color:#92400E;margin-top:6px;line-height:1.6;">
-              ※ 通常価格プランは<strong>+5%引き</strong>、すでに10%割引中のプランはさらに<strong>+5%（合計最大15%引き）</strong>
+            <p style="font-size:0.75rem;color:#92400E;margin-top:6px;line-height:1.7;">
+              ※ 通常価格プランは<strong>+5%引き</strong>、すでに10%割引中のプランはさらに<strong>+5%（合計最大15%引き）</strong><br>
+              ※ <strong>紹介割引は初回ご成約時のみ</strong>適用されます
             </p>
           </div>
           <button type="submit" class="form-submit" id="submit-btn">
@@ -2824,6 +2834,16 @@ function renderPFGenres() {
       </div>
     `;
   }).join('');
+}
+
+// ポートフォリオ制作 直接申し込み（ジャンル未選択で開く）
+function openPFDirect() {
+  const badge = document.getElementById('pf-slots-badge');
+  if (badge && badge.style.display === 'none') {
+    alert('現在、受付は満席です。次回募集をお待ちください。');
+    return;
+  }
+  openPFModal('未定（申し込み後に相談）');
 }
 
 function openPFModal(genre) {

@@ -346,6 +346,30 @@ function doGet(e) {
     return listEditorApplications();
   }
 
+  if (action === 'partner_applications') {
+    return listPartnerApplications();
+  }
+
+  if (action === 'partner_app_status') {
+    var row = parseInt(e.parameter.row, 10);
+    var status = e.parameter.status || '';
+    return updatePartnerAppStatus(row, status);
+  }
+
+  if (action === 'partner_app_delete') {
+    var row = parseInt(e.parameter.row, 10);
+    var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    var sh = ss.getSheetByName('partner_applications');
+    if (sh) sh.deleteRow(row);
+    return jsonResponse({ success: true });
+  }
+
+  if (action === 'partner_reward_send') {
+    var row = parseInt(e.parameter.row, 10);
+    var amount = e.parameter.amount || '';
+    return sendPartnerReward(row, amount);
+  }
+
   if (action === 'editor_app_status') {
     var row = parseInt(e.parameter.row, 10);
     var status = e.parameter.status || '';
@@ -883,7 +907,7 @@ function deleteHearing(row) {
 
 // ── パートナー登録 ──────────────────────────────────────────────
 // partner_applications シート:
-// 受信日時|名前|メール|種別|URL|フォロワー/PV|紹介方法|希望報酬|希望コード名|X|メッセージ|ステータス
+// 受信日時|名前|メール|種別|URL|フォロワー/PV|紹介方法|発行コード|X|メッセージ|ステータス
 function applyPartner(data) {
   var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   var sheet = ss.getSheetByName('partner_applications');
@@ -891,10 +915,20 @@ function applyPartner(data) {
     sheet = ss.insertSheet('partner_applications');
     sheet.appendRow([
       '受信日時','名前','メール','種別','URL',
-      'フォロワー・PV','紹介方法','希望報酬','希望コード名','X','メッセージ','ステータス'
+      'フォロワー・PV','紹介方法','発行コード','X','メッセージ','ステータス'
     ]);
+    sheet.setFrozenRows(1);
   }
   var now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
+
+  // 紹介コード自動生成（MC-名前5文字-4桁ランダム）
+  var prefix = (data.name || 'MONO').replace(/[^A-Za-z0-9゠-ヿ぀-ゟ一-鿿]/g, '').substring(0, 5);
+  if (!prefix) prefix = 'MONO';
+  // 日本語が含まれる場合はローマ字変換の代わりにランダム文字列を使用
+  if (/[^\x00-\x7F]/.test(prefix)) prefix = 'MC';
+  var suffix = Math.random().toString(36).substring(2, 6).toUpperCase();
+  var autoCode = 'MC-' + prefix.toUpperCase() + '-' + suffix;
+
   sheet.appendRow([
     now,
     data.name         || '',
@@ -903,8 +937,7 @@ function applyPartner(data) {
     data.url          || '',
     data.audience     || '',
     data.method       || '',
-    data.reward       || '',
-    data.code_wish    || '',
+    autoCode,
     data.twitter      || '',
     data.message      || '',
     '未対応'
@@ -916,19 +949,18 @@ function applyPartner(data) {
       '━━━━━━━━━━━━━━━━━━━━\n' +
       '🤝 新規 パートナー登録申請 — mono.create\n' +
       '━━━━━━━━━━━━━━━━━━━━\n' +
-      '受信日時    : ' + now + '\n' +
-      '名前        : ' + (data.name || '') + '\n' +
-      'メール      : ' + (data.email || '') + '\n' +
-      '種別        : ' + (data.partner_type || '') + '\n' +
-      'URL         : ' + (data.url || '') + '\n' +
+      '受信日時      : ' + now + '\n' +
+      '名前          : ' + (data.name || '') + '\n' +
+      'メール        : ' + (data.email || '') + '\n' +
+      '種別          : ' + (data.partner_type || '') + '\n' +
+      'URL           : ' + (data.url || '') + '\n' +
       'フォロワー・PV: ' + (data.audience || '') + '\n' +
-      '紹介方法    : ' + (data.method || '') + '\n' +
-      '希望報酬    : ' + (data.reward || 'なし') + '\n' +
-      '希望コード名: ' + (data.code_wish || 'なし') + '\n' +
-      'X           : ' + (data.twitter || 'なし') + '\n' +
+      '紹介方法      : ' + (data.method || '') + '\n' +
+      '発行コード    : ' + autoCode + '\n' +
+      'X             : ' + (data.twitter || 'なし') + '\n' +
       '━━━━━━━━━━━━━━━━━━━━\n' +
       (data.message ? '【メッセージ】\n' + data.message + '\n━━━━━━━━━━━━━━━━━━━━\n' : '') +
-      '▶ 管理画面: ' + LP_BASE_URL + 'admin.html';
+      '▶ 管理画面で承認: ' + LP_BASE_URL + 'admin.html';
     try {
       UrlFetchApp.fetch('https://api.chatwork.com/v2/rooms/' + CHATWORK_ROOM_ID + '/messages', {
         method: 'POST',
@@ -944,17 +976,42 @@ function applyPartner(data) {
       '【mono.create】パートナー登録のご申請を受け付けました',
       [
         'この度はmono.createパートナープログラムへのご申請ありがとうございます。',
-        '内容を確認のうえ、2〜3営業日以内に専用コードの発行をご連絡いたします。',
+        '内容を確認のうえ、2〜3営業日以内に審査結果と専用コードをご連絡いたします。',
         '',
         '▼ ご申請内容',
         '種別: ' + (data.partner_type || ''),
         'URL: ' + (data.url || ''),
-        '希望コード名: ' + (data.code_wish || 'なし'),
+        '',
+        '▼ 成約報酬（固定）',
+        'ショート動画編集（単品）  : ¥500/件',
+        '長尺動画・編集セット      : ¥1,500/件',
+        '月額パック・運用代行      : ¥3,000/件',
+        '継続ボーナス（3ヶ月〜）   : +¥1,000/件',
         '',
         'ご不明な点がございましたら、このメールに返信してください。',
       ]
     );
   }
+
+  // ── オーナーへのGmailバックアップ通知 ──
+  notifyOwnerEmail(
+    '【パートナー申請】' + (data.name || '名前なし') + ' — ' + (data.partner_type || ''),
+    [
+      '受信日時      : ' + now,
+      '名前          : ' + (data.name || ''),
+      'メール        : ' + (data.email || '未入力'),
+      '種別          : ' + (data.partner_type || ''),
+      'URL           : ' + (data.url || ''),
+      'フォロワー・PV: ' + (data.audience || ''),
+      '紹介方法      : ' + (data.method || ''),
+      '発行コード    : ' + autoCode,
+      'X             : ' + (data.twitter || 'なし'),
+      '',
+      data.message ? '【メッセージ】\n' + data.message : '',
+      '',
+      '▶ 管理画面で承認: ' + LP_BASE_URL + 'admin.html',
+    ]
+  );
 
   return jsonResponse({ success: true });
 }
@@ -1039,6 +1096,26 @@ function applyEditor(data) {
       ]
     );
   }
+
+  // ── オーナーへのGmailバックアップ通知 ──
+  notifyOwnerEmail(
+    '【編集者応募】' + (data.name || '名前なし') + ' — ' + (data.case_type || ''),
+    [
+      '受信日時  : ' + now,
+      '名前/年齢 : ' + (data.name || '') + '（' + (data.age || '') + ' / ' + (data.gender || '') + '）',
+      'メール    : ' + (data.email || '未入力'),
+      '希望案件  : ' + (data.case_type || ''),
+      '対応本数  : ' + (data.weekly_monthly_vol || ''),
+      '得意分野  : ' + (data.specialty || ''),
+      'PF URL   : ' + (data.portfolio || 'なし'),
+      '長期契約  : ' + (data.long_term || ''),
+      '派遣希望  : ' + (data.dispatch || 'なし'),
+      '',
+      data.message ? '【メッセージ】\n' + data.message : '',
+      '',
+      '▶ 管理画面: ' + LP_BASE_URL + 'admin.html',
+    ]
+  );
 
   return jsonResponse({ success: true });
 }
@@ -2220,13 +2297,19 @@ function submitPFInquiry(data) {
   var now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
   pfSheet.appendRow([now, data.name||'', data.email||'', genre, data.message||'', '未対応']);
 
-  // Chatwork通知
+  // Chatwork通知（メンション付き）
   if (CHATWORK_ROOM_ID) {
-    var msg = '[info][title]📸 無料PF制作：新規申込[/title]' +
-      '名前: ' + (data.name||'') + '\n' +
-      'メール: ' + (data.email||'') + '\n' +
-      'ジャンル: ' + genre + '\n' +
-      '詳細: ' + (data.message||'') + '[/info]';
+    var msg = '[To:' + CHATWORK_MENTION + '] 中村航汰\n\n' +
+      '━━━━━━━━━━━━━━━━━━━━\n' +
+      '📸 無料PF制作：新規申込 — mono.create\n' +
+      '━━━━━━━━━━━━━━━━━━━━\n' +
+      '受信日時 : ' + now + '\n' +
+      '名前     : ' + (data.name||'') + '\n' +
+      'メール   : ' + (data.email||'') + '\n' +
+      'ジャンル : ' + genre + '\n' +
+      (data.message ? '詳細     : ' + data.message + '\n' : '') +
+      '━━━━━━━━━━━━━━━━━━━━\n' +
+      '▶ 管理画面: ' + LP_BASE_URL + 'admin.html';
     try {
       UrlFetchApp.fetch('https://api.chatwork.com/v2/rooms/' + CHATWORK_ROOM_ID + '/messages', {
         method:'POST', headers:{'X-ChatWorkToken':CHATWORK_TOKEN},
@@ -2234,6 +2317,21 @@ function submitPFInquiry(data) {
       });
     } catch(e){}
   }
+
+  // ── オーナーへのGmailバックアップ通知 ──
+  notifyOwnerEmail(
+    '【無料PF制作申込】' + (data.name || '名前なし') + ' — ' + genre,
+    [
+      '受信日時 : ' + now,
+      '名前     : ' + (data.name || ''),
+      'メール   : ' + (data.email || '未入力'),
+      'ジャンル : ' + genre,
+      '',
+      data.message ? '【詳細】\n' + data.message : '',
+      '',
+      '▶ 管理画面 (無料PF制作タブ): ' + LP_BASE_URL + 'admin.html',
+    ]
+  );
 
   // 自動返信
   if (data.email && data.email.indexOf('@') !== -1) {
@@ -2279,6 +2377,170 @@ function updatePFStatus(row, status) {
 function deletePFInquiry(row) {
   var sheet = getOrCreatePFSheet();
   sheet.deleteRow(row);
+  return jsonResponse({ success: true });
+}
+
+// ── パートナー申請 一覧取得 ────────────────────────────────────
+// partner_applications シート列:
+// 受信日時|名前|メール|種別|URL|フォロワー・PV|紹介方法|発行コード|X|メッセージ|ステータス
+//    1      2    3     4    5      6               7         8         9    10         11
+function listPartnerApplications() {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName('partner_applications');
+  if (!sheet) return jsonResponse({ data: [] });
+  var values = sheet.getDataRange().getValues();
+  var data = [];
+  for (var i = 1; i < values.length; i++) {
+    var r = values[i];
+    data.push({
+      row:          i + 1,
+      date:         r[0]  || '',
+      name:         r[1]  || '',
+      email:        r[2]  || '',
+      partner_type: r[3]  || '',
+      url:          r[4]  || '',
+      audience:     r[5]  || '',
+      method:       r[6]  || '',
+      code:         r[7]  || '',
+      twitter:      r[8]  || '',
+      message:      r[9]  || '',
+      status:       r[10] || '未対応'
+    });
+  }
+  data.sort(function(a, b) { return b.date > a.date ? 1 : -1; });
+  return jsonResponse({ data: data });
+}
+
+function updatePartnerAppStatus(row, status) {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sh = ss.getSheetByName('partner_applications');
+  if (!sh) return jsonResponse({ success: true });
+  sh.getRange(row, 11).setValue(status);  // 11列目=ステータス
+
+  // 承認時 → 専用コード発行メールを自動送信
+  if (status === '承認') {
+    var rowData = sh.getRange(row, 1, 1, 11).getValues()[0];
+    var partnerName  = rowData[1] || '';
+    var partnerEmail = rowData[2] || '';
+    var partnerCode  = rowData[7] || '';
+    var now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
+
+    if (partnerEmail && partnerEmail.indexOf('@') !== -1) {
+      var subject = '【mono.create】パートナー承認 — 専用紹介コードを発行しました';
+      var body = [
+        partnerName + ' 様',
+        '',
+        'この度はmono.createパートナープログラムへのご登録ありがとうございます。',
+        '審査が完了し、パートナーとして承認されました！',
+        '',
+        '━━━━━━━━━━━━━━━━━━━━',
+        '▼ あなた専用の紹介コード',
+        '━━━━━━━━━━━━━━━━━━━━',
+        '',
+        '  【 ' + partnerCode + ' 】',
+        '',
+        '紹介先の方がお問い合わせフォームにこのコードを入力すると：',
+        '  ✅ 紹介された方：通常価格から+5%OFF（最大15%OFF）',
+        '  ✅ あなた（パートナー）：成約のたびに報酬をお支払い',
+        '',
+        '━━━━━━━━━━━━━━━━━━━━',
+        '▼ 成約報酬テーブル（PayPay振込）',
+        '━━━━━━━━━━━━━━━━━━━━',
+        '  ショート動画編集（単品）  ¥500 / 件',
+        '  長尺動画・編集セット      ¥1,500 / 件',
+        '  月額パック・運用代行      ¥3,000 / 件',
+        '  継続ボーナス（3ヶ月〜）   +¥1,000 / 件',
+        '',
+        '  ※ 報酬は成約確認後14日以内にPayPayでお支払いします。',
+        '  ※ 割引は初回ご成約時のみ適用されます。',
+        '',
+        '━━━━━━━━━━━━━━━━━━━━',
+        '▼ コードの使い方',
+        '━━━━━━━━━━━━━━━━━━━━',
+        '1. 上記コードをSNS・サイト・DMなどで紹介先に共有',
+        '2. 紹介先がお問い合わせ時にコードを入力（自動でOFF適用）',
+        '3. 成約確認後14日以内にPayPayで報酬をお支払い',
+        '',
+        '報酬確定時は別途メールにてご連絡します。',
+        '引き続きよろしくお願いいたします。',
+        '',
+        '担当：mono.create 運営',
+      ].join('\n');
+
+      MailApp.sendEmail({
+        to:      partnerEmail,
+        subject: subject,
+        body:    body,
+        name:    'mono.create',
+        replyTo: OWNER_EMAIL
+      });
+    }
+
+    // 管理者にも通知
+    notifyOwnerEmail(
+      '【パートナー承認】' + partnerName + ' — コード: ' + partnerCode,
+      [
+        '承認日時 : ' + now,
+        '名前     : ' + partnerName,
+        'メール   : ' + partnerEmail,
+        '発行コード: ' + partnerCode,
+        '',
+        '→ 承認メールを自動送信しました。',
+      ]
+    );
+  }
+
+  return jsonResponse({ success: true });
+}
+
+// 報酬確定メール送信
+function sendPartnerReward(row, amount) {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sh = ss.getSheetByName('partner_applications');
+  if (!sh) return jsonResponse({ error: 'sheet not found' });
+  var rowData = sh.getRange(row, 1, 1, 11).getValues()[0];
+  var partnerName  = rowData[1] || '';
+  var partnerEmail = rowData[2] || '';
+  var partnerCode  = rowData[7] || '';
+  var now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
+
+  if (!partnerEmail || partnerEmail.indexOf('@') === -1) {
+    return jsonResponse({ error: 'no email' });
+  }
+
+  var subject = '【mono.create】成約報酬のご連絡 — ¥' + amount + ' をお支払いします';
+  var body = [
+    partnerName + ' 様',
+    '',
+    'お世話になっております。mono.createです。',
+    '',
+    'この度は紹介のご協力ありがとうございます。',
+    '成約が確定しましたので、下記の通り報酬をお支払いします。',
+    '',
+    '━━━━━━━━━━━━━━━━━━━━',
+    '▼ 報酬詳細',
+    '━━━━━━━━━━━━━━━━━━━━',
+    '報酬金額  : ¥' + amount,
+    '支払方法  : PayPay送金',
+    '支払時期  : ' + now + ' 前後（14日以内）',
+    '紹介コード: ' + partnerCode,
+    '',
+    'PayPayのQRコードまたはIDをこのメールに返信してお知らせください。',
+    '',
+    'ご不明な点がございましたら、このメールへご返信ください。',
+    'よろしくお願いいたします。',
+    '',
+    '担当：mono.create 運営',
+  ].join('\n');
+
+  MailApp.sendEmail({
+    to:      partnerEmail,
+    subject: subject,
+    body:    body,
+    name:    'mono.create',
+    replyTo: OWNER_EMAIL
+  });
+
   return jsonResponse({ success: true });
 }
 

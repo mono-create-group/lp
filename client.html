@@ -10,7 +10,7 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-body { font-family: 'Noto Sans JP', sans-serif; background: #0B1120; color: #F1F5F9; line-height: 1.8; -webkit-font-smoothing: antialiased; }
+body { font-family: 'Noto Sans JP', sans-serif; background: #F8FAFC; color: #0F172A; line-height: 1.8; -webkit-font-smoothing: antialiased; }
 a { text-decoration: none; color: inherit; }
 .page { max-width: 480px; margin: 0 auto; padding: 28px 20px 80px; }
 .back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; color: #475569; margin-bottom: 20px; }
@@ -20,7 +20,7 @@ a { text-decoration: none; color: inherit; }
 .profile-mini {
   display: flex; align-items: center; gap: 14px;
   padding: 18px 20px;
-  background: #131F35; border: 1px solid #1E2D4A; border-radius: 14px;
+  background: #fff; border: 1.5px solid #E2E8F0; border-radius: 14px; box-shadow: 0 2px 10px rgba(15,23,42,0.06);
   margin-bottom: 20px;
 }
 .mini-avatar {
@@ -30,7 +30,7 @@ a { text-decoration: none; color: inherit; }
   font-size: 1.4rem; border: 2px solid #3B82F6;
 }
 .mini-name { font-size: 0.95rem; font-weight: 900; }
-.mini-sub { font-size: 0.72rem; color: #60A5FA; font-weight: 700; }
+.mini-sub { font-size: 0.72rem; color: #2563EB; font-weight: 700; }
 .status-pill {
   display: inline-flex; align-items: center; gap: 5px;
   background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.25);
@@ -41,8 +41,8 @@ a { text-decoration: none; color: inherit; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
 /* ── Cards ── */
-.card { background: #131F35; border: 1px solid #1E2D4A; border-radius: 16px; padding: 22px 20px; margin-bottom: 16px; }
-.card-title { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.12em; color: #60A5FA; margin-bottom: 14px; }
+.card { background: #fff; border: 1.5px solid #E2E8F0; border-radius: 16px; padding: 22px 20px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(15,23,42,0.06); }
+.card-title { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.12em; color: #2563EB; margin-bottom: 14px; }
 
 /* ── Invite Code ── */
 .invite-wrap {
@@ -96,9 +96,9 @@ a { text-decoration: none; color: inherit; }
 
 /* ── Services ── */
 .service-list { display:flex; flex-direction:column; gap:8px; }
-.service-item { display:flex; align-items:center; justify-content:space-between; padding:10px 12px; background:#1A2840; border-radius:10px; font-size:0.82rem; }
-.service-name { color:#CBD5E1; font-weight:600; }
-.service-price { color:#60A5FA; font-weight:800; font-size:0.78rem; }
+.service-item { display:flex; align-items:center; justify-content:space-between; padding:10px 12px; background:#F8FAFC; border: 1px solid #E2E8F0; border-radius:10px; font-size:0.82rem; }
+.service-name { color:#475569; font-weight:600; }
+.service-price { color:#1D4ED8; font-weight:800; font-size:0.78rem; }
 
 /* ── Free CTA ── */
 .free-cta {
