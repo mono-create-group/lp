@@ -13,7 +13,7 @@
 // ================================================================
 
 // ─── 設定（フォールバック値。ScriptProperties で上書き可能）────────
-var ADMIN_KEY         = '20180418k';
+var ADMIN_KEY         = '20180412k';
 var SPREADSHEET_ID    = '13RESWCy5tuOqVzzG5aoeIFtyDk--OrLnpaPDep5yjj0';
 var CHATWORK_TOKEN    = 'f79405b3d71215d721e6a9d3f86f55a6';
 var CHATWORK_ROOM_ID  = '437407663';  // HPお問い合わせ
@@ -293,6 +293,20 @@ function doPost(e) {
 function doGet(e) {
   var action = (e.parameter.action || '').toLowerCase();
   var key    = e.parameter.key || '';
+
+  // ── 一時：ScriptProperties セットアップ（実行後は自動削除不要・認証必須）──
+  if (action === '__init_props') {
+    if (key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+    var p = PropertiesService.getScriptProperties();
+    p.setProperty('ADMIN_KEY',              ADMIN_KEY);
+    p.setProperty('SPREADSHEET_ID',         SPREADSHEET_ID);
+    p.setProperty('CHATWORK_TOKEN',         CHATWORK_TOKEN);
+    p.setProperty('CHATWORK_ROOM_ID',       CHATWORK_ROOM_ID);
+    p.setProperty('PAYMENT_ROOM_ID',        PAYMENT_ROOM_ID);
+    p.setProperty('EDITOR_ROOM_ID',         EDITOR_ROOM_ID);
+    p.setProperty('MATERIAL_PARENT_FOLDER_ID', MATERIAL_PARENT_FOLDER_ID);
+    return jsonResponse({ success: true, message: 'ScriptProperties を設定しました' });
+  }
 
   // ── 認証不要の公開エンドポイント ──────────────────────────────
   // LPからkeyなしで呼ばれるポートフォリオ一覧は公開

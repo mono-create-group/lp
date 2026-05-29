@@ -385,8 +385,8 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
   <div class="login-card">
     <div class="login-logo">mono<span>.</span>create</div>
     <p class="login-sub" style="color:#F59E0B;font-weight:700;">🔐 初回セットアップ</p>
-    <p style="font-size:0.8rem;color:var(--sub);margin-bottom:18px;text-align:center;line-height:1.6;">管理者パスワードを設定してください。<br>12文字以上、英数字を含めてください。</p>
-    <input type="password" class="login-input" id="setup-pw1" placeholder="新しいパスワード（12文字以上）"
+    <p style="font-size:0.8rem;color:var(--sub);margin-bottom:18px;text-align:center;line-height:1.6;">管理者パスワードを設定してください。<br>11文字以上、英数字を含めてください。</p>
+    <input type="password" class="login-input" id="setup-pw1" placeholder="新しいパスワード（11文字以上）"
            oninput="checkSetupStrength()">
     <div id="setup-strength" style="font-size:0.75rem;margin-bottom:8px;height:16px;"></div>
     <input type="password" class="login-input" id="setup-pw2" placeholder="もう一度入力"
@@ -1506,7 +1506,7 @@ function clearLoginFails() { setLockState({ fails: 0, until: 0 }); }
 
 // ── パスワード強度チェック ──
 function checkPasswordStrength(pw) {
-  if (pw.length < 12) return { ok: false, msg: '12文字以上が必要です', color: '#EF4444' };
+  if (pw.length < 11) return { ok: false, msg: '11文字以上が必要です', color: '#EF4444' };
   const hasNum  = /[0-9]/.test(pw);
   const hasLow  = /[a-z]/.test(pw);
   const hasUp   = /[A-Z]/.test(pw);
