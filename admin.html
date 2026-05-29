@@ -434,6 +434,10 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
         🎬 ポートフォリオ管理
       </button>
+      <button id="tab-editors-btn" onclick="switchAdminTab('editors')"
+        style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
+        👥 編集者管理
+      </button>
       <button id="tab-settings-btn" onclick="switchAdminTab('settings')"
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
         ⚙️ 設定
@@ -791,6 +795,100 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         </div>
       </div>
     </div><!-- /tab-portfolio -->
+
+    <!-- ── 編集者管理タブ ── -->
+    <div id="tab-editors" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <h2 style="font-size:1rem;font-weight:700;">👥 編集者管理</h2>
+        <button class="action-btn" style="background:#1a3a2a;color:#4ade80;border:1px solid #166534;font-size:0.85rem;padding:8px 18px;" onclick="openEditorModal(null)">＋ 編集者を追加</button>
+      </div>
+      <div id="editors-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+        <div style="text-align:center;padding:40px;color:var(--sub);"><span class="spinner"></span></div>
+      </div>
+    </div><!-- /tab-editors -->
+
+    <!-- 編集者 追加/編集 モーダル -->
+    <div id="editor-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;overflow-y:auto;padding:24px 16px;">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;max-width:620px;margin:0 auto;padding:28px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <h3 id="editor-modal-title" style="font-size:1rem;font-weight:700;">編集者を追加</h3>
+          <button onclick="closeEditorModal()" style="background:none;border:none;color:var(--sub);font-size:1.3rem;cursor:pointer;">✕</button>
+        </div>
+        <input type="hidden" id="em-row" value="">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div style="grid-column:1/-1;">
+            <label class="form-label">名前・ニックネーム <span style="color:var(--red);">*</span></label>
+            <input class="form-input" id="em-name" placeholder="例：コウタ">
+          </div>
+          <div style="grid-column:1/-1;">
+            <label class="form-label">アイコン画像URL</label>
+            <input class="form-input" id="em-icon" placeholder="https://...">
+          </div>
+          <div>
+            <label class="form-label">職業</label>
+            <input class="form-input" id="em-occupation" placeholder="フリーランス / 会社員 / 学生">
+          </div>
+          <div>
+            <label class="form-label">編集歴</label>
+            <input class="form-input" id="em-experience" placeholder="例：3年">
+          </div>
+          <div style="grid-column:1/-1;">
+            <label class="form-label">対応ジャンル</label>
+            <input class="form-input" id="em-genres" placeholder="例：Vlog・ビジネス・ゲーム">
+          </div>
+          <div style="grid-column:1/-1;">
+            <label class="form-label">得意スタイル</label>
+            <input class="form-input" id="em-style" placeholder="例：テロップ多め・BGM選定得意">
+          </div>
+          <div style="grid-column:1/-1;">
+            <label class="form-label">対応ソフト</label>
+            <input class="form-input" id="em-software" placeholder="例：Premiere Pro / CapCut / Final Cut Pro">
+          </div>
+          <div>
+            <label class="form-label">月の対応可能本数</label>
+            <input class="form-input" id="em-monthly" placeholder="例：〜20本/月">
+          </div>
+          <div>
+            <label class="form-label">週の対応可能本数</label>
+            <input class="form-input" id="em-weekly-cap" placeholder="例：〜5本/週">
+          </div>
+          <div>
+            <label class="form-label">1日の稼働時間</label>
+            <input class="form-input" id="em-daily-hours" placeholder="例：3〜4時間">
+          </div>
+          <div>
+            <label class="form-label">週の稼働時間</label>
+            <input class="form-input" id="em-weekly-hours" placeholder="例：15〜20時間">
+          </div>
+          <div style="grid-column:1/-1;">
+            <label class="form-label">稼働時間帯</label>
+            <input class="form-input" id="em-work-hours" placeholder="例：19:00〜23:00">
+          </div>
+          <div style="grid-column:1/-1;">
+            <label class="form-label">一言コメント</label>
+            <textarea class="form-input" id="em-comment" rows="3" placeholder="例：テロップのリズム感を大切にしています。" style="resize:vertical;"></textarea>
+          </div>
+          <div style="grid-column:1/-1;">
+            <label class="form-label">表示順（数字が小さいほど上）</label>
+            <input class="form-input" id="em-order" type="number" placeholder="99" value="99" style="width:100px;">
+          </div>
+        </div>
+
+        <!-- ポートフォリオURL -->
+        <div style="margin-top:20px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <label class="form-label" style="margin:0;">ポートフォリオURL</label>
+            <button onclick="addPortfolioUrlField()" style="padding:4px 12px;background:#1a2a3a;color:#60a5fa;border:1px solid #1d4ed8;border-radius:6px;font-size:0.75rem;cursor:pointer;font-family:inherit;">＋ URL追加</button>
+          </div>
+          <div id="em-portfolios"></div>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:24px;">
+          <button onclick="saveEditorForm()" style="flex:1;padding:12px;background:var(--gold);color:#fff;border:none;border-radius:8px;font-size:0.88rem;font-weight:700;cursor:pointer;font-family:inherit;">保存</button>
+          <button onclick="closeEditorModal()" style="padding:12px 20px;background:var(--bg3);color:var(--sub);border:1px solid var(--border);border-radius:8px;font-size:0.88rem;cursor:pointer;font-family:inherit;">キャンセル</button>
+        </div>
+      </div>
+    </div>
 
     <!-- ── 設定タブ ── -->
     <div id="tab-settings" style="display:none;max-width:480px;margin:0 auto;padding:32px 0;">
@@ -1440,7 +1538,7 @@ function exportCSV() {
 }
 
 // ── Tab switch ──
-const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','settings','content'];
+const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','content'];
 function switchAdminTab(tab) {
   ADMIN_TABS.forEach(t => {
     document.getElementById('tab-' + t).style.display = t === tab ? '' : 'none';
@@ -1449,6 +1547,7 @@ function switchAdminTab(tab) {
     btn.style.borderBottom = t === tab ? '2px solid var(--lt)' : '2px solid transparent';
   });
   if (tab === 'portfolio') loadPortfolioAdmin();
+  if (tab === 'editors')   loadEditors();
   if (tab === 'payments')  loadPayments();
   if (tab === 'contracts') loadContracts();
   if (tab === 'hearings')  loadHearings();
@@ -2683,6 +2782,145 @@ async function autoFillDriveTitle(url) {
     }
   } catch(e) {}
   if (fetching) fetching.style.display = 'none';
+}
+
+// ================================================================
+// 編集者管理
+// ================================================================
+let editors = [];
+
+async function loadEditors() {
+  document.getElementById('editors-list').innerHTML = '<div style="text-align:center;padding:40px;color:var(--sub);"><span class="spinner"></span></div>';
+  try {
+    const res  = await fetch(`${GAS_URL}?action=editors&key=${encodeURIComponent(getAdminPw())}`);
+    const json = await res.json();
+    editors = json.data || [];
+    renderEditors();
+  } catch(e) {
+    document.getElementById('editors-list').innerHTML = '<p style="color:var(--red);padding:20px;">読み込みに失敗しました。</p>';
+  }
+}
+
+function renderEditors() {
+  const el = document.getElementById('editors-list');
+  if (!editors.length) {
+    el.innerHTML = '<p style="color:var(--sub);padding:20px;">編集者がまだ登録されていません。</p>';
+    return;
+  }
+  el.innerHTML = editors.map(ed => `
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+        ${ed.icon ? `<img src="${esc(ed.icon)}" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--border);" onerror="this.style.display='none'">` : `<div style="width:44px;height:44px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:1.3rem;">👤</div>`}
+        <div>
+          <p style="font-weight:800;font-size:0.95rem;margin:0;">${esc(ed.name)}</p>
+          <p style="font-size:0.72rem;color:var(--sub);margin:0;">${esc(ed.occupation||'')}${ed.occupation && ed.experience ? ' / ' : ''}${esc(ed.experience||'')}</p>
+        </div>
+      </div>
+      <div style="font-size:0.75rem;color:var(--sub);line-height:2;margin-bottom:10px;">
+        ${ed.genres   ? `<div>🎬 ${esc(ed.genres)}</div>`         : ''}
+        ${ed.software ? `<div>🖥 ${esc(ed.software)}</div>`        : ''}
+        ${ed.work_hours ? `<div>🕐 ${esc(ed.work_hours)}</div>`   : ''}
+        ${ed.weekly_capacity ? `<div>📅 週 ${esc(ed.weekly_capacity)}</div>` : ''}
+      </div>
+      ${ed.portfolios && ed.portfolios.length ? `<div style="margin-bottom:10px;">${ed.portfolios.map((u,i)=>`<a href="${esc(u)}" target="_blank" rel="noopener" style="font-size:0.72rem;color:#60a5fa;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">🔗 ポートフォリオ${i+1}</a>`).join('')}</div>` : ''}
+      <div style="display:flex;gap:8px;margin-top:8px;">
+        <button class="action-btn btn-expand" style="flex:1;" onclick="openEditorModal(${ed.row})">✏️ 編集</button>
+        <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="deleteEditorRow(${ed.row},'${esc(ed.name).replace(/'/g,"\\'")}')">🗑</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openEditorModal(row) {
+  const ed = row ? editors.find(x => x.row === row) : null;
+  document.getElementById('editor-modal-title').textContent = ed ? '編集者を編集' : '編集者を追加';
+  document.getElementById('em-row').value          = ed ? ed.row : '';
+  document.getElementById('em-name').value         = ed ? ed.name : '';
+  document.getElementById('em-icon').value         = ed ? ed.icon : '';
+  document.getElementById('em-occupation').value   = ed ? ed.occupation : '';
+  document.getElementById('em-experience').value   = ed ? ed.experience : '';
+  document.getElementById('em-genres').value       = ed ? ed.genres : '';
+  document.getElementById('em-style').value        = ed ? ed.style : '';
+  document.getElementById('em-software').value     = ed ? ed.software : '';
+  document.getElementById('em-monthly').value      = ed ? ed.monthly_capacity : '';
+  document.getElementById('em-weekly-cap').value   = ed ? ed.weekly_capacity : '';
+  document.getElementById('em-daily-hours').value  = ed ? ed.daily_hours : '';
+  document.getElementById('em-weekly-hours').value = ed ? ed.weekly_hours : '';
+  document.getElementById('em-work-hours').value   = ed ? ed.work_hours : '';
+  document.getElementById('em-comment').value      = ed ? ed.comment : '';
+  document.getElementById('em-order').value        = ed ? ed.order : 99;
+  // ポートフォリオURL
+  const pf = document.getElementById('em-portfolios');
+  pf.innerHTML = '';
+  const urls = (ed && ed.portfolios) ? ed.portfolios : [''];
+  urls.forEach(u => addPortfolioUrlField(u));
+  document.getElementById('editor-modal').style.display = '';
+}
+
+function closeEditorModal() {
+  document.getElementById('editor-modal').style.display = 'none';
+}
+
+function addPortfolioUrlField(val) {
+  const wrap = document.getElementById('em-portfolios');
+  const div  = document.createElement('div');
+  div.style.cssText = 'display:flex;gap:6px;margin-bottom:8px;';
+  div.innerHTML = `
+    <input class="form-input" placeholder="https://..." value="${esc(val||'')}" style="flex:1;">
+    <button onclick="this.parentElement.remove()" style="padding:6px 10px;background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;border-radius:6px;cursor:pointer;font-family:inherit;">✕</button>
+  `;
+  wrap.appendChild(div);
+}
+
+async function saveEditorForm() {
+  const name = document.getElementById('em-name').value.trim();
+  if (!name) { showToast('⚠ 名前は必須です'); return; }
+  const portfolios = Array.from(document.querySelectorAll('#em-portfolios input'))
+    .map(i => i.value.trim()).filter(Boolean);
+  const payload = {
+    action:           'editor_save',
+    key:              getAdminPw(),
+    row:              document.getElementById('em-row').value || '',
+    name,
+    icon:             document.getElementById('em-icon').value.trim(),
+    occupation:       document.getElementById('em-occupation').value.trim(),
+    experience:       document.getElementById('em-experience').value.trim(),
+    genres:           document.getElementById('em-genres').value.trim(),
+    style:            document.getElementById('em-style').value.trim(),
+    software:         document.getElementById('em-software').value.trim(),
+    monthly_capacity: document.getElementById('em-monthly').value.trim(),
+    weekly_capacity:  document.getElementById('em-weekly-cap').value.trim(),
+    daily_hours:      document.getElementById('em-daily-hours').value.trim(),
+    weekly_hours:     document.getElementById('em-weekly-hours').value.trim(),
+    work_hours:       document.getElementById('em-work-hours').value.trim(),
+    comment:          document.getElementById('em-comment').value.trim(),
+    order:            parseInt(document.getElementById('em-order').value) || 99,
+    portfolios
+  };
+  try {
+    const res = await fetch(GAS_URL, { method:'POST', body: JSON.stringify(payload) });
+    const json = await res.json();
+    if (json.success) {
+      showToast('✅ 編集者を保存しました');
+      closeEditorModal();
+      await loadEditors();
+    } else {
+      showToast('⚠ 保存に失敗しました: ' + (json.error||''));
+    }
+  } catch(e) {
+    showToast('⚠ 通信エラーが発生しました');
+  }
+}
+
+async function deleteEditorRow(row, name) {
+  if (!confirm(`「${name}」を削除しますか？`)) return;
+  try {
+    await fetch(`${GAS_URL}?action=editor_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    showToast('🗑 削除しました');
+    await loadEditors();
+  } catch(e) {
+    showToast('⚠ 削除に失敗しました');
+  }
 }
 
 async function loadPortfolioAdmin() {

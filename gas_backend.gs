@@ -126,6 +126,12 @@ function doPost(e) {
       return updatePortfolio(data);
     }
 
+    // 編集者 保存（追加・更新）
+    if (data.action === 'editor_save') {
+      if (data.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+      return saveEditor(data);
+    }
+
     // 振込完了通知
     if (data.action === 'payment_notify') {
       return notifyPayment(data);
@@ -235,6 +241,11 @@ function doGet(e) {
     return getServiceStatus();
   }
 
+  // 編集者一覧（LP側からも呼ばれるため認証不要）
+  if (action === 'editors') {
+    return listEditors();
+  }
+
   // Google DriveファイルのURL→名前取得（管理者キー必須）
   if (action === 'drive_file_info') {
     if (key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
@@ -297,6 +308,11 @@ function doGet(e) {
     var sheetName = e.parameter.sheet || 'inquiries';
     var value     = e.parameter.value || '';
     return setTrial(sheetName, row, value);
+  }
+
+  if (action === 'editor_delete') {
+    var row = parseInt(e.parameter.row, 10);
+    return deleteEditor(row);
   }
 
   if (action === 'create_trial_folder') {
@@ -606,6 +622,100 @@ function updatePortfolio(data) {
 function deletePortfolio(row) {
   if (!row) return jsonResponse({ error: 'invalid row' });
   var sheet = getOrCreatePortfolioSheet();
+  sheet.deleteRow(row);
+  return jsonResponse({ success: true });
+}
+
+// ================================================================
+// 編集者管理
+// editors シート列構成:
+//  1:登録日時 2:名前 3:アイコンURL 4:職業 5:編集歴
+//  6:ジャンル 7:得意スタイル 8:対応ソフト
+//  9:月の対応本数 10:週の対応本数 11:1日稼働時間 12:週稼働時間
+//  13:稼働時間帯 14:コメント 15:ポートフォリオJSON 16:表示順
+// ================================================================
+function getOrCreateEditorsSheet() {
+  var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName('editors');
+  if (!sheet) {
+    sheet = ss.insertSheet('editors');
+    sheet.appendRow(['登録日時','名前','アイコンURL','職業','編集歴',
+      'ジャンル','得意スタイル','対応ソフト',
+      '月の対応本数','週の対応本数','1日稼働時間','週稼働時間',
+      '稼働時間帯','コメント','ポートフォリオJSON','表示順']);
+    sheet.setFrozenRows(1);
+    sheet.getRange(1,1,1,16).setFontWeight('bold');
+  }
+  return sheet;
+}
+
+function listEditors() {
+  var sheet  = getOrCreateEditorsSheet();
+  var values = sheet.getDataRange().getValues();
+  var data   = [];
+  for (var i = 1; i < values.length; i++) {
+    var r = values[i];
+    if (!r[1]) continue; // 名前空はスキップ
+    var portfolios = [];
+    try { portfolios = JSON.parse(r[14]); } catch(e) {}
+    data.push({
+      row:              i + 1,
+      date:             r[0]  || '',
+      name:             r[1]  || '',
+      icon:             r[2]  || '',
+      occupation:       r[3]  || '',
+      experience:       r[4]  || '',
+      genres:           r[5]  || '',
+      style:            r[6]  || '',
+      software:         r[7]  || '',
+      monthly_capacity: r[8]  || '',
+      weekly_capacity:  r[9]  || '',
+      daily_hours:      r[10] || '',
+      weekly_hours:     r[11] || '',
+      work_hours:       r[12] || '',
+      comment:          r[13] || '',
+      portfolios:       portfolios,
+      order:            r[15] || 99
+    });
+  }
+  data.sort(function(a,b){ return (a.order - b.order) || (a.date < b.date ? 1 : -1); });
+  return jsonResponse({ data: data });
+}
+
+function saveEditor(data) {
+  var sheet = getOrCreateEditorsSheet();
+  var now   = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
+  var portfoliosJson = JSON.stringify(Array.isArray(data.portfolios) ? data.portfolios : []);
+  var row   = parseInt(data.row, 10);
+  var vals  = [
+    now,
+    data.name             || '',
+    data.icon             || '',
+    data.occupation       || '',
+    data.experience       || '',
+    data.genres           || '',
+    data.style            || '',
+    data.software         || '',
+    data.monthly_capacity || '',
+    data.weekly_capacity  || '',
+    data.daily_hours      || '',
+    data.weekly_hours     || '',
+    data.work_hours       || '',
+    data.comment          || '',
+    portfoliosJson,
+    data.order            || 99
+  ];
+  if (row && row > 1) {
+    sheet.getRange(row, 1, 1, 16).setValues([vals]);
+  } else {
+    sheet.appendRow(vals);
+  }
+  return jsonResponse({ success: true });
+}
+
+function deleteEditor(row) {
+  if (!row) return jsonResponse({ error: 'invalid row' });
+  var sheet = getOrCreateEditorsSheet();
   sheet.deleteRow(row);
   return jsonResponse({ success: true });
 }

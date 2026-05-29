@@ -1353,6 +1353,11 @@ footer {
 
         <!-- 編集者派遣 -->
         <p style="font-size:0.9rem;font-weight:700;margin-top:48px;margin-bottom:8px;color:var(--sub);">── 編集者派遣</p>
+        <!-- 編集者カード（GASから動的取得） -->
+        <div id="dispatch-editors" style="display:none;margin-bottom:28px;">
+          <p style="font-size:0.8rem;font-weight:700;color:var(--sub);margin-bottom:12px;">所属編集者</p>
+          <div id="dispatch-editors-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;"></div>
+        </div>
         <p style="font-size:0.85rem;color:var(--sub);margin-bottom:20px;line-height:1.6;">即戦力の動画編集者をチームに追加。採用・育成コストをゼロにしながら、すぐに生産力を上げられます。</p>
         <div class="pack-card fade-up" style="margin-bottom:32px;">
           <p class="pack-name" style="margin-bottom:4px;">編集者派遣プラン</p>
@@ -2425,7 +2430,48 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('contractOverlay').addEventListener('click', function(ev) {
     if (ev.target === this) closeContract();
   });
+  loadDispatchEditors();
 });
+
+// ── 編集者派遣：所属編集者カードをGASから取得して表示 ─────────────
+async function loadDispatchEditors() {
+  try {
+    const res  = await fetch(`${GAS_URL}?action=editors`);
+    const json = await res.json();
+    const eds  = json.data || [];
+    if (!eds.length) return; // 0件なら非表示のまま
+    const grid = document.getElementById('dispatch-editors-grid');
+    grid.innerHTML = eds.map(ed => `
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.06);">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          ${ed.icon
+            ? `<img src="${ed.icon}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid #e2e8f0;" onerror="this.style.display='none'">`
+            : `<div style="width:40px;height:40px;border-radius:50%;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">👤</div>`
+          }
+          <div>
+            <p style="font-weight:800;font-size:0.9rem;color:#1e293b;margin:0;">${ed.name}</p>
+            <p style="font-size:0.7rem;color:#64748b;margin:0;">${[ed.occupation,ed.experience].filter(Boolean).join(' / ')}</p>
+          </div>
+        </div>
+        <div style="font-size:0.72rem;color:#475569;line-height:1.9;">
+          ${ed.genres   ? `<div>🎬 ${ed.genres}</div>`   : ''}
+          ${ed.software ? `<div>🖥 ${ed.software}</div>` : ''}
+          ${ed.work_hours ? `<div>🕐 ${ed.work_hours}</div>` : ''}
+          ${ed.weekly_capacity ? `<div>📅 週 ${ed.weekly_capacity}</div>` : ''}
+          ${ed.comment  ? `<div style="margin-top:6px;font-style:italic;color:#64748b;">"${ed.comment}"</div>` : ''}
+        </div>
+        ${ed.portfolios && ed.portfolios.length ? `
+          <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;">
+            ${ed.portfolios.map((u,i) => `<a href="${u}" target="_blank" rel="noopener" style="font-size:0.7rem;padding:3px 10px;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:20px;color:#2563eb;text-decoration:none;">🔗 作品${i+1}</a>`).join('')}
+          </div>
+        ` : ''}
+      </div>
+    `).join('');
+    document.getElementById('dispatch-editors').style.display = '';
+  } catch(e) {
+    // エラー時は非表示のまま（LP表示に影響しない）
+  }
+}
 // ────────────────────────────────────────────────────────
 
 document.getElementById('contact-form').addEventListener('submit', async (e) => {
