@@ -1472,8 +1472,24 @@ footer {
       <h3 style="font-size:1rem;font-weight:800;color:#1e293b;">📸 無料ポートフォリオ制作 申込</h3>
       <button onclick="closePFModal()" style="background:none;border:none;font-size:1.3rem;cursor:pointer;color:#94a3b8;">✕</button>
     </div>
-    <div style="background:#FEF3C7;border:1px solid #D97706;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:0.78rem;color:#92400E;">
+    <!-- ジャンル表示（ジャンルカードから開いた場合）-->
+    <div id="pf-genre-fixed" style="background:#FEF3C7;border:1px solid #D97706;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:0.78rem;color:#92400E;">
       ジャンル：<strong id="pf-modal-genre"></strong>
+    </div>
+    <!-- ジャンル選択（直接申込の場合）-->
+    <div id="pf-genre-select-wrap" style="display:none;margin-bottom:16px;">
+      <label style="display:block;font-size:0.8rem;font-weight:700;color:#374151;margin-bottom:6px;">ジャンル <span style="color:#DC2626;">*</span></label>
+      <select id="pf-genre-select" style="width:100%;padding:10px 12px;border:1.5px solid #D97706;border-radius:8px;font-size:0.88rem;font-family:inherit;outline:none;background:#FEF3C7;color:#92400E;font-weight:700;">
+        <option value="">— 選択してください —</option>
+        <option>TikTok・リール系</option>
+        <option>YouTube（Vlog・解説）</option>
+        <option>YouTube（ゲーム・エンタメ）</option>
+        <option>企業PR・商品紹介</option>
+        <option>ウェディング・イベント</option>
+        <option>広告系（バズ動画）</option>
+        <option>切り抜き系</option>
+        <option>その他・未定</option>
+      </select>
     </div>
     <div style="margin-bottom:14px;">
       <label style="display:block;font-size:0.8rem;font-weight:700;color:#374151;margin-bottom:5px;">お名前 <span style="color:#DC2626;">*</span></label>
@@ -2843,12 +2859,25 @@ function openPFDirect() {
     alert('現在、受付は満席です。次回募集をお待ちください。');
     return;
   }
-  openPFModal('未定（申し込み後に相談）');
+  // 直接申込はジャンル選択UIを表示
+  openPFModal(null);
 }
 
 function openPFModal(genre) {
   _pfSelectedGenre = genre;
-  document.getElementById('pf-modal-genre').textContent = genre;
+  const fixedEl  = document.getElementById('pf-genre-fixed');
+  const selectEl = document.getElementById('pf-genre-select-wrap');
+  if (genre) {
+    // ジャンルカードから開いた場合 → 固定表示
+    document.getElementById('pf-modal-genre').textContent = genre;
+    fixedEl.style.display  = '';
+    selectEl.style.display = 'none';
+  } else {
+    // 直接申込 → セレクト表示
+    document.getElementById('pf-genre-select').value = '';
+    fixedEl.style.display  = 'none';
+    selectEl.style.display = '';
+  }
   document.getElementById('pf-name').value = '';
   document.getElementById('pf-email').value = '';
   document.getElementById('pf-message').value = '';
@@ -2865,6 +2894,12 @@ async function submitPFForm() {
   const name  = document.getElementById('pf-name').value.trim();
   const email = document.getElementById('pf-email').value.trim();
   if (!name || !email) { alert('お名前とメールアドレスを入力してください。'); return; }
+  // ジャンル解決：カード選択 or セレクト
+  if (!_pfSelectedGenre) {
+    const sel = document.getElementById('pf-genre-select').value;
+    if (!sel) { alert('ジャンルを選択してください。'); return; }
+    _pfSelectedGenre = sel;
+  }
   const btn = document.getElementById('pf-submit-btn');
   btn.disabled = true;
   btn.textContent = '送信中...';
