@@ -149,6 +149,11 @@ function doPost(e) {
       return applyEditor(data);
     }
 
+    // パートナー登録フォーム（認証不要）
+    if (data.action === 'partner_apply') {
+      return applyPartner(data);
+    }
+
     // 振込完了通知
     if (data.action === 'payment_notify') {
       return notifyPayment(data);
@@ -795,6 +800,79 @@ function deleteHearing(row) {
   var sheet = ss.getSheetByName('hearings');
   if (!sheet) return jsonResponse({ error: 'sheet not found' });
   sheet.deleteRow(row);
+  return jsonResponse({ success: true });
+}
+
+// ── パートナー登録 ──────────────────────────────────────────────
+// partner_applications シート:
+// 受信日時|名前|メール|種別|URL|フォロワー/PV|紹介方法|希望報酬|希望コード名|X|メッセージ|ステータス
+function applyPartner(data) {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName('partner_applications');
+  if (!sheet) {
+    sheet = ss.insertSheet('partner_applications');
+    sheet.appendRow([
+      '受信日時','名前','メール','種別','URL',
+      'フォロワー・PV','紹介方法','希望報酬','希望コード名','X','メッセージ','ステータス'
+    ]);
+  }
+  var now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
+  sheet.appendRow([
+    now,
+    data.name         || '',
+    data.email        || '',
+    data.partner_type || '',
+    data.url          || '',
+    data.audience     || '',
+    data.method       || '',
+    data.reward       || '',
+    data.code_wish    || '',
+    data.twitter      || '',
+    data.message      || '',
+    '未対応'
+  ]);
+
+  // Chatwork通知
+  if (CHATWORK_ROOM_ID) {
+    var msg = '[info][title]🤝 新規 パートナー登録申請[/title]' +
+      '受信日時: ' + now + '\n' +
+      '名前: ' + (data.name || '') + '\n' +
+      'メール: ' + (data.email || '') + '\n' +
+      '種別: ' + (data.partner_type || '') + '\n' +
+      'URL: ' + (data.url || '') + '\n' +
+      'フォロワー・PV: ' + (data.audience || '') + '\n' +
+      '紹介方法: ' + (data.method || '') + '\n' +
+      '希望報酬: ' + (data.reward || 'なし') + '\n' +
+      '希望コード名: ' + (data.code_wish || 'なし') + '\n' +
+      'X: ' + (data.twitter || 'なし') + '\n\n' +
+      (data.message || '') + '[/info]';
+    try {
+      UrlFetchApp.fetch('https://api.chatwork.com/v2/rooms/' + CHATWORK_ROOM_ID + '/messages', {
+        method: 'POST',
+        headers: { 'X-ChatWorkToken': CHATWORK_TOKEN },
+        payload: 'body=' + encodeURIComponent(msg)
+      });
+    } catch(e) {}
+  }
+
+  // 申請者への自動返信
+  if (data.email && data.email.indexOf('@') !== -1) {
+    sendAutoReply(data.email, data.name,
+      '【mono.create】パートナー登録のご申請を受け付けました',
+      [
+        'この度はmono.createパートナープログラムへのご申請ありがとうございます。',
+        '内容を確認のうえ、2〜3営業日以内に専用コードの発行をご連絡いたします。',
+        '',
+        '▼ ご申請内容',
+        '種別: ' + (data.partner_type || ''),
+        'URL: ' + (data.url || ''),
+        '希望コード名: ' + (data.code_wish || 'なし'),
+        '',
+        'ご不明な点がございましたら、このメールに返信してください。',
+      ]
+    );
+  }
+
   return jsonResponse({ success: true });
 }
 

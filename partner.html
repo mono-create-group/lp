@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index, follow">
+<title>アフィリエイト・パートナー登録 | mono.create</title>
+<meta name="description" content="mono.createのアフィリエイト・パートナープログラム。動画編集代行を紹介するだけで成約報酬＋紹介コード（最大15%OFF）を提供できます。SEO・比較サイト・SNS・映像制作者 歓迎。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Inter:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Noto Sans JP', sans-serif; background: #0B1120; color: #F1F5F9; line-height: 1.8; -webkit-font-smoothing: antialiased; }
+a { text-decoration: none; color: inherit; }
+.page { max-width: 520px; margin: 0 auto; padding: 28px 20px 80px; }
+.back-link { display:inline-flex;align-items:center;gap:6px;font-size:0.75rem;color:#475569;margin-bottom:20px; }
+.back-link:hover { color:#94A3B8; }
+
+/* ── Hero ── */
+.hero {
+  text-align: center;
+  padding: 40px 20px 32px;
+  background: linear-gradient(145deg,#1A1000,#2A1800);
+  border: 2px solid #92400E;
+  border-radius: 20px; margin-bottom: 20px;
+}
+.hero-badge {
+  display:inline-block; background:linear-gradient(135deg,#B45309,#D97706);
+  color:#fff; font-size:0.68rem; font-weight:800;
+  padding:3px 14px; border-radius:20px; letter-spacing:0.1em; margin-bottom:14px;
+}
+.hero-title { font-size:1.6rem; font-weight:900; color:#FDE68A; margin-bottom:10px; line-height:1.3; }
+.hero-desc { font-size:0.82rem; color:#FCD34D; line-height:1.9; }
+
+/* ── Benefit pills ── */
+.benefit-row { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:18px; }
+.benefit-pill {
+  display:inline-flex; align-items:center; gap:5px;
+  background:rgba(217,119,6,0.15); border:1px solid rgba(217,119,6,0.4);
+  color:#FCD34D; font-size:0.72rem; font-weight:700;
+  padding:5px 12px; border-radius:20px;
+}
+
+/* ── Card ── */
+.card { background:#131F35; border:1px solid #1E2D4A; border-radius:16px; padding:22px 20px; margin-bottom:16px; }
+.card-title { font-size:0.68rem; font-weight:800; letter-spacing:0.12em; color:#D97706; margin-bottom:14px; }
+
+/* ── Partner types ── */
+.type-grid { display:grid; grid-template-columns:1fr; gap:10px; }
+.type-item {
+  display:flex; align-items:flex-start; gap:14px;
+  padding:14px 16px;
+  background:#1A2A3A; border:1px solid #243347; border-radius:12px;
+}
+.type-icon { font-size:1.5rem; flex-shrink:0; }
+.type-label { font-size:0.85rem; font-weight:800; color:#F1F5F9; margin-bottom:2px; }
+.type-desc { font-size:0.75rem; color:#64748B; line-height:1.6; }
+
+/* ── How it works ── */
+.step-list { display:flex; flex-direction:column; gap:12px; }
+.step-item { display:flex; align-items:flex-start; gap:12px; }
+.step-num {
+  width:28px; height:28px; flex-shrink:0;
+  background:linear-gradient(135deg,#B45309,#D97706);
+  border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-size:0.75rem; font-weight:900; color:#fff;
+}
+.step-text { font-size:0.82rem; color:#94A3B8; line-height:1.7; }
+.step-text strong { color:#FCD34D; }
+
+/* ── Form ── */
+.form-section {
+  background:#131F35;
+  border:2px solid #92400E;
+  border-radius:16px; padding:24px 20px; margin-bottom:16px;
+}
+.form-title { font-size:1rem; font-weight:900; color:#FDE68A; margin-bottom:4px; }
+.form-subtitle { font-size:0.75rem; color:#D97706; margin-bottom:20px; }
+.form-row { margin-bottom:16px; }
+.form-row label { display:block; font-size:0.78rem; font-weight:700; color:#94A3B8; margin-bottom:6px; }
+.req { color:#F87171; }
+.form-control {
+  width:100%; padding:10px 14px;
+  background:#0F1C2E; border:1px solid #243347; border-radius:8px;
+  color:#F1F5F9; font-family:inherit; font-size:0.85rem;
+  transition:border-color 0.2s;
+}
+.form-control:focus { outline:none; border-color:#D97706; }
+.form-control::placeholder { color:#334155; }
+textarea.form-control { min-height:80px; resize:vertical; }
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+@media(max-width:480px){ .form-grid { grid-template-columns:1fr; } }
+
+/* ラジオ */
+.radio-group { display:flex; flex-direction:column; gap:8px; margin-top:4px; }
+.radio-item { display:flex; align-items:center; gap:8px; }
+.radio-item input[type=radio],
+.radio-item input[type=checkbox] { width:16px; height:16px; accent-color:#D97706; }
+.radio-item label { font-size:0.82rem; color:#94A3B8; cursor:pointer; }
+
+.form-submit {
+  display:block; width:100%;
+  background:linear-gradient(135deg,#B45309,#D97706);
+  color:#fff; border:none; border-radius:12px;
+  padding:14px 20px; font-size:0.9rem; font-weight:800;
+  cursor:pointer; font-family:inherit;
+  box-shadow:0 4px 20px rgba(180,83,9,0.4);
+  transition:opacity 0.2s,transform 0.15s;
+}
+.form-submit:hover { opacity:0.9; transform:translateY(-2px); }
+.form-submit:disabled { opacity:0.5; transform:none; cursor:not-allowed; }
+.form-note { font-size:0.72rem; color:#475569; text-align:center; margin-top:10px; }
+
+/* Success */
+.form-success { display:none; text-align:center; padding:32px 20px; }
+.form-success.visible { display:block; }
+.form-success-icon { font-size:3rem; margin-bottom:12px; }
+
+/* Footer */
+.footer { text-align:center; margin-top:24px; font-size:0.68rem; color:#334155; }
+.footer a { color:#D97706; }
+</style>
+</head>
+<body>
+<div class="page">
+  <a href="index.html" class="back-link">← LPトップへ戻る</a>
+
+  <!-- Hero -->
+  <div class="hero">
+    <span class="hero-badge">AFFILIATE &amp; PARTNER</span>
+    <h1 class="hero-title">🤝 アフィリエイト・<br>パートナープログラム</h1>
+    <p class="hero-desc">
+      mono.createを紹介してくれるパートナーを募集中。<br>
+      紹介コードで紹介先に割引、成約時の報酬もご相談できます。
+    </p>
+    <div class="benefit-row">
+      <span class="benefit-pill">🎁 紹介先に+5%〜最大15%OFF</span>
+      <span class="benefit-pill">💰 成約報酬 応相談</span>
+      <span class="benefit-pill">🔑 専用コード発行</span>
+    </div>
+  </div>
+
+  <!-- Partner types -->
+  <div class="card">
+    <p class="card-title">PARTNER TYPES</p>
+    <div class="type-grid">
+      <div class="type-item">
+        <span class="type-icon">🔍</span>
+        <div>
+          <p class="type-label">SEO・比較サイト</p>
+          <p class="type-desc">「動画編集代行 比較」「動画編集代行 おすすめ」などの記事から流入。専用コードを発行し成果を計測。</p>
+        </div>
+      </div>
+      <div class="type-item">
+        <span class="type-icon">📱</span>
+        <div>
+          <p class="type-label">SNS・インフルエンサー</p>
+          <p class="type-desc">X・Instagram・TikTokで紹介。フォロワーへの割引コードをシェアするだけで成果が発生。</p>
+        </div>
+      </div>
+      <div class="type-item">
+        <span class="type-icon">🎬</span>
+        <div>
+          <p class="type-label">映像制作・クリエイター</p>
+          <p class="type-desc">同業者・クライアントへの紹介。外注先として推薦いただくケースも歓迎。継続的な関係を構築できます。</p>
+        </div>
+      </div>
+      <div class="type-item">
+        <span class="type-icon">🏢</span>
+        <div>
+          <p class="type-label">企業・代理店</p>
+          <p class="type-desc">制作会社・マーケティング代理店からのご紹介。クライアントワークのパートナーとして継続的に協力。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- How it works -->
+  <div class="card">
+    <p class="card-title">HOW IT WORKS</p>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-text">このフォームからパートナー登録を申請する</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>2〜3営業日以内にメールでご連絡</strong>。専用の紹介コードを発行します</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-text">コードをサイト・SNS・DMで紹介先に共有。紹介先は問い合わせ時にコードを入力</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-text"><strong>成約したら報酬を発生</strong>（条件は別途ご相談）。月締めでご精算</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Registration Form -->
+  <div class="form-section" id="partner-form-wrap">
+    <p class="form-title">📝 パートナー登録フォーム</p>
+    <p class="form-subtitle">内容確認後、専用コードを発行してメールでご連絡します。</p>
+
+    <form id="partner-form">
+
+      <div class="form-grid" style="margin-bottom:16px;">
+        <div class="form-row" style="margin-bottom:0;">
+          <label>お名前 / 屋号<span class="req">*</span></label>
+          <input type="text" class="form-control" name="name" placeholder="山田 太郎" required>
+        </div>
+        <div class="form-row" style="margin-bottom:0;">
+          <label>メールアドレス<span class="req">*</span></label>
+          <input type="email" class="form-control" name="email" placeholder="example@mail.com" required>
+        </div>
+      </div>
+
+      <!-- パートナー種別 -->
+      <div class="form-row">
+        <label>パートナーの種別<span class="req">*</span></label>
+        <div class="radio-group">
+          <div class="radio-item"><input type="radio" id="pt1" name="partner_type" value="SEO・比較サイト" required><label for="pt1">🔍 SEO・比較サイト</label></div>
+          <div class="radio-item"><input type="radio" id="pt2" name="partner_type" value="SNS・インフルエンサー"><label for="pt2">📱 SNS・インフルエンサー</label></div>
+          <div class="radio-item"><input type="radio" id="pt3" name="partner_type" value="映像制作・クリエイター"><label for="pt3">🎬 映像制作・クリエイター</label></div>
+          <div class="radio-item"><input type="radio" id="pt4" name="partner_type" value="企業・代理店"><label for="pt4">🏢 企業・代理店</label></div>
+          <div class="radio-item"><input type="radio" id="pt5" name="partner_type" value="その他"><label for="pt5">その他</label></div>
+        </div>
+      </div>
+
+      <!-- サイト・SNS URL -->
+      <div class="form-row">
+        <label>サイト・SNS URL<span class="req">*</span></label>
+        <input type="url" class="form-control" name="url" placeholder="https://..." required>
+        <p style="font-size:0.72rem;color:#475569;margin-top:4px;">※ メインで使うメディアのURLを1つ入力してください</p>
+      </div>
+
+      <!-- フォロワー・月間PV -->
+      <div class="form-row">
+        <label>フォロワー数・月間PV（おおよそで構いません）</label>
+        <input type="text" class="form-control" name="audience" placeholder="例：フォロワー3,000人 / 月間5,000PV">
+      </div>
+
+      <!-- 紹介方法 -->
+      <div class="form-row">
+        <label>紹介・掲載方法のイメージ<span class="req">*</span></label>
+        <textarea class="form-control" name="method" placeholder="例：比較記事に掲載、Xで月2〜3回投稿、クライアントへ外注先として紹介など" required></textarea>
+      </div>
+
+      <!-- 希望する報酬・条件 -->
+      <div class="form-row">
+        <label>希望する報酬・条件（任意）</label>
+        <input type="text" class="form-control" name="reward" placeholder="例：成約金額の10%、月5,000円固定 など">
+      </div>
+
+      <!-- 紹介コード希望名 -->
+      <div class="form-row">
+        <label>希望する紹介コード名（任意）</label>
+        <input type="text" class="form-control" name="code_wish" placeholder="例：自分の名前・サイト名など（英数字推奨）">
+      </div>
+
+      <!-- X/SNSアカウント -->
+      <div class="form-row">
+        <label>X（Twitter）アカウント（任意）</label>
+        <input type="text" class="form-control" name="twitter" placeholder="@username">
+      </div>
+
+      <!-- メッセージ -->
+      <div class="form-row">
+        <label>その他・メッセージ（任意）</label>
+        <textarea class="form-control" name="message" placeholder="ご質問・ご要望などご自由にご記入ください。"></textarea>
+      </div>
+
+      <button type="submit" class="form-submit" id="submit-btn">パートナー登録を申請する →</button>
+      <p class="form-note">送信後、2〜3営業日以内にメールでご連絡します。</p>
+    </form>
+
+    <div class="form-success" id="form-success">
+      <div class="form-success-icon">🎉</div>
+      <h3 style="font-size:1.1rem;font-weight:900;color:#FDE68A;margin-bottom:8px;">ご申請ありがとうございます！</h3>
+      <p style="font-size:0.82rem;color:#FCD34D;line-height:1.8;">
+        内容を確認のうえ、2〜3営業日以内に<br>専用コードの発行をメールでご連絡します。
+      </p>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="card">
+    <p class="card-title">FAQ</p>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div>
+        <p style="font-size:0.82rem;font-weight:700;color:#FCD34D;margin-bottom:4px;">Q. フォロワー数・PVの下限はありますか？</p>
+        <p style="font-size:0.78rem;color:#94A3B8;line-height:1.7;">ありません。規模より紹介先のマッチング度を重視しています。小規模でも歓迎です。</p>
+      </div>
+      <div>
+        <p style="font-size:0.82rem;font-weight:700;color:#FCD34D;margin-bottom:4px;">Q. 紹介コードで何%割引できますか？</p>
+        <p style="font-size:0.78rem;color:#94A3B8;line-height:1.7;">通常価格プランに+5%引き。すでに10%割引中のプランはさらに+5%（合計最大15%）になります。</p>
+      </div>
+      <div>
+        <p style="font-size:0.82rem;font-weight:700;color:#FCD34D;margin-bottom:4px;">Q. 成約報酬の相場はどのくらいですか？</p>
+        <p style="font-size:0.78rem;color:#94A3B8;line-height:1.7;">紹介の種別・規模によって異なります。ご登録後にご相談のうえ個別に設定します。</p>
+      </div>
+      <div>
+        <p style="font-size:0.82rem;font-weight:700;color:#FCD34D;margin-bottom:4px;">Q. 審査はありますか？</p>
+        <p style="font-size:0.78rem;color:#94A3B8;line-height:1.7;">内容を確認後、スパムや虚偽の場合はお断りする場合があります。通常は2〜3営業日以内に承認・コード発行します。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>© 2026 mono.create / 中村航汰</p>
+    <p style="margin-top:4px;"><a href="index.html">← LPトップへ戻る</a></p>
+  </div>
+</div>
+
+<script>
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
+
+document.getElementById('partner-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true; btn.textContent = '送信中...';
+
+  const form = e.target;
+  const partner_type = form.querySelector('[name="partner_type"]:checked')?.value || '';
+
+  const data = {
+    action:       'partner_apply',
+    name:         form.name.value,
+    email:        form.email.value,
+    partner_type: partner_type,
+    url:          form.url.value,
+    audience:     form.audience.value,
+    method:       form.method.value,
+    reward:       form.reward.value,
+    code_wish:    form.code_wish.value,
+    twitter:      form.twitter.value,
+    message:      form.message.value,
+  };
+
+  try {
+    await fetch(GAS_URL, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    document.getElementById('partner-form').style.display = 'none';
+    document.getElementById('form-success').classList.add('visible');
+  } catch(err) {
+    btn.disabled = false; btn.textContent = 'パートナー登録を申請する →';
+    alert('送信に失敗しました。しばらくしてから再度お試しください。');
+  }
+});
+</script>
+</body>
+</html>
