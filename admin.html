@@ -1039,10 +1039,12 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
             <tr>
               <th>受信日時</th>
               <th>名前</th>
+              <th>年齢・性別</th>
               <th>メール</th>
-              <th>使用ソフト</th>
-              <th>得意ジャンル</th>
-              <th>月本数</th>
+              <th>希望案件</th>
+              <th>対応本数</th>
+              <th>得意分野</th>
+              <th>長期</th>
               <th>PF</th>
               <th>派遣</th>
               <th>ステータス</th>
@@ -1050,7 +1052,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
             </tr>
           </thead>
           <tbody id="ea-body">
-            <tr><td colspan="10" class="table-empty"><span class="spinner"></span></td></tr>
+            <tr><td colspan="12" class="table-empty"><span class="spinner"></span></td></tr>
           </tbody>
         </table>
       </div>
@@ -3266,7 +3268,7 @@ function renderEditorApps() {
   const dpFilter = document.getElementById('ea-dispatch-filter').value;
 
   const filtered = editorApps.filter(a => {
-    const matchQ = !q || [a.name, a.email, a.software, a.genres, a.portfolio].some(v => v && v.toLowerCase().includes(q));
+    const matchQ = !q || [a.name, a.email, a.case_type, a.specialty, a.portfolio].some(v => v && v.toLowerCase().includes(q));
     const matchS = !stFilter || a.status === stFilter;
     const matchD = !dpFilter ||
       (dpFilter === '希望あり' && a.dispatch === '希望する') ||
@@ -3276,7 +3278,7 @@ function renderEditorApps() {
 
   const tbody = document.getElementById('ea-body');
   if (!filtered.length) {
-    tbody.innerHTML = '<tr><td colspan="10" class="table-empty">該当する応募はありません。</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="12" class="table-empty">該当する応募はありません。</td></tr>';
     return;
   }
 
@@ -3284,23 +3286,33 @@ function renderEditorApps() {
     '未対応': 'var(--red)', '採用検討中': 'var(--yellow)',
     '採用決定': 'var(--green)', '見送り': 'var(--sub)'
   };
+  const caseColor = { 'ショート': '#60a5fa', '長尺': '#4ade80', 'どちらも': '#c084fc' };
 
   tbody.innerHTML = filtered.map(a => {
     const sc = statusColor[a.status] || 'var(--sub)';
+    const cc = caseColor[a.case_type] || 'var(--sub)';
     const dispatchBadge = a.dispatch === '希望する'
-      ? '<span style="background:rgba(168,85,247,0.12);color:#c084fc;border:1px solid rgba(168,85,247,0.3);padding:2px 7px;border-radius:10px;font-size:0.7rem;font-weight:700;">派遣希望</span>'
+      ? '<span style="background:rgba(168,85,247,0.12);color:#c084fc;border:1px solid rgba(168,85,247,0.3);padding:2px 7px;border-radius:10px;font-size:0.7rem;font-weight:700;">希望</span>'
       : '<span style="color:var(--sub);font-size:0.75rem;">—</span>';
     const pfLink = a.portfolio
-      ? `<a href="${esc(a.portfolio)}" target="_blank" rel="noopener" style="color:#60a5fa;font-size:0.78rem;word-break:break-all;">🔗 見る</a>`
+      ? `<a href="${esc(a.portfolio)}" target="_blank" rel="noopener" style="color:#60a5fa;font-size:0.78rem;">🔗 見る</a>`
       : '<span style="color:var(--sub);font-size:0.75rem;">—</span>';
+    const caseBadge = a.case_type
+      ? `<span style="background:${cc}22;color:${cc};border:1px solid ${cc}55;padding:2px 7px;border-radius:10px;font-size:0.72rem;font-weight:700;">${esc(a.case_type)}</span>`
+      : '—';
+    const ltBadge = a.long_term
+      ? `<span style="font-size:0.72rem;color:${a.long_term==='可能'?'#4ade80':a.long_term==='要相談'?'#fbbf24':'var(--sub)'};">${esc(a.long_term)}</span>`
+      : '—';
     return `
       <tr>
         <td class="td-date">${esc(a.date)}</td>
-        <td class="td-name">${esc(a.name)}</td>
-        <td class="td-email" style="font-size:0.78rem;">${esc(a.email)}</td>
-        <td style="font-size:0.78rem;max-width:160px;">${esc(a.software || '—')}</td>
-        <td style="font-size:0.78rem;max-width:140px;">${esc(a.genres || '—')}</td>
-        <td style="font-size:0.8rem;white-space:nowrap;">${esc(a.monthly_vol || '—')}</td>
+        <td class="td-name">${esc(a.name)}<br><span style="font-size:0.72rem;color:var(--sub);">${esc((a.age||'')+(a.gender?' / '+a.gender:''))}</span></td>
+        <td style="font-size:0.72rem;color:var(--sub);">${esc((a.age||'')+(a.gender?' / '+a.gender:''))}</td>
+        <td class="td-email" style="font-size:0.75rem;">${esc(a.email)}</td>
+        <td>${caseBadge}</td>
+        <td style="font-size:0.78rem;white-space:nowrap;">${esc(a.weekly_monthly_vol || '—')}</td>
+        <td style="font-size:0.78rem;max-width:120px;">${esc(a.specialty || '—')}</td>
+        <td>${ltBadge}</td>
         <td>${pfLink}</td>
         <td>${dispatchBadge}</td>
         <td>
@@ -3317,7 +3329,7 @@ function renderEditorApps() {
             <button class="action-btn btn-mail" onclick="openEditorAppMail('${esc(a.email)}','${esc(a.name)}')">✉ メール</button>
             <button class="action-btn btn-expand" onclick="openEditorAppDetail(${a.row})">詳細</button>
             ${a.dispatch === '希望する'
-              ? `<button class="action-btn" style="background:rgba(168,85,247,0.1);color:#c084fc;border:1px solid rgba(168,85,247,0.3);" onclick="addEditorFromApp(${a.row})">👥 編集者登録</button>`
+              ? `<button class="action-btn" style="background:rgba(168,85,247,0.1);color:#c084fc;border:1px solid rgba(168,85,247,0.3);" onclick="addEditorFromApp(${a.row})">👥 登録</button>`
               : ''}
             <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="deleteEditorApp(${a.row},'${esc(a.name).replace(/'/g,"\\'")}')">🗑</button>
           </div>
@@ -3381,10 +3393,10 @@ function openEditorAppDetail(row) {
       <div><span style="font-size:0.7rem;color:var(--sub);">名前</span><br><span style="font-size:1rem;font-weight:700;">${esc(a.name)}</span></div>
       <div><span style="font-size:0.7rem;color:var(--sub);">メール</span><br><a href="mailto:${esc(a.email)}" style="color:#60a5fa;font-size:0.85rem;">${esc(a.email)}</a></div>
     </div>
-    <div class="modal-row"><p class="modal-label">使用ソフト</p><p class="modal-val">${esc(a.software || '—')}</p></div>
-    <div class="modal-row"><p class="modal-label">得意ジャンル</p><p class="modal-val">${esc(a.genres || '—')}</p></div>
-    <div class="modal-row"><p class="modal-label">月の対応本数</p><p class="modal-val">${esc(a.monthly_vol || '—')}</p></div>
-    <div class="modal-row"><p class="modal-label">稼働時間帯</p><p class="modal-val">${esc(a.hours || '—')}</p></div>
+    <div class="modal-row"><p class="modal-label">希望案件</p><p class="modal-val">${esc(a.case_type || '—')}</p></div>
+    <div class="modal-row"><p class="modal-label">週・月の対応本数</p><p class="modal-val">${esc(a.weekly_monthly_vol || '—')}</p></div>
+    <div class="modal-row"><p class="modal-label">得意分野</p><p class="modal-val">${esc(a.specialty || '—')}</p></div>
+    <div class="modal-row"><p class="modal-label">長期契約</p><p class="modal-val">${esc(a.long_term || '—')}</p></div>
     <div class="modal-row"><p class="modal-label">ポートフォリオ</p><p class="modal-val">${pfLink}</p></div>
     <div class="modal-row"><p class="modal-label">派遣希望</p><p class="modal-val">${esc(a.dispatch || '—')}</p></div>
     ${a.message ? `<div class="modal-row"><p class="modal-label">一言メッセージ</p><p class="modal-val modal-message">${esc(a.message)}</p></div>` : ''}
@@ -3404,11 +3416,9 @@ function addEditorFromApp(row) {
   // 編集者管理タブに自動入力してモーダルを開く
   switchAdminTab('editors');
   openEditorModal(null);
-  document.getElementById('em-name').value     = a.name || '';
-  document.getElementById('em-software').value = a.software || '';
-  document.getElementById('em-genres').value   = a.genres || '';
-  document.getElementById('em-monthly').value  = a.monthly_vol || '';
-  document.getElementById('em-work-hours').value = a.hours || '';
+  document.getElementById('em-name').value       = a.name || '';
+  document.getElementById('em-genres').value     = a.specialty || '';
+  document.getElementById('em-monthly').value    = a.weekly_monthly_vol || '';
   // ポートフォリオURL
   const pfContainer = document.getElementById('em-portfolios');
   if (pfContainer && a.portfolio) {
@@ -3418,11 +3428,12 @@ function addEditorFromApp(row) {
 }
 
 function exportEditorAppsCSV() {
-  const rows = [['受信日時','名前','メール','使用ソフト','得意ジャンル','月本数','稼働時間帯','PF URL','メッセージ','派遣希望','ステータス']];
+  const rows = [['受信日時','名前','年齢','性別','メール','希望案件','週・月の対応本数','得意分野','長期契約','PF URL','派遣希望','メッセージ','ステータス']];
   editorApps.forEach(a => rows.push([
-    a.date, a.name, a.email, a.software||'', a.genres||'',
-    a.monthly_vol||'', a.hours||'', a.portfolio||'', a.message||'',
-    a.dispatch||'', a.status||''
+    a.date, a.name, a.age||'', a.gender||'', a.email,
+    a.case_type||'', a.weekly_monthly_vol||'', a.specialty||'',
+    a.long_term||'', a.portfolio||'', a.dispatch||'',
+    a.message||'', a.status||''
   ]));
   downloadCSV(rows, 'monocreate_editor_apps');
 }

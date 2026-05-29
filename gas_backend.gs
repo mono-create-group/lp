@@ -799,26 +799,33 @@ function deleteHearing(row) {
 }
 
 // ── 編集者 公開応募 ────────────────────────────────────────────
-// editor_applications シート: 受信日時|名前|メール|ソフト|ジャンル|月本数|稼働時間帯|PF URL|メッセージ|派遣希望|ステータス
+// editor_applications シート:
+// 受信日時|名前|年齢|性別|メール|希望案件|ポートフォリオURL|週・月の対応本数|得意分野|長期契約|派遣希望|メッセージ|ステータス
 function applyEditor(data) {
   var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   var sheet = ss.getSheetByName('editor_applications');
   if (!sheet) {
     sheet = ss.insertSheet('editor_applications');
-    sheet.appendRow(['受信日時','名前','メール','使用ソフト','得意ジャンル','月の対応本数','稼働時間帯','ポートフォリオURL','メッセージ','派遣希望','ステータス']);
+    sheet.appendRow([
+      '受信日時','名前','年齢','性別','メール',
+      '希望案件','ポートフォリオURL','週・月の対応本数','得意分野',
+      '長期契約','派遣希望','メッセージ','ステータス'
+    ]);
   }
   var now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
   sheet.appendRow([
     now,
-    data.name        || '',
-    data.email       || '',
-    data.software    || '',
-    data.genres      || '',
-    data.monthly_vol || '',
-    data.hours       || '',
-    data.portfolio   || '',
-    data.message     || '',
-    data.dispatch    || '',
+    data.name               || '',
+    data.age                || '',
+    data.gender             || '',
+    data.email              || '',
+    data.case_type          || '',
+    data.portfolio          || '',
+    data.weekly_monthly_vol || '',
+    data.specialty          || '',
+    data.long_term          || '',
+    data.dispatch           || '',
+    data.message            || '',
     '未対応'
   ]);
 
@@ -827,13 +834,15 @@ function applyEditor(data) {
     var msg = '[info][title]🎬 新規 編集者応募[/title]' +
       '受信日時: ' + now + '\n' +
       '名前: ' + (data.name || '') + '\n' +
+      '年齢・性別: ' + (data.age || '') + ' / ' + (data.gender || '') + '\n' +
       'メール: ' + (data.email || '') + '\n' +
-      '使用ソフト: ' + (data.software || '') + '\n' +
-      '得意ジャンル: ' + (data.genres || '') + '\n' +
-      '月の対応本数: ' + (data.monthly_vol || '') + '\n' +
-      '派遣登録希望: ' + (data.dispatch || 'なし') + '\n' +
+      '希望案件: ' + (data.case_type || '') + '\n' +
+      '週・月の対応本数: ' + (data.weekly_monthly_vol || '') + '\n' +
+      '得意分野: ' + (data.specialty || '') + '\n' +
+      '長期契約: ' + (data.long_term || '') + '\n' +
+      '派遣希望: ' + (data.dispatch || 'なし') + '\n' +
       'PF: ' + (data.portfolio || 'なし') + '\n\n' +
-      data.message + '[/info]';
+      (data.message || '') + '[/info]';
     try {
       UrlFetchApp.fetch('https://api.chatwork.com/v2/rooms/' + CHATWORK_ROOM_ID + '/messages', {
         method: 'POST',
@@ -852,10 +861,11 @@ function applyEditor(data) {
         '内容を確認のうえ、2〜3営業日以内にご連絡いたします。',
         '',
         '▼ ご応募内容',
-        '使用ソフト: ' + (data.software || ''),
-        '得意ジャンル: ' + (data.genres || ''),
-        '月の対応本数: ' + (data.monthly_vol || ''),
-        '派遣登録希望: ' + (data.dispatch || 'なし'),
+        '希望案件: ' + (data.case_type || ''),
+        '週・月の対応本数: ' + (data.weekly_monthly_vol || ''),
+        '得意分野: ' + (data.specialty || ''),
+        '長期契約: ' + (data.long_term || ''),
+        '派遣希望: ' + (data.dispatch || 'なし'),
         '',
         '案件の状況によってはご連絡までお時間をいただく場合がございます。',
         'いましばらくお待ちください。',
@@ -875,10 +885,22 @@ function listEditorApplications() {
   var data = [];
   for (var i = 1; i < values.length; i++) {
     var r = values[i];
-    data.push({ row: i+1, date: r[0]||'', name: r[1]||'', email: r[2]||'',
-      software: r[3]||'', genres: r[4]||'', monthly_vol: r[5]||'',
-      hours: r[6]||'', portfolio: r[7]||'', message: r[8]||'',
-      dispatch: r[9]||'', status: r[10]||'未対応' });
+    data.push({
+      row:                i + 1,
+      date:               r[0]  || '',
+      name:               r[1]  || '',
+      age:                r[2]  || '',
+      gender:             r[3]  || '',
+      email:              r[4]  || '',
+      case_type:          r[5]  || '',
+      portfolio:          r[6]  || '',
+      weekly_monthly_vol: r[7]  || '',
+      specialty:          r[8]  || '',
+      long_term:          r[9]  || '',
+      dispatch:           r[10] || '',
+      message:            r[11] || '',
+      status:             r[12] || '未対応'
+    });
   }
   data.sort(function(a,b){ return b.date > a.date ? 1 : -1; });
   return jsonResponse({ data: data });
