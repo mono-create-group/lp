@@ -138,10 +138,15 @@ function doPost(e) {
       return updatePFConfig(data);
     }
 
-    // 編集者 保存（追加・更新）
+    // 編集者 保存（追加・更新）管理者のみ
     if (data.action === 'editor_save') {
       if (data.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
       return saveEditor(data);
+    }
+
+    // 編集者 公開応募フォーム（認証不要）
+    if (data.action === 'editor_apply') {
+      return applyEditor(data);
     }
 
     // 振込完了通知
@@ -329,6 +334,27 @@ function doGet(e) {
   if (action === 'pf_delete') {
     var row = parseInt(e.parameter.row, 10);
     return deletePFInquiry(row);
+  }
+
+  if (action === 'editor_applications') {
+    return listEditorApplications();
+  }
+
+  if (action === 'editor_app_status') {
+    var row = parseInt(e.parameter.row, 10);
+    var status = e.parameter.status || '';
+    var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    var sh = ss.getSheetByName('editor_applications');
+    if (sh) sh.getRange(row, 11).setValue(status);
+    return jsonResponse({ success: true });
+  }
+
+  if (action === 'editor_app_delete') {
+    var row = parseInt(e.parameter.row, 10);
+    var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    var sh = ss.getSheetByName('editor_applications');
+    if (sh) sh.deleteRow(row);
+    return jsonResponse({ success: true });
   }
 
   if (action === 'update_hearing_status') {
@@ -770,6 +796,92 @@ function deleteHearing(row) {
   if (!sheet) return jsonResponse({ error: 'sheet not found' });
   sheet.deleteRow(row);
   return jsonResponse({ success: true });
+}
+
+// ── 編集者 公開応募 ────────────────────────────────────────────
+// editor_applications シート: 受信日時|名前|メール|ソフト|ジャンル|月本数|稼働時間帯|PF URL|メッセージ|派遣希望|ステータス
+function applyEditor(data) {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName('editor_applications');
+  if (!sheet) {
+    sheet = ss.insertSheet('editor_applications');
+    sheet.appendRow(['受信日時','名前','メール','使用ソフト','得意ジャンル','月の対応本数','稼働時間帯','ポートフォリオURL','メッセージ','派遣希望','ステータス']);
+  }
+  var now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
+  sheet.appendRow([
+    now,
+    data.name        || '',
+    data.email       || '',
+    data.software    || '',
+    data.genres      || '',
+    data.monthly_vol || '',
+    data.hours       || '',
+    data.portfolio   || '',
+    data.message     || '',
+    data.dispatch    || '',
+    '未対応'
+  ]);
+
+  // Chatwork通知
+  if (CHATWORK_ROOM_ID) {
+    var msg = '[info][title]🎬 新規 編集者応募[/title]' +
+      '受信日時: ' + now + '\n' +
+      '名前: ' + (data.name || '') + '\n' +
+      'メール: ' + (data.email || '') + '\n' +
+      '使用ソフト: ' + (data.software || '') + '\n' +
+      '得意ジャンル: ' + (data.genres || '') + '\n' +
+      '月の対応本数: ' + (data.monthly_vol || '') + '\n' +
+      '派遣登録希望: ' + (data.dispatch || 'なし') + '\n' +
+      'PF: ' + (data.portfolio || 'なし') + '\n\n' +
+      data.message + '[/info]';
+    try {
+      UrlFetchApp.fetch('https://api.chatwork.com/v2/rooms/' + CHATWORK_ROOM_ID + '/messages', {
+        method: 'POST',
+        headers: { 'X-ChatWorkToken': CHATWORK_TOKEN },
+        payload: 'body=' + encodeURIComponent(msg)
+      });
+    } catch(e) {}
+  }
+
+  // 応募者への自動返信
+  if (data.email && data.email.indexOf('@') !== -1) {
+    sendAutoReply(data.email, data.name,
+      '【mono.create】編集者ご応募を受け付けました',
+      [
+        'この度はmono.createへのご応募ありがとうございます。',
+        '内容を確認のうえ、2〜3営業日以内にご連絡いたします。',
+        '',
+        '▼ ご応募内容',
+        '使用ソフト: ' + (data.software || ''),
+        '得意ジャンル: ' + (data.genres || ''),
+        '月の対応本数: ' + (data.monthly_vol || ''),
+        '派遣登録希望: ' + (data.dispatch || 'なし'),
+        '',
+        '案件の状況によってはご連絡までお時間をいただく場合がございます。',
+        'いましばらくお待ちください。',
+      ]
+    );
+  }
+
+  return jsonResponse({ success: true });
+}
+
+// editor_applications 一覧取得（管理者用）
+function listEditorApplications() {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName('editor_applications');
+  if (!sheet) return jsonResponse({ data: [] });
+  var values = sheet.getDataRange().getValues();
+  var data = [];
+  for (var i = 1; i < values.length; i++) {
+    var r = values[i];
+    data.push({ row: i+1, date: r[0]||'', name: r[1]||'', email: r[2]||'',
+      software: r[3]||'', genres: r[4]||'', monthly_vol: r[5]||'',
+      hours: r[6]||'', portfolio: r[7]||'', message: r[8]||'',
+      dispatch: r[9]||'', status: r[10]||'未対応' });
+  }
+  data.sort(function(a,b){ return b.date > a.date ? 1 : -1; });
+  return jsonResponse({ data: data });
 }
 
 // ヘッダー行（1行目）を残してデータ行を全削除

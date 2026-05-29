@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>クライアント向けページ | mono.create</title>
+<meta name="description" content="mono.createのクライアント向けページ。ポイントカード制度・招待コード・サービス一覧・無料編集申込。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Inter:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Noto Sans JP', sans-serif; background: #0B1120; color: #F1F5F9; line-height: 1.8; -webkit-font-smoothing: antialiased; }
+a { text-decoration: none; color: inherit; }
+.page { max-width: 480px; margin: 0 auto; padding: 28px 20px 80px; }
+.back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; color: #475569; margin-bottom: 20px; }
+.back-link:hover { color: #94A3B8; }
+
+/* ── Profile mini ── */
+.profile-mini {
+  display: flex; align-items: center; gap: 14px;
+  padding: 18px 20px;
+  background: #131F35; border: 1px solid #1E2D4A; border-radius: 14px;
+  margin-bottom: 20px;
+}
+.mini-avatar {
+  width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg,#1E40AF,#7C3AED);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; border: 2px solid #3B82F6;
+}
+.mini-name { font-size: 0.95rem; font-weight: 900; }
+.mini-sub { font-size: 0.72rem; color: #60A5FA; font-weight: 700; }
+.status-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.25);
+  color: #34D399; font-size: 0.65rem; font-weight: 700;
+  padding: 3px 9px; border-radius: 20px; margin-top: 4px;
+}
+.sdot { width: 6px; height: 6px; border-radius: 50%; background: #10B981; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+/* ── Cards ── */
+.card { background: #131F35; border: 1px solid #1E2D4A; border-radius: 16px; padding: 22px 20px; margin-bottom: 16px; }
+.card-title { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.12em; color: #60A5FA; margin-bottom: 14px; }
+
+/* ── Invite Code ── */
+.invite-wrap {
+  background: linear-gradient(135deg,#78350F,#92400E,#78350F);
+  border: 2px solid #D97706; border-radius: 16px;
+  padding: 22px 20px; margin-bottom: 16px; text-align: center; position: relative; overflow: hidden;
+}
+.invite-wrap::after { content:'🎁'; position:absolute; font-size:5rem; right:-8px; top:-8px; opacity:0.1; line-height:1; }
+.invite-label { font-size:0.7rem; font-weight:800; letter-spacing:0.14em; color:#FDE68A; margin-bottom:8px; }
+.invite-code { font-family:'Inter',monospace; font-size:2rem; font-weight:900; color:#FEF3C7; letter-spacing:0.12em; margin-bottom:6px; text-shadow:0 2px 12px rgba(251,191,36,0.3); }
+.invite-rule { background:rgba(0,0,0,0.2); border-radius:8px; padding:9px 12px; font-size:0.74rem; color:#FEF3C7; text-align:left; line-height:1.9; margin-bottom:12px; }
+.copy-btn { display:inline-flex;align-items:center;gap:6px; background:#D97706;color:#fff; border:none;border-radius:8px; padding:8px 18px; font-size:0.78rem;font-weight:700; cursor:pointer;font-family:inherit; transition:opacity 0.2s; }
+.copy-btn:hover{opacity:0.85} .copy-btn.copied{background:#059669}
+
+/* ── Point Card ── */
+.point-hero {
+  background: linear-gradient(135deg,#1E1060,#312E81);
+  border: 2px solid #6D28D9; border-radius: 16px;
+  padding: 22px 20px; margin-bottom: 16px;
+}
+.point-hero-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px; }
+.point-brand { font-size:0.68rem; font-weight:800; letter-spacing:0.1em; color:#A78BFA; }
+.point-title { font-size:1.1rem; font-weight:900; color:#EDE9FE; margin-top:2px; }
+.point-note { font-size:0.7rem; color:#7C3AED; background:#EDE9FE; border-radius:6px; padding:2px 8px; font-weight:700; }
+.stamp-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:16px; }
+.stamp {
+  aspect-ratio:1/1; border-radius:10px; border:2px dashed #4C1D95;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.1rem; background:#1E1060;
+  transition: transform 0.2s;
+}
+.stamp.filled { border-style:solid; border-color:#7C3AED; background:#312E81; box-shadow:0 0 10px rgba(124,58,237,0.4); }
+.stamp.milestone { border-color:#F59E0B; background:#451A03; }
+.stamp.milestone.filled { border-color:#FBBF24; background:#78350F; box-shadow:0 0 14px rgba(251,191,36,0.5); }
+.point-benefits { display:flex; flex-direction:column; gap:8px; }
+.benefit-row { display:flex; align-items:center; gap:10px; font-size:0.78rem; }
+.benefit-pt { font-family:'Inter'; font-weight:900; font-size:0.85rem; color:#A78BFA; min-width:32px; }
+.benefit-desc { color:#C4B5FD; }
+.benefit-badge { margin-left:auto; font-size:0.65rem; font-weight:700; padding:2px 8px; border-radius:10px; }
+.b-free { background:rgba(16,185,129,0.15); color:#34D399; border:1px solid rgba(16,185,129,0.3); }
+.b-vip { background:rgba(251,191,36,0.15); color:#FBBF24; border:1px solid rgba(251,191,36,0.3); }
+.point-check-btn {
+  display:block; width:100%; margin-top:14px;
+  background: linear-gradient(135deg,#5B21B6,#7C3AED);
+  color:#fff; border:none; border-radius:10px; padding:12px 20px;
+  font-size:0.82rem; font-weight:800; cursor:pointer; font-family:inherit;
+  text-align:center; text-decoration:none;
+  box-shadow:0 4px 16px rgba(124,58,237,0.3);
+}
+.point-check-btn:hover{opacity:0.9}
+
+/* ── Services ── */
+.service-list { display:flex; flex-direction:column; gap:8px; }
+.service-item { display:flex; align-items:center; justify-content:space-between; padding:10px 12px; background:#1A2840; border-radius:10px; font-size:0.82rem; }
+.service-name { color:#CBD5E1; font-weight:600; }
+.service-price { color:#60A5FA; font-weight:800; font-size:0.78rem; }
+
+/* ── Free CTA ── */
+.free-cta {
+  background:linear-gradient(135deg,#064E3B,#065F46);
+  border:2px solid #059669; border-radius:16px;
+  padding:20px; margin-bottom:16px; text-align:center;
+}
+.free-badge { display:inline-block; background:#059669; color:#fff; font-size:0.65rem; font-weight:800; padding:2px 9px; border-radius:20px; letter-spacing:0.06em; margin-bottom:8px; }
+.free-title { font-size:1rem; font-weight:900; color:#ECFDF5; margin-bottom:5px; }
+.free-desc { font-size:0.78rem; color:#6EE7B7; margin-bottom:12px; line-height:1.7; }
+.free-slots { display:flex; gap:7px; flex-wrap:wrap; justify-content:center; margin-bottom:12px; }
+.slot-chip { background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.3); color:#34D399; font-size:0.68rem; font-weight:700; padding:3px 9px; border-radius:12px; }
+.slot-chip.full { background:rgba(100,116,139,0.1); border-color:rgba(100,116,139,0.2); color:#64748B; text-decoration:line-through; }
+
+/* ── CTA Buttons ── */
+.btn-primary { display:block; width:100%; background:linear-gradient(135deg,#1D4ED8,#3B82F6); color:#fff; border:none; border-radius:12px; padding:14px 20px; font-size:0.9rem; font-weight:800; cursor:pointer; font-family:inherit; text-align:center; text-decoration:none; box-shadow:0 4px 20px rgba(59,130,246,0.3); transition:opacity 0.2s,transform 0.15s; }
+.btn-primary:hover{opacity:0.9;transform:translateY(-2px)}
+.btn-green { display:block; width:100%; background:linear-gradient(135deg,#047857,#059669); color:#fff; border:none; border-radius:12px; padding:13px 20px; font-size:0.88rem; font-weight:800; cursor:pointer; font-family:inherit; text-align:center; text-decoration:none; box-shadow:0 4px 16px rgba(5,150,105,0.3); transition:opacity 0.2s,transform 0.15s; }
+.btn-green:hover{opacity:0.9;transform:translateY(-2px)}
+
+.footer { text-align:center; margin-top:24px; font-size:0.68rem; color:#334155; }
+.footer a { color:#3B82F6; }
+</style>
+</head>
+<body>
+<div class="page">
+  <a href="mypage.html" class="back-link">← もどる</a>
+
+  <!-- Profile mini -->
+  <div class="profile-mini">
+    <div class="mini-avatar">🎬</div>
+    <div>
+      <p class="mini-name">中村 航汰 / mono.create</p>
+      <p class="mini-sub">VIDEO EDITOR</p>
+      <div class="status-pill"><span class="sdot"></span>受付中</div>
+    </div>
+  </div>
+
+  <!-- Invite Code -->
+  <div class="invite-wrap">
+    <p class="invite-label">🎁 フォロワー限定 招待コード</p>
+    <p class="invite-code" id="invite-code-text">MONO-SNS</p>
+    <div class="invite-rule">
+      ✅ 通常価格プラン → <strong>5%引き</strong><br>
+      ✅ すでに割引中のプラン → さらに<strong>+5%（合計10%引き）</strong><br>
+      📋 お問い合わせフォームの「紹介コード」欄に入力してください
+    </div>
+    <button class="copy-btn" id="copy-btn" onclick="copyCode()">📋 コードをコピー</button>
+  </div>
+
+  <!-- Point Card -->
+  <div class="point-hero">
+    <div class="point-hero-top">
+      <div>
+        <p class="point-brand">MONO.CREATE</p>
+        <p class="point-title">🎯 ポイントカード</p>
+      </div>
+      <span class="point-note">継続特典</span>
+    </div>
+    <!-- スタンプ（サンプル表示） -->
+    <div class="stamp-grid">
+      <div class="stamp filled">🎬</div>
+      <div class="stamp filled">🎬</div>
+      <div class="stamp filled">🎬</div>
+      <div class="stamp">　</div>
+      <div class="stamp milestone">⭐</div>
+      <div class="stamp">　</div>
+      <div class="stamp">　</div>
+      <div class="stamp">　</div>
+      <div class="stamp">　</div>
+      <div class="stamp milestone">🏆</div>
+    </div>
+    <p style="font-size:0.68rem;color:#7C3AED;margin-bottom:14px;">⭐=5P特典 　🏆=10P特典（サンプル表示）</p>
+    <div class="point-benefits">
+      <div class="benefit-row">
+        <span class="benefit-pt">1P</span>
+        <span class="benefit-desc">ショート1本 or 依頼¥4,000ごとに付与</span>
+      </div>
+      <div class="benefit-row">
+        <span class="benefit-pt">3P</span>
+        <span class="benefit-desc">長尺1本依頼で付与</span>
+      </div>
+      <div class="benefit-row">
+        <span class="benefit-pt">5P</span>
+        <span class="benefit-desc">月額セット継続で毎月ボーナス付与</span>
+      </div>
+      <div style="border-top:1px solid #3B1FA8;margin:8px 0;"></div>
+      <div class="benefit-row">
+        <span class="benefit-pt">5P</span>
+        <span class="benefit-desc">ショート1本プレゼント</span>
+        <span class="benefit-badge b-free">無料</span>
+      </div>
+      <div class="benefit-row">
+        <span class="benefit-pt">10P</span>
+        <span class="benefit-desc">翌月全プラン5%追加割引</span>
+        <span class="benefit-badge b-vip">割引</span>
+      </div>
+      <div class="benefit-row">
+        <span class="benefit-pt">20P</span>
+        <span class="benefit-desc">ショート3本 or 長尺1本プレゼント</span>
+        <span class="benefit-badge b-free">無料</span>
+      </div>
+      <div class="benefit-row">
+        <span class="benefit-pt">30P</span>
+        <span class="benefit-desc">VIP認定・毎月10%割引＋優先対応</span>
+        <span class="benefit-badge b-vip">VIP</span>
+      </div>
+    </div>
+    <a href="https://mono-create-group.github.io/lp/#contact" class="point-check-btn">
+      💬 ポイント残高を確認する（メールで問い合わせ）
+    </a>
+  </div>
+
+  <!-- Free Editing -->
+  <div class="free-cta">
+    <span class="free-badge">先着制・無料</span>
+    <p class="free-title">📸 無料ポートフォリオ制作</p>
+    <p class="free-desc">掲載許可をいただく代わりに<br><strong style="color:#ECFDF5;">ショート1本を完全無料</strong>で編集。3〜4日納品。</p>
+    <div class="free-slots" id="free-slots-area">
+      <span class="slot-chip">読み込み中...</span>
+    </div>
+    <a href="https://mono-create-group.github.io/lp/#section-pf-free" class="btn-green">今すぐ無料で申し込む →</a>
+  </div>
+
+  <!-- Services -->
+  <div class="card">
+    <p class="card-title">SERVICES & PRICE</p>
+    <div class="service-list">
+      <div class="service-item"><span class="service-name">📱 ショート動画編集（単品）</span><span class="service-price">¥4,000〜/本</span></div>
+      <div class="service-item"><span class="service-name">🎥 YouTube長尺編集（単品）</span><span class="service-price">¥20,000〜/本</span></div>
+      <div class="service-item"><span class="service-name">📦 まとめて編集プラン</span><span class="service-price">5〜10%割引</span></div>
+      <div class="service-item"><span class="service-name">🚀 投稿丸投げパック（10本/月）</span><span class="service-price">¥45,000〜/月</span></div>
+      <div class="service-item"><span class="service-name">📸 無料ポートフォリオ制作</span><span class="service-price" style="color:#34D399;">¥0（先着制）</span></div>
+    </div>
+  </div>
+
+  <!-- Trust -->
+  <div class="card">
+    <p class="card-title">安心ポイント</p>
+    <div style="display:flex;flex-direction:column;gap:7px;">
+      <div style="display:flex;gap:9px;font-size:0.79rem;color:#94A3B8;"><span style="color:#34D399;flex-shrink:0;">✅</span><span>修正3回まで無料。こちら側のミスは無制限対応</span></div>
+      <div style="display:flex;gap:9px;font-size:0.79rem;color:#94A3B8;"><span style="color:#34D399;flex-shrink:0;">✅</span><span>最短当日納品（ショート・12時までのご依頼）</span></div>
+      <div style="display:flex;gap:9px;font-size:0.79rem;color:#94A3B8;"><span style="color:#34D399;flex-shrink:0;">✅</span><span>テロップ・BGM・SE・エフェクトすべて込み</span></div>
+      <div style="display:flex;gap:9px;font-size:0.79rem;color:#94A3B8;"><span style="color:#34D399;flex-shrink:0;">✅</span><span>稼働時間 月〜土 9:00〜19:00</span></div>
+    </div>
+  </div>
+
+  <a href="https://mono-create-group.github.io/lp/#contact" class="btn-primary" style="margin-bottom:10px;">💬 無料相談・お問い合わせ →</a>
+  <a href="https://mono-create-group.github.io/lp/" class="btn-primary" style="background:linear-gradient(135deg,#1E293B,#334155);box-shadow:none;">サービス詳細ページを見る</a>
+
+  <div class="footer">
+    <p>© 2026 mono.create / 中村航汰</p>
+    <p style="margin-top:4px;"><a href="mypage.html">← プロフィールトップへ</a></p>
+  </div>
+</div>
+
+<script>
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
+
+(async function loadSlots() {
+  try {
+    const res = await fetch(GAS_URL + '?action=pf_config');
+    const json = await res.json();
+    const area = document.getElementById('free-slots-area');
+    if (!json.genres || !json.genres.length) { area.innerHTML = ''; return; }
+    area.innerHTML = json.genres.map(g => {
+      const contracted = g.contracted > 0;
+      const full = !g.active || g.count >= g.max;
+      if (contracted) return `<span class="slot-chip full">✅ ${g.name}（成約済み）</span>`;
+      if (full) return `<span class="slot-chip full">${g.name}（受付終了）</span>`;
+      return `<span class="slot-chip">${g.name} 残り${Math.max(0, g.max - g.count)}名</span>`;
+    }).join('');
+  } catch(e) { document.getElementById('free-slots-area').innerHTML = ''; }
+})();
+
+function copyCode() {
+  const code = document.getElementById('invite-code-text').textContent;
+  const btn = document.getElementById('copy-btn');
+  const copy = (txt) => {
+    const el = document.createElement('textarea');
+    el.value = txt; document.body.appendChild(el); el.select();
+    document.execCommand('copy'); document.body.removeChild(el);
+  };
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(code).catch(() => copy(code));
+  } else { copy(code); }
+  btn.textContent = '✅ コピーしました！'; btn.classList.add('copied');
+  setTimeout(() => { btn.textContent = '📋 コードをコピー'; btn.classList.remove('copied'); }, 2500);
+}
+</script>
+</body>
+</html>

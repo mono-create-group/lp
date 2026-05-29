@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index, follow">
+<title>編集者募集 | mono.create</title>
+<meta name="description" content="mono.createでは動画編集者を随時募集しています。リモート・副業OK。ショート¥3,000〜/長尺¥7,000〜。登録フォームから気軽にご応募ください。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Inter:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Noto Sans JP', sans-serif; background: #0B1120; color: #F1F5F9; line-height: 1.8; -webkit-font-smoothing: antialiased; }
+a { text-decoration: none; color: inherit; }
+.page { max-width: 480px; margin: 0 auto; padding: 28px 20px 80px; }
+.back-link { display:inline-flex;align-items:center;gap:6px;font-size:0.75rem;color:#475569;margin-bottom:20px; }
+.back-link:hover { color:#94A3B8; }
+
+/* ── Hero ── */
+.hero {
+  text-align: center;
+  padding: 36px 20px 28px;
+  background: linear-gradient(145deg,#0F2A1F,#14381A);
+  border: 2px solid #166534; border-radius: 20px; margin-bottom: 20px;
+}
+.hero-badge { display:inline-block; background:#15803D; color:#fff; font-size:0.68rem; font-weight:800; padding:3px 12px; border-radius:20px; letter-spacing:0.08em; margin-bottom:12px; }
+.hero-title { font-size:1.5rem; font-weight:900; color:#ECFDF5; margin-bottom:8px; line-height:1.3; }
+.hero-desc { font-size:0.82rem; color:#86EFAC; line-height:1.8; }
+
+/* ── Card ── */
+.card { background:#131F35; border:1px solid #1E2D4A; border-radius:16px; padding:22px 20px; margin-bottom:16px; }
+.card-title { font-size:0.68rem; font-weight:800; letter-spacing:0.12em; color:#34D399; margin-bottom:14px; }
+
+/* ── Pay grid ── */
+.pay-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.pay-item { text-align:center; padding:14px 10px; background:#1A2840; border-radius:12px; border:1px solid #243347; }
+.pay-val { font-family:'Inter'; font-size:1.4rem; font-weight:900; color:#34D399; line-height:1.1; }
+.pay-sub { font-size:0.68rem; color:#64748B; margin-top:2px; }
+
+/* ── Requirements ── */
+.req-list { display:flex; flex-direction:column; gap:8px; }
+.req-item { display:flex; align-items:flex-start; gap:10px; font-size:0.8rem; color:#94A3B8; }
+.req-icon { color:#34D399; flex-shrink:0; }
+
+/* ── Benefits ── */
+.benefit-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.benefit-item { padding:12px 14px; background:#1A2840; border-radius:10px; border:1px solid #1E3A2A; }
+.benefit-icon { font-size:1.2rem; margin-bottom:4px; }
+.benefit-label { font-size:0.78rem; font-weight:700; color:#86EFAC; margin-bottom:2px; }
+.benefit-desc { font-size:0.68rem; color:#64748B; line-height:1.5; }
+
+/* ── Form ── */
+.form-section { background:#131F35; border:2px solid #166534; border-radius:16px; padding:24px 20px; margin-bottom:16px; }
+.form-title { font-size:1rem; font-weight:900; color:#ECFDF5; margin-bottom:4px; }
+.form-subtitle { font-size:0.75rem; color:#6EE7B7; margin-bottom:20px; }
+.form-row { margin-bottom:16px; }
+.form-row label { display:block; font-size:0.78rem; font-weight:700; color:#94A3B8; margin-bottom:6px; }
+.form-row label span { color:#F87171; }
+.form-control {
+  width:100%; padding:10px 14px;
+  background:#0F1C2E; border:1px solid #243347; border-radius:8px;
+  color:#F1F5F9; font-family:inherit; font-size:0.85rem;
+  transition:border-color 0.2s;
+}
+.form-control:focus { outline:none; border-color:#059669; }
+.form-control::placeholder { color:#334155; }
+textarea.form-control { min-height:90px; resize:vertical; }
+.checkbox-group { display:flex; flex-wrap:wrap; gap:8px; }
+.check-item { display:flex; align-items:center; gap:6px; }
+.check-item input[type=checkbox] { width:16px; height:16px; accent-color:#059669; }
+.check-item label { font-size:0.8rem; color:#94A3B8; cursor:pointer; }
+.dispatch-banner {
+  background:linear-gradient(135deg,#1A2840,#1E3A2A);
+  border:1px solid #166534; border-radius:10px;
+  padding:12px 14px; margin-bottom:16px;
+  font-size:0.78rem; color:#86EFAC; line-height:1.7;
+}
+.dispatch-banner strong { color:#34D399; }
+.form-submit {
+  display:block; width:100%;
+  background:linear-gradient(135deg,#047857,#059669);
+  color:#fff; border:none; border-radius:12px;
+  padding:14px 20px; font-size:0.9rem; font-weight:800;
+  cursor:pointer; font-family:inherit;
+  box-shadow:0 4px 20px rgba(5,150,105,0.35);
+  transition:opacity 0.2s,transform 0.15s;
+}
+.form-submit:hover { opacity:0.9; transform:translateY(-2px); }
+.form-submit:disabled { opacity:0.5; transform:none; cursor:not-allowed; }
+.form-note { font-size:0.72rem; color:#475569; text-align:center; margin-top:10px; }
+
+/* ── Success ── */
+.form-success { display:none; text-align:center; padding:32px 20px; }
+.form-success.visible { display:block; }
+.form-success-icon { font-size:3rem; margin-bottom:12px; }
+
+/* ── Footer ── */
+.footer { text-align:center; margin-top:24px; font-size:0.68rem; color:#334155; }
+.footer a { color:#34D399; }
+</style>
+</head>
+<body>
+<div class="page">
+  <a href="mypage.html" class="back-link">← もどる</a>
+
+  <!-- Hero -->
+  <div class="hero">
+    <span class="hero-badge">EDITOR RECRUIT</span>
+    <h1 class="hero-title">🎬 編集者として<br>mono.createで働きませんか</h1>
+    <p class="hero-desc">
+      完全リモート・副業OK・稼働時間自由。<br>
+      案件がきたときにご連絡するので、<br>登録だけでもお気軽にどうぞ。
+    </p>
+  </div>
+
+  <!-- Pay -->
+  <div class="card">
+    <p class="card-title">PAYMENT</p>
+    <div class="pay-grid">
+      <div class="pay-item">
+        <p class="pay-val">¥3,000〜</p>
+        <p class="pay-sub">ショート1本</p>
+      </div>
+      <div class="pay-item">
+        <p class="pay-val">¥7,000〜</p>
+        <p class="pay-sub">長尺1本</p>
+      </div>
+      <div class="pay-item">
+        <p class="pay-val">¥1,000</p>
+        <p class="pay-sub">サムネイル1枚</p>
+      </div>
+      <div class="pay-item">
+        <p class="pay-val">応相談</p>
+        <p class="pay-sub">月額ディレクション</p>
+      </div>
+    </div>
+    <p style="font-size:0.72rem;color:#475569;margin-top:10px;">※ 実力・実績に応じて単価UP相談可能</p>
+  </div>
+
+  <!-- Benefits -->
+  <div class="card">
+    <p class="card-title">BENEFITS</p>
+    <div class="benefit-grid">
+      <div class="benefit-item">
+        <p class="benefit-icon">🏠</p>
+        <p class="benefit-label">完全リモート</p>
+        <p class="benefit-desc">場所を問わず働けます</p>
+      </div>
+      <div class="benefit-item">
+        <p class="benefit-icon">⏰</p>
+        <p class="benefit-label">稼働時間自由</p>
+        <p class="benefit-desc">締め切りを守れればOK</p>
+      </div>
+      <div class="benefit-item">
+        <p class="benefit-icon">📦</p>
+        <p class="benefit-label">月数本〜OK</p>
+        <p class="benefit-desc">副業・空き時間で活動可</p>
+      </div>
+      <div class="benefit-item">
+        <p class="benefit-icon">📈</p>
+        <p class="benefit-label">単価UP制度</p>
+        <p class="benefit-desc">実績に応じて昇給あり</p>
+      </div>
+      <div class="benefit-item">
+        <p class="benefit-icon">🎓</p>
+        <p class="benefit-label">フィードバック</p>
+        <p class="benefit-desc">スキルアップを一緒に</p>
+      </div>
+      <div class="benefit-item">
+        <p class="benefit-icon">🤝</p>
+        <p class="benefit-label">派遣紹介</p>
+        <p class="benefit-desc">クライアント直接紹介も</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Requirements -->
+  <div class="card">
+    <p class="card-title">REQUIREMENTS</p>
+    <div class="req-list">
+      <div class="req-item"><span class="req-icon">✅</span><span>動画編集ソフトを使った経験がある方（Premiere Pro / CapCut / Final Cut / DaVinci等）</span></div>
+      <div class="req-item"><span class="req-icon">✅</span><span>納期を守れる方</span></div>
+      <div class="req-item"><span class="req-icon">✅</span><span>Chatworkでの連絡が取れる方</span></div>
+      <div class="req-item"><span class="req-icon">✅</span><span>修正依頼に丁寧に対応できる方</span></div>
+      <div class="req-item"><span class="req-icon">💡</span><span>ポートフォリオや実績がなくても、スキルがあれば歓迎です</span></div>
+    </div>
+  </div>
+
+  <!-- Registration Form -->
+  <div class="form-section" id="apply-form-wrap">
+    <p class="form-title">📝 編集者登録フォーム</p>
+    <p class="form-subtitle">登録だけでもOKです。案件が来たときにご連絡します。</p>
+
+    <form id="apply-form">
+      <div class="form-row">
+        <label>お名前<span>*</span></label>
+        <input type="text" class="form-control" name="name" placeholder="山田 太郎" required>
+      </div>
+      <div class="form-row">
+        <label>メールアドレス<span>*</span></label>
+        <input type="email" class="form-control" name="email" placeholder="example@mail.com" required>
+      </div>
+      <div class="form-row">
+        <label>使用ソフト<span>*</span></label>
+        <div class="checkbox-group">
+          <div class="check-item"><input type="checkbox" id="sw1" name="software_pp" value="Premiere Pro"><label for="sw1">Premiere Pro</label></div>
+          <div class="check-item"><input type="checkbox" id="sw2" name="software_fc" value="Final Cut Pro"><label for="sw2">Final Cut Pro</label></div>
+          <div class="check-item"><input type="checkbox" id="sw3" name="software_da" value="DaVinci Resolve"><label for="sw3">DaVinci Resolve</label></div>
+          <div class="check-item"><input type="checkbox" id="sw4" name="software_cc" value="CapCut"><label for="sw4">CapCut</label></div>
+          <div class="check-item"><input type="checkbox" id="sw5" name="software_ae" value="After Effects"><label for="sw5">After Effects</label></div>
+          <div class="check-item"><input type="checkbox" id="sw6" name="software_ps" value="Photoshop"><label for="sw6">Photoshop (サムネ)</label></div>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>得意なジャンル<span>*</span></label>
+        <div class="checkbox-group">
+          <div class="check-item"><input type="checkbox" id="g1" name="genre_short" value="ショート動画"><label for="g1">ショート動画</label></div>
+          <div class="check-item"><input type="checkbox" id="g2" name="genre_long" value="長尺動画"><label for="g2">長尺動画</label></div>
+          <div class="check-item"><input type="checkbox" id="g3" name="genre_biz" value="ビジネス系"><label for="g3">ビジネス系</label></div>
+          <div class="check-item"><input type="checkbox" id="g4" name="genre_ent" value="エンタメ系"><label for="g4">エンタメ系</label></div>
+          <div class="check-item"><input type="checkbox" id="g5" name="genre_vlog" value="Vlog系"><label for="g5">Vlog系</label></div>
+          <div class="check-item"><input type="checkbox" id="g6" name="genre_ad" value="広告系"><label for="g6">広告系</label></div>
+          <div class="check-item"><input type="checkbox" id="g7" name="genre_cut" value="切り抜き系"><label for="g7">切り抜き系</label></div>
+          <div class="check-item"><input type="checkbox" id="g8" name="genre_thumb" value="サムネイル制作"><label for="g8">サムネイル制作</label></div>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>月の対応可能本数の目安</label>
+        <select class="form-control" name="monthly_vol">
+          <option value="">-- 選択してください --</option>
+          <option>1〜3本</option>
+          <option>4〜8本</option>
+          <option>9〜15本</option>
+          <option>16本以上</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>主な稼働時間帯</label>
+        <select class="form-control" name="hours">
+          <option value="">-- 選択してください --</option>
+          <option>平日 日中（9〜18時）</option>
+          <option>平日 夜間（18〜24時）</option>
+          <option>土日メイン</option>
+          <option>時間帯は問わない</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>ポートフォリオ・実績URL（あれば）</label>
+        <input type="text" class="form-control" name="portfolio" placeholder="https://... （複数あればカンマ区切りでOK）">
+      </div>
+
+      <!-- 派遣オプション -->
+      <div class="dispatch-banner">
+        <strong>🤝 編集者派遣への登録もご希望ですか？</strong><br>
+        クライアントに直接紹介する「編集者派遣」サービスにも情報を掲載できます。<br>
+        希望する場合はチェックを入れてください。
+        <div style="margin-top:10px;">
+          <div class="check-item">
+            <input type="checkbox" id="dispatch" name="dispatch" value="派遣登録希望">
+            <label for="dispatch" style="color:#86EFAC;font-weight:700;">編集者派遣にも登録を希望する</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>一言メッセージ・自己PR</label>
+        <textarea class="form-control" name="message" placeholder="今のスキルレベル・得意なこと・稼働状況など、自由にご記入ください。"></textarea>
+      </div>
+
+      <button type="submit" class="form-submit" id="submit-btn">登録する →</button>
+      <p class="form-note">送信後、2〜3営業日以内にメールでご連絡します。</p>
+    </form>
+
+    <div class="form-success" id="form-success">
+      <div class="form-success-icon">🎉</div>
+      <h3 style="font-size:1.1rem;font-weight:900;color:#ECFDF5;margin-bottom:8px;">ご登録ありがとうございます！</h3>
+      <p style="font-size:0.82rem;color:#6EE7B7;line-height:1.8;">
+        内容を確認のうえ、2〜3営業日以内にメールでご連絡します。<br>
+        案件の状況によってはお時間をいただく場合がございますが、<br>
+        いましばらくお待ちください。
+      </p>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="card">
+    <p class="card-title">FAQ</p>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div>
+        <p style="font-size:0.82rem;font-weight:700;color:#86EFAC;margin-bottom:4px;">Q. 経験が浅くても応募できますか？</p>
+        <p style="font-size:0.78rem;color:#94A3B8;line-height:1.7;">はい。スキルがあれば実績なしでもOKです。まずはテスト編集をお願いする場合があります。</p>
+      </div>
+      <div>
+        <p style="font-size:0.82rem;font-weight:700;color:#86EFAC;margin-bottom:4px;">Q. 最低稼働本数はありますか？</p>
+        <p style="font-size:0.78rem;color:#94A3B8;line-height:1.7;">ありません。月1本からでも大歓迎です。案件が来たときにご連絡するスタイルです。</p>
+      </div>
+      <div>
+        <p style="font-size:0.82rem;font-weight:700;color:#86EFAC;margin-bottom:4px;">Q. 報酬の支払いはいつですか？</p>
+        <p style="font-size:0.78rem;color:#94A3B8;line-height:1.7;">納品確認後、月末締め翌月払いが基本です。詳細は契約時にご確認ください。</p>
+      </div>
+      <div>
+        <p style="font-size:0.82rem;font-weight:700;color:#86EFAC;margin-bottom:4px;">Q. 編集者派遣とは何ですか？</p>
+        <p style="font-size:0.78rem;color:#94A3B8;line-height:1.7;">クライアントに直接あなたのプロフィールを紹介するサービスです。継続案件を直接受けたい方に向いています。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>© 2026 mono.create / 中村航汰</p>
+    <p style="margin-top:4px;"><a href="mypage.html">← プロフィールトップへ</a></p>
+  </div>
+</div>
+
+<script>
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
+
+document.getElementById('apply-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true; btn.textContent = '送信中...';
+
+  const form = e.target;
+  // チェックボックスを配列で収集
+  const software = ['Premiere Pro','Final Cut Pro','DaVinci Resolve','CapCut','After Effects','Photoshop (サムネ)']
+    .filter((_,i) => form.querySelectorAll('[name^="software_"]')[i]?.checked).join('、');
+  const genres = ['ショート動画','長尺動画','ビジネス系','エンタメ系','Vlog系','広告系','切り抜き系','サムネイル制作']
+    .filter((_,i) => form.querySelectorAll('[name^="genre_"]')[i]?.checked).join('、');
+
+  const data = {
+    action:      'editor_apply',
+    name:        form.name.value,
+    email:       form.email.value,
+    software:    software,
+    genres:      genres,
+    monthly_vol: form.monthly_vol.value,
+    hours:       form.hours.value,
+    portfolio:   form.portfolio.value,
+    dispatch:    form.dispatch.checked ? '派遣登録希望' : 'なし',
+    message:     form.message.value,
+  };
+
+  try {
+    await fetch(GAS_URL, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    document.getElementById('apply-form').style.display = 'none';
+    document.getElementById('form-success').classList.add('visible');
+  } catch(err) {
+    btn.disabled = false; btn.textContent = '登録する →';
+    alert('送信に失敗しました。しばらくしてから再度お試しください。');
+  }
+});
+</script>
+</body>
+</html>
