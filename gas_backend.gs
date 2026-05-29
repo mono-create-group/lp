@@ -351,7 +351,84 @@ function doGet(e) {
     var status = e.parameter.status || '';
     var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
     var sh = ss.getSheetByName('editor_applications');
-    if (sh) sh.getRange(row, 13).setValue(status);  // 13列目=ステータス
+    if (!sh) return jsonResponse({ success: true });
+    sh.getRange(row, 13).setValue(status);  // 13列目=ステータス
+
+    // ── 採用決定 → Chatwork招待メールを自動送信 ──
+    if (status === '採用決定') {
+      var rowData = sh.getRange(row, 1, 1, 13).getValues()[0];
+      var editorName  = rowData[1] || '';
+      var editorEmail = rowData[4] || '';
+      var caseType    = rowData[5] || '';
+      var now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
+
+      // 応募者へ合格通知メール（Chatwork招待リンク付き）
+      if (editorEmail && editorEmail.indexOf('@') !== -1) {
+        var subject = '【mono.create】編集者採用のご連絡 — Chatworkグループにご参加ください';
+        var body = [
+          editorName + ' 様',
+          '',
+          'この度はmono.createへのご応募ありがとうございます。',
+          '選考の結果、ぜひ一緒にお仕事をさせていただきたいと思います。',
+          '',
+          '━━━━━━━━━━━━━━━━━━━━',
+          '▼ 次のステップ：Chatworkグループへの参加',
+          '━━━━━━━━━━━━━━━━━━━━',
+          '下記のリンクからmono.create編集者グループにご参加ください。',
+          '参加後、担当者より案件のご案内をお送りします。',
+          '',
+          '🔗 Chatworkグループ招待リンク',
+          'https://www.chatwork.com/g/ig45bwg3tqzkxg',
+          '',
+          '※ Chatworkのアカウントをお持ちでない場合は、',
+          '  上記リンクから無料登録後にグループへご参加ください。',
+          '',
+          '━━━━━━━━━━━━━━━━━━━━',
+          '▼ ご参加後の流れ',
+          '━━━━━━━━━━━━━━━━━━━━',
+          '1️⃣ Chatworkグループに参加',
+          '2️⃣ 担当者からご挨拶・案件のご案内',
+          '3️⃣ テスト編集（1本）→ 本格稼働',
+          '',
+          '不明点があればこのメールへ返信ください。',
+          'よろしくお願いいたします。',
+          '',
+          '担当：mono.create 運営',
+        ].join('\n');
+
+        MailApp.sendEmail({
+          to:      editorEmail,
+          subject: subject,
+          body:    body,
+          name:    'mono.create',
+          replyTo: OWNER_EMAIL
+        });
+      }
+
+      // 管理者にも通知
+      var editorRoomId = EDITOR_ROOM_ID || CHATWORK_ROOM_ID;
+      if (editorRoomId) {
+        var msg = '[To:' + CHATWORK_MENTION + '] 中村航汰\n\n' +
+          '━━━━━━━━━━━━━━━━━━━━\n' +
+          '✅ 編集者採用決定 — 招待メール自動送信済み\n' +
+          '━━━━━━━━━━━━━━━━━━━━\n' +
+          '日時    : ' + now + '\n' +
+          '名前    : ' + editorName + '\n' +
+          'メール  : ' + editorEmail + '\n' +
+          '希望案件: ' + caseType + '\n' +
+          '━━━━━━━━━━━━━━━━━━━━\n' +
+          '▶ Chatworkグループ参加待ち\n' +
+          '▶ 管理画面: ' + LP_BASE_URL + 'admin.html';
+        try {
+          UrlFetchApp.fetch('https://api.chatwork.com/v2/rooms/' + editorRoomId + '/messages', {
+            method: 'POST',
+            headers: { 'X-ChatWorkToken': CHATWORK_TOKEN },
+            payload: 'body=' + encodeURIComponent(msg)
+          });
+        } catch(e) {}
+      }
+    }
+
     return jsonResponse({ success: true });
   }
 

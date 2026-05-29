@@ -131,16 +131,16 @@ a { text-decoration: none; color: inherit; }
   <div class="profile-mini">
     <div class="mini-avatar">🎬</div>
     <div>
-      <p class="mini-name">中村 航汰 / mono.create</p>
-      <p class="mini-sub">VIDEO EDITOR</p>
+      <p class="mini-name">mono.create</p>
+      <p class="mini-sub">VIDEO EDITING TEAM</p>
       <div class="status-pill"><span class="sdot"></span>受付中</div>
     </div>
   </div>
 
   <!-- Invite Code -->
   <div class="invite-wrap">
-    <p class="invite-label">🎁 フォロワー限定 招待コード</p>
-    <p class="invite-code" id="invite-code-text">MONO-SNS</p>
+    <p class="invite-label">🎁 あなた専用 招待コード</p>
+    <p class="invite-code" id="invite-code-text">読込中...</p>
     <div class="invite-rule">
       ✅ 通常価格プラン → <strong>5%引き</strong><br>
       ✅ すでに割引中のプラン → さらに<strong>+5%（最大15%引き）</strong><br>
@@ -250,13 +250,33 @@ a { text-decoration: none; color: inherit; }
   <a href="https://mono-create-group.github.io/lp/" class="btn-primary" style="background:linear-gradient(135deg,#1E293B,#334155);box-shadow:none;">サービス詳細ページを見る</a>
 
   <div class="footer">
-    <p>© 2026 mono.create / 中村航汰</p>
+    <p>© 2026 mono.create</p>
     <p style="margin-top:4px;"><a href="mypage.html">← プロフィールトップへ</a></p>
   </div>
 </div>
 
 <script>
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
+
+// ── 招待コード：URLパラメータ ?code=XXXX から読込
+// 例: client.html?code=MONO-TARO → 「MONO-TARO」をそのまま表示
+// コードがない場合は自動生成（MONO-XXXXXX 形式）
+(function initInviteCode() {
+  const params = new URLSearchParams(window.location.search);
+  let code = params.get('code') || params.get('Code') || '';
+  if (!code) {
+    // パラメータなし → ランダムコード（localStorage で同一ブラウザは固定）
+    const stored = localStorage.getItem('mc_invite_code');
+    if (stored) {
+      code = stored;
+    } else {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      code = 'MONO-' + Array.from({length:6}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
+      localStorage.setItem('mc_invite_code', code);
+    }
+  }
+  document.getElementById('invite-code-text').textContent = code;
+})();
 
 (async function loadSlots() {
   try {

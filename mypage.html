@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>中村航汰 | mono.create</title>
-<meta name="description" content="動画編集代行チームmono.create 中村航汰のプロフィールページ。クライアント・編集者の方それぞれにご案内します。">
+<title>mono.create</title>
+<meta name="description" content="動画編集代行チームmono.createのプロフィールページ。クライアント・編集者の方それぞれにご案内します。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Inter:wght@700;800&display=swap" rel="stylesheet">
 <style>
@@ -17,33 +17,56 @@ body {
   min-height: 100vh;
   display: flex; align-items: center; justify-content: center;
   padding: 32px 20px;
+  -webkit-font-smoothing: antialiased;
 }
 .page { max-width: 440px; width: 100%; }
 
 .profile-card {
   text-align: center;
   padding: 36px 24px 28px;
-  background: linear-gradient(145deg, #1E2D4A 0%, #162035 100%);
-  border: 1px solid #2A3F5F;
+  background: linear-gradient(145deg, #0F2A1F 0%, #14381A 50%, #0D2218 100%);
+  border: 1px solid #166534;
   border-radius: 20px;
   margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.profile-card::before {
+  content: '';
+  position: absolute; top: -40px; right: -40px;
+  width: 160px; height: 160px;
+  background: radial-gradient(circle, rgba(16,185,129,0.12) 0%, transparent 70%);
+  border-radius: 50%;
 }
 .profile-avatar {
   width: 88px; height: 88px; border-radius: 50%;
-  border: 3px solid #3B82F6; margin: 0 auto 14px;
-  background: linear-gradient(135deg, #1E40AF, #7C3AED);
+  border: 3px solid #10B981; margin: 0 auto 14px;
+  background: linear-gradient(135deg, #064E3B, #065F46);
   display: flex; align-items: center; justify-content: center;
   font-size: 2.2rem;
-  box-shadow: 0 0 24px rgba(59,130,246,0.3);
+  box-shadow: 0 0 28px rgba(16,185,129,0.35);
+  position: relative; z-index: 1;
 }
-.profile-name { font-size: 1.3rem; font-weight: 900; margin-bottom: 2px; }
-.profile-sub { font-size: 0.78rem; color: #60A5FA; font-weight: 700; margin-bottom: 10px; letter-spacing: 0.04em; }
-.profile-bio { font-size: 0.8rem; color: #94A3B8; line-height: 1.8; margin-bottom: 14px; }
+.profile-name {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.5rem; font-weight: 900;
+  color: #ECFDF5; margin-bottom: 4px;
+  letter-spacing: 0.02em;
+}
+.profile-sub {
+  font-size: 0.72rem; color: #34D399; font-weight: 800;
+  margin-bottom: 12px; letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.profile-bio {
+  font-size: 0.82rem; color: #86EFAC; line-height: 1.9;
+  margin-bottom: 16px;
+}
 .status-pill {
   display: inline-flex; align-items: center; gap: 6px;
   background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3);
   color: #34D399; font-size: 0.7rem; font-weight: 700;
-  padding: 4px 12px; border-radius: 20px;
+  padding: 5px 14px; border-radius: 20px;
 }
 .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #10B981; animation: pulse 2s infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
@@ -53,53 +76,61 @@ body {
   margin-bottom: 16px; letter-spacing: 0.08em;
 }
 
-.path-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+.path-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
 .path-btn {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 10px; padding: 24px 16px;
   border-radius: 16px; text-decoration: none;
   border: 2px solid transparent;
-  transition: transform 0.15s, border-color 0.2s;
+  transition: transform 0.15s, border-color 0.2s, box-shadow 0.2s;
   cursor: pointer;
 }
 .path-btn:hover { transform: translateY(-3px); }
+
 .path-client {
-  background: linear-gradient(145deg, #1E3A5F, #1A2D4A);
-  border-color: #3B82F6;
+  background: linear-gradient(145deg, #0B2040, #0F2A50);
+  border-color: #1D4ED8;
 }
-.path-client:hover { border-color: #60A5FA; }
+.path-client:hover {
+  border-color: #3B82F6;
+  box-shadow: 0 6px 24px rgba(59,130,246,0.2);
+}
+
 .path-editor {
-  background: linear-gradient(145deg, #1A3A2A, #142E20);
+  background: linear-gradient(145deg, #0F2A1F, #14381A);
   border-color: #059669;
 }
-.path-editor:hover { border-color: #34D399; }
+.path-editor:hover {
+  border-color: #10B981;
+  box-shadow: 0 6px 24px rgba(16,185,129,0.2);
+}
+
 .path-icon { font-size: 2rem; }
-.path-label { font-size: 0.88rem; font-weight: 800; color: #F1F5F9; }
+.path-label { font-size: 0.88rem; font-weight: 900; color: #F1F5F9; }
 .path-sub { font-size: 0.7rem; color: #94A3B8; text-align: center; line-height: 1.5; }
 
 .sns-row { display: flex; gap: 10px; }
 .sns-btn {
   flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px;
-  padding: 10px 12px; border-radius: 10px;
+  padding: 11px 12px; border-radius: 10px;
   font-size: 0.78rem; font-weight: 700; text-decoration: none;
-  border: 1px solid #1F2937; color: #94A3B8;
-  background: #111827; transition: opacity 0.2s;
+  border: 1px solid #1E2D4A; color: #94A3B8;
+  background: #131F35; transition: opacity 0.2s, border-color 0.2s;
 }
-.sns-btn:hover { opacity: 0.8; }
+.sns-btn:hover { opacity: 0.8; border-color: #2A3F5F; }
 
 .footer { text-align: center; margin-top: 20px; font-size: 0.68rem; color: #334155; }
-.footer a { color: #3B82F6; }
+.footer a { color: #34D399; }
 </style>
 </head>
 <body>
 <div class="page">
   <div class="profile-card">
     <div class="profile-avatar">🎬</div>
-    <p class="profile-name">中村 航汰</p>
-    <p class="profile-sub">VIDEO EDITOR / mono.create</p>
+    <p class="profile-name">mono.create</p>
+    <p class="profile-sub">VIDEO EDITING TEAM</p>
     <p class="profile-bio">
-      ショート動画・YouTube長尺の編集代行チーム運営。<br>
-      マーケター視点の編集設計で再生数・CVR向上を狙います。
+      編集から運用代行まで、<br>丸投げであなたの事業を加速させます。
     </p>
     <div class="status-pill">
       <span class="status-dot"></span>
