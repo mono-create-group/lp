@@ -294,20 +294,6 @@ function doGet(e) {
   var action = (e.parameter.action || '').toLowerCase();
   var key    = e.parameter.key || '';
 
-  // ── 一時：ScriptProperties セットアップ（実行後は自動削除不要・認証必須）──
-  if (action === '__init_props') {
-    if (key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
-    var p = PropertiesService.getScriptProperties();
-    p.setProperty('ADMIN_KEY',              ADMIN_KEY);
-    p.setProperty('SPREADSHEET_ID',         SPREADSHEET_ID);
-    p.setProperty('CHATWORK_TOKEN',         CHATWORK_TOKEN);
-    p.setProperty('CHATWORK_ROOM_ID',       CHATWORK_ROOM_ID);
-    p.setProperty('PAYMENT_ROOM_ID',        PAYMENT_ROOM_ID);
-    p.setProperty('EDITOR_ROOM_ID',         EDITOR_ROOM_ID);
-    p.setProperty('MATERIAL_PARENT_FOLDER_ID', MATERIAL_PARENT_FOLDER_ID);
-    return jsonResponse({ success: true, message: 'ScriptProperties を設定しました' });
-  }
-
   // ── 認証不要の公開エンドポイント ──────────────────────────────
   // LPからkeyなしで呼ばれるポートフォリオ一覧は公開
   if (action === 'portfolio') {
