@@ -1476,19 +1476,11 @@ footer {
     <div id="pf-genre-fixed" style="background:#FEF3C7;border:1px solid #D97706;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:0.78rem;color:#92400E;">
       ジャンル：<strong id="pf-modal-genre"></strong>
     </div>
-    <!-- ジャンル選択（直接申込の場合）-->
+    <!-- ジャンル選択（直接申込の場合・受付中ジャンルを動的生成）-->
     <div id="pf-genre-select-wrap" style="display:none;margin-bottom:16px;">
       <label style="display:block;font-size:0.8rem;font-weight:700;color:#374151;margin-bottom:6px;">ジャンル <span style="color:#DC2626;">*</span></label>
       <select id="pf-genre-select" style="width:100%;padding:10px 12px;border:1.5px solid #D97706;border-radius:8px;font-size:0.88rem;font-family:inherit;outline:none;background:#FEF3C7;color:#92400E;font-weight:700;">
         <option value="">— 選択してください —</option>
-        <option>TikTok・リール系</option>
-        <option>YouTube（Vlog・解説）</option>
-        <option>YouTube（ゲーム・エンタメ）</option>
-        <option>企業PR・商品紹介</option>
-        <option>ウェディング・イベント</option>
-        <option>広告系（バズ動画）</option>
-        <option>切り抜き系</option>
-        <option>その他・未定</option>
       </select>
     </div>
     <div style="margin-bottom:14px;">
@@ -2822,6 +2814,30 @@ async function loadPFSection() {
 }
 
 function renderPFGenres() {
+  // セレクトボックスを受付中ジャンルで更新（満席・成約済みは除外）
+  const sel = document.getElementById('pf-genre-select');
+  if (sel) {
+    sel.innerHTML = '<option value="">— 選択してください —</option>';
+    _pfGenres.forEach(g => {
+      const full = !g.active || g.count >= g.max;
+      const contracted = g.contracted > 0;
+      if (!full && !contracted) {
+        const opt = document.createElement('option');
+        opt.value = g.name;
+        const remain = Math.max(0, g.max - g.count);
+        opt.textContent = g.name + '（残り' + remain + '名）';
+        sel.appendChild(opt);
+      }
+    });
+    // 受付中が0件なら「その他・相談」だけ表示
+    if (sel.options.length === 1) {
+      const opt = document.createElement('option');
+      opt.value = 'その他・相談';
+      opt.textContent = 'その他・相談';
+      sel.appendChild(opt);
+    }
+  }
+
   const grid = document.getElementById('pf-genres-grid');
   if (!_pfGenres.length) { grid.innerHTML = '<p style="color:#94a3b8;">受付中のジャンルがありません。</p>'; return; }
   grid.innerHTML = _pfGenres.map(g => {
