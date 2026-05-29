@@ -1038,13 +1038,12 @@ function applyPartner(data) {
   }
   var now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
 
-  // 紹介コード自動生成（MC-名前5文字-4桁ランダム）
-  var prefix = (data.name || 'MONO').replace(/[^A-Za-z0-9゠-ヿ぀-ゟ一-鿿]/g, '').substring(0, 5);
-  if (!prefix) prefix = 'MONO';
-  // 日本語が含まれる場合はローマ字変換の代わりにランダム文字列を使用
-  if (/[^\x00-\x7F]/.test(prefix)) prefix = 'MC';
-  var suffix = Math.random().toString(36).substring(2, 6).toUpperCase();
-  var autoCode = 'MC-' + prefix.toUpperCase() + '-' + suffix;
+  // 紹介コード自動生成（英大文字＋数字 8文字ランダム）
+  var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // 紛らわしい文字(I,O,0,1)を除外
+  var autoCode = '';
+  for (var i = 0; i < 8; i++) {
+    autoCode += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
 
   sheet.appendRow([
     now,
