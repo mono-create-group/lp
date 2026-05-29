@@ -18,6 +18,7 @@ var SPREADSHEET_ID    = '13RESWCy5tuOqVzzG5aoeIFtyDk--OrLnpaPDep5yjj0';
 var CHATWORK_TOKEN    = 'f79405b3d71215d721e6a9d3f86f55a6';
 var CHATWORK_ROOM_ID  = '437407663';  // HPお問い合わせ
 var PAYMENT_ROOM_ID   = '437439208';  // 振込確認依頼
+var EDITOR_ROOM_ID    = '438093676';  // 🎬編集者募集（応募通知専用）
 var CHATWORK_MENTION  = 9377370;
 var SHEET_NAME        = 'inquiries';
 var OWNER_EMAIL       = 'mono.create.group@gmail.com';  // オーナー通知先
@@ -350,7 +351,7 @@ function doGet(e) {
     var status = e.parameter.status || '';
     var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
     var sh = ss.getSheetByName('editor_applications');
-    if (sh) sh.getRange(row, 11).setValue(status);
+    if (sh) sh.getRange(row, 13).setValue(status);  // 13列目=ステータス
     return jsonResponse({ success: true });
   }
 
@@ -832,20 +833,25 @@ function applyPartner(data) {
     '未対応'
   ]);
 
-  // Chatwork通知
+  // Chatwork通知（HPお問い合わせルームへ / メンション付き）
   if (CHATWORK_ROOM_ID) {
-    var msg = '[info][title]🤝 新規 パートナー登録申請[/title]' +
-      '受信日時: ' + now + '\n' +
-      '名前: ' + (data.name || '') + '\n' +
-      'メール: ' + (data.email || '') + '\n' +
-      '種別: ' + (data.partner_type || '') + '\n' +
-      'URL: ' + (data.url || '') + '\n' +
+    var msg = '[To:' + CHATWORK_MENTION + '] 中村航汰\n\n' +
+      '━━━━━━━━━━━━━━━━━━━━\n' +
+      '🤝 新規 パートナー登録申請 — mono.create\n' +
+      '━━━━━━━━━━━━━━━━━━━━\n' +
+      '受信日時    : ' + now + '\n' +
+      '名前        : ' + (data.name || '') + '\n' +
+      'メール      : ' + (data.email || '') + '\n' +
+      '種別        : ' + (data.partner_type || '') + '\n' +
+      'URL         : ' + (data.url || '') + '\n' +
       'フォロワー・PV: ' + (data.audience || '') + '\n' +
-      '紹介方法: ' + (data.method || '') + '\n' +
-      '希望報酬: ' + (data.reward || 'なし') + '\n' +
+      '紹介方法    : ' + (data.method || '') + '\n' +
+      '希望報酬    : ' + (data.reward || 'なし') + '\n' +
       '希望コード名: ' + (data.code_wish || 'なし') + '\n' +
-      'X: ' + (data.twitter || 'なし') + '\n\n' +
-      (data.message || '') + '[/info]';
+      'X           : ' + (data.twitter || 'なし') + '\n' +
+      '━━━━━━━━━━━━━━━━━━━━\n' +
+      (data.message ? '【メッセージ】\n' + data.message + '\n━━━━━━━━━━━━━━━━━━━━\n' : '') +
+      '▶ 管理画面: ' + LP_BASE_URL + 'admin.html';
     try {
       UrlFetchApp.fetch('https://api.chatwork.com/v2/rooms/' + CHATWORK_ROOM_ID + '/messages', {
         method: 'POST',
@@ -907,22 +913,28 @@ function applyEditor(data) {
     '未対応'
   ]);
 
-  // Chatwork通知
-  if (CHATWORK_ROOM_ID) {
-    var msg = '[info][title]🎬 新規 編集者応募[/title]' +
+  // Chatwork通知（編集者募集専用ルームへ / メンション付きで通知音＆バッジ表示）
+  var editorRoomId = EDITOR_ROOM_ID || CHATWORK_ROOM_ID;
+  if (editorRoomId) {
+    var dispatchLine = (data.dispatch && data.dispatch !== 'なし') ? '✅ 派遣登録希望あり\n' : '';
+    var msg = '[To:' + CHATWORK_MENTION + '] 中村航汰\n\n' +
+      '━━━━━━━━━━━━━━━━━━━━\n' +
+      '🎬 新規 編集者応募 — mono.create\n' +
+      '━━━━━━━━━━━━━━━━━━━━\n' +
       '受信日時: ' + now + '\n' +
-      '名前: ' + (data.name || '') + '\n' +
-      '年齢・性別: ' + (data.age || '') + ' / ' + (data.gender || '') + '\n' +
-      'メール: ' + (data.email || '') + '\n' +
+      '名前    : ' + (data.name || '') + '（' + (data.age || '') + ' / ' + (data.gender || '') + '）\n' +
+      'メール  : ' + (data.email || '') + '\n' +
       '希望案件: ' + (data.case_type || '') + '\n' +
-      '週・月の対応本数: ' + (data.weekly_monthly_vol || '') + '\n' +
+      '対応本数: ' + (data.weekly_monthly_vol || '') + '\n' +
       '得意分野: ' + (data.specialty || '') + '\n' +
       '長期契約: ' + (data.long_term || '') + '\n' +
-      '派遣希望: ' + (data.dispatch || 'なし') + '\n' +
-      'PF: ' + (data.portfolio || 'なし') + '\n\n' +
-      (data.message || '') + '[/info]';
+      dispatchLine +
+      'PF URL  : ' + (data.portfolio || 'なし') + '\n' +
+      '━━━━━━━━━━━━━━━━━━━━\n' +
+      (data.message ? '【メッセージ】\n' + data.message + '\n━━━━━━━━━━━━━━━━━━━━\n' : '') +
+      '▶ 管理画面: ' + LP_BASE_URL + 'admin.html';
     try {
-      UrlFetchApp.fetch('https://api.chatwork.com/v2/rooms/' + CHATWORK_ROOM_ID + '/messages', {
+      UrlFetchApp.fetch('https://api.chatwork.com/v2/rooms/' + editorRoomId + '/messages', {
         method: 'POST',
         headers: { 'X-ChatWorkToken': CHATWORK_TOKEN },
         payload: 'body=' + encodeURIComponent(msg)
