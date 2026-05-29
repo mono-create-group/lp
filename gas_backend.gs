@@ -180,6 +180,12 @@ function doPost(e) {
       return saveSales(data);
     }
 
+    // 経費記録（手動入力）
+    if (data.type === 'expense') {
+      if (data.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+      return saveExpense(data);
+    }
+
     // 制作スケジュール追加（POST via URL?action=schedule_add）
     var qa = (e.parameter && e.parameter.action) || '';
     if (qa === 'schedule_add') {
@@ -527,6 +533,22 @@ function doGet(e) {
   if (action === 'clear_inquiries')  return clearSheet(SHEET_NAME);
   if (action === 'clear_payments')   return clearSheet('payments');
   if (action === 'clear_sales')      return clearSheet('uriage');
+  if (action === 'clear_expenses')   return clearSheet('keiei');
+
+  if (action === 'expenses') {
+    return listExpenses();
+  }
+  if (action === 'expense_delete') {
+    if (e.parameter.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+    var row = parseInt(e.parameter.row, 10);
+    var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    var sh = ss.getSheetByName('keiei');
+    if (sh && row > 1) sh.deleteRow(row);
+    return jsonResponse({ success: true });
+  }
+  if (action === 'monthly_summary') {
+    return getMonthlySummary(e.parameter.month || '');
+  }
   if (action === 'clear_contracts')  return clearSheet('contracts');
   if (action === 'clear_hearings')   return clearSheet('hearings');
 
@@ -1962,6 +1984,113 @@ function listSales() {
   return jsonResponse({ data: data });
 }
 
+// ================================================================
+// 経費帳（keiei）
+// 取引日|相手先名|経費種別|摘要|金額|支払方法|備考
+//   1      2       3       4    5      6       7
+// 経費種別: パートナー報酬 / 外注費（編集者） / 広告宣伝費 / その他経費
+// ================================================================
+
+function getOrCreateKeieiSheet() {
+  var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName('keiei');
+  if (!sheet) {
+    sheet = ss.insertSheet('keiei');
+    sheet.appendRow(['取引日','相手先名','経費種別','摘要','金額','支払方法','備考']);
+    sheet.setFrozenRows(1);
+    sheet.getRange(1,1,1,7).setFontWeight('bold');
+    sheet.setColumnWidth(1,100); sheet.setColumnWidth(2,160);
+    sheet.setColumnWidth(3,140); sheet.setColumnWidth(4,220);
+    sheet.setColumnWidth(5,100); sheet.setColumnWidth(6,100);
+    sheet.setColumnWidth(7,200);
+  }
+  return sheet;
+}
+
+// 経費を記録（手動入力 & 自動記帳共用）
+function saveExpense(data) {
+  var sheet = getOrCreateKeieiSheet();
+  var today = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd');
+  sheet.appendRow([
+    data.date     || today,
+    data.name     || '',
+    data.category || 'その他経費',
+    data.summary  || '',
+    parseFloat(data.amount) || 0,
+    data.method   || 'PayPay',
+    data.note     || ''
+  ]);
+  return jsonResponse({ success: true });
+}
+
+// 経費一覧
+function listExpenses() {
+  var sheet  = getOrCreateKeieiSheet();
+  var values = sheet.getDataRange().getValues();
+  var data   = [];
+  for (var i = 1; i < values.length; i++) {
+    var r = values[i];
+    data.push({
+      row:      i + 1,
+      date:     r[0] || '',
+      name:     r[1] || '',
+      category: r[2] || '',
+      summary:  r[3] || '',
+      amount:   Number(r[4]) || 0,
+      method:   r[5] || '',
+      note:     r[6] || ''
+    });
+  }
+  data.sort(function(a,b){ return b.date > a.date ? 1 : -1; });
+  return jsonResponse({ data: data });
+}
+
+// 月次収支サマリー
+function getMonthlySummary(monthStr) {
+  // monthStr: "2026-05" 形式。空なら当月
+  var now = new Date();
+  var ym  = monthStr || Utilities.formatDate(now, 'Asia/Tokyo', 'yyyy-MM');
+
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+
+  // 売上合計
+  var uriage = ss.getSheetByName('uriage');
+  var salesTotal = 0;
+  if (uriage) {
+    var sv = uriage.getDataRange().getValues();
+    for (var i = 1; i < sv.length; i++) {
+      var d = sv[i][0] ? sv[i][0].toString().substring(0,7) : '';
+      if (d === ym) salesTotal += Number(sv[i][6]) || 0; // 税込（7列目）
+    }
+  }
+
+  // 経費合計
+  var keiei = ss.getSheetByName('keiei');
+  var expenseTotal = 0;
+  var expenseByCategory = {};
+  if (keiei) {
+    var kv = keiei.getDataRange().getValues();
+    for (var i = 1; i < kv.length; i++) {
+      var d = kv[i][0] ? kv[i][0].toString().substring(0,7) : '';
+      if (d === ym) {
+        var amt = Number(kv[i][4]) || 0;
+        var cat = kv[i][2] || 'その他';
+        expenseTotal += amt;
+        expenseByCategory[cat] = (expenseByCategory[cat] || 0) + amt;
+      }
+    }
+  }
+
+  return jsonResponse({
+    month:    ym,
+    sales:    salesTotal,
+    expense:  expenseTotal,
+    profit:   salesTotal - expenseTotal,
+    margin:   salesTotal > 0 ? Math.round((salesTotal - expenseTotal) / salesTotal * 100) : 0,
+    byCategory: expenseByCategory
+  });
+}
+
 // ── 振込報告一覧 ──────────────────────────────────────────────
 function listPayments() {
   var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
@@ -2813,14 +2942,37 @@ function sendPartnerRewardEmailAuto(row) {
   return jsonResponse({ success: true });
 }
 
-// 支払済みマーク
+// 支払済みマーク → 経費帳に自動記帳
 function markRewardPaid(row) {
-  var sheet = getOrCreatePartnerRewardsSheet();
+  var sheet   = getOrCreatePartnerRewardsSheet();
   var rowData = sheet.getRange(row, 1, 1, 10).getValues()[0];
+  var pName   = rowData[1] || '';
+  var total   = Number(rowData[8]) || 0;
+  var plan    = rowData[5] || '';
+  var code    = rowData[3] || '';
+  var client  = rowData[4] || '';
+
+  // ステータス更新
   sheet.getRange(row, 10).setValue('支払済み');
+
+  // 経費帳に自動記帳
+  try {
+    saveExpense({
+      date:     Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd'),
+      name:     pName,
+      category: 'パートナー報酬',
+      summary:  '紹介料 ' + pName + ' — ' + plan + '（' + client + ' 様成約 / コード:' + code + '）',
+      amount:   total,
+      method:   'PayPay',
+      note:     '自動記帳'
+    });
+  } catch(e) {
+    Logger.log('経費自動記帳エラー: ' + e);
+  }
+
   notifyOwnerEmail(
-    '【報酬支払済み】' + (rowData[1] || '') + ' — ¥' + (rowData[8] || ''),
-    ['パートナー: ' + rowData[1], '報酬額: ¥' + rowData[8], 'プラン: ' + rowData[5]]
+    '【報酬支払済み＆経費記帳】' + pName + ' — ¥' + total,
+    ['パートナー: ' + pName, '報酬額: ¥' + total, 'プラン: ' + plan, '経費帳: 自動記帳済み']
   );
   return jsonResponse({ success: true });
 }

@@ -424,7 +424,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       </button>
       <button id="tab-sales-btn" onclick="switchAdminTab('sales')"
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
-        💰 売上帳（青色申告）
+        💰 収支帳（青色申告）
       </button>
       <button id="tab-schedule-btn" onclick="switchAdminTab('schedule')"
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
@@ -637,8 +637,40 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
 
     <!-- ── 売上帳タブ ── -->
     <div id="tab-sales" style="display:none;">
+
+      <!-- ═══ 月次収支サマリー ═══ -->
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+          <h3 style="font-size:0.95rem;font-weight:700;">📊 月次収支サマリー</h3>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="month" id="summary-month" style="padding:6px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:#fff;font-size:0.82rem;font-family:inherit;" onchange="loadMonthlySummary()">
+            <button class="refresh-btn" onclick="loadMonthlySummary()">更新</button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:14px;">
+          <div class="stat-card" style="background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.3);">
+            <p class="stat-label">売上（税込）</p>
+            <p class="stat-val green" id="sum-sales">¥—</p>
+          </div>
+          <div class="stat-card" style="background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.3);">
+            <p class="stat-label">経費合計</p>
+            <p class="stat-val red" id="sum-expense">¥—</p>
+          </div>
+          <div class="stat-card" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.3);">
+            <p class="stat-label">利益</p>
+            <p class="stat-val blue" id="sum-profit">¥—</p>
+          </div>
+          <div class="stat-card" style="background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.3);">
+            <p class="stat-label">利益率</p>
+            <p class="stat-val" style="color:#F59E0B;" id="sum-margin">—%</p>
+          </div>
+        </div>
+        <div id="sum-by-category" style="font-size:0.78rem;color:var(--sub);"></div>
+      </div>
+
+      <!-- ═══ 売上（収入）セクション ═══ -->
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px;">
-        <h3 style="font-size:0.95rem;font-weight:700;margin-bottom:16px;">売上を記録（青色申告対応）</h3>
+        <h3 style="font-size:0.95rem;font-weight:700;margin-bottom:16px;">📈 売上を記録（青色申告対応）</h3>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;">
           <div>
             <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">取引日 *</label>
@@ -689,7 +721,80 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
           </tbody>
         </table>
       </div>
-    </div>
+    </div><!-- /売上セクション -->
+
+      <!-- ═══ 経費（支出）セクション ═══ -->
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px;">
+        <h3 style="font-size:0.95rem;font-weight:700;margin-bottom:16px;">📉 経費を記録（外注費・パートナー報酬など）</h3>
+        <div style="background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:0.78rem;color:#FCA5A5;">
+          💡 パートナー報酬は「支払済」ボタンを押すと自動記帳されます。ここでは外注費などを手動入力できます。
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:12px;">
+          <div>
+            <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">取引日 *</label>
+            <input type="date" id="ex-date" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;">
+          </div>
+          <div>
+            <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">相手先名 *</label>
+            <input type="text" id="ex-name" placeholder="田中太郎（編集者）" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;">
+          </div>
+          <div>
+            <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">経費種別 *</label>
+            <select id="ex-category" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;">
+              <option>外注費（編集者）</option>
+              <option>パートナー報酬</option>
+              <option>広告宣伝費</option>
+              <option>通信費</option>
+              <option>ソフトウェア・ツール費</option>
+              <option>その他経費</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">金額 *</label>
+            <input type="number" id="ex-amount" placeholder="2000" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;">
+          </div>
+          <div>
+            <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">支払方法</label>
+            <select id="ex-method" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;">
+              <option>PayPay</option>
+              <option>銀行振込</option>
+              <option>クレジットカード</option>
+              <option>現金</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">摘要</label>
+            <input type="text" id="ex-summary" placeholder="ショート動画編集 3本" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;">
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <button onclick="addExpenseRecord()" style="padding:10px 24px;background:var(--red);color:#fff;border:none;border-radius:50px;font-size:0.88rem;font-weight:700;font-family:inherit;cursor:pointer;">経費を記録</button>
+          <span id="ex-msg" style="font-size:0.82rem;color:var(--green);display:none;">記録しました！</span>
+        </div>
+      </div>
+
+      <!-- 経費一覧 -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+        <div>
+          <span style="font-size:0.82rem;color:var(--sub);">今月の経費合計：</span>
+          <span id="expense-total" style="font-size:1.1rem;font-weight:900;color:var(--red);font-family:'Inter',sans-serif;">¥—</span>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="export-btn" onclick="exportExpenseCSV()">経費CSV出力</button>
+          <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="clearAllRecords('expenses','経費帳',loadExpenses)">🗑 全件削除</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>取引日</th><th>相手先</th><th>種別</th><th>摘要</th><th>金額</th><th>支払方法</th><th></th>
+          </tr></thead>
+          <tbody id="expense-body">
+            <tr><td colspan="7" class="table-empty"><span class="spinner"></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div><!-- /tab-sales -->
 
     <!-- ── 制作スケジュール（納期管理）タブ ── -->
     <div id="tab-schedule" style="display:none;">
@@ -1776,7 +1881,7 @@ function switchAdminTab(tab) {
   if (tab === 'payments')  loadPayments();
   if (tab === 'contracts') loadContracts();
   if (tab === 'hearings')  loadHearings();
-  if (tab === 'sales')     loadSales();
+  if (tab === 'sales')     { loadSales(); initSummaryMonth(); loadMonthlySummary(); loadExpenses(); }
   if (tab === 'schedule')  loadSchedule();
   if (tab === 'settings')  { loadServiceStatus(); loadPFAdmin(); }
   if (tab === 'pf')          loadPFAdmin();
@@ -2986,6 +3091,114 @@ function downloadCSV(rows, filename) {
   a.href = URL.createObjectURL(blob);
   a.download = `${filename}_${new Date().toISOString().slice(0,10)}.csv`;
   a.click();
+}
+
+// ── 収支帳（経費帳）──
+let expenseData = [];
+
+function initSummaryMonth() {
+  const el = document.getElementById('summary-month');
+  if (el && !el.value) {
+    const now = new Date();
+    el.value = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+  }
+}
+
+async function loadMonthlySummary() {
+  const month = document.getElementById('summary-month').value; // 'YYYY-MM'
+  try {
+    const res = await fetch(`${GAS_URL}?action=monthly_summary&month=${encodeURIComponent(month)}&key=${encodeURIComponent(getAdminPw())}`);
+    const json = await res.json();
+    const d = json.data || {};
+    document.getElementById('sum-sales').textContent   = '¥' + Number(d.sales   || 0).toLocaleString();
+    document.getElementById('sum-expense').textContent = '¥' + Number(d.expense || 0).toLocaleString();
+    document.getElementById('sum-profit').textContent  = '¥' + Number(d.profit  || 0).toLocaleString();
+    const margin = d.margin != null ? d.margin : (d.sales ? Math.round((d.profit / d.sales) * 100) : 0);
+    const marginEl = document.getElementById('sum-margin');
+    marginEl.textContent = margin + '%';
+    marginEl.style.color = margin >= 30 ? 'var(--green)' : 'var(--red)';
+
+    // カテゴリ別内訳
+    const cat = d.byCategory || {};
+    const catEl = document.getElementById('sum-by-category');
+    const keys = Object.keys(cat);
+    if (keys.length === 0) {
+      catEl.innerHTML = '<span style="color:var(--sub);font-size:0.8rem;">経費なし</span>';
+    } else {
+      catEl.innerHTML = keys.map(k =>
+        `<span style="background:var(--bg3);border-radius:6px;padding:3px 10px;font-size:0.78rem;">${esc(k)}: ¥${Number(cat[k]).toLocaleString()}</span>`
+      ).join(' ');
+    }
+  } catch(e) { console.error('月次サマリー取得失敗', e); }
+}
+
+async function addExpenseRecord() {
+  const date     = document.getElementById('ex-date').value;
+  const name     = document.getElementById('ex-name').value.trim();
+  const category = document.getElementById('ex-category').value;
+  const amount   = document.getElementById('ex-amount').value;
+  const method   = document.getElementById('ex-method').value;
+  const summary  = document.getElementById('ex-summary').value.trim();
+  if (!date || !name || !amount) { alert('取引日・相手先名・金額は必須です'); return; }
+  try {
+    await fetch(GAS_URL, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type:'expense', key: getAdminPw(), date, name, category, amount: Number(amount), method, summary })
+    });
+    // フォームリセット
+    ['ex-date','ex-name','ex-amount','ex-summary'].forEach(id => { document.getElementById(id).value = ''; });
+    document.getElementById('ex-category').value = '外注費';
+    document.getElementById('ex-method').value   = 'PayPay';
+    setTimeout(() => { loadExpenses(); loadMonthlySummary(); }, 800);
+  } catch(e) { alert('記録に失敗しました'); }
+}
+
+async function loadExpenses() {
+  document.getElementById('expense-body').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--sub);"><span class="spinner"></span></td></tr>';
+  try {
+    const res  = await fetch(`${GAS_URL}?action=expenses&key=${encodeURIComponent(getAdminPw())}`);
+    const json = await res.json();
+    expenseData = json.data || [];
+    renderExpenses();
+  } catch(e) {
+    document.getElementById('expense-body').innerHTML = '<tr><td colspan="7" style="color:var(--red);padding:12px;">読み込み失敗</td></tr>';
+  }
+}
+
+function renderExpenses() {
+  const tbody = document.getElementById('expense-body');
+  if (!expenseData.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--sub);">経費データがありません</td></tr>';
+    return;
+  }
+  tbody.innerHTML = expenseData.map((ex, i) => `
+    <tr>
+      <td>${esc(ex.date||'')}</td>
+      <td>${esc(ex.name||'')}</td>
+      <td><span style="background:var(--bg3);border-radius:6px;padding:2px 8px;font-size:0.78rem;">${esc(ex.category||'')}</span></td>
+      <td style="font-size:0.82rem;color:var(--sub);">${esc(ex.summary||'')}</td>
+      <td style="font-weight:700;color:var(--red);">¥${Number(ex.amount||0).toLocaleString()}</td>
+      <td>${esc(ex.method||'')}</td>
+      <td><button onclick="deleteExpense(${ex.row})" style="background:none;border:1px solid var(--border);border-radius:6px;padding:3px 10px;cursor:pointer;font-size:0.78rem;color:var(--sub);">削除</button></td>
+    </tr>
+  `).join('');
+}
+
+async function deleteExpense(row) {
+  if (!confirm('この経費を削除しますか？')) return;
+  try {
+    const res = await fetch(`${GAS_URL}?action=expense_delete&row=${row}&key=${encodeURIComponent(getAdminPw())}`);
+    const json = await res.json();
+    if (json.success) { loadExpenses(); loadMonthlySummary(); }
+    else alert('削除に失敗しました');
+  } catch(e) { alert('削除に失敗しました'); }
+}
+
+function exportExpenseCSV() {
+  const rows = [['取引日','相手先名','経費種別','摘要','金額','支払方法']];
+  expenseData.forEach(ex => rows.push([ex.date, ex.name, ex.category, ex.summary, ex.amount, ex.method]));
+  downloadCSV(rows, 'monocreate_keiei_' + new Date().getFullYear());
 }
 
 // ── Portfolio ──
