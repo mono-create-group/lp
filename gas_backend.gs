@@ -176,13 +176,15 @@ function doPost(e) {
     var now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
     sheet.appendRow([
       now,
-      data.name        || '',
-      data.company     || '',
-      data.email       || '',
-      data.chatwork_id || '',
-      data.plan        || '',
-      data.message     || '',
-      '未対応'
+      data.name          || '',
+      data.company       || '',
+      data.email         || '',
+      data.chatwork_id   || '',
+      data.plan          || '',
+      data.message       || '',
+      '未対応',
+      '',                          // trial (9列目)
+      data.referral_code || ''     // 紹介コード (10列目)
     ]);
 
     if (CHATWORK_ROOM_ID) {
@@ -199,6 +201,7 @@ function doPost(e) {
         '▼ お問い合わせ内容',
         'プラン: ' + (data.plan || '未選択'),
         'ご相談内容: ' + (data.message || ''),
+        data.referral_code ? '紹介コード: ' + data.referral_code + '（割引が適用されます）' : '',
         '',
         '────────────────────────────',
         '📅 オンライン面談をご希望の方へ',
@@ -223,6 +226,7 @@ function doPost(e) {
         'メール: '  + (data.email       || '未入力'),
         'CW ID: '   + (data.chatwork_id || '未入力'),
         'プラン: '  + (data.plan        || ''),
+        data.referral_code ? '🎁 紹介コード: ' + data.referral_code : '',
         '',
         '【相談内容】',
         data.message || '',
@@ -441,8 +445,9 @@ function listInquiries() {
       chatwork_id: row[4] || '',
       plan:        row[5] || '',
       message:     row[6] || '',
-      status:      row[7] || '未対応',
-      trial:       row[8] || ''    // 'トライアル' or '' (9列目)
+      status:        row[7] || '未対応',
+      trial:         row[8] || '',    // 'トライアル' or '' (9列目)
+      referral_code: row[9] || ''     // 紹介コード (10列目)
     });
   }
 
@@ -592,6 +597,7 @@ function notifyChatwork(data, now) {
     'メール  ：' + (data.email || '未入力'),
     'CW ID   ：' + (data.chatwork_id || '未入力'),
     'プラン  ：' + (data.plan || '未入力'),
+    data.referral_code ? '🎁 紹介コード：' + data.referral_code + '（割引適用対象）' : '',
     '',
     '【相談内容】',
     data.message || '',
