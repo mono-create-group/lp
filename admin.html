@@ -1483,6 +1483,21 @@ const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtk
 // ★ DEFAULT_PASSWORD はソースコードに記述しない（初回は setup-screen で設定）
 // ───────────────────────────────────────────────────────────────
 
+// ── GASフェッチ共通ラッパー（タイムアウト付き）──
+const GAS_TIMEOUT_MS = 12000; // 12秒でタイムアウト
+async function gasFetch(url, options = {}) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), GAS_TIMEOUT_MS);
+  try {
+    const res = await fetch(url, { ...options, signal: ctrl.signal });
+    clearTimeout(timer);
+    return res;
+  } catch(e) {
+    clearTimeout(timer);
+    throw e;
+  }
+}
+
 // ── セキュリティ定数 ──
 const SESSION_KEY    = 'mc_admin_session';   // sessionStorage
 const PW_STORE_KEY   = 'mc_admin_pw';        // localStorage（実際のパスワード）
@@ -1552,7 +1567,7 @@ async function doSetup() {
   // GASのADMIN_KEYも同期（初期値から新パスワードへ）
   if (btn) { btn.disabled = true; btn.textContent = '同期中...'; }
   try {
-    const r = await fetch(GAS_URL, {
+    const r = await gasFetch(GAS_URL, {
       method: 'POST',
       body: JSON.stringify({ type: 'changePw', old_key: '20180412k', new_key: pw1 })
     });
@@ -1645,7 +1660,7 @@ async function loadData() {
     '<tr><td colspan="7" class="table-empty"><span class="spinner"></span></td></tr>';
 
   try {
-    const res = await fetch(`${GAS_URL}?action=list&key=${encodeURIComponent(getAdminPw())}`);
+    const res = await gasFetch(`${GAS_URL}?action=list&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
     if (json.error) throw new Error(json.error);
     inquiries = json.data || [];
@@ -1770,7 +1785,7 @@ async function toggleTrial(e, row, sheet, currentIsTrial) {
   e.stopPropagation();
   const newVal = currentIsTrial ? '' : 'トライアル';
   try {
-    await fetch(`${GAS_URL}?action=set_trial&key=${encodeURIComponent(getAdminPw())}&row=${row}&sheet=${sheet}&value=${encodeURIComponent(newVal)}`);
+    await gasFetch(`${GAS_URL}?action=set_trial&key=${encodeURIComponent(getAdminPw())}&row=${row}&sheet=${sheet}&value=${encodeURIComponent(newVal)}`);
     // ローカル状態を更新して再描画
     if (sheet === 'inquiries') {
       const item = inquiries.find(x => x.row === row);
@@ -1796,7 +1811,7 @@ async function openTrialMail(row) {
 
   let folderUrl = '';
   try {
-    const res  = await fetch(`${GAS_URL}?action=create_trial_folder&key=${encodeURIComponent(getAdminPw())}&name=${encodeURIComponent(h.name || 'unknown')}`);
+    const res  = await gasFetch(`${GAS_URL}?action=create_trial_folder&key=${encodeURIComponent(getAdminPw())}&name=${encodeURIComponent(h.name || 'unknown')}`);
     const json = await res.json();
     if (json.success) {
       folderUrl = json.url || '';
@@ -1863,7 +1878,7 @@ async function setStatus(row, status) {
 
 async function updateStatusGAS(row, status) {
   try {
-    await fetch(`${GAS_URL}?action=update&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(status)}`);
+    await gasFetch(`${GAS_URL}?action=update&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(status)}`);
     showToast(`✅ ステータスを「${status}」に更新`);
   } catch (e) {
     showToast('⚠ GAS未接続 — ステータスはローカルのみ変更');
@@ -1878,7 +1893,7 @@ async function cycleHearingStatus(row) {
   h.status = order[(order.indexOf(h.status) + 1) % 3];
   renderHearings();
   try {
-    await fetch(`${GAS_URL}?action=update_hearing_status&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(h.status)}`);
+    await gasFetch(`${GAS_URL}?action=update_hearing_status&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(h.status)}`);
     showToast(`✅ ステータスを「${h.status}」に更新`);
   } catch(e) {
     showToast('⚠ GAS未接続 — ステータスはローカルのみ変更');
@@ -1999,7 +2014,7 @@ function openMail(email, name, plan, type) {
 async function deleteInquiry(row, name) {
   if (!confirm(`「${name}」のお問い合わせを削除しますか？\n\nこの操作は元に戻せません。`)) return;
   try {
-    await fetch(`${GAS_URL}?action=inquiry_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    await gasFetch(`${GAS_URL}?action=inquiry_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
     // ローカルデータからも除去してテーブル再描画
     inquiries = inquiries.filter(i => i.row !== row);
     renderTable();
@@ -2101,7 +2116,7 @@ async function loadLpContent() {
   const area = document.getElementById('content-form-area');
   area.innerHTML = '<p style="color:var(--sub);font-size:0.85rem;">読み込み中...</p>';
   try {
-    const res = await fetch(`${GAS_URL}?action=content_get`);
+    const res = await gasFetch(`${GAS_URL}?action=content_get`);
     const d = await res.json();
     _currentContent = d.content || {};
     renderContentForm();
@@ -2153,7 +2168,7 @@ async function saveContent() {
 
   try {
     // まず全クリアしてから保存（空欄キーも反映するため）
-    await fetch(GAS_URL, {
+    await gasFetch(GAS_URL, {
       method: 'POST', mode: 'no-cors',
       body: JSON.stringify({ action: 'content_update', key: getAdminPw(), content })
     });
@@ -2173,7 +2188,7 @@ async function loadSchedule() {
   document.getElementById('schedule-body').innerHTML =
     '<tr><td colspan="8" class="table-empty"><span class="spinner"></span></td></tr>';
   try {
-    const res = await fetch(`${GAS_URL}?action=schedule_list&key=${encodeURIComponent(getAdminPw())}`);
+    const res = await gasFetch(`${GAS_URL}?action=schedule_list&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
     scheduleData = json.data || [];
     renderSchedule();
@@ -2267,7 +2282,7 @@ async function addScheduleItem() {
     showToast('クライアント名・素材タイトル・初稿納期は必須です', true); return;
   }
   try {
-    await fetch(`${GAS_URL}?action=schedule_add&key=${encodeURIComponent(getAdminPw())}`, {
+    await gasFetch(`${GAS_URL}?action=schedule_add&key=${encodeURIComponent(getAdminPw())}`, {
       method: 'POST', mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
@@ -2284,7 +2299,7 @@ async function updateScheduleStatus(row, status) {
   if (!status) return;
   try {
     const url = `${GAS_URL}?action=schedule_status&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(status)}`;
-    await fetch(url);
+    await gasFetch(url);
     showToast(`ステータス→ ${status}`);
     setTimeout(loadSchedule, 800);
   } catch(e) { showToast('更新エラー', true); }
@@ -2301,7 +2316,7 @@ async function loadPayments() {
   document.getElementById('payments-body').innerHTML =
     '<tr><td colspan="8" class="table-empty"><span class="spinner"></span></td></tr>';
   try {
-    const res  = await fetch(`${GAS_URL}?action=payments&key=${encodeURIComponent(getAdminPw())}`);
+    const res  = await gasFetch(`${GAS_URL}?action=payments&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
     payments   = json.data || [];
     renderPayments();
@@ -2346,7 +2361,7 @@ function renderPayments() {
 async function deleteContract(row, name) {
   if (!confirm(`「${name}」の契約同意記録を削除しますか？\n\nこの操作は元に戻せません。`)) return;
   try {
-    await fetch(`${GAS_URL}?action=contract_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    await gasFetch(`${GAS_URL}?action=contract_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
     showToast('削除しました');
     loadContracts();
   } catch(e) {
@@ -2357,7 +2372,7 @@ async function deleteContract(row, name) {
 async function deleteHearing(row, name) {
   if (!confirm(`「${name}」のヒアリング回答を削除しますか？\n\nこの操作は元に戻せません。`)) return;
   try {
-    await fetch(`${GAS_URL}?action=hearing_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    await gasFetch(`${GAS_URL}?action=hearing_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
     showToast('削除しました');
     loadHearings();
   } catch(e) {
@@ -2370,7 +2385,7 @@ async function clearAllRecords(sheet, label, reloadFn) {
   if (input !== '全件削除') { if (input !== null) alert('キャンセルしました。'); return; }
   try {
     const actionMap = { inquiries:'clear_inquiries', payments:'clear_payments', sales:'clear_sales', contracts:'clear_contracts', hearings:'clear_hearings' };
-    await fetch(`${GAS_URL}?action=${actionMap[sheet]}&key=${encodeURIComponent(getAdminPw())}`);
+    await gasFetch(`${GAS_URL}?action=${actionMap[sheet]}&key=${encodeURIComponent(getAdminPw())}`);
     showToast(`${label}を全件削除しました`);
     reloadFn();
   } catch(e) {
@@ -2381,7 +2396,7 @@ async function clearAllRecords(sheet, label, reloadFn) {
 async function deletePayment(row, name) {
   if (!confirm(`「${name}」の振込記録を削除しますか？\n\nこの操作は元に戻せません。`)) return;
   try {
-    await fetch(`${GAS_URL}?action=payment_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    await gasFetch(`${GAS_URL}?action=payment_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
     showToast('削除しました');
     loadPayments();
   } catch(e) {
@@ -2395,7 +2410,7 @@ async function approvePayment(row) {
   btn.disabled = true;
   btn.textContent = '処理中...';
   try {
-    const res = await fetch(`${GAS_URL}?action=approve_payment&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    const res = await gasFetch(`${GAS_URL}?action=approve_payment&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
     const json = await res.json();
     if (json.error === 'already_approved') {
       alert('この振込はすでに承認済みです。');
@@ -2431,7 +2446,7 @@ async function syncGasKey() {
 
   // まず現在のパスワードで試みる（既に同期済みの場合）
   try {
-    const testRes = await fetch(`${GAS_URL}?action=editors&key=${encodeURIComponent(currentPw)}`);
+    const testRes = await gasFetch(`${GAS_URL}?action=editors&key=${encodeURIComponent(currentPw)}`);
     const testJson = await testRes.json();
     if (!testJson.error) {
       showMsg('✅ GASとの認証は既に一致しています。', '#10B981');
@@ -2442,7 +2457,7 @@ async function syncGasKey() {
 
   // 初期キーで同期を試みる
   try {
-    const r = await fetch(GAS_URL, {
+    const r = await gasFetch(GAS_URL, {
       method: 'POST',
       body: JSON.stringify({ type: 'changePw', old_key: '20180412k', new_key: currentPw })
     });
@@ -2481,7 +2496,7 @@ async function changePassword() {
 
   showMsg('🔄 GASと同期中...', '#F59E0B');
   try {
-    const r = await fetch(GAS_URL, {
+    const r = await gasFetch(GAS_URL, {
       method: 'POST',
       body: JSON.stringify({ type: 'changePw', old_key: currentPw, new_key: newPw })
     });
@@ -2524,7 +2539,7 @@ async function loadServiceStatus() {
   const list = document.getElementById('service-status-list');
   if (!list) return;
   try {
-    const res = await fetch(GAS_URL + '?action=service_status');
+    const res = await gasFetch(GAS_URL + '?action=service_status');
     const status = await res.json();
     list.innerHTML = Object.keys(SERVICE_LABELS).map(key => {
       const info = SERVICE_LABELS[key];
@@ -2567,7 +2582,7 @@ async function toggleService(key, trackEl) {
   try {
     const body = { action: 'update_service_status', key: getAdminPw() };
     body[key] = newVal;
-    await fetch(GAS_URL, {
+    await gasFetch(GAS_URL, {
       method: 'POST', mode: 'no-cors',
       body: JSON.stringify(body)
     });
@@ -2588,7 +2603,7 @@ async function loadContracts() {
   document.getElementById('contracts-body').innerHTML =
     '<tr><td colspan="6" class="table-empty"><span class="spinner"></span></td></tr>';
   try {
-    const res = await fetch(`${GAS_URL}?action=contracts&key=${encodeURIComponent(getAdminPw())}`);
+    const res = await gasFetch(`${GAS_URL}?action=contracts&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
     contracts = json.data || [];
     renderContracts();
@@ -2636,7 +2651,7 @@ async function loadHearings() {
   document.getElementById('hearings-body').innerHTML =
     '<tr><td colspan="6" class="table-empty"><span class="spinner"></span></td></tr>';
   try {
-    const res = await fetch(`${GAS_URL}?action=hearings&key=${encodeURIComponent(getAdminPw())}`);
+    const res = await gasFetch(`${GAS_URL}?action=hearings&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
     hearings = json.data || [];
     renderHearings();
@@ -2839,7 +2854,7 @@ async function submitHearingLink() {
       + `&name=${encodeURIComponent(i.name||'')}`
       + `&plan=${encodeURIComponent(i.plan||'')}`
       + `&planKey=${encodeURIComponent(planKey)}`;
-    const res  = await fetch(url);
+    const res  = await gasFetch(url);
     const json = await res.json();
     if (json.success) {
       showToast('📋 ヒアリング案内メールを送信しました');
@@ -3034,7 +3049,7 @@ async function submitManualPaymentRequest() {
       + `&plan=${encodeURIComponent(plan || 'ご依頼プラン')}`
       + `&amount=${encodeURIComponent(amount)}`
       + `&due=${encodeURIComponent(due || '7日以内')}`;
-    const res  = await fetch(url);
+    const res  = await gasFetch(url);
     const json = await res.json();
     if (json.success) {
       showToast(`💳 ${name} 様に見積もりメールを送信しました`);
@@ -3197,7 +3212,7 @@ async function submitPaymentRequest() {
       + `&amount=${encodeURIComponent(amount)}`
       + `&due=${encodeURIComponent(due)}`
       + `&note=${encodeURIComponent(note)}`;
-    const res  = await fetch(url);
+    const res  = await gasFetch(url);
     const json = await res.json();
     if (json.success) {
       showToast('💳 振込依頼メールを送信しました');
@@ -3218,7 +3233,7 @@ async function loadSales() {
   document.getElementById('sales-body').innerHTML =
     '<tr><td colspan="8" class="table-empty"><span class="spinner"></span></td></tr>';
   try {
-    const res = await fetch(`${GAS_URL}?action=sales&key=${encodeURIComponent(getAdminPw())}`);
+    const res = await gasFetch(`${GAS_URL}?action=sales&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
     salesData = json.data || [];
     renderSales();
@@ -3267,7 +3282,7 @@ function renderSales() {
 async function deleteSalesRecord(row, client) {
   if (!confirm(`「${client}」の売上記録を削除しますか？\n\nこの操作は元に戻せません。`)) return;
   try {
-    await fetch(`${GAS_URL}?action=sales_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    await gasFetch(`${GAS_URL}?action=sales_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
     showToast('削除しました');
     loadSales();
   } catch(e) {
@@ -3286,7 +3301,7 @@ async function addSalesRecord() {
   const note    = document.getElementById('sl-note').value.trim();
   if (!date || !client || !amount) { alert('取引日・取引先・金額は必須です'); return; }
   try {
-    await fetch(GAS_URL, {
+    await gasFetch(GAS_URL, {
       method: 'POST', mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ type:'sales', date, client, amount, plan, payDate, note, confirmed:'未確認' })
@@ -3326,7 +3341,7 @@ function initSummaryMonth() {
 async function loadMonthlySummary() {
   const month = document.getElementById('summary-month').value; // 'YYYY-MM'
   try {
-    const res = await fetch(`${GAS_URL}?action=monthly_summary&month=${encodeURIComponent(month)}&key=${encodeURIComponent(getAdminPw())}`);
+    const res = await gasFetch(`${GAS_URL}?action=monthly_summary&month=${encodeURIComponent(month)}&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
     const d = json.data || {};
     document.getElementById('sum-sales').textContent   = '¥' + Number(d.sales   || 0).toLocaleString();
@@ -3360,7 +3375,7 @@ async function addExpenseRecord() {
   const summary  = document.getElementById('ex-summary').value.trim();
   if (!date || !name || !amount) { alert('取引日・相手先名・金額は必須です'); return; }
   try {
-    await fetch(GAS_URL, {
+    await gasFetch(GAS_URL, {
       method: 'POST', mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ type:'expense', key: getAdminPw(), date, name, category, amount: Number(amount), method, summary })
@@ -3376,7 +3391,7 @@ async function addExpenseRecord() {
 async function loadExpenses() {
   document.getElementById('expense-body').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--sub);"><span class="spinner"></span></td></tr>';
   try {
-    const res  = await fetch(`${GAS_URL}?action=expenses&key=${encodeURIComponent(getAdminPw())}`);
+    const res  = await gasFetch(`${GAS_URL}?action=expenses&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
     expenseData = json.data || [];
     renderExpenses();
@@ -3407,7 +3422,7 @@ function renderExpenses() {
 async function deleteExpense(row) {
   if (!confirm('この経費を削除しますか？')) return;
   try {
-    const res = await fetch(`${GAS_URL}?action=expense_delete&row=${row}&key=${encodeURIComponent(getAdminPw())}`);
+    const res = await gasFetch(`${GAS_URL}?action=expense_delete&row=${row}&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
     if (json.success) { loadExpenses(); loadMonthlySummary(); }
     else alert('削除に失敗しました');
@@ -3433,7 +3448,7 @@ async function autoFillDriveTitle(url) {
   const fetching = document.getElementById('pf-title-fetching');
   if (fetching) fetching.style.display = '';
   try {
-    const res = await fetch(`${GAS_URL}?action=drive_file_info&url=${encodeURIComponent(url)}&key=${encodeURIComponent(getAdminPw())}`);
+    const res = await gasFetch(`${GAS_URL}?action=drive_file_info&url=${encodeURIComponent(url)}&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
     if (json.name) {
       titleEl.value = json.name;
@@ -3452,7 +3467,7 @@ let editors = [];
 async function loadEditors() {
   document.getElementById('editors-list').innerHTML = '<div style="text-align:center;padding:40px;color:var(--sub);"><span class="spinner"></span></div>';
   try {
-    const res  = await fetch(`${GAS_URL}?action=editors&key=${encodeURIComponent(getAdminPw())}`);
+    const res  = await gasFetch(`${GAS_URL}?action=editors&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
     editors = json.data || [];
     renderEditors();
@@ -3558,7 +3573,7 @@ async function saveEditorForm() {
     portfolios
   };
   try {
-    const res = await fetch(GAS_URL, { method:'POST', body: JSON.stringify(payload) });
+    const res = await gasFetch(GAS_URL, { method:'POST', body: JSON.stringify(payload) });
     const json = await res.json();
     if (json.success) {
       showToast('✅ 編集者を保存しました');
@@ -3575,7 +3590,7 @@ async function saveEditorForm() {
 async function deleteEditorRow(row, name) {
   if (!confirm(`「${name}」を削除しますか？`)) return;
   try {
-    await fetch(`${GAS_URL}?action=editor_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    await gasFetch(`${GAS_URL}?action=editor_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
     showToast('🗑 削除しました');
     await loadEditors();
   } catch(e) {
@@ -3590,7 +3605,7 @@ async function loadPortfolioAdmin() {
     return;
   }
   try {
-    const res  = await fetch(`${GAS_URL}?action=portfolio&key=${encodeURIComponent(getAdminPw())}`);
+    const res  = await gasFetch(`${GAS_URL}?action=portfolio&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
     portfolioItems = json.data || [];
     renderPortfolioList();
@@ -3635,7 +3650,7 @@ async function addPortfolioItem() {
   if (!url) { alert('URLを入力してください。'); return; }
   if (!GAS_URL) { alert('GAS URLが設定されていません。'); return; }
   try {
-    await fetch(GAS_URL, {
+    await gasFetch(GAS_URL, {
       method: 'POST', mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'portfolio_add', key: getAdminPw(), url, title, genre, type })
@@ -3654,7 +3669,7 @@ async function deletePortfolioItem(row) {
   if (!confirm('削除しますか？')) return;
   if (!GAS_URL) { alert('GAS URLが設定されていません。'); return; }
   try {
-    await fetch(`${GAS_URL}?action=portfolio_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    await gasFetch(`${GAS_URL}?action=portfolio_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
     showToast('削除しました');
     loadPortfolioAdmin();
   } catch(e) { alert('削除に失敗しました。'); }
@@ -3665,7 +3680,7 @@ let _pfConfig = { max_slots: 5, genres: [], total_count: 0, remaining: 5 };
 
 async function loadPFAdmin() {
   try {
-    const res  = await fetch(`${GAS_URL}?action=pf_config&key=${encodeURIComponent(getAdminPw())}`);
+    const res  = await gasFetch(`${GAS_URL}?action=pf_config&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
     _pfConfig  = json;
     const el = document.getElementById('pf-max-slots');
@@ -3725,7 +3740,7 @@ function addPFGenre() {
 
 async function savePFConfig() {
   try {
-    await fetch(GAS_URL, {
+    await gasFetch(GAS_URL, {
       method: 'POST',
       body: JSON.stringify({
         action: 'pf_config_update',
@@ -3745,7 +3760,7 @@ async function loadPFInquiriesAdmin() {
   const el = document.getElementById('pf-admin-list');
   if (!el) return;
   try {
-    const res  = await fetch(`${GAS_URL}?action=pf_inquiries&key=${encodeURIComponent(getAdminPw())}`);
+    const res  = await gasFetch(`${GAS_URL}?action=pf_inquiries&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
     const items = json.data || [];
     if (!items.length) { el.innerHTML = '<p style="color:var(--sub);">申込がありません。</p>'; return; }
@@ -3778,13 +3793,13 @@ async function cyclePFStatus(row, currentStatus) {
   const order = ['未対応','対応中','成約済み','完了','キャンセル'];
   const idx = order.indexOf(currentStatus);
   const nextStatus = order[(idx + 1) % order.length];
-  await fetch(`${GAS_URL}?action=pf_status&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(nextStatus)}`);
+  await gasFetch(`${GAS_URL}?action=pf_status&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(nextStatus)}`);
   await loadPFInquiriesAdmin();
 }
 
 async function deletePFItem(row, name) {
   if (!confirm(`「${name}」の申込を削除しますか？`)) return;
-  await fetch(`${GAS_URL}?action=pf_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+  await gasFetch(`${GAS_URL}?action=pf_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
   showToast('🗑 削除しました');
   await loadPFAdmin();
 }
@@ -3796,7 +3811,7 @@ async function loadEditorApps() {
   document.getElementById('ea-body').innerHTML =
     '<tr><td colspan="10" class="table-empty"><span class="spinner"></span></td></tr>';
   try {
-    const res  = await fetch(`${GAS_URL}?action=editor_applications&key=${encodeURIComponent(getAdminPw())}`);
+    const res  = await gasFetch(`${GAS_URL}?action=editor_applications&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
     editorApps = json.data || [];
     updateEditorAppsStats();
@@ -3901,7 +3916,7 @@ async function hireEditor(row, name) {
 
 async function updateEditorAppStatus(row, status) {
   try {
-    await fetch(`${GAS_URL}?action=editor_app_status&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(status)}`);
+    await gasFetch(`${GAS_URL}?action=editor_app_status&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(status)}`);
     const item = editorApps.find(a => a.row === row);
     if (item) item.status = status;
     updateEditorAppsStats();
@@ -3914,7 +3929,7 @@ async function updateEditorAppStatus(row, status) {
 async function deleteEditorApp(row, name) {
   if (!confirm(`「${name}」の応募を削除しますか？\n\nこの操作は元に戻せません。`)) return;
   try {
-    await fetch(`${GAS_URL}?action=editor_app_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    await gasFetch(`${GAS_URL}?action=editor_app_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
     editorApps = editorApps.filter(a => a.row !== row);
     updateEditorAppsStats();
     renderEditorApps();
@@ -4009,7 +4024,7 @@ let partnerRewards = [];
 
 async function loadPartnerRewards() {
   try {
-    const res  = await fetch(`${GAS_URL}?action=partner_rewards`);
+    const res  = await gasFetch(`${GAS_URL}?action=partner_rewards`);
     const json = await res.json();
     partnerRewards = json.data || [];
     renderPartnerRewards();
@@ -4067,7 +4082,7 @@ function updateRewardStats() {
 async function sendRewardEmailAuto(row, name, total) {
   if (!confirm(`「${name}」さんへ報酬確定メール（¥${Number(total).toLocaleString()}）を送信しますか？`)) return;
   try {
-    const res  = await fetch(`${GAS_URL}?action=partner_reward_email_auto&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    const res  = await gasFetch(`${GAS_URL}?action=partner_reward_email_auto&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
     const json = await res.json();
     if (json.success) {
       showToast(`✅ 「${name}」さんへ報酬メールを送信しました（¥${Number(total).toLocaleString()}）`);
@@ -4081,7 +4096,7 @@ async function sendRewardEmailAuto(row, name, total) {
 async function markRewardPaid(row, name, total) {
   if (!confirm(`「${name}」さんへの¥${Number(total).toLocaleString()}の支払いを完了しましたか？`)) return;
   try {
-    const res  = await fetch(`${GAS_URL}?action=partner_reward_paid&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    const res  = await gasFetch(`${GAS_URL}?action=partner_reward_paid&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
     const json = await res.json();
     if (json.success) {
       showToast(`✅ 「${name}」さんの報酬を支払済みにしました`);
@@ -4100,7 +4115,7 @@ let rewardTargetRow = null;
 
 async function loadPartnerApps() {
   try {
-    const res  = await fetch(`${GAS_URL}?action=partner_applications&key=${encodeURIComponent(getAdminPw())}`);
+    const res  = await gasFetch(`${GAS_URL}?action=partner_applications&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
     partnerApps = json.data || [];
     updatePartnerAppsStats();
@@ -4177,7 +4192,7 @@ function renderPartnerApps() {
 
 async function updatePartnerAppStatus(row, status) {
   try {
-    await fetch(`${GAS_URL}?action=partner_app_status&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(status)}`);
+    await gasFetch(`${GAS_URL}?action=partner_app_status&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(status)}`);
     const item = partnerApps.find(a => a.row === row);
     if (item) item.status = status;
     updatePartnerAppsStats();
@@ -4226,7 +4241,7 @@ function openPartnerDetail(row) {
 async function deletePartnerApp(row, name) {
   if (!confirm(`「${name}」の申請を削除しますか？\nこの操作は元に戻せません。`)) return;
   try {
-    await fetch(`${GAS_URL}?action=partner_app_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    await gasFetch(`${GAS_URL}?action=partner_app_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
     partnerApps = partnerApps.filter(a => a.row !== row);
     updatePartnerAppsStats();
     renderPartnerApps();
@@ -4253,7 +4268,7 @@ async function submitRewardEmail() {
   if (!amount || isNaN(amount)) { alert('金額を入力してください'); return; }
   if (!rewardTargetRow) return;
   try {
-    await fetch(`${GAS_URL}?action=partner_reward_send&key=${encodeURIComponent(getAdminPw())}&row=${rewardTargetRow}&amount=${encodeURIComponent(amount)}`);
+    await gasFetch(`${GAS_URL}?action=partner_reward_send&key=${encodeURIComponent(getAdminPw())}&row=${rewardTargetRow}&amount=${encodeURIComponent(amount)}`);
     closeRewardModal();
     showToast(`✅ 報酬確定メール（¥${amount}）を送信しました`);
   } catch(e) {
