@@ -1062,6 +1062,20 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         ※ 別のブラウザやデバイスからログインする場合は、同じパスワードを設定してください。
       </p>
 
+      <!-- GAS 認証キー同期（復旧用） -->
+      <div style="background:var(--bg2);border:1px solid rgba(245,158,11,0.3);border-radius:12px;padding:24px;margin-top:20px;">
+        <h3 style="font-size:0.9rem;font-weight:700;margin-bottom:8px;color:#F59E0B;">🔄 GAS認証キー同期</h3>
+        <p style="font-size:0.76rem;color:var(--sub);margin-bottom:16px;line-height:1.6;">
+          「読み込みに失敗しました」「削除に失敗しました」が表示される場合は、ブラウザに保存されているパスワードとGASの認証キーが一致していない可能性があります。<br>
+          下のボタンで同期してください。
+        </p>
+        <p id="gas-sync-msg" style="font-size:0.8rem;margin-bottom:12px;display:none;"></p>
+        <button onclick="syncGasKey()"
+          style="width:100%;padding:12px;background:#92400E;color:#FDE68A;border:1px solid #F59E0B;border-radius:8px;font-weight:700;font-size:0.9rem;cursor:pointer;font-family:inherit;">
+          GASとパスワードを同期する
+        </button>
+      </div>
+
       <!-- サービス受付管理 -->
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-top:28px;">
         <h3 style="font-size:0.9rem;font-weight:700;margin-bottom:6px;color:var(--lt);">🔧 サービス受付管理</h3>
@@ -1526,13 +1540,35 @@ function checkSetupStrength() {
 }
 
 // ── 初回セットアップ ──
-function doSetup() {
+async function doSetup() {
   const pw1 = document.getElementById('setup-pw1').value;
   const pw2 = document.getElementById('setup-pw2').value;
   const err = document.getElementById('setup-error');
+  const btn = document.querySelector('#setup-screen .login-btn');
   const strength = checkPasswordStrength(pw1);
   if (!strength.ok) { err.textContent = '❌ ' + strength.msg; err.style.display = 'block'; return; }
   if (pw1 !== pw2)  { err.textContent = '❌ パスワードが一致しません。'; err.style.display = 'block'; return; }
+
+  // GASのADMIN_KEYも同期（初期値から新パスワードへ）
+  if (btn) { btn.disabled = true; btn.textContent = '同期中...'; }
+  try {
+    const r = await fetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify({ type: 'changePw', old_key: '20180412k', new_key: pw1 })
+    });
+    const j = await r.json();
+    if (j.error && j.error === 'unauthorized') {
+      // GAS側のキーが既に変更済み → ローカルに保存して続行（後で手動同期）
+      err.textContent = '⚠️ GAS同期をスキップしました（後でGAS同期ボタンから再試行できます）';
+      err.style.color = '#F59E0B'; err.style.display = 'block';
+    }
+  } catch(e) {
+    // ネットワークエラー等はスキップ
+    err.textContent = '⚠️ GAS同期に失敗しました（オフライン？）後で設定画面から再試行できます。';
+    err.style.color = '#F59E0B'; err.style.display = 'block';
+  }
+  if (btn) { btn.disabled = false; btn.textContent = 'パスワードを設定する'; }
+
   localStorage.setItem(PW_STORE_KEY, pw1);
   document.getElementById('setup-screen').style.display = 'none';
   document.getElementById('login-screen').style.display = 'flex';
@@ -2379,7 +2415,53 @@ async function approvePayment(row) {
 }
 
 // ── パスワード変更 ──
-function changePassword() {
+// ── GAS認証キー同期（復旧用） ──
+async function syncGasKey() {
+  const msg = document.getElementById('gas-sync-msg');
+  const btn = document.querySelector('button[onclick="syncGasKey()"]');
+  const showMsg = (text, color) => {
+    msg.textContent = text; msg.style.color = color; msg.style.display = 'block';
+  };
+
+  const currentPw = getAdminPw();
+  if (!currentPw) { showMsg('❌ パスワードが設定されていません。先にパスワードを設定してください。', '#EF4444'); return; }
+
+  if (btn) { btn.disabled = true; btn.textContent = '同期中...'; }
+  showMsg('🔄 GASと同期中...', '#F59E0B');
+
+  // まず現在のパスワードで試みる（既に同期済みの場合）
+  try {
+    const testRes = await fetch(`${GAS_URL}?action=editors&key=${encodeURIComponent(currentPw)}`);
+    const testJson = await testRes.json();
+    if (!testJson.error) {
+      showMsg('✅ GASとの認証は既に一致しています。', '#10B981');
+      if (btn) { btn.disabled = false; btn.textContent = 'GASとパスワードを同期する'; }
+      return;
+    }
+  } catch(e) {}
+
+  // 初期キーで同期を試みる
+  try {
+    const r = await fetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify({ type: 'changePw', old_key: '20180412k', new_key: currentPw })
+    });
+    const j = await r.json();
+    if (j.success) {
+      showMsg('✅ GASの認証キーをブラウザのパスワードに合わせました。管理機能が正常に動作します。', '#10B981');
+    } else if (j.error === 'unauthorized') {
+      showMsg('❌ 初期キーでの同期に失敗しました。GASのScriptPropertiesでADMIN_KEYを手動で現在のパスワードに設定してください。', '#EF4444');
+    } else {
+      showMsg('❌ エラー: ' + JSON.stringify(j), '#EF4444');
+    }
+  } catch(e) {
+    showMsg('❌ ネットワークエラー。GASのデプロイURLを確認してください。', '#EF4444');
+  }
+  if (btn) { btn.disabled = false; btn.textContent = 'GASとパスワードを同期する'; }
+}
+
+// ── パスワード変更 ──
+async function changePassword() {
   const current  = document.getElementById('pw-current').value;
   const newPw    = document.getElementById('pw-new').value;
   const confirm  = document.getElementById('pw-confirm').value;
@@ -2397,13 +2479,28 @@ function changePassword() {
   if (!strength.ok) { showMsg('❌ ' + strength.msg, '#EF4444'); return; }
   if (newPw !== confirm) { showMsg('❌ 新しいパスワードが一致しません。', '#EF4444'); return; }
 
+  showMsg('🔄 GASと同期中...', '#F59E0B');
+  try {
+    const r = await fetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify({ type: 'changePw', old_key: currentPw, new_key: newPw })
+    });
+    const j = await r.json();
+    if (j.error) {
+      showMsg('❌ GAS同期失敗: ' + j.error + '（ローカルのみ変更しました）', '#EF4444');
+    } else {
+      showMsg('✅ パスワードを変更しました（GASとの同期も完了）。', '#10B981');
+    }
+  } catch(e) {
+    showMsg('⚠️ GAS同期失敗（ローカルのみ変更）。設定画面の「GAS同期」ボタンから再試行を。', '#F59E0B');
+  }
+
   localStorage.setItem(PW_STORE_KEY, newPw);
   // セッションを更新（新パスワードで継続）
   sessionStorage.setItem(SESSION_KEY, JSON.stringify({ exp: Date.now() + SESSION_TTL }));
   document.getElementById('pw-current').value = '';
   document.getElementById('pw-new').value = '';
   document.getElementById('pw-confirm').value = '';
-  showMsg('✅ パスワードを変更しました（GASのADMIN_KEYも同じ値に更新してください）。', '#10B981');
 }
 
 // ── サービス受付管理 ──────────────────────────────────────────────

@@ -212,6 +212,14 @@ function doPost(e) {
       return saveExpense(data);
     }
 
+    // 管理者パスワード（ADMIN_KEY）変更
+    if (data.type === 'changePw') {
+      if (!data.old_key || data.old_key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+      if (!data.new_key || String(data.new_key).length < 8) return jsonResponse({ error: 'invalid key' });
+      PropertiesService.getScriptProperties().setProperty('ADMIN_KEY', String(data.new_key));
+      return jsonResponse({ success: true });
+    }
+
     // 制作スケジュール追加（POST via URL?action=schedule_add）
     var qa = (e.parameter && e.parameter.action) || '';
     if (qa === 'schedule_add') {
