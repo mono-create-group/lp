@@ -2889,8 +2889,26 @@ function openPFModal(genre) {
     fixedEl.style.display  = '';
     selectEl.style.display = 'none';
   } else {
-    // 直接申込 → セレクト表示
-    document.getElementById('pf-genre-select').value = '';
+    // 直接申込 → 受付中ジャンルをセレクトに構築して表示
+    const sel = document.getElementById('pf-genre-select');
+    sel.innerHTML = '<option value="">— 選択してください —</option>';
+    _pfGenres.forEach(g => {
+      const full = !g.active || g.count >= g.max;
+      const contracted = g.contracted > 0;
+      if (!full && !contracted) {
+        const opt = document.createElement('option');
+        opt.value = g.name;
+        const remain = Math.max(0, g.max - g.count);
+        opt.textContent = g.name + '（残り' + remain + '名）';
+        sel.appendChild(opt);
+      }
+    });
+    if (sel.options.length === 1) {
+      const opt = document.createElement('option');
+      opt.value = 'その他・相談';
+      opt.textContent = 'その他・相談';
+      sel.appendChild(opt);
+    }
     fixedEl.style.display  = 'none';
     selectEl.style.display = '';
   }
