@@ -2168,10 +2168,17 @@ async function saveContent() {
 
   try {
     // まず全クリアしてから保存（空欄キーも反映するため）
-    await gasFetch(GAS_URL, {
+    const res  = await gasFetch(GAS_URL, {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'content_update', key: getAdminPw(), content })
     });
+    const json = await res.json();
+    if (json.error) {
+      msg.style.color = 'var(--red)';
+      msg.textContent = '❌ 保存に失敗しました: ' + json.error;
+      return;
+    }
     _currentContent = content;
     msg.style.color = 'var(--green)';
     msg.textContent = '✅ 保存しました。LPに反映されました。';
@@ -2282,11 +2289,13 @@ async function addScheduleItem() {
     showToast('クライアント名・素材タイトル・初稿納期は必須です', true); return;
   }
   try {
-    await gasFetch(`${GAS_URL}?action=schedule_add&key=${encodeURIComponent(getAdminPw())}`, {
+    const res  = await gasFetch(`${GAS_URL}?action=schedule_add&key=${encodeURIComponent(getAdminPw())}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     });
+    const json = await res.json();
+    if (json.error) { showToast('登録エラー: ' + json.error, true); return; }
     showToast('📅 案件を登録しました（Chatworkに通知）');
     document.getElementById('sch-title').value = '';
     document.getElementById('sch-deadline-draft').value = '';
@@ -2582,12 +2591,24 @@ async function toggleService(key, trackEl) {
   try {
     const body = { action: 'update_service_status', key: getAdminPw() };
     body[key] = newVal;
-    await gasFetch(GAS_URL, {
+    const res  = await gasFetch(GAS_URL, {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     });
-    msg.textContent = '✅ 保存しました（LPに即時反映されます）';
-    msg.style.color = '#10B981';
+    const json = await res.json();
+    if (json.error) {
+      msg.textContent = '❌ 保存に失敗しました: ' + json.error;
+      msg.style.color = '#EF4444';
+      // UIを元に戻す
+      track.style.background = isCurrentlyOn ? '#10B981' : '#4B5563';
+      thumb.style.left = isCurrentlyOn ? '23px' : '3px';
+      label.textContent = isCurrentlyOn ? '受付中' : '停止中';
+      label.style.color = isCurrentlyOn ? '#10B981' : '#EF4444';
+    } else {
+      msg.textContent = '✅ 保存しました（LPに即時反映されます）';
+      msg.style.color = '#10B981';
+    }
     msg.style.display = 'block';
     setTimeout(() => { msg.style.display = 'none'; }, 3000);
   } catch(e) {
@@ -3301,16 +3322,18 @@ async function addSalesRecord() {
   const note    = document.getElementById('sl-note').value.trim();
   if (!date || !client || !amount) { alert('取引日・取引先・金額は必須です'); return; }
   try {
-    await gasFetch(GAS_URL, {
+    const res  = await gasFetch(GAS_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type:'sales', date, client, amount, plan, payDate, note, confirmed:'未確認' })
+      body: JSON.stringify({ type:'sales', key: getAdminPw(), date, client, amount, plan, payDate, note, confirmed:'未確認' })
     });
+    const json = await res.json();
+    if (json.error) { alert('記録に失敗しました: ' + json.error); return; }
     const msg = document.getElementById('sl-msg');
     msg.style.display = 'inline';
     setTimeout(() => { msg.style.display='none'; }, 2500);
     setTimeout(loadSales, 800);
-  } catch(e) { alert('記録に失敗しました'); }
+  } catch(e) { alert('記録に失敗しました。ネットワークを確認してください。'); }
 }
 function exportSalesCSV() {
   const rows = [['取引日','取引先名','プラン（摘要）','売上金額（税抜）','消費税額','売上金額（税込）','入金日','入金確認']];
@@ -3375,17 +3398,19 @@ async function addExpenseRecord() {
   const summary  = document.getElementById('ex-summary').value.trim();
   if (!date || !name || !amount) { alert('取引日・相手先名・金額は必須です'); return; }
   try {
-    await gasFetch(GAS_URL, {
+    const res  = await gasFetch(GAS_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ type:'expense', key: getAdminPw(), date, name, category, amount: Number(amount), method, summary })
     });
+    const json = await res.json();
+    if (json.error) { alert('記録に失敗しました: ' + json.error); return; }
     // フォームリセット
     ['ex-date','ex-name','ex-amount','ex-summary'].forEach(id => { document.getElementById(id).value = ''; });
     document.getElementById('ex-category').value = '外注費';
     document.getElementById('ex-method').value   = '銀行振込';
     setTimeout(() => { loadExpenses(); loadMonthlySummary(); }, 800);
-  } catch(e) { alert('記録に失敗しました'); }
+  } catch(e) { alert('記録に失敗しました。ネットワークを確認してください。'); }
 }
 
 async function loadExpenses() {
@@ -3663,7 +3688,7 @@ async function addPortfolioItem() {
     const msg = document.getElementById('pf-msg');
     msg.style.display = 'inline';
     setTimeout(() => { msg.style.display = 'none'; }, 2500);
-    loadPortfolioAdmin();
+    setTimeout(loadPortfolioAdmin, 1500); // GAS書き込み完了を待つ
   } catch(e) { alert('追加に失敗しました。ネットワークを確認してください。'); }
 }
 
@@ -3742,8 +3767,9 @@ function addPFGenre() {
 
 async function savePFConfig() {
   try {
-    await gasFetch(GAS_URL, {
+    const res  = await gasFetch(GAS_URL, {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         action: 'pf_config_update',
         key: getAdminPw(),
@@ -3751,6 +3777,8 @@ async function savePFConfig() {
         genres: _pfConfig.genres
       })
     });
+    const json = await res.json();
+    if (json.error) { showToast('⚠ 保存に失敗しました: ' + json.error, true); return; }
     showToast('✅ 設定を保存しました');
     renderPFGenresAdmin();
   } catch(e) {
