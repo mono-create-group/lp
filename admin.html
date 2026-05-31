@@ -1569,7 +1569,7 @@ async function doSetup() {
   try {
     const r = await gasFetch(GAS_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+
       body: JSON.stringify({ type: 'changePw', old_key: '20180412k', new_key: pw1 })
     });
     const j = await r.json();
@@ -2171,7 +2171,7 @@ async function saveContent() {
     // まず全クリアしてから保存（空欄キーも反映するため）
     const res  = await gasFetch(GAS_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+
       body: JSON.stringify({ action: 'content_update', key: getAdminPw(), content })
     });
     const json = await res.json();
@@ -2292,7 +2292,7 @@ async function addScheduleItem() {
   try {
     const res  = await gasFetch(`${GAS_URL}?action=schedule_add&key=${encodeURIComponent(getAdminPw())}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+
       body: JSON.stringify(data)
     });
     const json = await res.json();
@@ -2469,7 +2469,7 @@ async function syncGasKey() {
   try {
     const r = await gasFetch(GAS_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+
       body: JSON.stringify({ type: 'changePw', old_key: '20180412k', new_key: currentPw })
     });
     const j = await r.json();
@@ -2509,7 +2509,7 @@ async function changePassword() {
   try {
     const r = await gasFetch(GAS_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+
       body: JSON.stringify({ type: 'changePw', old_key: currentPw, new_key: newPw })
     });
     const j = await r.json();
@@ -2596,7 +2596,7 @@ async function toggleService(key, trackEl) {
     body[key] = newVal;
     const res  = await gasFetch(GAS_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+
       body: JSON.stringify(body)
     });
     const json = await res.json();
@@ -3327,7 +3327,7 @@ async function addSalesRecord() {
   try {
     const res  = await gasFetch(GAS_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+
       body: JSON.stringify({ type:'sales', key: getAdminPw(), date, client, amount, plan, payDate, note, confirmed:'未確認' })
     });
     const json = await res.json();
@@ -3403,7 +3403,7 @@ async function addExpenseRecord() {
   try {
     const res  = await gasFetch(GAS_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+
       body: JSON.stringify({ type:'expense', key: getAdminPw(), date, name, category, amount: Number(amount), method, summary })
     });
     const json = await res.json();
@@ -3680,7 +3680,7 @@ async function addPortfolioItem() {
   try {
     const res  = await gasFetch(GAS_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+
       body: JSON.stringify({ action: 'portfolio_add', key: getAdminPw(), url, title, genre, type })
     });
     const json = await res.json();
@@ -3772,7 +3772,7 @@ async function savePFConfig() {
   try {
     const res  = await gasFetch(GAS_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+
       body: JSON.stringify({
         action: 'pf_config_update',
         key: getAdminPw(),
@@ -4057,8 +4057,9 @@ let partnerRewards = [];
 
 async function loadPartnerRewards() {
   try {
-    const res  = await gasFetch(`${GAS_URL}?action=partner_rewards`);
+    const res  = await gasFetch(`${GAS_URL}?action=partner_rewards&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
+    if (json.error) { document.getElementById('rw-body').innerHTML = `<tr><td colspan="9" class="table-empty">読み込みエラー: ${json.error}</td></tr>`; return; }
     partnerRewards = json.data || [];
     renderPartnerRewards();
   } catch(e) {
