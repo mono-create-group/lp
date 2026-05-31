@@ -2204,7 +2204,7 @@ footer {
       </div>
 
       <div class="form-card fade-up">
-        <form id="contact-form">
+        <form id="contact-form" novalidate>
           <div class="form-grid">
             <div class="form-row">
               <label>お名前<span>*</span></label>
@@ -2925,14 +2925,33 @@ function closePFModal() {
 }
 
 async function submitPFForm() {
-  const name  = document.getElementById('pf-name').value.trim();
-  const email = document.getElementById('pf-email').value.trim();
-  if (!name || !email) { alert('お名前とメールアドレスを入力してください。'); return; }
+  const nameEl  = document.getElementById('pf-name');
+  const emailEl = document.getElementById('pf-email');
+  const ok = _validateFields([
+    { el: nameEl,  msg: 'お名前を入力してください' },
+    { el: emailEl, msg: 'メールアドレスを入力してください',
+      test: el => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim()) },
+  ]);
+  if (!ok) return;
+  const name  = nameEl.value.trim();
+  const email = emailEl.value.trim();
   // ジャンル解決：カード選択 or セレクト
   if (!_pfSelectedGenre) {
-    const sel = document.getElementById('pf-genre-select').value;
-    if (!sel) { alert('ジャンルを選択してください。'); return; }
-    _pfSelectedGenre = sel;
+    const sel = document.getElementById('pf-genre-select');
+    if (!sel || !sel.value) {
+      const selWrap = document.getElementById('pf-genre-select-wrap');
+      const errExist = selWrap.querySelector('.field-err-msg');
+      if (!errExist) {
+        const errEl = document.createElement('p');
+        errEl.className = 'field-err-msg';
+        errEl.style.cssText = 'color:#EF4444;font-size:0.76rem;margin:4px 0 0;';
+        errEl.textContent = '⚠ ジャンルを選択してください';
+        selWrap.appendChild(errEl);
+      }
+      selWrap.scrollIntoView({ behavior:'smooth', block:'center' });
+      return;
+    }
+    _pfSelectedGenre = sel.value;
   }
   const btn = document.getElementById('pf-submit-btn');
   btn.disabled = true;
@@ -3011,13 +3030,55 @@ document.getElementById('referral-code').addEventListener('input', function() {
   badge.style.display = this.value.trim().length >= 2 ? 'block' : 'none';
 });
 
+/* ── フォームバリデーション共通関数 ── */
+function _setFieldError(el, msg) {
+  el.style.borderColor = '#EF4444';
+  el.style.boxShadow   = '0 0 0 3px rgba(239,68,68,0.18)';
+  let errEl = el.parentNode.querySelector('.field-err-msg');
+  if (!errEl) {
+    errEl = document.createElement('p');
+    errEl.className = 'field-err-msg';
+    errEl.style.cssText = 'color:#EF4444;font-size:0.76rem;margin:4px 0 0;line-height:1.4;';
+    el.insertAdjacentElement('afterend', errEl);
+  }
+  errEl.textContent = '⚠ ' + msg;
+}
+function _clearFieldError(el) {
+  el.style.borderColor = '';
+  el.style.boxShadow   = '';
+  const errEl = el.parentNode.querySelector('.field-err-msg');
+  if (errEl) errEl.remove();
+}
+function _validateFields(checks) {
+  // checks: [{el, test, msg}]  test: 関数 or 省略(空でなければOK)
+  let firstBad = null;
+  checks.forEach(({ el, test, msg }) => {
+    const ok = test ? test(el) : el.value.trim() !== '';
+    if (!ok) { _setFieldError(el, msg || 'この項目は必須です'); if (!firstBad) firstBad = el; }
+    else       _clearFieldError(el);
+  });
+  if (firstBad) { firstBad.scrollIntoView({ behavior: 'smooth', block: 'center' }); firstBad.focus(); return false; }
+  return true;
+}
+
 document.getElementById('contact-form').addEventListener('submit', async (e) => {
   e.preventDefault();
+
+  const form = e.target;
+  const ok = _validateFields([
+    { el: form.name,    msg: 'お名前を入力してください' },
+    { el: form.email,   msg: 'メールアドレスを入力してください',
+      test: el => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim()) },
+    { el: form.plan,    msg: 'ご関心のあるサービスを選択してください',
+      test: el => el.value !== '' },
+    { el: form.message, msg: 'ご相談内容を入力してください' },
+  ]);
+  if (!ok) return;
+
   const btn = document.getElementById('submit-btn');
   btn.disabled = true;
   btn.textContent = '送信中...';
 
-  const form = e.target;
   const data = {
     name:          form.name.value,
     company:       form.company.value,
@@ -3032,7 +3093,6 @@ document.getElementById('contact-form').addEventListener('submit', async (e) => 
     await fetch(GAS_URL, {
       method:  'POST',
       mode:    'no-cors',
-      headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify(data),
     });
     form.style.display = 'none';

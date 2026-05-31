@@ -188,7 +188,7 @@ textarea.form-control { min-height:80px; resize:vertical; }
     <p class="form-title">📝 編集者応募フォーム</p>
     <p class="form-subtitle">記入後に送信してください。2〜3営業日以内にご連絡します。</p>
 
-    <form id="apply-form">
+    <form id="apply-form" novalidate>
 
       <!-- 基本情報 -->
       <div class="form-grid" style="margin-bottom:16px;">
@@ -324,14 +324,56 @@ textarea.form-control { min-height:80px; resize:vertical; }
 <script>
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
 
+function _setFieldError(el, msg) {
+  el.style.borderColor = '#EF4444';
+  el.style.boxShadow   = '0 0 0 3px rgba(239,68,68,0.18)';
+  let errEl = el.parentNode.querySelector('.field-err-msg');
+  if (!errEl) {
+    errEl = document.createElement('p');
+    errEl.className = 'field-err-msg';
+    errEl.style.cssText = 'color:#EF4444;font-size:0.76rem;margin:4px 0 0;line-height:1.4;';
+    el.insertAdjacentElement('afterend', errEl);
+  }
+  errEl.textContent = '⚠ ' + msg;
+}
+function _clearFieldError(el) {
+  el.style.borderColor = '';
+  el.style.boxShadow   = '';
+  const errEl = el.parentNode.querySelector('.field-err-msg');
+  if (errEl) errEl.remove();
+}
+function _validateFields(checks) {
+  let firstBad = null;
+  checks.forEach(function(c) {
+    const ok = c.test ? c.test(c.el) : (c.el.value.trim() !== '');
+    if (!ok) { _setFieldError(c.el, c.msg || 'この項目は必須です'); if (!firstBad) firstBad = c.el; }
+    else       _clearFieldError(c.el);
+  });
+  if (firstBad) { firstBad.scrollIntoView({ behavior: 'smooth', block: 'center' }); firstBad.focus(); return false; }
+  return true;
+}
+
 document.getElementById('apply-form').addEventListener('submit', async (e) => {
   e.preventDefault();
+
+  const form = e.target;
+  const case_type = form.querySelector('[name="case_type"]:checked')?.value || '';
+  const caseTypeEl = form.querySelector('[name="case_type"]');
+
+  const ok = _validateFields([
+    { el: form.name,      msg: 'お名前を入力してください' },
+    { el: form.email,     msg: 'メールアドレスを入力してください',
+      test: el => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim()) },
+    { el: caseTypeEl,     msg: '動画ジャンルを選択してください',
+      test: () => !!case_type },
+    { el: form.portfolio, msg: 'ポートフォリオURLを入力してください' },
+  ]);
+  if (!ok) return;
+
   const btn = document.getElementById('submit-btn');
   btn.disabled = true; btn.textContent = '送信中...';
 
-  const form = e.target;
   const gender    = form.querySelector('[name="gender"]:checked')?.value    || '';
-  const case_type = form.querySelector('[name="case_type"]:checked')?.value || '';
   const long_term = form.querySelector('[name="long_term"]:checked')?.value || '';
 
   const data = {
@@ -352,7 +394,6 @@ document.getElementById('apply-form').addEventListener('submit', async (e) => {
   try {
     await fetch(GAS_URL, {
       method: 'POST', mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
     document.getElementById('apply-form').style.display = 'none';

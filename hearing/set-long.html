@@ -389,8 +389,48 @@ document.getElementById('plan-display').textContent = paramPlan;
 renderPlanDetails();
 document.getElementById('plan-badge').textContent = paramPlan;
 
+/* ── フォームバリデーション ── */
+function _setFieldError(el, msg) {
+  el.style.borderColor = '#EF4444';
+  el.style.boxShadow   = '0 0 0 3px rgba(239,68,68,0.18)';
+  let errEl = el.parentNode.querySelector('.field-err-msg');
+  if (!errEl) {
+    errEl = document.createElement('p');
+    errEl.className = 'field-err-msg';
+    errEl.style.cssText = 'color:#EF4444;font-size:0.76rem;margin:4px 0 0;line-height:1.4;';
+    el.insertAdjacentElement('afterend', errEl);
+  }
+  errEl.textContent = '⚠ ' + msg;
+}
+function _clearFieldError(el) {
+  el.style.borderColor = '';
+  el.style.boxShadow   = '';
+  const errEl = el.parentNode.querySelector('.field-err-msg');
+  if (errEl) errEl.remove();
+}
+function _validateFields(checks) {
+  let firstBad = null;
+  checks.forEach(function({ el, test, msg }) {
+    const ok = test ? test(el) : (el.value.trim() !== '');
+    if (!ok) { _setFieldError(el, msg || 'この項目は必須です'); if (!firstBad) firstBad = el; }
+    else       _clearFieldError(el);
+  });
+  if (firstBad) { firstBad.scrollIntoView({ behavior: 'smooth', block: 'center' }); firstBad.focus(); return false; }
+  return true;
+}
+
 document.getElementById('hearing-form').addEventListener('submit', async (e) => {
   e.preventDefault();
+
+  // ── 必須項目バリデーション ──
+  const form = e.target;
+  const _valid = _validateFields([
+    { el: document.getElementById('f-name'),  msg: 'お名前を入力してください' },
+    { el: document.getElementById('f-email'), msg: '正しいメールアドレスを入力してください', test: function(el){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim()); } },
+    { el: form.querySelector('[name=yt_url]'), msg: 'YouTubeアカウントURLを入力してください' },
+    { el: form.querySelector('[name=genre]'),  msg: 'ジャンル/テーマを入力してください' }
+  ]);
+  if (!_valid) return;
   const btn = document.getElementById('submit-btn');
   btn.disabled = true; btn.textContent = '送信中...';
   const form = e.target;
