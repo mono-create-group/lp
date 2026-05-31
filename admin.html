@@ -1569,6 +1569,7 @@ async function doSetup() {
   try {
     const r = await gasFetch(GAS_URL, {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ type: 'changePw', old_key: '20180412k', new_key: pw1 })
     });
     const j = await r.json();
@@ -2468,6 +2469,7 @@ async function syncGasKey() {
   try {
     const r = await gasFetch(GAS_URL, {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ type: 'changePw', old_key: '20180412k', new_key: currentPw })
     });
     const j = await r.json();
@@ -2507,6 +2509,7 @@ async function changePassword() {
   try {
     const r = await gasFetch(GAS_URL, {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ type: 'changePw', old_key: currentPw, new_key: newPw })
     });
     const j = await r.json();
