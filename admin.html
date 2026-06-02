@@ -480,6 +480,10 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
         🤝 パートナー
       </button>
+      <button id="tab-private-link-btn" onclick="switchAdminTab('private-link')"
+        style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
+        🔗 個別見積もりリンク
+      </button>
     </div>
 
     <!-- ── 問い合わせタブ ── -->
@@ -1317,8 +1321,171 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       </div>
     </div><!-- /tab-partner-apps -->
 
+    <!-- ══════════════════════════════════════════════════════════════════
+         🔗 個別見積もりリンク生成タブ
+         ══════════════════════════════════════════════════════════════════ -->
+    <div id="tab-private-link" style="display:none;max-width:640px;margin:0 auto;padding:32px 0;">
+      <h2 style="font-size:1.1rem;font-weight:900;margin-bottom:6px;">🔗 個別見積もりリンク生成</h2>
+      <p style="font-size:0.82rem;color:var(--sub);margin-bottom:28px;line-height:1.7;">
+        クライアント専用の価格リンクを生成します。このURLを受け取った方のみ、専用プランが表示されます。<br>
+        ホームページの一般公開ページには影響しません。
+      </p>
+
+      <div style="background:#F8FAFC;border:1.5px solid #CBD5E1;border-radius:14px;padding:24px;">
+        <div style="margin-bottom:16px;">
+          <label style="display:block;font-size:0.78rem;font-weight:700;color:#475569;margin-bottom:6px;">クライアント名<span style="color:#EF4444;">*</span></label>
+          <input id="pl-client" type="text" placeholder="例：山田 太郎 様" style="width:100%;padding:10px 12px;border:1.5px solid #CBD5E1;border-radius:8px;font-size:0.88rem;font-family:inherit;outline:none;">
+        </div>
+        <div style="margin-bottom:16px;">
+          <label style="display:block;font-size:0.78rem;font-weight:700;color:#475569;margin-bottom:6px;">プラン名<span style="color:#EF4444;">*</span></label>
+          <input id="pl-plan" type="text" placeholder="例：ショート動画5本セット・テロップ特急込み" style="width:100%;padding:10px 12px;border:1.5px solid #CBD5E1;border-radius:8px;font-size:0.88rem;font-family:inherit;outline:none;">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+          <div>
+            <label style="display:block;font-size:0.78rem;font-weight:700;color:#475569;margin-bottom:6px;">金額（円）</label>
+            <input id="pl-price" type="number" placeholder="例：49800" style="width:100%;padding:10px 12px;border:1.5px solid #CBD5E1;border-radius:8px;font-size:0.88rem;font-family:inherit;outline:none;">
+          </div>
+          <div>
+            <label style="display:block;font-size:0.78rem;font-weight:700;color:#475569;margin-bottom:6px;">備考・割引理由</label>
+            <input id="pl-note" type="text" placeholder="例：初回特別価格" style="width:100%;padding:10px 12px;border:1.5px solid #CBD5E1;border-radius:8px;font-size:0.88rem;font-family:inherit;outline:none;">
+          </div>
+        </div>
+
+        <!-- セットプラン内訳 -->
+        <div style="border:1px solid #CBD5E1;border-radius:10px;padding:14px;margin-bottom:16px;background:#fff;">
+          <p style="font-size:0.78rem;font-weight:700;color:#475569;margin-bottom:10px;">📦 セットプラン内訳（任意）</p>
+          <div id="pl-items-list"></div>
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <input id="pl-item-input" type="text" placeholder="例：ショート動画5本 ¥20,000" style="flex:1;padding:8px 12px;border:1.5px solid #CBD5E1;border-radius:8px;font-size:0.82rem;font-family:inherit;outline:none;">
+            <button onclick="addPLItem()" style="padding:8px 14px;background:#1E40AF;color:#fff;border:none;border-radius:8px;font-size:0.82rem;font-weight:700;cursor:pointer;white-space:nowrap;">＋ 追加</button>
+          </div>
+        </div>
+
+        <button onclick="generatePrivateLink()" style="width:100%;padding:13px;background:linear-gradient(135deg,#1E40AF,#2563EB);color:#fff;border:none;border-radius:10px;font-size:0.95rem;font-weight:800;cursor:pointer;font-family:inherit;margin-bottom:16px;">
+          🔗 リンクを生成する
+        </button>
+
+        <!-- 生成結果 -->
+        <div id="pl-result" style="display:none;">
+          <p style="font-size:0.78rem;font-weight:700;color:#059669;margin-bottom:8px;">✅ リンクが生成されました</p>
+          <div style="background:#EFF6FF;border:1.5px solid #BFDBFE;border-radius:8px;padding:12px;word-break:break-all;">
+            <p id="pl-url" style="font-size:0.78rem;color:#1E40AF;font-family:monospace;line-height:1.6;"></p>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px;">
+            <button onclick="copyPLUrl()" style="flex:1;padding:10px;background:#059669;color:#fff;border:none;border-radius:8px;font-size:0.85rem;font-weight:700;cursor:pointer;">📋 URLをコピー</button>
+            <button onclick="openPLUrl()" style="flex:1;padding:10px;background:#6B7280;color:#fff;border:none;border-radius:8px;font-size:0.85rem;font-weight:700;cursor:pointer;">🔗 ブラウザで確認</button>
+          </div>
+          <div id="pl-summary" style="margin-top:16px;padding:14px;background:#F9FAFB;border:1px solid #E5E7EB;border-radius:10px;font-size:0.8rem;color:#374151;line-height:1.8;"></div>
+        </div>
+      </div>
+
+      <!-- 生成履歴 -->
+      <div style="margin-top:28px;">
+        <p style="font-size:0.82rem;font-weight:800;color:#374151;margin-bottom:12px;">📋 生成履歴（このセッション）</p>
+        <div id="pl-history" style="display:flex;flex-direction:column;gap:10px;"></div>
+      </div>
+    </div><!-- /tab-private-link -->
+
   </main>
 </div>
+
+<script>
+/* ─── 個別見積もりリンク生成 ─────────────────────────────────── */
+var _plItems = [];
+var _plHistory = [];
+var LP_BASE_URL = 'https://mono-create-group.github.io/lp/';
+
+function addPLItem() {
+  var inp = document.getElementById('pl-item-input');
+  var val = inp.value.trim();
+  if (!val) return;
+  _plItems.push(val);
+  inp.value = '';
+  renderPLItems();
+}
+function removePLItem(i) {
+  _plItems.splice(i, 1);
+  renderPLItems();
+}
+function renderPLItems() {
+  var list = document.getElementById('pl-items-list');
+  if (!list) return;
+  list.innerHTML = _plItems.map(function(item, i) {
+    return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">'
+      + '<span style="flex:1;font-size:0.82rem;color:#374151;background:#F3F4F6;padding:6px 10px;border-radius:6px;">' + item + '</span>'
+      + '<button onclick="removePLItem(' + i + ')" style="background:#EF4444;color:#fff;border:none;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:0.75rem;">✕</button>'
+      + '</div>';
+  }).join('');
+}
+
+function generatePrivateLink() {
+  var client = document.getElementById('pl-client').value.trim();
+  var plan   = document.getElementById('pl-plan').value.trim();
+  var price  = document.getElementById('pl-price').value.trim();
+  var note   = document.getElementById('pl-note').value.trim();
+
+  if (!plan) { alert('プラン名は必須です'); return; }
+
+  var params = new URLSearchParams();
+  params.set('sv', '1');
+  if (plan)   params.set('pn', plan);
+  if (price)  params.set('pr', price);
+  if (note)   params.set('note', note);
+  if (client) params.set('cl', client);
+
+  var url = LP_BASE_URL + '?' + params.toString();
+  document.getElementById('pl-url').textContent = url;
+
+  // Summary
+  var summary = '<strong>クライアント：</strong>' + (client || '（未設定）') + '<br>'
+    + '<strong>プラン：</strong>' + plan + '<br>'
+    + (price ? '<strong>金額：</strong>¥' + parseInt(price, 10).toLocaleString() + '<br>' : '')
+    + (note ? '<strong>備考：</strong>' + note + '<br>' : '')
+    + (_plItems.length > 0 ? '<strong>内訳：</strong><br>' + _plItems.map(function(x){ return '　・' + x; }).join('<br>') : '');
+  document.getElementById('pl-summary').innerHTML = summary;
+  document.getElementById('pl-result').style.display = 'block';
+
+  // Add to history
+  var hist = { client: client, plan: plan, price: price, note: note, url: url, ts: new Date().toLocaleString('ja-JP') };
+  _plHistory.unshift(hist);
+  renderPLHistory();
+}
+
+function copyPLUrl() {
+  var url = document.getElementById('pl-url').textContent;
+  navigator.clipboard.writeText(url).then(function() {
+    alert('URLをコピーしました！');
+  });
+}
+function openPLUrl() {
+  var url = document.getElementById('pl-url').textContent;
+  window.open(url, '_blank');
+}
+
+function renderPLHistory() {
+  var hist = document.getElementById('pl-history');
+  if (!hist) return;
+  hist.innerHTML = _plHistory.map(function(h, i) {
+    return '<div style="background:#F8FAFC;border:1px solid #E5E7EB;border-radius:10px;padding:12px 16px;">'
+      + '<div style="display:flex;justify-content:space-between;align-items:flex-start;">'
+      + '<div style="flex:1;">'
+      + '<p style="font-size:0.82rem;font-weight:800;color:#0F172A;margin-bottom:2px;">' + (h.client || '（クライアント名なし）') + '</p>'
+      + '<p style="font-size:0.78rem;color:#475569;margin-bottom:4px;">' + h.plan + (h.price ? '　¥' + parseInt(h.price, 10).toLocaleString() : '') + '</p>'
+      + '<p style="font-size:0.7rem;color:#94A3B8;">' + h.ts + '</p>'
+      + '</div>'
+      + '<button onclick="navigator.clipboard.writeText(\'' + h.url.replace(/'/g, "\\'") + '\').then(function(){alert(\'コピーしました\')})" '
+      + 'style="padding:6px 12px;background:#1E40AF;color:#fff;border:none;border-radius:6px;font-size:0.75rem;cursor:pointer;white-space:nowrap;margin-left:10px;">コピー</button>'
+      + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+// Tab init
+(function() {
+  var allTabs = document.querySelectorAll('[id^="tab-"][id$="-btn"]:not([id="tab-private-link-btn"])');
+  // handled by switchAdminTab
+})();
+</script>
 
 <!-- ── Modal ── -->
 <div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
@@ -2039,7 +2206,7 @@ function exportCSV() {
 }
 
 // ── Tab switch ──
-const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps','partner-apps'];
+const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps','partner-apps','private-link'];
 function switchAdminTab(tab) {
   ADMIN_TABS.forEach(t => {
     document.getElementById('tab-' + t).style.display = t === tab ? '' : 'none';

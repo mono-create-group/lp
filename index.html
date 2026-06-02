@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- build:v20260525-3 -->
+<!-- build:v20260602-1 -->
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 <script>
 // ── キャッシュ自動更新 ──────────────────────────────────────────
 (function(){
-  var BUILT = 'v20260526-8';
+  var BUILT = 'v20260602-1';
   fetch('/lp/version.json?_=' + Date.now(), {cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(d){
@@ -188,8 +188,8 @@ a { text-decoration: none; color: inherit; }
 /* ── CSS Variables ── */
 :root {
   --bg:        #FFFFFF;
-  --bg2:       #FAF9F6;
-  --bg3:       #F3EFE9;
+  --bg2:       #F8FAFC;
+  --bg3:       #EEF2F8;
   --accent:    #1E40AF;
   --accent-lt: #2563EB;
   --glow:      rgba(30,64,175,0.10);
@@ -200,7 +200,12 @@ a { text-decoration: none; color: inherit; }
   --sub:       #64748B;
   --border:    rgba(15,23,42,0.09);
   --card:      rgba(15,23,42,0.03);
-  --radius:    12px;
+  --radius:    14px;
+  /* Hero dark palette */
+  --hero-bg:   #050D1F;
+  --hero-grid: rgba(255,255,255,0.022);
+  --hero-glow1: rgba(37,99,235,0.20);
+  --hero-glow2: rgba(99,37,235,0.14);
 }
 
 /* ── Utilities ── */
@@ -281,39 +286,62 @@ a { text-decoration: none; color: inherit; }
 /* ── Nav ── */
 nav {
   position: fixed; top: 40px; left: 0; right: 0; z-index: 100;
-  background: rgba(255,255,255,0.92);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
-  padding: 14px 24px;
+  background: rgba(5,13,31,0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  padding: 12px 32px;
   display: flex; align-items: center; justify-content: space-between;
+  transition: background 0.3s;
 }
-.nav-logo { font-weight: 900; font-size: 1.1rem; letter-spacing: 0.03em; }
-.nav-logo span { color: var(--accent-lt); }
-.nav-links { display: flex; gap: 24px; align-items: center; }
-.nav-links a { font-size: 0.85rem; color: var(--sub); transition: color 0.2s; }
-.nav-links a:hover { color: var(--text); }
+nav.nav-scrolled {
+  background: rgba(5,13,31,0.96);
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+.nav-logo img { height: 30px; width: auto; display: block; filter: brightness(0) invert(1); }
+.nav-logo-text {
+  font-weight: 900; font-size: 1rem; letter-spacing: 0.05em;
+  color: #fff; font-family: 'Inter', sans-serif;
+}
+.nav-links { display: flex; gap: 22px; align-items: center; }
+.nav-links a { font-size: 0.83rem; color: rgba(255,255,255,0.68); transition: color 0.2s; font-weight: 500; }
+.nav-links a:hover { color: #fff; }
 @media (max-width: 640px) { .nav-links { display: none; } }
 
 /* ── Hero ── */
 .hero {
+  background: var(--hero-bg);
   min-height: 100vh;
   display: flex; align-items: center;
   padding: 160px 24px 80px;
   position: relative;
   overflow: hidden;
+  color: #fff;
 }
 .hero::before {
   content: '';
   position: absolute; inset: 0;
   background:
-    radial-gradient(ellipse 60% 60% at 70% 40%, rgba(30,64,175,0.06) 0%, transparent 70%),
-    radial-gradient(ellipse 40% 40% at 20% 70%, rgba(99,37,235,0.04) 0%, transparent 60%);
+    radial-gradient(ellipse 70% 65% at 80% 30%, var(--hero-glow1) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 55% at 15% 80%, var(--hero-glow2) 0%, transparent 60%);
   pointer-events: none;
+  z-index: 0;
 }
+.hero::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(var(--hero-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--hero-grid) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}
+.hero > * { position: relative; z-index: 1; }
 .hero-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 64px;
+  grid-template-columns: 55% 1fr;
+  gap: 56px;
   align-items: center;
   max-width: 1080px;
   margin: 0 auto;
@@ -321,31 +349,32 @@ nav {
 }
 @media (max-width: 768px) { .hero-grid { grid-template-columns: 1fr; gap: 40px; } }
 .hero-eyebrow {
-  font-size: 0.8rem;
+  font-size: 0.76rem;
   font-weight: 700;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--accent-lt);
+  color: #60A5FA;
   margin-bottom: 20px;
   display: flex; align-items: center; gap: 10px;
 }
 .hero-eyebrow::before {
   content: '';
-  display: block; width: 32px; height: 2px;
-  background: var(--accent-lt);
+  display: block; width: 28px; height: 2px;
+  background: linear-gradient(90deg, #60A5FA, #818CF8);
 }
 .hero h1 {
-  font-size: clamp(2rem, 5vw, 3.4rem);
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
   font-weight: 900;
-  line-height: 1.2;
+  line-height: 1.18;
   margin-bottom: 24px;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
+  color: #fff;
 }
 .hero h1 em {
   font-style: normal;
-  color: var(--accent-lt);
+  color: #60A5FA;
   display: inline;
-  background: linear-gradient(transparent 58%, rgba(250,204,21,0.45) 58%);
+  background: linear-gradient(transparent 60%, rgba(96,165,250,0.28) 60%);
   padding-bottom: 2px;
 }
 
@@ -358,29 +387,30 @@ nav {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   width: 110px; height: 110px;
   border-radius: 50%;
-  background: linear-gradient(145deg, #FFFBEB, #FEF3C7);
-  border: 2.5px solid #D97706;
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(250,204,21,0.55);
   text-align: center;
   padding: 10px 6px;
   position: relative;
-  box-shadow: 0 2px 12px rgba(217,119,6,0.18);
+  box-shadow: 0 0 20px rgba(250,204,21,0.12);
+  backdrop-filter: blur(8px);
   flex-shrink: 0;
 }
 .achievement-badge::before {
   content: '';
   position: absolute; inset: 5px;
   border-radius: 50%;
-  border: 1px dashed rgba(217,119,6,0.40);
+  border: 1px dashed rgba(250,204,21,0.35);
   pointer-events: none;
 }
 .achievement-badge-num {
-  font-size: 1.35rem; font-weight: 900; color: var(--text);
+  font-size: 1.35rem; font-weight: 900; color: #fff;
   line-height: 1; letter-spacing: -0.03em;
   font-family: 'Inter', sans-serif;
 }
-.achievement-badge-num span { font-size: 0.72rem; font-weight: 700; color: var(--gold); }
+.achievement-badge-num span { font-size: 0.72rem; font-weight: 700; color: #FCD34D; }
 .achievement-badge-label {
-  font-size: 0.62rem; font-weight: 700; color: var(--gold);
+  font-size: 0.62rem; font-weight: 700; color: #FCD34D;
   letter-spacing: 0.03em; line-height: 1.4; margin-top: 4px;
 }
 @media (max-width: 480px) {
@@ -389,7 +419,7 @@ nav {
   .achievement-badge-num { font-size: 1.1rem; }
 }
 .hero-desc {
-  color: var(--sub);
+  color: rgba(255,255,255,0.68);
   font-size: 1rem;
   margin-bottom: 36px;
   line-height: 1.9;
@@ -401,38 +431,78 @@ nav {
 }
 .hero-badge {
   display: flex; align-items: center; gap: 8px;
-  font-size: 0.8rem; color: var(--sub);
+  font-size: 0.8rem; color: rgba(255,255,255,0.62);
 }
-.hero-badge svg { color: var(--green); flex-shrink: 0; }
-.hero-card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 36px;
+.hero-badge svg { color: #34D399; flex-shrink: 0; }
+.hero-card { display: none; }
+
+/* ── Hero Visual (editor image + floating stats) ── */
+.hero-visual {
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.hero-card-label {
-  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
-  text-transform: uppercase; color: var(--sub);
-  margin-bottom: 20px;
+.hero-img-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
 }
-.hero-stat {
-  display: flex; flex-direction: column;
-  border-bottom: 1px solid var(--border);
-  padding: 16px 0;
-  gap: 4px;
+.hero-img-wrap img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 24px;
+  filter: drop-shadow(0 0 48px rgba(37,99,235,0.35)) drop-shadow(0 24px 64px rgba(0,0,0,0.6));
+  animation: heroFloat 6s ease-in-out infinite;
 }
-.hero-stat:last-child { border-bottom: none; }
-.hero-stat-value { font-size: 1.8rem; font-weight: 900; color: var(--text); letter-spacing: -0.03em; }
-.hero-stat-value span { font-size: 1rem; font-weight: 500; color: var(--sub); }
-.hero-stat-label { font-size: 0.8rem; color: var(--sub); }
+@keyframes heroFloat {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+/* Floating stat pills */
+.hero-float {
+  position: absolute;
+  background: rgba(255,255,255,0.10);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.20);
+  border-radius: 12px;
+  padding: 10px 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  white-space: nowrap;
+}
+.hero-float-val {
+  display: block;
+  font-size: 1rem; font-weight: 900; color: #fff;
+  font-family: 'Inter', sans-serif; letter-spacing: -0.02em;
+}
+.hero-float-lbl {
+  display: block;
+  font-size: 0.68rem; color: rgba(255,255,255,0.62); margin-top: 1px;
+}
+.hero-float--1 { top: 12%; left: -10%; animation: floatA 5s ease-in-out infinite; }
+.hero-float--2 { top: 44%; right: -12%; animation: floatB 5.5s ease-in-out infinite; }
+.hero-float--3 { bottom: 12%; left: -8%; animation: floatA 6s ease-in-out infinite 1s; }
+@keyframes floatA { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+@keyframes floatB { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
+@media (max-width: 768px) {
+  .hero-float--1 { left: 0; top: 4%; }
+  .hero-float--2 { right: 0; top: 40%; }
+  .hero-float--3 { left: 0; bottom: 4%; }
+}
+
+/* keep hero-stat and hero-card-label hidden */
+.hero-stat, .hero-card-label { display: none; }
+.hero-stat-value, .hero-stat-label { display: none; }
 
 /* ── Marquee ── */
 .marquee-wrap {
   overflow: hidden;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  background: var(--bg2);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  background: #0B1422;
   padding: 14px 0;
 }
 .marquee {
@@ -442,7 +512,7 @@ nav {
 }
 .marquee-item {
   display: flex; align-items: center; gap: 10px;
-  font-size: 0.8rem; font-weight: 700; color: var(--sub);
+  font-size: 0.8rem; font-weight: 700; color: rgba(255,255,255,0.42);
   letter-spacing: 0.08em; text-transform: uppercase;
 }
 .marquee-dot { color: var(--accent-lt); }
@@ -484,13 +554,18 @@ nav {
   margin-top: 48px;
 }
 .service-card {
-  background: var(--bg2);
+  background: #fff;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 32px;
-  transition: border-color 0.25s, transform 0.25s;
+  transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+  box-shadow: 0 2px 12px rgba(15,23,42,0.05);
 }
-.service-card:hover { border-color: rgba(37,99,235,0.35); transform: translateY(-4px); }
+.service-card:hover {
+  border-color: rgba(37,99,235,0.30);
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(30,64,175,0.12);
+}
 .service-icon {
   width: 52px; height: 52px;
   background: var(--glow);
@@ -1168,6 +1243,101 @@ footer {
 }
 .contract-submit-btn:disabled { opacity: 0.38; cursor: not-allowed; }
 .contract-submit-btn:not(:disabled):hover { opacity: 0.88; transform: translateY(-1px); }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   CUSTOM PRICING BANNER (個別見積もりリンク)
+   ══════════════════════════════════════════════════════════════════════ */
+#custom-plan-bar {
+  display: none;
+  position: fixed; bottom: 0; left: 0; right: 0;
+  z-index: 200;
+  background: linear-gradient(135deg, #0B1D3A 0%, #1A2E55 100%);
+  border-top: 2px solid #3B82F6;
+  padding: 14px 24px;
+  box-shadow: 0 -8px 32px rgba(0,0,0,0.35);
+  animation: slideUp 0.5s ease;
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+#custom-plan-bar.visible { display: block; }
+.cpb-inner {
+  max-width: 900px; margin: 0 auto;
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+}
+.cpb-badge {
+  background: #3B82F6; color: #fff;
+  font-size: 0.65rem; font-weight: 800; letter-spacing: 0.12em;
+  padding: 3px 10px; border-radius: 4px; white-space: nowrap; text-transform: uppercase;
+}
+.cpb-text { flex: 1; min-width: 200px; }
+.cpb-label { font-size: 0.78rem; color: rgba(255,255,255,0.6); margin-bottom: 2px; }
+.cpb-plan { font-size: 1rem; font-weight: 800; color: #fff; }
+.cpb-price { font-size: 1.4rem; font-weight: 900; color: #60A5FA; font-family:'Inter',sans-serif; margin-left: 12px; }
+.cpb-actions { display: flex; gap: 10px; align-items: center; }
+.cpb-btn {
+  padding: 10px 22px; border-radius: 8px;
+  font-size: 0.88rem; font-weight: 800; cursor: pointer; border: none;
+  transition: all 0.2s;
+}
+.cpb-btn-primary {
+  background: #3B82F6; color: #fff;
+  box-shadow: 0 4px 16px rgba(59,130,246,0.35);
+}
+.cpb-btn-primary:hover { background: #2563EB; transform: translateY(-1px); }
+.cpb-btn-close {
+  background: transparent; color: rgba(255,255,255,0.45);
+  border: 1px solid rgba(255,255,255,0.15) !important;
+  padding: 9px 12px;
+}
+.cpb-btn-close:hover { color: #fff; border-color: rgba(255,255,255,0.4) !important; }
+@media(max-width:600px) {
+  .cpb-inner { gap: 12px; }
+  .cpb-price { font-size: 1.2rem; }
+  .cpb-actions { width: 100%; }
+  .cpb-btn-primary { flex: 1; text-align: center; }
+}
+
+/* ── Nav logo img ── */
+.nav-logo a { display:flex; align-items:center; gap:8px; text-decoration:none; }
+
+/* ── Section improvements ── */
+.section-title { letter-spacing: -0.02em; }
+
+/* ── Footer logo ── */
+.footer-logo-img { height: 28px; width: auto; display: inline-block; filter: brightness(0) invert(0.4); margin-bottom: 14px; }
+
+/* ── Pricing row improvements ── */
+.pricing-row {
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.pricing-row:hover {
+  background: rgba(37,99,235,0.04);
+  box-shadow: 0 0 0 1px rgba(37,99,235,0.10);
+  border-radius: 10px;
+}
+
+/* ── Pack card improvements ── */
+.pack-card {
+  box-shadow: 0 4px 24px rgba(30,64,175,0.08);
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.pack-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(30,64,175,0.14);
+}
+
+/* ── Hero section z-index fix ── */
+.hero-grid { position: relative; z-index: 1; }
+
+/* ── Problem cards on blue tint ── */
+.problem-card {
+  box-shadow: 0 2px 12px rgba(15,23,42,0.06);
+  transition: transform 0.2s;
+}
+.problem-card:hover { transform: translateY(-3px); }
+
 </style>
 </head>
 <body>
@@ -1179,16 +1349,21 @@ footer {
 </div>
 
 <!-- ── Navigation ── -->
-<nav>
-  <div class="nav-logo">mono<span>.</span>create</div>
+<nav id="main-nav">
+  <div class="nav-logo">
+    <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" style="display:flex;align-items:center;gap:8px;">
+      <img src="img/mc-logo-full.png" alt="mono.create" style="height:34px;width:auto;filter:brightness(0) invert(1);">
+      <span class="nav-logo-text" style="display:none;">mono.create</span>
+    </a>
+  </div>
   <div class="nav-links">
     <a href="#services">サービス</a>
     <a href="#works">実績</a>
     <a href="#pricing">料金</a>
     <a href="#section-pf-free">無料PF制作</a>
     <a href="#faq">FAQ</a>
-    <a href="editor-recruit.html" style="color:#10B981;font-weight:700;">編集者募集</a>
-    <a href="#contact" class="btn btn-primary" style="padding:9px 22px;font-size:0.82rem;color:#fff;">無料で相談する →</a>
+    <a href="editor-recruit.html" style="color:#34D399;font-weight:700;">編集者募集</a>
+    <a href="#contact" class="btn btn-primary" style="padding:9px 22px;font-size:0.82rem;color:#fff;background:linear-gradient(135deg,#3B82F6,#1E40AF);border:none;">無料で相談する →</a>
   </div>
 </nav>
 
@@ -1206,11 +1381,11 @@ footer {
         編集から運用代行まで、丸ごとお任せください。
       </p>
       <div class="hero-cta">
-        <a href="#contact" class="btn btn-primary">
+        <a href="#contact" class="btn btn-primary" style="background:linear-gradient(135deg,#3B82F6,#1E40AF);box-shadow:0 6px 24px rgba(59,130,246,0.40);padding:15px 32px;font-size:1rem;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
           無料で相談する →
         </a>
-        <a href="#pricing" class="btn btn-outline">料金を見る</a>
+        <a href="#pricing" class="btn btn-outline" style="border-color:rgba(255,255,255,0.3);color:rgba(255,255,255,0.85);">料金を見る</a>
       </div>
       <div class="achievement-badges">
         <div class="achievement-badge">
@@ -1228,27 +1403,23 @@ footer {
       </div>
     </div>
 
-    <div class="hero-card fade-up">
-      <p class="hero-card-label">SERVICE OVERVIEW</p>
-      <div class="hero-stat">
-        <p class="hero-stat-value"><span data-ck="hero_stat1_val">¥4,000</span> <span data-ck="hero_stat1_sub">〜 / 1本</span></p>
-        <p class="hero-stat-label" data-ck="hero_stat1_label">ショート動画編集（縦型）</p>
-      </div>
-      <div class="hero-stat">
-        <p class="hero-stat-label" data-ck="hero_stat2_label">ショート：当日〜3日</p>
-        <p class="hero-stat-label" style="margin-top:4px;" data-ck="hero_stat2_label2">長尺：7〜8日</p>
-      </div>
-      <div class="hero-stat">
-        <p class="hero-stat-value"><span data-ck="hero_stat3_val">¥45,000</span> <span data-ck="hero_stat3_sub">〜 / 月</span></p>
-        <p class="hero-stat-label" data-ck="hero_stat3_label">投稿丸投げパック（10本 / 月）</p>
-      </div>
-      <div class="hero-stat">
-        <p class="hero-stat-label" data-ck="hero_stat4_label">3回まで修正無料</p>
-        <p class="hero-stat-label" style="margin-top:4px;" data-ck="hero_stat4_sub">（4回目〜 ショート¥1,000 / 長尺¥5,000）</p>
-      </div>
-      <div class="hero-stat">
-        <p class="hero-stat-value"><span data-ck="hero_stat5_val">¥20,000</span> <span data-ck="hero_stat5_sub">〜 / 1本</span></p>
-        <p class="hero-stat-label" data-ck="hero_stat5_label">長尺動画編集（YouTube・セミナー等）</p>
+    <!-- Hero Visual: Editor Image -->
+    <div class="hero-visual">
+      <div class="hero-img-wrap">
+        <img src="img/editor-hero.png" alt="mono.create プロ編集者チーム" loading="eager">
+        <!-- Floating stat pills -->
+        <div class="hero-float hero-float--1">
+          <span class="hero-float-val">¥4,000〜</span>
+          <span class="hero-float-lbl">ショート1本</span>
+        </div>
+        <div class="hero-float hero-float--2">
+          <span class="hero-float-val">最短当日</span>
+          <span class="hero-float-lbl">納品対応</span>
+        </div>
+        <div class="hero-float hero-float--3">
+          <span class="hero-float-val">修正3回</span>
+          <span class="hero-float-lbl">無料保証</span>
+        </div>
       </div>
     </div>
   </div>
@@ -2227,6 +2398,7 @@ footer {
             <label>ご関心のあるサービス<span>*</span></label>
             <select class="form-control" name="plan" required>
               <option value="">-- 選択してください --</option>
+              <!-- 個別プランがURLパラメータで渡された場合、JSで先頭に追加されます -->
               <optgroup label="── 単品">
                 <option>ショート動画編集（単品 ¥4,000〜）</option>
                 <option>長尺動画編集（単品 ¥20,000〜）</option>
@@ -2292,6 +2464,9 @@ footer {
 
 <!-- ── Footer ── -->
 <footer>
+  <div style="text-align:center;margin-bottom:16px;">
+    <img src="img/mc-logo-full.png" alt="mono.create" class="footer-logo-img">
+  </div>
   <div class="footer-logo">mono<span>.</span>create</div>
   <div class="footer-links">
     <a href="#services">サービス</a>
@@ -3104,5 +3279,95 @@ document.getElementById('contact-form').addEventListener('submit', async (e) => 
   }
 });
 </script>
+
+<!-- ── 個別見積もりバナー（URLパラメータ ?sv=1 の場合のみ表示） ── -->
+<div id="custom-plan-bar">
+  <div class="cpb-inner">
+    <span class="cpb-badge">✦ あなた専用プラン</span>
+    <div class="cpb-text">
+      <p class="cpb-label" id="cpb-client-name"></p>
+      <p class="cpb-plan" id="cpb-plan-name"></p>
+    </div>
+    <span class="cpb-price" id="cpb-price"></span>
+    <div class="cpb-actions">
+      <button class="cpb-btn cpb-btn-primary" onclick="applyCustomPlan()">このプランで申し込む →</button>
+      <button class="cpb-btn cpb-btn-close" onclick="document.getElementById('custom-plan-bar').style.display='none'">✕</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════════════
+   個別見積もりリンク（Custom Pricing）
+   URL: ?sv=1&pr=49800&pn=プラン名&note=備考&cl=クライアント名
+   ════════════════════════════════════════════════════════════════ */
+(function() {
+  var p = new URLSearchParams(location.search);
+  if (p.get('sv') !== '1') return;
+
+  var price  = parseInt(p.get('pr') || '0', 10);
+  var plan   = decodeURIComponent(p.get('pn') || '個別プラン');
+  var note   = decodeURIComponent(p.get('note') || '');
+  var client = decodeURIComponent(p.get('cl') || '');
+
+  // Show banner
+  var bar = document.getElementById('custom-plan-bar');
+  if (bar) bar.classList.add('visible');
+
+  document.getElementById('cpb-plan-name').textContent = plan + (note ? '（' + note + '）' : '');
+  document.getElementById('cpb-price').textContent = price > 0 ? '¥' + price.toLocaleString() : '';
+  document.getElementById('cpb-client-name').textContent = client ? client + ' 様へのご提案' : 'お客様専用のご提案';
+
+  // Store for contact form
+  window.__customPlan = { price: price, plan: plan, note: note, client: client };
+})();
+
+function applyCustomPlan() {
+  var cp = window.__customPlan;
+  if (!cp) return;
+
+  // Scroll to contact
+  var sec = document.getElementById('contact');
+  if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  setTimeout(function() {
+    // Add custom option to plan select if not present
+    var sel = document.querySelector('#contact-form [name="plan"]');
+    if (sel) {
+      var optVal = '【個別プラン】' + cp.plan + (cp.price > 0 ? '（¥' + cp.price.toLocaleString() + '）' : '');
+      var exists = false;
+      for (var i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value === optVal) { exists = true; break; }
+      }
+      if (!exists) {
+        var opt = new Option(optVal, optVal);
+        sel.insertBefore(opt, sel.options[0]);
+      }
+      sel.value = optVal;
+    }
+
+    // Pre-fill message
+    var msg = document.querySelector('#contact-form [name="message"]');
+    if (msg && !msg.value) {
+      msg.value = '【個別プランのお申し込み】\n' + cp.plan
+        + (cp.price > 0 ? '（¥' + cp.price.toLocaleString() + '）' : '')
+        + (cp.note ? '\n備考：' + cp.note : '');
+    }
+  }, 800);
+
+  // Hide bar
+  document.getElementById('custom-plan-bar').style.display = 'none';
+}
+
+/* ── Nav scroll behavior ── */
+window.addEventListener('scroll', function() {
+  var nav = document.getElementById('main-nav');
+  if (nav) {
+    if (window.scrollY > 80) nav.classList.add('nav-scrolled');
+    else nav.classList.remove('nav-scrolled');
+  }
+}, { passive: true });
+</script>
+
 </body>
 </html>
