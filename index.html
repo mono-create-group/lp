@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- build:v20260602-10 -->
+<!-- build:v20260602-11 -->
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 <script>
 // ── キャッシュ自動更新 ──────────────────────────────────────────
 (function(){
-  var BUILT = 'v20260602-10';
+  var BUILT = 'v20260602-11';
   fetch('/lp/version.json?_=' + Date.now(), {cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(d){
@@ -147,7 +147,8 @@
 }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Inter:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 /* ── Referral Bar ── */
 .referral-bar {
@@ -1714,9 +1715,394 @@ footer {
 /* ── Pack name ── */
 .pack-name { color: #0F172A !important; }
 
+/* ════════════════════════════════════════════════════════════════
+   ✦ DESIGN v2 — Godly/1GUU 200サイト学習 適用
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── Display font variable ── */
+:root {
+  --font-display: 'Plus Jakarta Sans', 'Inter', 'Noto Sans JP', sans-serif;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+  --shadow-lg: 0 20px 60px rgba(15,23,42,0.10), 0 4px 16px rgba(15,23,42,0.06);
+  --shadow-glow-blue: 0 0 0 1px rgba(59,130,246,0.15), 0 8px 32px rgba(59,130,246,0.18);
+}
+
+/* ── Reading progress bar ── */
+#reading-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #3B82F6, #7C3AED, #06B6D4);
+  width: 0%;
+  z-index: 9999;
+  transition: width 0.1s linear;
+  box-shadow: 0 0 8px rgba(59,130,246,0.6);
+}
+
+/* ── Hero animated mesh background ── */
+.hero {
+  overflow: hidden;
+}
+.hero-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+  animation: blobFloat 12s ease-in-out infinite;
+  opacity: 0.55;
+}
+.hero-blob-1 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(59,130,246,0.25) 0%, transparent 70%);
+  top: -100px; right: -80px;
+  animation-duration: 14s;
+}
+.hero-blob-2 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(124,58,237,0.20) 0%, transparent 70%);
+  bottom: -60px; left: -60px;
+  animation-duration: 18s;
+  animation-delay: -5s;
+}
+.hero-blob-3 {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(6,182,212,0.15) 0%, transparent 70%);
+  top: 40%; left: 30%;
+  animation-duration: 22s;
+  animation-delay: -9s;
+}
+@keyframes blobFloat {
+  0%, 100% { transform: translate(0,0) scale(1); }
+  25%       { transform: translate(30px,-40px) scale(1.05); }
+  50%       { transform: translate(-20px,30px) scale(0.95); }
+  75%       { transform: translate(40px,20px) scale(1.08); }
+}
+
+/* ── Hero heading: Plus Jakarta Sans ── */
+.hero h1 {
+  font-family: var(--font-display) !important;
+  font-size: clamp(2.6rem, 6vw, 4.4rem) !important;
+  letter-spacing: -0.04em !important;
+  line-height: 1.12 !important;
+  font-weight: 900 !important;
+}
+
+/* ── Section titles: display font ── */
+.section-title {
+  font-family: var(--font-display) !important;
+  letter-spacing: -0.025em !important;
+}
+
+/* ── CTA Primary: shimmer sweep effect ── */
+@keyframes shimmer-sweep {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.btn-primary, .form-submit, .floating-cta, #floating-cta {
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary::after, .form-submit::after, .floating-cta::after, #floating-cta::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg,
+    transparent 30%,
+    rgba(255,255,255,0.30) 50%,
+    transparent 70%
+  );
+  background-size: 200% 100%;
+  animation: shimmer-sweep 3.5s ease-in-out infinite;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* ── Marquee: gradient fade edges ── */
+.marquee-wrap {
+  position: relative;
+}
+.marquee-wrap::before,
+.marquee-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 120px;
+  z-index: 2;
+  pointer-events: none;
+}
+.marquee-wrap::before {
+  left: 0;
+  background: linear-gradient(90deg, #0B1422 0%, transparent 100%);
+}
+.marquee-wrap::after {
+  right: 0;
+  background: linear-gradient(270deg, #0B1422 0%, transparent 100%);
+}
+
+/* ── Cards: gradient border glow on hover ── */
+.service-card, .problem-card, .pack-card {
+  position: relative;
+  isolation: isolate;
+  transition: transform 0.35s var(--ease-out-expo),
+              box-shadow 0.35s var(--ease-out-expo),
+              border-color 0.3s ease !important;
+}
+.service-card::before, .problem-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(59,130,246,0), rgba(124,58,237,0));
+  z-index: -1;
+  transition: opacity 0.35s ease;
+  opacity: 0;
+}
+.service-card:hover::before, .problem-card:hover::before {
+  background: linear-gradient(135deg, rgba(59,130,246,0.35), rgba(124,58,237,0.25));
+  opacity: 1;
+}
+.service-card:hover {
+  transform: translateY(-8px) !important;
+  box-shadow: var(--shadow-glow-blue) !important;
+  border-color: rgba(59,130,246,0.30) !important;
+}
+
+/* ── Pricing featured card: animated gradient border ── */
+@keyframes borderRotate {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.pack-card.pack-recommended, .pack-card.featured {
+  background: linear-gradient(#fff,#fff) padding-box,
+    linear-gradient(135deg, #3B82F6, #7C3AED, #06B6D4, #3B82F6) border-box !important;
+  border: 2px solid transparent !important;
+  animation: none;
+}
+.pack-card.pack-recommended::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, #3B82F6, #7C3AED, #06B6D4);
+  z-index: -1;
+  opacity: 0.15;
+  filter: blur(8px);
+}
+
+/* ── Scroll animation variants ── */
+.fade-left {
+  opacity: 0;
+  transform: translateX(-32px);
+  transition: opacity 0.7s var(--ease-out-expo),
+              transform 0.7s var(--ease-out-expo);
+}
+.fade-left.visible { opacity: 1; transform: translateX(0); }
+
+.fade-right {
+  opacity: 0;
+  transform: translateX(32px);
+  transition: opacity 0.7s var(--ease-out-expo),
+              transform 0.7s var(--ease-out-expo);
+}
+.fade-right.visible { opacity: 1; transform: translateX(0); }
+
+.scale-up {
+  opacity: 0;
+  transform: scale(0.92);
+  transition: opacity 0.6s var(--ease-out-expo),
+              transform 0.6s var(--ease-out-expo);
+}
+.scale-up.visible { opacity: 1; transform: scale(1); }
+
+/* stagger delays for children */
+.stagger-children > *:nth-child(1) { transition-delay: 0.05s !important; }
+.stagger-children > *:nth-child(2) { transition-delay: 0.12s !important; }
+.stagger-children > *:nth-child(3) { transition-delay: 0.19s !important; }
+.stagger-children > *:nth-child(4) { transition-delay: 0.26s !important; }
+.stagger-children > *:nth-child(5) { transition-delay: 0.33s !important; }
+.stagger-children > *:nth-child(6) { transition-delay: 0.40s !important; }
+
+/* ── Counter number: display font ── */
+.strength-num, .pack-price, [data-counter] {
+  font-family: var(--font-display) !important;
+}
+
+/* ── Hero metrics strip: enhanced ── */
+#hero-metrics-strip {
+  background: linear-gradient(180deg, #fff 0%, #F8FAFC 100%) !important;
+}
+#hero-metrics-strip [data-counter] {
+  font-family: var(--font-display) !important;
+  font-size: clamp(2.2rem, 5vw, 3rem) !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.04em !important;
+}
+
+/* ── Section label: refined ── */
+.label {
+  font-family: var(--font-display) !important;
+  letter-spacing: 0.12em !important;
+}
+
+/* ── Floating CTA: pulse ring ── */
+@keyframes pulse-ring {
+  0%   { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(59,130,246,0.55); }
+  70%  { transform: scale(1);    box-shadow: 0 0 0 12px rgba(59,130,246,0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(59,130,246,0); }
+}
+.floating-cta, #floating-cta {
+  animation: pulse-ring 2.8s ease-out infinite !important;
+}
+.floating-cta:hover, #floating-cta:hover {
+  animation: none !important;
+  transform: translateY(-3px) scale(1.03) !important;
+}
+
+/* ── FAQ: smooth open ── */
+.faq-a {
+  transition: max-height 0.4s var(--ease-out-expo), padding 0.4s var(--ease-out-expo) !important;
+}
+
+/* ── Flow step numbers: gradient ── */
+.flow-num {
+  background: linear-gradient(135deg, #3B82F6, #7C3AED);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 900 !important;
+  font-family: var(--font-display) !important;
+}
+
+/* ── Hero eyebrow: refined ── */
+.hero-eyebrow {
+  font-family: var(--font-display) !important;
+  letter-spacing: 0.16em !important;
+}
+
+/* ── Form submit: full gradient ── */
+.form-submit {
+  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 50%, #1E40AF 100%) !important;
+  font-family: var(--font-display) !important;
+  letter-spacing: 0.02em !important;
+  transition: all 0.3s var(--ease-out-expo) !important;
+}
+.form-submit:hover {
+  background: linear-gradient(135deg, #2563EB 0%, #1E40AF 50%, #1E3A8A 100%) !important;
+  transform: translateY(-2px) scale(1.01) !important;
+  box-shadow: 0 12px 36px rgba(37,99,235,0.45) !important;
+}
+
+/* ── Nav links: hover underline slide ── */
+.nav-links a {
+  position: relative;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -3px; left: 0;
+  width: 0; height: 1.5px;
+  background: linear-gradient(90deg, #3B82F6, #7C3AED);
+  transition: width 0.25s var(--ease-out-expo);
+  border-radius: 2px;
+}
+.nav-links a:hover::after { width: 100%; }
+
+/* ── Achievement badge: glass polish ── */
+.achievement-badge {
+  background: rgba(255,255,255,0.85) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255,255,255,0.9) !important;
+  box-shadow: 0 4px 16px rgba(15,23,42,0.08), 0 1px 4px rgba(15,23,42,0.04) !important;
+  transition: transform 0.25s var(--ease-out-expo), box-shadow 0.25s ease !important;
+}
+.achievement-badge:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 24px rgba(15,23,42,0.12) !important;
+}
+
+/* ── Strength items: number counter animate ── */
+.strength-num {
+  transition: color 0.3s ease;
+}
+
+/* ── Pack card hover: enhanced ── */
+.pack-card:hover {
+  transform: translateY(-8px) scale(1.01) !important;
+  box-shadow: 0 24px 64px rgba(30,64,175,0.16) !important;
+}
+
+/* ── Section heading: gradient underline on .mark ── */
+.mark {
+  position: relative;
+  background: none !important;
+  padding-bottom: 4px !important;
+  display: inline-block;
+}
+.mark::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 100%; height: 3px;
+  background: linear-gradient(90deg, #3B82F6 0%, #7C3AED 50%, #06B6D4 100%);
+  border-radius: 2px;
+  opacity: 0.75;
+}
+
+/* ── Button arrow hover slide ── */
+.btn .arrow-icon {
+  transition: transform 0.25s var(--ease-out-expo);
+  display: inline-block;
+}
+.btn:hover .arrow-icon { transform: translateX(4px); }
+
+/* ── Hero float pills: glass upgrade ── */
+.hero-float {
+  background: rgba(255,255,255,0.88) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255,255,255,0.9) !important;
+  box-shadow: 0 8px 32px rgba(15,23,42,0.10), 0 2px 8px rgba(15,23,42,0.06) !important;
+}
+
+/* ── Contact form card: glass ── */
+.form-card, .contact-card {
+  box-shadow: var(--shadow-lg) !important;
+}
+
+/* ── Pricing tabs: refined ── */
+.pricing-tabs {
+  font-family: var(--font-display) !important;
+}
+
+/* ── Custom scrollbar ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #3B82F6, #7C3AED);
+  border-radius: 3px;
+}
+
+/* ── Smooth section transitions ── */
+section { contain: layout style; }
+
+/* ── Mobile touch: active feedback ── */
+@media (max-width: 640px) {
+  .btn:active, .service-card:active, .pack-card:active {
+    transform: scale(0.97) !important;
+    transition-duration: 0.1s !important;
+  }
+}
+
 </style>
 </head>
 <body>
+
+<!-- ── Reading Progress Bar ── -->
+<div id="reading-progress"></div>
 
 <!-- ── Referral Announcement Bar ── -->
 <div class="referral-bar">
@@ -1745,6 +2131,10 @@ footer {
 
 <!-- ── Hero ── -->
 <section class="hero">
+  <!-- Animated gradient blobs (Godly/Lusion style) -->
+  <div class="hero-blob hero-blob-1" aria-hidden="true"></div>
+  <div class="hero-blob hero-blob-2" aria-hidden="true"></div>
+  <div class="hero-blob hero-blob-3" aria-hidden="true"></div>
   <div class="hero-grid">
     <div>
       <p class="hero-eyebrow">VIDEO EDITING &amp; SNS MARKETING</p>
@@ -1817,19 +2207,19 @@ footer {
 </section>
 
 <!-- ── Hero Metrics Strip ── -->
-<div style="background:#fff;border-top:1px solid #E2E8F0;border-bottom:1px solid #E2E8F0;padding:36px 24px;">
-  <div style="max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
-    <div style="text-align:center;padding:20px 16px;background:#F0F7FF;border-radius:16px;">
-      <p style="font-size:2.8rem;font-weight:900;color:#0F172A;font-family:'Inter',sans-serif;letter-spacing:-0.04em;line-height:1;margin-bottom:8px;">¥4,000<span style="font-size:1.2rem;color:#2563EB;">〜</span></p>
-      <p style="font-size:0.78rem;color:#64748B;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;">ショート1本から</p>
+<div id="hero-metrics-strip" style="background:linear-gradient(180deg,#fff 0%,#F8FAFC 100%);border-top:1px solid #E2E8F0;border-bottom:1px solid #E2E8F0;padding:40px 24px;">
+  <div style="max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;" class="stagger-children">
+    <div class="scale-up" style="text-align:center;padding:24px 16px;background:#F0F7FF;border-radius:20px;border:1px solid rgba(37,99,235,0.08);transition:transform 0.3s ease,box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 32px rgba(37,99,235,0.12)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+      <p style="font-size:2.8rem;font-weight:900;color:#0F172A;font-family:'Plus Jakarta Sans','Inter',sans-serif;letter-spacing:-0.04em;line-height:1;margin-bottom:8px;">¥<span data-counter="4000" data-suffix="〜" style="color:#2563EB;">4,000</span></p>
+      <p style="font-size:0.78rem;color:#64748B;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;">ショート1本から</p>
     </div>
-    <div style="text-align:center;padding:20px 16px;background:#F0FDF4;border-radius:16px;">
-      <p style="font-size:2.8rem;font-weight:900;color:#0F172A;font-family:'Inter',sans-serif;letter-spacing:-0.04em;line-height:1;margin-bottom:8px;"><span style="font-size:1.2rem;color:#059669;">最短</span>当日</p>
-      <p style="font-size:0.78rem;color:#64748B;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;">納品スピード</p>
+    <div class="scale-up" style="text-align:center;padding:24px 16px;background:#F0FDF4;border-radius:20px;border:1px solid rgba(5,150,105,0.08);transition:transform 0.3s ease,box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 32px rgba(5,150,105,0.12)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+      <p style="font-size:2.8rem;font-weight:900;color:#0F172A;font-family:'Plus Jakarta Sans','Inter',sans-serif;letter-spacing:-0.04em;line-height:1;margin-bottom:8px;"><span style="font-size:1.2rem;color:#059669;">最短</span>当日</p>
+      <p style="font-size:0.78rem;color:#64748B;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;">納品スピード</p>
     </div>
-    <div style="text-align:center;padding:20px 16px;background:#FDF4FF;border-radius:16px;">
-      <p style="font-size:2.8rem;font-weight:900;color:#0F172A;font-family:'Inter',sans-serif;letter-spacing:-0.04em;line-height:1;margin-bottom:8px;">3<span style="font-size:1.2rem;color:#7C3AED;">回</span></p>
-      <p style="font-size:0.78rem;color:#64748B;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;">修正無料保証</p>
+    <div class="scale-up" style="text-align:center;padding:24px 16px;background:#FDF4FF;border-radius:20px;border:1px solid rgba(124,58,237,0.08);transition:transform 0.3s ease,box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 32px rgba(124,58,237,0.12)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+      <p style="font-size:2.8rem;font-weight:900;color:#0F172A;font-family:'Plus Jakarta Sans','Inter',sans-serif;letter-spacing:-0.04em;line-height:1;margin-bottom:8px;"><span data-counter="3" style="color:#7C3AED;">3</span><span style="font-size:1.2rem;color:#7C3AED;">回</span></p>
+      <p style="font-size:0.78rem;color:#64748B;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;">修正無料保証</p>
     </div>
   </div>
 </div>
@@ -1862,7 +2252,7 @@ footer {
   <div class="container">
     <p class="label">PROBLEM</p>
     <h2 class="section-title fade-up">こんな悩み抱えていませんか？</h2>
-    <div class="problem-grid">
+    <div class="problem-grid stagger-children">
       <div class="problem-card fade-up">
         <div class="problem-icon">⏱</div>
         <h3>編集が追いつかない</h3>
@@ -1893,7 +2283,7 @@ footer {
     <p class="label">SERVICES</p>
     <h2 class="section-title fade-up"><span class="mark">提供サービス</span></h2>
     <p class="section-sub fade-up">編集単体から運用丸投げまで、ビジネスフェーズに合わせて選べます。</p>
-    <div class="services-grid">
+    <div class="services-grid stagger-children">
       <div class="service-card fade-up">
         <div class="service-icon">📱</div>
         <h3>SNS縦型動画編集</h3>
@@ -3866,7 +4256,7 @@ function applyCustomPlan() {
 
 
 <script>
-/* ── IntersectionObserver: fade-up on scroll ── */
+/* ── IntersectionObserver: 全アニメーション統合 ── */
 (function() {
   var io = new IntersectionObserver(function(entries) {
     entries.forEach(function(entry) {
@@ -3875,9 +4265,109 @@ function applyCustomPlan() {
         io.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  }, { threshold: 0.10, rootMargin: '0px 0px -32px 0px' });
 
-  document.querySelectorAll('.fade-up').forEach(function(el) {
+  document.querySelectorAll('.fade-up, .fade-left, .fade-right, .scale-up').forEach(function(el) {
+    io.observe(el);
+  });
+})();
+
+/* ── Reading Progress Bar ── */
+(function() {
+  var bar = document.getElementById('reading-progress');
+  if (!bar) return;
+  window.addEventListener('scroll', function() {
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    bar.style.width = Math.min(pct, 100) + '%';
+  }, { passive: true });
+})();
+
+/* ── Number Counter Animation ── */
+(function() {
+  function animateCounter(el) {
+    var target = parseInt(el.getAttribute('data-counter'), 10);
+    if (!target) return;
+    var suffix = el.getAttribute('data-suffix') || '';
+    var duration = 1200;
+    var start = performance.now();
+    var startVal = 0;
+    function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+    function step(now) {
+      var elapsed = now - start;
+      var progress = Math.min(elapsed / duration, 1);
+      var current = Math.round(startVal + (target - startVal) * easeOutCubic(progress));
+      el.textContent = current.toLocaleString() + suffix;
+      if (progress < 1) requestAnimationFrame(step);
+      else el.textContent = target.toLocaleString() + suffix;
+    }
+    requestAnimationFrame(step);
+  }
+
+  var counterObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        animateCounter(entry.target);
+        counterObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  document.querySelectorAll('[data-counter]').forEach(function(el) {
+    counterObserver.observe(el);
+  });
+})();
+
+/* ── Strength stats counter ── */
+(function() {
+  var nums = document.querySelectorAll('.strength-num');
+  var done = new Set();
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (!entry.isIntersecting || done.has(entry.target)) return;
+      done.add(entry.target);
+      var el = entry.target;
+      var text = el.textContent.trim();
+      var match = text.match(/(\d[\d,]*)/);
+      if (!match) return;
+      var target = parseInt(match[1].replace(/,/g, ''), 10);
+      var suffix = text.replace(match[1], '');
+      var start = performance.now();
+      var dur = 1400;
+      function ease(t) { return 1 - Math.pow(1 - t, 3); }
+      function tick(now) {
+        var t = Math.min((now - start) / dur, 1);
+        var v = Math.round(target * ease(t));
+        el.textContent = v.toLocaleString() + suffix;
+        if (t < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+  }, { threshold: 0.5 });
+  nums.forEach(function(el) { io.observe(el); });
+})();
+
+/* ── Scroll-triggered fade for pack-grid and strengths-grid ── */
+(function() {
+  var els = document.querySelectorAll('.pack-card, .strength-item, .flow-step, .faq-item');
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry, i) {
+      if (entry.isIntersecting) {
+        var el = entry.target;
+        var delay = (Array.prototype.indexOf.call(el.parentNode.children, el)) * 80;
+        setTimeout(function() {
+          el.style.opacity = '1';
+          el.style.transform = 'translateY(0)';
+        }, delay);
+        io.unobserve(el);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
+  els.forEach(function(el) {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1)';
     io.observe(el);
   });
 })();
