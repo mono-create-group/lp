@@ -206,7 +206,7 @@ textarea.form-control { min-height:80px; resize:vertical; }
     <p class="form-title">📝 パートナー登録フォーム</p>
     <p class="form-subtitle">内容確認後、専用コードを発行してメールでご連絡します。</p>
 
-    <form id="partner-form">
+    <form id="partner-form" novalidate>
 
       <div class="form-grid" style="margin-bottom:16px;">
         <div class="form-row" style="margin-bottom:0;">
@@ -321,13 +321,55 @@ textarea.form-control { min-height:80px; resize:vertical; }
 <script>
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
 
+function _setFieldError(el, msg) {
+  el.style.borderColor = '#EF4444';
+  el.style.boxShadow   = '0 0 0 3px rgba(239,68,68,0.18)';
+  let errEl = el.parentNode.querySelector('.field-err-msg');
+  if (!errEl) {
+    errEl = document.createElement('p');
+    errEl.className = 'field-err-msg';
+    errEl.style.cssText = 'color:#EF4444;font-size:0.76rem;margin:4px 0 0;line-height:1.4;';
+    el.insertAdjacentElement('afterend', errEl);
+  }
+  errEl.textContent = '⚠ ' + msg;
+}
+function _clearFieldError(el) {
+  el.style.borderColor = '';
+  el.style.boxShadow   = '';
+  const errEl = el.parentNode.querySelector('.field-err-msg');
+  if (errEl) errEl.remove();
+}
+function _validateFields(checks) {
+  let firstBad = null;
+  checks.forEach(function(c) {
+    const ok = c.test ? c.test(c.el) : (c.el.value.trim() !== '');
+    if (!ok) { _setFieldError(c.el, c.msg || 'この項目は必須です'); if (!firstBad) firstBad = c.el; }
+    else       _clearFieldError(c.el);
+  });
+  if (firstBad) { firstBad.scrollIntoView({ behavior: 'smooth', block: 'center' }); firstBad.focus(); return false; }
+  return true;
+}
+
 document.getElementById('partner-form').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const btn = document.getElementById('submit-btn');
-  btn.disabled = true; btn.textContent = '送信中...';
 
   const form = e.target;
   const partner_type = form.querySelector('[name="partner_type"]:checked')?.value || '';
+  const partnerTypeEl = form.querySelector('[name="partner_type"]');
+
+  const ok = _validateFields([
+    { el: form.name,  msg: 'お名前を入力してください' },
+    { el: form.email, msg: 'メールアドレスを入力してください',
+      test: el => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim()) },
+    { el: partnerTypeEl, msg: 'パートナー種別を選択してください',
+      test: () => !!partner_type },
+    { el: form.url,    msg: 'サイト・SNS URLを入力してください' },
+    { el: form.method, msg: '紹介方法を入力してください' },
+  ]);
+  if (!ok) return;
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true; btn.textContent = '送信中...';
 
   const data = {
     action:       'partner_apply',
@@ -344,7 +386,6 @@ document.getElementById('partner-form').addEventListener('submit', async (e) => 
   try {
     await fetch(GAS_URL, {
       method: 'POST', mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
     document.getElementById('partner-form').style.display = 'none';

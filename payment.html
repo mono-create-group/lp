@@ -528,7 +528,7 @@ footer {
   <div class="pay-section">
     <p class="pay-section__title">振込完了のご報告</p>
     <div class="pay-form" id="report-form-wrap">
-      <form id="report-form">
+      <form id="report-form" novalidate>
         <div class="form-group">
           <label class="form-label">お名前（振込人名義）<span class="req">*</span></label>
           <input type="text" class="form-input" id="r-name" placeholder="山田 太郎" required>
@@ -624,7 +624,6 @@ async function submitContractAgreement() {
   try {
     await fetch(CONTRACT_GAS, {
       method: 'POST', mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         type: 'contract',
         name, email,
@@ -705,9 +704,56 @@ function copyText(text, btn) {
   });
 }
 
+// バリデーションヘルパー
+function _setFieldError(el, msg) {
+  el.style.borderColor = '#EF4444';
+  el.style.boxShadow   = '0 0 0 3px rgba(239,68,68,0.18)';
+  let errEl = el.parentNode.querySelector('.field-err-msg');
+  if (!errEl) {
+    errEl = document.createElement('p');
+    errEl.className = 'field-err-msg';
+    errEl.style.cssText = 'color:#EF4444;font-size:0.76rem;margin:4px 0 0;line-height:1.4;';
+    el.insertAdjacentElement('afterend', errEl);
+  }
+  errEl.textContent = '⚠ ' + msg;
+}
+function _clearFieldError(el) {
+  el.style.borderColor = '';
+  el.style.boxShadow   = '';
+  const errEl = el.parentNode.querySelector('.field-err-msg');
+  if (errEl) errEl.remove();
+}
+function _validateFields(checks) {
+  let firstBad = null;
+  checks.forEach(function(c) {
+    const ok = c.test ? c.test(c.el) : (c.el.value.trim() !== '');
+    if (!ok) { _setFieldError(c.el, c.msg || 'この項目は必須です'); if (!firstBad) firstBad = c.el; }
+    else       _clearFieldError(c.el);
+  });
+  if (firstBad) { firstBad.scrollIntoView({ behavior: 'smooth', block: 'center' }); firstBad.focus(); return false; }
+  return true;
+}
+
 // フォーム送信
 document.getElementById('report-form').addEventListener('submit', async function(e) {
   e.preventDefault();
+
+  const nameEl    = document.getElementById('r-name');
+  const contactEl = document.getElementById('r-contact');
+  const planEl    = document.getElementById('r-plan');
+  const amountEl  = document.getElementById('r-amount');
+  const dateEl    = document.getElementById('r-date');
+
+  const ok = _validateFields([
+    { el: nameEl,    msg: 'お名前（振込人名義）を入力してください' },
+    { el: contactEl, msg: 'ChatworkIDまたはメールアドレスを入力してください' },
+    { el: planEl,    msg: 'ご契約プランを選択してください',
+      test: el => el.value !== '' },
+    { el: amountEl,  msg: '振込金額を入力してください' },
+    { el: dateEl,    msg: '振込日を入力してください' },
+  ]);
+  if (!ok) return;
+
   const btn = document.getElementById('r-submit');
   btn.disabled = true;
   btn.textContent = '送信中...';
