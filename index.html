@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- build:v20260602-2 -->
+<!-- build:v20260602-3 -->
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 <script>
 // ── キャッシュ自動更新 ──────────────────────────────────────────
 (function(){
-  var BUILT = 'v20260602-2';
+  var BUILT = 'v20260602-3';
   fetch('/lp/version.json?_=' + Date.now(), {cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(d){
@@ -1379,6 +1379,355 @@ footer {
   transition: transform 0.2s;
 }
 .problem-card:hover { transform: translateY(-3px); }
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   PREMIUM FULL-PAGE REDESIGN
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Google Fonts: add DM Sans for Latin ── */
+
+/* ── Section base improvements ── */
+.section { padding: 100px 0; }
+.section-sm { padding: 72px 0; }
+
+/* ── Gradient text utility ── */
+.grad-text {
+  background: linear-gradient(135deg, #fff 0%, #93C5FD 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Label chip ── */
+.label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #60A5FA;
+  background: rgba(96,165,250,0.10);
+  border: 1px solid rgba(96,165,250,0.28);
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-bottom: 18px;
+}
+
+/* ── PROBLEMS section — dark treatment ── */
+.problems {
+  background: #07101F !important;
+  position: relative;
+  overflow: hidden;
+}
+.problems::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -20%;
+  width: 60%; height: 200%;
+  background: radial-gradient(ellipse, rgba(37,99,235,0.09) 0%, transparent 70%);
+  pointer-events: none;
+}
+.problems .label { color: #F87171; background: rgba(248,113,113,0.10); border-color: rgba(248,113,113,0.28); }
+.problems .section-title { color: #fff; }
+.problems .section-sub { color: rgba(255,255,255,0.55); }
+
+.problem-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1px;
+  margin-top: 52px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.problem-card {
+  background: #0B1525 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 36px 28px !important;
+  box-shadow: none !important;
+  position: relative;
+  transition: background 0.25s !important;
+}
+.problem-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #3B82F6, #8B5CF6);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.problem-card:hover { background: #0F1D32 !important; transform: none !important; }
+.problem-card:hover::before { opacity: 1; }
+.problem-icon {
+  width: 48px; height: 48px;
+  background: rgba(37,99,235,0.15) !important;
+  border: 1px solid rgba(37,99,235,0.30);
+  border-radius: 12px;
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+}
+.problem-card h3 { font-size: 1.05rem; font-weight: 800; color: #fff; margin-bottom: 10px; }
+.problem-card p { font-size: 0.85rem; color: rgba(255,255,255,0.50); line-height: 1.75; }
+
+/* ── SERVICES section ── */
+#services { background: #fff; }
+.service-card {
+  background: #fff !important;
+  border: 1.5px solid #E8EDF5 !important;
+  border-radius: 16px !important;
+  padding: 36px 32px !important;
+  position: relative;
+  overflow: hidden;
+}
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
+  background: linear-gradient(180deg, #3B82F6, #6366F1);
+  border-radius: 0;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.service-card:hover { box-shadow: 0 16px 48px rgba(30,64,175,0.10) !important; transform: translateY(-4px) !important; }
+.service-card:hover::before { opacity: 1; }
+.service-icon {
+  width: 52px; height: 52px;
+  background: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(99,102,241,0.08)) !important;
+  border: 1px solid rgba(59,130,246,0.20) !important;
+  border-radius: 14px !important;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+.service-card h3 { font-size: 1.0rem; font-weight: 800; color: #0F172A; margin-bottom: 10px; }
+.service-badge {
+  background: linear-gradient(135deg, rgba(30,64,175,0.08), rgba(99,102,241,0.06)) !important;
+  color: #1E40AF !important;
+  border: 1px solid rgba(30,64,175,0.18) !important;
+  border-radius: 6px !important;
+  font-size: 0.72rem !important;
+  font-weight: 800 !important;
+  padding: 4px 12px !important;
+}
+
+/* ── STRENGTHS section — dark ── */
+.strengths {
+  background: #07101F !important;
+}
+.strengths .label { color: #60A5FA; background: rgba(96,165,250,0.10); border-color: rgba(96,165,250,0.28); }
+.strengths .section-title { color: #fff; }
+.strengths-grid { gap: 0 !important; border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; overflow: hidden; }
+.strength-item {
+  text-align: left !important;
+  padding: 48px 36px;
+  border-right: 1px solid rgba(255,255,255,0.07);
+  position: relative;
+}
+.strength-item:last-child { border-right: none; }
+.strength-num {
+  font-size: 3.8rem !important;
+  color: rgba(59,130,246,0.22) !important;
+  margin-bottom: 20px !important;
+}
+.strength-item h3 { color: #fff !important; font-size: 1.05rem !important; }
+.strength-label { color: rgba(255,255,255,0.48) !important; }
+
+/* ── PRICING section ── */
+.pricing { background: #F8FAFC; }
+.pricing-tabs {
+  background: rgba(15,23,42,0.05) !important;
+  border-radius: 12px;
+  padding: 4px;
+}
+.ptab {
+  border-radius: 9px !important;
+  font-weight: 700 !important;
+  transition: all 0.2s;
+}
+.ptab.active {
+  background: #fff !important;
+  color: #1E40AF !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+}
+
+/* Pack card premium */
+.pack-card {
+  border-radius: 20px !important;
+  border: 1.5px solid #E2E8F0 !important;
+  background: #fff !important;
+  padding: 40px 36px !important;
+  box-shadow: 0 4px 24px rgba(30,64,175,0.06) !important;
+  transition: transform 0.25s, box-shadow 0.25s !important;
+}
+.pack-card:hover {
+  transform: translateY(-6px) !important;
+  box-shadow: 0 20px 56px rgba(30,64,175,0.14) !important;
+}
+.pack-card.pack-recommended {
+  border-color: #3B82F6 !important;
+  box-shadow: 0 0 0 1px #3B82F6, 0 8px 32px rgba(59,130,246,0.20) !important;
+}
+
+/* ── PRICING ROW ── */
+.pricing-row {
+  border: 1.5px solid transparent;
+  padding: 18px 16px;
+  margin-bottom: 4px;
+  border-radius: 12px;
+}
+.pricing-row:hover {
+  background: rgba(37,99,235,0.04) !important;
+  border-color: rgba(37,99,235,0.12) !important;
+  box-shadow: none !important;
+}
+
+/* ── FLOW section ── */
+#flow { background: #fff; }
+
+/* ── FAQ section ── */
+#faq { background: #F8FAFC; }
+
+/* ── CONTACT section ── */
+.contact {
+  background: linear-gradient(135deg, #050D1F 0%, #0D1B35 50%, #050D1F 100%) !important;
+  position: relative;
+  overflow: hidden;
+}
+.contact::before {
+  content: '';
+  position: absolute;
+  top: -40%; right: -20%;
+  width: 70%; height: 180%;
+  background: radial-gradient(ellipse, rgba(59,130,246,0.12) 0%, transparent 65%);
+  pointer-events: none;
+}
+.contact .section-title { color: #fff !important; position: relative; }
+.contact .section-sub { color: rgba(255,255,255,0.55) !important; position: relative; }
+.contact .label { color: #60A5FA; background: rgba(96,165,250,0.10); border-color: rgba(96,165,250,0.28); position: relative; }
+
+/* Contact form card */
+.contact-card {
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid rgba(255,255,255,0.10) !important;
+  border-radius: 24px !important;
+  backdrop-filter: blur(16px);
+  position: relative;
+}
+.form-control {
+  background: rgba(255,255,255,0.07) !important;
+  border: 1.5px solid rgba(255,255,255,0.12) !important;
+  color: #fff !important;
+  border-radius: 10px !important;
+}
+.form-control::placeholder { color: rgba(255,255,255,0.35) !important; }
+.form-control:focus { border-color: #3B82F6 !important; background: rgba(255,255,255,0.10) !important; }
+.form-row label { color: rgba(255,255,255,0.75) !important; }
+.form-submit {
+  background: linear-gradient(135deg, #3B82F6, #1E40AF) !important;
+  border-radius: 12px !important;
+  font-size: 1rem !important;
+  font-weight: 800 !important;
+  padding: 16px !important;
+  letter-spacing: 0.02em;
+  box-shadow: 0 8px 24px rgba(59,130,246,0.35) !important;
+  transition: all 0.25s !important;
+}
+.form-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(59,130,246,0.50) !important; }
+
+/* ── FOOTER ── */
+footer {
+  background: #020811 !important;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+/* ── FLOATING CTA button ── */
+.floating-cta, #floating-cta {
+  background: linear-gradient(135deg, #3B82F6, #1E40AF) !important;
+  border-radius: 50px !important;
+  box-shadow: 0 8px 32px rgba(59,130,246,0.40) !important;
+  font-weight: 800 !important;
+  border: none !important;
+}
+
+/* ── Scroll animations ── */
+.fade-up {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.fade-up:nth-child(2) { transition-delay: 0.08s; }
+.fade-up:nth-child(3) { transition-delay: 0.16s; }
+.fade-up:nth-child(4) { transition-delay: 0.24s; }
+.fade-up:nth-child(5) { transition-delay: 0.32s; }
+.fade-up:nth-child(6) { transition-delay: 0.40s; }
+
+/* ── btn-primary global improvement ── */
+.btn-primary {
+  background: linear-gradient(135deg, #3B82F6, #1E40AF) !important;
+  border-radius: 10px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.01em;
+  box-shadow: 0 6px 20px rgba(59,130,246,0.30) !important;
+  border: none !important;
+}
+.btn-primary:hover {
+  background: linear-gradient(135deg, #2563EB, #1E3A8A) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 28px rgba(59,130,246,0.42) !important;
+}
+.btn-gold {
+  background: linear-gradient(135deg, #F59E0B, #D97706) !important;
+  border-radius: 10px !important;
+  font-weight: 800 !important;
+  box-shadow: 0 6px 20px rgba(245,158,11,0.30) !important;
+}
+.btn-gold:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 28px rgba(245,158,11,0.42) !important;
+}
+
+/* ── Hero: no highlight on em (remove yellow bar) ── */
+.hero h1 em {
+  background: none !important;
+  background-clip: unset !important;
+  -webkit-background-clip: unset !important;
+  background: linear-gradient(135deg, #60A5FA, #818CF8) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+/* ── Works section heading ── */
+#works .section-title, #pricing .section-title,
+#flow .section-title, #faq .section-title { color: #0F172A; }
+
+/* ── Section title .mark for dark sections ── */
+.problems .mark, .strengths .mark, .contact .mark,
+.affiliate .mark {
+  background: linear-gradient(transparent 58%, rgba(59,130,246,0.30) 58%) !important;
+}
+
+/* ── Marquee dot color ── */
+.marquee-dot { color: #3B82F6 !important; }
+
+/* ── Pricing price ── */
+.pricing-price {
+  background: linear-gradient(135deg, #1E40AF, #2563EB);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 900 !important;
+}
+
+/* ── Pack name ── */
+.pack-name { color: #0F172A !important; }
 
 </style>
 </head>
@@ -3444,5 +3793,23 @@ window.addEventListener('scroll', function() {
 }, { passive: true });
 </script>
 
+
+<script>
+/* ── IntersectionObserver: fade-up on scroll ── */
+(function() {
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.fade-up').forEach(function(el) {
+    io.observe(el);
+  });
+})();
+</script>
 </body>
 </html>
