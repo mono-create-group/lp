@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- build:v20260525-3 -->
+<!-- build:v20260602-3 -->
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -8,12 +8,15 @@
 <script>
 // ── キャッシュ自動更新 ──────────────────────────────────────────
 (function(){
-  var BUILT = 'v20260526-8';
+  var BUILT = 'v20260602-5';
   fetch('/lp/version.json?_=' + Date.now(), {cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(d){
       if (d.v && d.v !== BUILT) {
-        location.replace(location.pathname + '?_=' + d.v);
+        // カスタムパラメータ（sv, pr, pn, cl, note）を保持したままバージョン更新
+        var sp = new URLSearchParams(location.search);
+        sp.set('_', d.v);
+        location.replace(location.pathname + '?' + sp.toString());
       }
     }).catch(function(){});
 })();
@@ -148,8 +151,9 @@
 <style>
 /* ── Referral Bar ── */
 .referral-bar {
-  background: linear-gradient(90deg, #92400E 0%, #B45309 50%, #92400E 100%);
-  color: #FEF3C7;
+  background: linear-gradient(90deg, #0B1422 0%, #162035 50%, #0B1422 100%);
+  border-bottom: 1px solid rgba(59,130,246,0.25);
+  color: rgba(255,255,255,0.75);
   text-align: center;
   font-size: 0.82rem;
   font-weight: 700;
@@ -159,8 +163,8 @@
   top: 0; left: 0; right: 0;
   z-index: 101;
 }
-.referral-bar a { color: #FDE68A; text-decoration: underline; }
-.referral-bar strong { color: #FDE68A; }
+.referral-bar a { color: #60A5FA; text-decoration: underline; }
+.referral-bar strong { color: #93C5FD; }
 .referral-code-badge {
   display: none;
   margin-top: 8px;
@@ -188,8 +192,8 @@ a { text-decoration: none; color: inherit; }
 /* ── CSS Variables ── */
 :root {
   --bg:        #FFFFFF;
-  --bg2:       #FAF9F6;
-  --bg3:       #F3EFE9;
+  --bg2:       #F8FAFC;
+  --bg3:       #EEF2F8;
   --accent:    #1E40AF;
   --accent-lt: #2563EB;
   --glow:      rgba(30,64,175,0.10);
@@ -200,7 +204,12 @@ a { text-decoration: none; color: inherit; }
   --sub:       #64748B;
   --border:    rgba(15,23,42,0.09);
   --card:      rgba(15,23,42,0.03);
-  --radius:    12px;
+  --radius:    14px;
+  /* Hero light palette */
+  --hero-bg:   #ffffff;
+  --hero-grid: rgba(15,23,42,0.04);
+  --hero-glow1: rgba(37,99,235,0.07);
+  --hero-glow2: rgba(99,37,235,0.05);
 }
 
 /* ── Utilities ── */
@@ -281,39 +290,62 @@ a { text-decoration: none; color: inherit; }
 /* ── Nav ── */
 nav {
   position: fixed; top: 40px; left: 0; right: 0; z-index: 100;
-  background: rgba(255,255,255,0.92);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
-  padding: 14px 24px;
+  background: rgba(255,255,255,0.90);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid #E2E8F0;
+  padding: 12px 32px;
   display: flex; align-items: center; justify-content: space-between;
+  transition: background 0.3s;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
 }
-.nav-logo { font-weight: 900; font-size: 1.1rem; letter-spacing: 0.03em; }
-.nav-logo span { color: var(--accent-lt); }
-.nav-links { display: flex; gap: 24px; align-items: center; }
-.nav-links a { font-size: 0.85rem; color: var(--sub); transition: color 0.2s; }
-.nav-links a:hover { color: var(--text); }
+nav.nav-scrolled {
+  background: rgba(255,255,255,0.98);
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+.nav-logo img { height: 30px; width: auto; display: block; filter: none; }
+.nav-logo-text {
+  font-weight: 900; font-size: 1rem; letter-spacing: 0.05em;
+  color: #0F172A; font-family: 'Inter', sans-serif;
+}
+.nav-links { display: flex; gap: 22px; align-items: center; }
+.nav-links a { font-size: 0.83rem; color: #475569; transition: color 0.2s; font-weight: 500; }
+.nav-links a:hover { color: #2563EB; }
 @media (max-width: 640px) { .nav-links { display: none; } }
 
 /* ── Hero ── */
 .hero {
+  background: linear-gradient(160deg, #F0F7FF 0%, #ffffff 50%, #F5F3FF 100%);
   min-height: 100vh;
   display: flex; align-items: center;
   padding: 160px 24px 80px;
   position: relative;
-  overflow: hidden;
+  color: #0F172A;
 }
 .hero::before {
   content: '';
   position: absolute; inset: 0;
   background:
-    radial-gradient(ellipse 60% 60% at 70% 40%, rgba(30,64,175,0.06) 0%, transparent 70%),
-    radial-gradient(ellipse 40% 40% at 20% 70%, rgba(99,37,235,0.04) 0%, transparent 60%);
+    radial-gradient(ellipse 70% 65% at 80% 30%, var(--hero-glow1) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 55% at 15% 80%, var(--hero-glow2) 0%, transparent 60%);
   pointer-events: none;
+  z-index: 0;
 }
+.hero::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(var(--hero-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--hero-grid) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}
+.hero > * { position: relative; z-index: 1; }
 .hero-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 64px;
+  grid-template-columns: 52% 1fr;
+  gap: 56px;
   align-items: center;
   max-width: 1080px;
   margin: 0 auto;
@@ -321,75 +353,67 @@ nav {
 }
 @media (max-width: 768px) { .hero-grid { grid-template-columns: 1fr; gap: 40px; } }
 .hero-eyebrow {
-  font-size: 0.8rem;
+  font-size: 0.76rem;
   font-weight: 700;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--accent-lt);
+  color: #60A5FA;
   margin-bottom: 20px;
   display: flex; align-items: center; gap: 10px;
 }
 .hero-eyebrow::before {
   content: '';
-  display: block; width: 32px; height: 2px;
-  background: var(--accent-lt);
+  display: block; width: 28px; height: 2px;
+  background: linear-gradient(90deg, #60A5FA, #818CF8);
 }
 .hero h1 {
-  font-size: clamp(2rem, 5vw, 3.4rem);
+  font-size: clamp(2.4rem, 5.5vw, 4rem);
   font-weight: 900;
-  line-height: 1.2;
+  line-height: 1.18;
   margin-bottom: 24px;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
+  color: #0F172A;
 }
 .hero h1 em {
   font-style: normal;
-  color: var(--accent-lt);
+  background: linear-gradient(135deg, #2563EB, #7C3AED);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   display: inline;
-  background: linear-gradient(transparent 58%, rgba(250,204,21,0.45) 58%);
-  padding-bottom: 2px;
 }
 
 /* ── Achievement Badges (参考: PRONIアイミツ) ── */
+/* Hero trust badges — inline chips */
 .achievement-badges {
-  display: flex; gap: 16px; flex-wrap: wrap;
-  margin-top: 36px;
+  display: flex; gap: 10px; flex-wrap: wrap;
+  margin-top: 32px;
 }
 .achievement-badge {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  width: 110px; height: 110px;
-  border-radius: 50%;
-  background: linear-gradient(145deg, #FFFBEB, #FEF3C7);
-  border: 2.5px solid #D97706;
-  text-align: center;
-  padding: 10px 6px;
-  position: relative;
-  box-shadow: 0 2px 12px rgba(217,119,6,0.18);
-  flex-shrink: 0;
-}
-.achievement-badge::before {
-  content: '';
-  position: absolute; inset: 5px;
-  border-radius: 50%;
-  border: 1px dashed rgba(217,119,6,0.40);
-  pointer-events: none;
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px;
+  background: #fff;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 .achievement-badge-num {
-  font-size: 1.35rem; font-weight: 900; color: var(--text);
-  line-height: 1; letter-spacing: -0.03em;
-  font-family: 'Inter', sans-serif;
+  font-size: 1.05rem; font-weight: 900; color: #0F172A;
+  font-family: 'Inter', sans-serif; letter-spacing: -0.02em;
+  white-space: nowrap;
 }
-.achievement-badge-num span { font-size: 0.72rem; font-weight: 700; color: var(--gold); }
+.achievement-badge-num span { font-size: 0.72rem; color: #2563EB; font-weight: 700; }
 .achievement-badge-label {
-  font-size: 0.62rem; font-weight: 700; color: var(--gold);
-  letter-spacing: 0.03em; line-height: 1.4; margin-top: 4px;
+  font-size: 0.72rem; font-weight: 600; color: #64748B;
+  letter-spacing: 0.01em; line-height: 1.3;
 }
+.achievement-badge::before { display: none; }
 @media (max-width: 480px) {
-  .achievement-badges { gap: 12px; }
-  .achievement-badge { width: 90px; height: 90px; }
-  .achievement-badge-num { font-size: 1.1rem; }
+  .achievement-badges { gap: 8px; }
+  .achievement-badge { padding: 7px 12px; }
 }
 .hero-desc {
-  color: var(--sub);
+  color: #475569;
   font-size: 1rem;
   margin-bottom: 36px;
   line-height: 1.9;
@@ -401,38 +425,120 @@ nav {
 }
 .hero-badge {
   display: flex; align-items: center; gap: 8px;
-  font-size: 0.8rem; color: var(--sub);
+  font-size: 0.8rem; color: #64748B;
 }
-.hero-badge svg { color: var(--green); flex-shrink: 0; }
-.hero-card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 36px;
+.hero-badge svg { color: #10B981; flex-shrink: 0; }
+.hero-card { display: none; }
+
+/* ═══════════════════════════════════════════════════════
+   HERO VISUAL — circular image + floating pills
+   ═══════════════════════════════════════════════════════ */
+.hero-visual {
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 72px; /* room for pills on both sides */
 }
-.hero-card-label {
-  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
-  text-transform: uppercase; color: var(--sub);
-  margin-bottom: 20px;
+/* Circular glow ring layers */
+.hero-img-ring {
+  position: relative;
+  width: 320px;
+  height: 320px;
+  flex-shrink: 0;
 }
-.hero-stat {
-  display: flex; flex-direction: column;
-  border-bottom: 1px solid var(--border);
-  padding: 16px 0;
-  gap: 4px;
+.hero-img-ring::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #BFDBFE, #DDD6FE, #BFDBFE);
+  opacity: 0.9;
 }
-.hero-stat:last-child { border-bottom: none; }
-.hero-stat-value { font-size: 1.8rem; font-weight: 900; color: var(--text); letter-spacing: -0.03em; }
-.hero-stat-value span { font-size: 1rem; font-weight: 500; color: var(--sub); }
-.hero-stat-label { font-size: 0.8rem; color: var(--sub); }
+.hero-img-ring::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 20px 60px rgba(37,99,235,0.18), 0 4px 20px rgba(0,0,0,0.08);
+}
+
+/* The circle image itself */
+.hero-img-wrap {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  z-index: 1;
+}
+.hero-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  animation: heroFloat 7s ease-in-out infinite;
+}
+@keyframes heroFloat {
+  0%,100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-10px) scale(1.02); }
+}
+
+/* Floating stat pills — positioned relative to .hero-visual */
+.hero-float {
+  position: absolute;
+  background: #fff;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 10px 16px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
+  white-space: nowrap;
+  z-index: 10;
+}
+.hero-float-icon { font-size: 1rem; margin-bottom: 2px; }
+.hero-float-val {
+  display: block;
+  font-size: 1.05rem; font-weight: 900; color: #0F172A;
+  font-family: 'Inter', sans-serif; letter-spacing: -0.02em; line-height: 1;
+}
+.hero-float-lbl {
+  display: block;
+  font-size: 0.67rem; color: #64748B; margin-top: 3px;
+  font-weight: 500;
+}
+.hero-float--1 {
+  top: 18%; left: -8px;
+  animation: pill1 5s ease-in-out infinite;
+}
+.hero-float--2 {
+  top: 42%; right: -8px;
+  animation: pill2 5.5s ease-in-out infinite;
+}
+.hero-float--3 {
+  bottom: 18%; left: 12%;
+  animation: pill1 6.5s ease-in-out infinite 0.8s;
+}
+@keyframes pill1 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }
+@keyframes pill2 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(7px)} }
+
+@media (max-width: 768px) {
+  .hero-visual { padding: 36px 48px; }
+  .hero-img-ring { width: 260px; height: 260px; }
+  .hero-float--1 { left: -4px; }
+  .hero-float--2 { right: -4px; }
+}
+
+/* keep legacy hero-stat hidden */
+.hero-card { display: none; }
+.hero-stat, .hero-card-label { display: none; }
+.hero-stat-value, .hero-stat-label { display: none; }
 
 /* ── Marquee ── */
 .marquee-wrap {
   overflow: hidden;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  background: var(--bg2);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  background: #0B1422;
   padding: 14px 0;
 }
 .marquee {
@@ -442,7 +548,7 @@ nav {
 }
 .marquee-item {
   display: flex; align-items: center; gap: 10px;
-  font-size: 0.8rem; font-weight: 700; color: var(--sub);
+  font-size: 0.8rem; font-weight: 700; color: rgba(255,255,255,0.42);
   letter-spacing: 0.08em; text-transform: uppercase;
 }
 .marquee-dot { color: var(--accent-lt); }
@@ -484,13 +590,18 @@ nav {
   margin-top: 48px;
 }
 .service-card {
-  background: var(--bg2);
+  background: #fff;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 32px;
-  transition: border-color 0.25s, transform 0.25s;
+  transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+  box-shadow: 0 2px 12px rgba(15,23,42,0.05);
 }
-.service-card:hover { border-color: rgba(37,99,235,0.35); transform: translateY(-4px); }
+.service-card:hover {
+  border-color: rgba(37,99,235,0.30);
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(30,64,175,0.12);
+}
 .service-icon {
   width: 52px; height: 52px;
   background: var(--glow);
@@ -1168,27 +1279,467 @@ footer {
 }
 .contract-submit-btn:disabled { opacity: 0.38; cursor: not-allowed; }
 .contract-submit-btn:not(:disabled):hover { opacity: 0.88; transform: translateY(-1px); }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   CUSTOM PRICING BANNER (個別見積もりリンク)
+   ══════════════════════════════════════════════════════════════════════ */
+#custom-plan-bar {
+  display: none;
+  position: fixed; bottom: 0; left: 0; right: 0;
+  z-index: 200;
+  background: linear-gradient(135deg, #0B1D3A 0%, #1A2E55 100%);
+  border-top: 2px solid #3B82F6;
+  padding: 14px 24px;
+  box-shadow: 0 -8px 32px rgba(0,0,0,0.35);
+  animation: slideUp 0.5s ease;
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+#custom-plan-bar.visible { display: block; }
+.cpb-inner {
+  max-width: 900px; margin: 0 auto;
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+}
+.cpb-badge {
+  background: #3B82F6; color: #fff;
+  font-size: 0.65rem; font-weight: 800; letter-spacing: 0.12em;
+  padding: 3px 10px; border-radius: 4px; white-space: nowrap; text-transform: uppercase;
+}
+.cpb-text { flex: 1; min-width: 200px; }
+.cpb-label { font-size: 0.78rem; color: rgba(255,255,255,0.6); margin-bottom: 2px; }
+.cpb-plan { font-size: 1rem; font-weight: 800; color: #fff; }
+.cpb-price { font-size: 1.4rem; font-weight: 900; color: #60A5FA; font-family:'Inter',sans-serif; margin-left: 12px; }
+.cpb-actions { display: flex; gap: 10px; align-items: center; }
+.cpb-btn {
+  padding: 10px 22px; border-radius: 8px;
+  font-size: 0.88rem; font-weight: 800; cursor: pointer; border: none;
+  transition: all 0.2s;
+}
+.cpb-btn-primary {
+  background: #3B82F6; color: #fff;
+  box-shadow: 0 4px 16px rgba(59,130,246,0.35);
+}
+.cpb-btn-primary:hover { background: #2563EB; transform: translateY(-1px); }
+.cpb-btn-close {
+  background: transparent; color: rgba(255,255,255,0.45);
+  border: 1px solid rgba(255,255,255,0.15) !important;
+  padding: 9px 12px;
+}
+.cpb-btn-close:hover { color: #fff; border-color: rgba(255,255,255,0.4) !important; }
+@media(max-width:600px) {
+  .cpb-inner { gap: 12px; }
+  .cpb-price { font-size: 1.2rem; }
+  .cpb-actions { width: 100%; }
+  .cpb-btn-primary { flex: 1; text-align: center; }
+}
+
+/* ── Nav logo img ── */
+.nav-logo a { display:flex; align-items:center; gap:8px; text-decoration:none; }
+
+/* ── Section improvements ── */
+.section-title { letter-spacing: -0.02em; }
+
+/* ── Footer logo ── */
+.footer-logo-img { height: 28px; width: auto; display: inline-block; filter: brightness(0) invert(0.4); margin-bottom: 14px; }
+
+/* ── Pricing row improvements ── */
+.pricing-row {
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.pricing-row:hover {
+  background: rgba(37,99,235,0.04);
+  box-shadow: 0 0 0 1px rgba(37,99,235,0.10);
+  border-radius: 10px;
+}
+
+/* ── Pack card improvements ── */
+.pack-card {
+  box-shadow: 0 4px 24px rgba(30,64,175,0.08);
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.pack-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(30,64,175,0.14);
+}
+
+/* ── Hero section z-index fix ── */
+.hero-grid { position: relative; z-index: 1; }
+
+/* ── Problem cards on blue tint ── */
+.problem-card {
+  box-shadow: 0 2px 12px rgba(15,23,42,0.06);
+  transition: transform 0.2s;
+}
+.problem-card:hover { transform: translateY(-3px); }
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   PREMIUM FULL-PAGE REDESIGN
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Google Fonts: add DM Sans for Latin ── */
+
+/* ── Section base improvements ── */
+.section { padding: 100px 0; }
+.section-sm { padding: 72px 0; }
+
+/* ── Gradient text utility ── */
+.grad-text {
+  background: linear-gradient(135deg, #fff 0%, #93C5FD 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Label chip ── */
+.label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #60A5FA;
+  background: rgba(96,165,250,0.10);
+  border: 1px solid rgba(96,165,250,0.28);
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-bottom: 18px;
+}
+
+/* ── PROBLEMS section — light treatment ── */
+.problems {
+  background: #F8FAFC !important;
+  position: relative;
+}
+.problems .label { color: #DC2626; background: rgba(220,38,38,0.08); border-color: rgba(220,38,38,0.20); }
+.problems .section-title { color: #0F172A; }
+.problems .section-sub { color: #64748B; }
+
+.problem-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 52px;
+}
+/* 4枚目が1人で余ったら全幅 */
+.problem-card:last-child:nth-child(3n+1) {
+  grid-column: 1 / -1;
+}
+.problem-card {
+  background: #fff !important;
+  border: 1.5px solid #E2E8F0 !important;
+  border-radius: 16px !important;
+  padding: 32px 28px !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05) !important;
+  position: relative;
+  transition: all 0.25s !important;
+}
+.problem-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #2563EB, #7C3AED);
+  border-radius: 16px 16px 0 0;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.problem-card:hover { box-shadow: 0 8px 32px rgba(37,99,235,0.12) !important; transform: translateY(-3px) !important; }
+.problem-card:hover::before { opacity: 1; }
+.problem-icon {
+  width: 48px; height: 48px;
+  background: linear-gradient(135deg, rgba(37,99,235,0.10), rgba(124,58,237,0.08)) !important;
+  border: 1px solid rgba(37,99,235,0.18);
+  border-radius: 12px;
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+}
+.problem-card h3 { font-size: 1.05rem; font-weight: 800; color: #0F172A; margin-bottom: 10px; }
+.problem-card p { font-size: 0.85rem; color: #64748B; line-height: 1.75; }
+
+/* ── SERVICES section ── */
+#services { background: #fff; }
+.service-card {
+  background: #fff !important;
+  border: 1.5px solid #E8EDF5 !important;
+  border-radius: 16px !important;
+  padding: 36px 32px !important;
+  position: relative;
+  overflow: hidden;
+}
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
+  background: linear-gradient(180deg, #3B82F6, #6366F1);
+  border-radius: 0;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.service-card:hover { box-shadow: 0 16px 48px rgba(30,64,175,0.10) !important; transform: translateY(-4px) !important; }
+.service-card:hover::before { opacity: 1; }
+.service-icon {
+  width: 52px; height: 52px;
+  background: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(99,102,241,0.08)) !important;
+  border: 1px solid rgba(59,130,246,0.20) !important;
+  border-radius: 14px !important;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+.service-card h3 { font-size: 1.0rem; font-weight: 800; color: #0F172A; margin-bottom: 10px; }
+.service-badge {
+  background: linear-gradient(135deg, rgba(30,64,175,0.08), rgba(99,102,241,0.06)) !important;
+  color: #1E40AF !important;
+  border: 1px solid rgba(30,64,175,0.18) !important;
+  border-radius: 6px !important;
+  font-size: 0.72rem !important;
+  font-weight: 800 !important;
+  padding: 4px 12px !important;
+}
+
+/* ── STRENGTHS section — light blue ── */
+.strengths {
+  background: #EFF6FF !important;
+}
+.strengths .label { color: #2563EB; background: rgba(37,99,235,0.08); border-color: rgba(37,99,235,0.20); }
+.strengths .section-title { color: #0F172A; }
+.strengths-grid { gap: 20px !important; border: none; border-radius: 0; overflow: visible; }
+.strength-item {
+  text-align: left !important;
+  padding: 40px 36px;
+  background: #fff;
+  border-radius: 16px;
+  border: 1.5px solid #DBEAFE;
+  border-right: 1.5px solid #DBEAFE;
+  box-shadow: 0 4px 16px rgba(37,99,235,0.08);
+  position: relative;
+}
+.strength-item:last-child { border-right: 1.5px solid #DBEAFE; }
+.strength-num {
+  font-size: 3.8rem !important;
+  color: rgba(37,99,235,0.18) !important;
+  margin-bottom: 20px !important;
+}
+.strengths .strength-item { color: #475569 !important; }
+.strengths .strength-item h3,
+.strength-item h3 { color: #0F172A !important; font-size: 1.05rem !important; }
+.strengths .strength-label,
+.strength-label { color: #64748B !important; }
+.strengths .strength-num { color: rgba(37,99,235,0.20) !important; }
+
+/* ── PRICING section ── */
+.pricing { background: #F8FAFC; }
+.pricing-tabs {
+  background: rgba(15,23,42,0.05) !important;
+  border-radius: 12px;
+  padding: 4px;
+}
+.ptab {
+  border-radius: 9px !important;
+  font-weight: 700 !important;
+  transition: all 0.2s;
+}
+.ptab.active {
+  background: #fff !important;
+  color: #1E40AF !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+}
+
+/* Pack card premium */
+.pack-card {
+  border-radius: 20px !important;
+  border: 1.5px solid #E2E8F0 !important;
+  background: #fff !important;
+  padding: 40px 36px !important;
+  box-shadow: 0 4px 24px rgba(30,64,175,0.06) !important;
+  transition: transform 0.25s, box-shadow 0.25s !important;
+}
+.pack-card:hover {
+  transform: translateY(-6px) !important;
+  box-shadow: 0 20px 56px rgba(30,64,175,0.14) !important;
+}
+.pack-card.pack-recommended {
+  border-color: #3B82F6 !important;
+  box-shadow: 0 0 0 1px #3B82F6, 0 8px 32px rgba(59,130,246,0.20) !important;
+}
+
+/* ── PRICING ROW ── */
+.pricing-row {
+  border: 1.5px solid transparent;
+  padding: 18px 16px;
+  margin-bottom: 4px;
+  border-radius: 12px;
+}
+.pricing-row:hover {
+  background: rgba(37,99,235,0.04) !important;
+  border-color: rgba(37,99,235,0.12) !important;
+  box-shadow: none !important;
+}
+
+/* ── FLOW section ── */
+#flow { background: #fff; }
+
+/* ── FAQ section ── */
+#faq { background: #F8FAFC; }
+
+/* ── CONTACT section ── */
+.contact {
+  background: #F8FAFC !important;
+  position: relative;
+}
+.contact .section-title { color: #0F172A !important; }
+.contact .section-sub { color: #64748B !important; }
+.contact .label { color: #2563EB; background: rgba(37,99,235,0.08); border-color: rgba(37,99,235,0.20); }
+
+/* Contact form card */
+.contact-card {
+  background: #fff !important;
+  border: 1.5px solid #E2E8F0 !important;
+  border-radius: 24px !important;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.07) !important;
+}
+.form-control {
+  background: #F8FAFC !important;
+  border: 1.5px solid #E2E8F0 !important;
+  color: #0F172A !important;
+  border-radius: 10px !important;
+}
+.form-control::placeholder { color: #94A3B8 !important; }
+.form-control:focus { border-color: #2563EB !important; background: #fff !important; }
+.form-row label { color: #374151 !important; }
+.form-submit {
+  background: linear-gradient(135deg, #2563EB, #1E40AF) !important;
+  border-radius: 12px !important;
+  font-size: 1rem !important;
+  font-weight: 800 !important;
+  padding: 16px !important;
+  letter-spacing: 0.02em;
+  box-shadow: 0 8px 24px rgba(37,99,235,0.30) !important;
+  transition: all 0.25s !important;
+}
+.form-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(37,99,235,0.45) !important; }
+
+/* ── FOOTER ── */
+footer {
+  background: #0F172A !important;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+/* ── FLOATING CTA button ── */
+.floating-cta, #floating-cta {
+  background: linear-gradient(135deg, #3B82F6, #1E40AF) !important;
+  border-radius: 50px !important;
+  box-shadow: 0 8px 32px rgba(59,130,246,0.40) !important;
+  font-weight: 800 !important;
+  border: none !important;
+}
+
+/* ── Scroll animations ── */
+.fade-up {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.fade-up:nth-child(2) { transition-delay: 0.08s; }
+.fade-up:nth-child(3) { transition-delay: 0.16s; }
+.fade-up:nth-child(4) { transition-delay: 0.24s; }
+.fade-up:nth-child(5) { transition-delay: 0.32s; }
+.fade-up:nth-child(6) { transition-delay: 0.40s; }
+
+/* ── btn-primary global improvement ── */
+.btn-primary {
+  background: linear-gradient(135deg, #3B82F6, #1E40AF) !important;
+  border-radius: 10px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.01em;
+  box-shadow: 0 6px 20px rgba(59,130,246,0.30) !important;
+  border: none !important;
+}
+.btn-primary:hover {
+  background: linear-gradient(135deg, #2563EB, #1E3A8A) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 28px rgba(59,130,246,0.42) !important;
+}
+.btn-gold {
+  background: linear-gradient(135deg, #F59E0B, #D97706) !important;
+  border-radius: 10px !important;
+  font-weight: 800 !important;
+  box-shadow: 0 6px 20px rgba(245,158,11,0.30) !important;
+}
+.btn-gold:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 28px rgba(245,158,11,0.42) !important;
+}
+
+/* ── Hero: no highlight on em (remove yellow bar) ── */
+.hero h1 em {
+  background: none !important;
+  background-clip: unset !important;
+  -webkit-background-clip: unset !important;
+  background: linear-gradient(135deg, #60A5FA, #818CF8) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+/* ── Works section heading ── */
+#works .section-title, #pricing .section-title,
+#flow .section-title, #faq .section-title { color: #0F172A; }
+
+/* ── Section title .mark for dark sections ── */
+.problems .mark, .strengths .mark, .contact .mark,
+.affiliate .mark {
+  background: linear-gradient(transparent 58%, rgba(59,130,246,0.30) 58%) !important;
+}
+
+/* ── Marquee dot color ── */
+.marquee-dot { color: #3B82F6 !important; }
+
+/* ── Pricing price ── */
+.pricing-price {
+  background: linear-gradient(135deg, #1E40AF, #2563EB);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 900 !important;
+}
+
+/* ── Pack name ── */
+.pack-name { color: #0F172A !important; }
+
 </style>
 </head>
 <body>
 
 <!-- ── Referral Announcement Bar ── -->
 <div class="referral-bar">
-  🎁 <strong>紹介コードでさらに+5%OFF</strong> ｜ お問い合わせフォームにコードを入力するだけ。通常価格に<strong>+5%引き</strong>、すでに10%割引中のプランは<strong>+5% = 最大15%引き</strong>。
+  🎁 <strong>紹介コードでさらに+5%OFF</strong>（初回のみ）｜ お問い合わせフォームにコードを入力するだけ。通常価格に<strong>+5%引き</strong>、すでに10%割引中のプランは<strong>+5% = 最大15%引き</strong>。
   <a href="#contact" style="margin-left:10px;">今すぐ確認 →</a>
 </div>
 
 <!-- ── Navigation ── -->
-<nav>
-  <div class="nav-logo">mono<span>.</span>create</div>
+<nav id="main-nav">
+  <div class="nav-logo">
+    <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" style="display:flex;align-items:center;gap:8px;">
+      <img src="img/mc-logo-full.png" alt="mono.create" style="height:42px;width:auto;filter:brightness(0) invert(1);">
+      <span class="nav-logo-text" style="display:none;">mono.create</span>
+    </a>
+  </div>
   <div class="nav-links">
     <a href="#services">サービス</a>
     <a href="#works">実績</a>
     <a href="#pricing">料金</a>
     <a href="#section-pf-free">無料PF制作</a>
     <a href="#faq">FAQ</a>
-    <a href="editor-recruit.html" style="color:#10B981;font-weight:700;">編集者募集</a>
-    <a href="#contact" class="btn btn-primary" style="padding:9px 22px;font-size:0.82rem;color:#fff;">無料で相談する →</a>
+    <a href="editor-recruit.html" style="color:#34D399;font-weight:700;">編集者募集</a>
+    <a href="#contact" class="btn btn-primary" style="padding:9px 22px;font-size:0.82rem;color:#fff;background:linear-gradient(135deg,#3B82F6,#1E40AF);border:none;">無料で相談する →</a>
   </div>
 </nav>
 
@@ -1206,53 +1757,82 @@ footer {
         編集から運用代行まで、丸ごとお任せください。
       </p>
       <div class="hero-cta">
-        <a href="#contact" class="btn btn-primary">
+        <a href="#contact" class="btn btn-primary" style="background:linear-gradient(135deg,#3B82F6,#1E40AF);box-shadow:0 6px 24px rgba(59,130,246,0.40);padding:15px 32px;font-size:1rem;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
           無料で相談する →
         </a>
-        <a href="#pricing" class="btn btn-outline">料金を見る</a>
+        <a href="#pricing" class="btn btn-outline" style="border-color:rgba(255,255,255,0.3);color:rgba(255,255,255,0.85);">料金を見る</a>
       </div>
       <div class="achievement-badges">
         <div class="achievement-badge">
-          <p class="achievement-badge-num">丸投<span>げOK</span></p>
-          <p class="achievement-badge-label">完全外注<br>お任せ対応</p>
+          <span style="font-size:1.1rem;">✅</span>
+          <div>
+            <p class="achievement-badge-num">丸投げ<span>OK</span></p>
+            <p class="achievement-badge-label">完全外注対応</p>
+          </div>
         </div>
         <div class="achievement-badge">
-          <p class="achievement-badge-num">3<span>回</span></p>
-          <p class="achievement-badge-label">修正<br>無料保証</p>
+          <span style="font-size:1.1rem;">🔄</span>
+          <div>
+            <p class="achievement-badge-num">修正<span>3回</span>無料</p>
+            <p class="achievement-badge-label">何度でも丁寧に</p>
+          </div>
         </div>
         <div class="achievement-badge">
-          <p class="achievement-badge-num">全<span>ジャンル</span></p>
-          <p class="achievement-badge-label">業種・用途<br>対応実績あり</p>
+          <span style="font-size:1.1rem;">⚡</span>
+          <div>
+            <p class="achievement-badge-num">最短<span>当日</span>納品</p>
+            <p class="achievement-badge-label">12時までのご依頼</p>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="hero-card fade-up">
-      <p class="hero-card-label">SERVICE OVERVIEW</p>
-      <div class="hero-stat">
-        <p class="hero-stat-value"><span data-ck="hero_stat1_val">¥4,000</span> <span data-ck="hero_stat1_sub">〜 / 1本</span></p>
-        <p class="hero-stat-label" data-ck="hero_stat1_label">ショート動画編集（縦型）</p>
+    <!-- Hero Visual: Editor Image (circle + floating pills) -->
+    <div class="hero-visual">
+      <!-- Floating stat pills — OUTSIDE the image circle -->
+      <div class="hero-float hero-float--1">
+        <span class="hero-float-icon">💰</span>
+        <span class="hero-float-val">¥4,000〜</span>
+        <span class="hero-float-lbl">ショート1本</span>
       </div>
-      <div class="hero-stat">
-        <p class="hero-stat-label" data-ck="hero_stat2_label">ショート：当日〜3日</p>
-        <p class="hero-stat-label" style="margin-top:4px;" data-ck="hero_stat2_label2">長尺：7〜8日</p>
+      <div class="hero-float hero-float--2">
+        <span class="hero-float-icon">⚡</span>
+        <span class="hero-float-val">最短当日</span>
+        <span class="hero-float-lbl">納品対応</span>
       </div>
-      <div class="hero-stat">
-        <p class="hero-stat-value"><span data-ck="hero_stat3_val">¥45,000</span> <span data-ck="hero_stat3_sub">〜 / 月</span></p>
-        <p class="hero-stat-label" data-ck="hero_stat3_label">投稿丸投げパック（10本 / 月）</p>
+      <div class="hero-float hero-float--3">
+        <span class="hero-float-icon">🔄</span>
+        <span class="hero-float-val">修正3回</span>
+        <span class="hero-float-lbl">無料保証</span>
       </div>
-      <div class="hero-stat">
-        <p class="hero-stat-label" data-ck="hero_stat4_label">3回まで修正無料</p>
-        <p class="hero-stat-label" style="margin-top:4px;" data-ck="hero_stat4_sub">（4回目〜 ショート¥1,000 / 長尺¥5,000）</p>
-      </div>
-      <div class="hero-stat">
-        <p class="hero-stat-value"><span data-ck="hero_stat5_val">¥20,000</span> <span data-ck="hero_stat5_sub">〜 / 1本</span></p>
-        <p class="hero-stat-label" data-ck="hero_stat5_label">長尺動画編集（YouTube・セミナー等）</p>
+      <!-- Circular ring + image -->
+      <div class="hero-img-ring">
+        <div class="hero-img-wrap">
+          <img src="img/editor-hero.png" alt="mono.create プロ編集者チーム" loading="eager">
+        </div>
       </div>
     </div>
   </div>
 </section>
+
+<!-- ── Hero Metrics Strip ── -->
+<div style="background:#fff;border-top:1px solid #E2E8F0;border-bottom:1px solid #E2E8F0;padding:36px 24px;">
+  <div style="max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
+    <div style="text-align:center;padding:20px 16px;background:#F0F7FF;border-radius:16px;">
+      <p style="font-size:2.8rem;font-weight:900;color:#0F172A;font-family:'Inter',sans-serif;letter-spacing:-0.04em;line-height:1;margin-bottom:8px;">¥4,000<span style="font-size:1.2rem;color:#2563EB;">〜</span></p>
+      <p style="font-size:0.78rem;color:#64748B;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;">ショート1本から</p>
+    </div>
+    <div style="text-align:center;padding:20px 16px;background:#F0FDF4;border-radius:16px;">
+      <p style="font-size:2.8rem;font-weight:900;color:#0F172A;font-family:'Inter',sans-serif;letter-spacing:-0.04em;line-height:1;margin-bottom:8px;"><span style="font-size:1.2rem;color:#059669;">最短</span>当日</p>
+      <p style="font-size:0.78rem;color:#64748B;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;">納品スピード</p>
+    </div>
+    <div style="text-align:center;padding:20px 16px;background:#FDF4FF;border-radius:16px;">
+      <p style="font-size:2.8rem;font-weight:900;color:#0F172A;font-family:'Inter',sans-serif;letter-spacing:-0.04em;line-height:1;margin-bottom:8px;">3<span style="font-size:1.2rem;color:#7C3AED;">回</span></p>
+      <p style="font-size:0.78rem;color:#64748B;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;">修正無料保証</p>
+    </div>
+  </div>
+</div>
 
 <!-- ── Marquee ── -->
 <div class="marquee-wrap">
@@ -1472,8 +2052,16 @@ footer {
       <h3 style="font-size:1rem;font-weight:800;color:#1e293b;">📸 無料ポートフォリオ制作 申込</h3>
       <button onclick="closePFModal()" style="background:none;border:none;font-size:1.3rem;cursor:pointer;color:#94a3b8;">✕</button>
     </div>
-    <div style="background:#FEF3C7;border:1px solid #D97706;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:0.78rem;color:#92400E;">
+    <!-- ジャンル表示（ジャンルカードから開いた場合）-->
+    <div id="pf-genre-fixed" style="background:#FEF3C7;border:1px solid #D97706;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:0.78rem;color:#92400E;">
       ジャンル：<strong id="pf-modal-genre"></strong>
+    </div>
+    <!-- ジャンル選択（直接申込の場合・受付中ジャンルを動的生成）-->
+    <div id="pf-genre-select-wrap" style="display:none;margin-bottom:16px;">
+      <label style="display:block;font-size:0.8rem;font-weight:700;color:#374151;margin-bottom:6px;">ジャンル <span style="color:#DC2626;">*</span></label>
+      <select id="pf-genre-select" style="width:100%;padding:10px 12px;border:1.5px solid #D97706;border-radius:8px;font-size:0.88rem;font-family:inherit;outline:none;background:#FEF3C7;color:#92400E;font-weight:700;">
+        <option value="">— 選択してください —</option>
+      </select>
     </div>
     <div style="margin-bottom:14px;">
       <label style="display:block;font-size:0.8rem;font-weight:700;color:#374151;margin-bottom:5px;">お名前 <span style="color:#DC2626;">*</span></label>
@@ -2075,12 +2663,12 @@ footer {
       <div style="background:linear-gradient(145deg,#1A2840,#1E3250);border:2px solid #2563EB;border-radius:16px;padding:22px 20px;">
         <p style="font-size:0.65rem;font-weight:800;letter-spacing:0.1em;color:#60A5FA;margin-bottom:10px;">紹介された方（クライアント）</p>
         <p style="font-size:1.6rem;font-weight:900;color:#93C5FD;font-family:'Inter',sans-serif;margin-bottom:6px;">最大15%OFF</p>
-        <p style="font-size:0.76rem;color:#94A3B8;line-height:1.7;">紹介コードをお問い合わせフォームに入力するだけ。<br>通常+5%、割引中プランは最大15%引きに。</p>
+        <p style="font-size:0.76rem;color:#94A3B8;line-height:1.7;">紹介コードをお問い合わせフォームに入力するだけ。<br>通常+5%、割引中プランは最大15%引きに。<br><span style="font-size:0.68rem;color:#64748B;">※ 割引は初回ご成約時のみ適用</span></p>
       </div>
       <div style="background:linear-gradient(145deg,#1A3A1F,#1E4020);border:2px solid #16A34A;border-radius:16px;padding:22px 20px;">
         <p style="font-size:0.65rem;font-weight:800;letter-spacing:0.1em;color:#4ADE80;margin-bottom:10px;">あなた（パートナー）</p>
         <p style="font-size:1.6rem;font-weight:900;color:#86EFAC;font-family:'Inter',sans-serif;margin-bottom:6px;">¥500〜¥3,000/件</p>
-        <p style="font-size:0.76rem;color:#94A3B8;line-height:1.7;">成約確認後、PayPayまたは銀行振込でお支払い。<br>継続3ヶ月以上でボーナス+¥1,000。</p>
+        <p style="font-size:0.76rem;color:#94A3B8;line-height:1.7;">成約確認後、銀行振込でお支払い。<br>月額パック3ヶ月継続でボーナス+¥1,000。</p>
       </div>
     </div>
 
@@ -2101,7 +2689,7 @@ footer {
           <span style="font-size:0.95rem;font-weight:900;color:#86EFAC;font-family:'Inter';">¥3,000</span>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.2);border-radius:8px;">
-          <span style="font-size:0.82rem;color:#FDE68A;">⭐ 継続ボーナス（3ヶ月以上）</span>
+          <span style="font-size:0.82rem;color:#FDE68A;">⭐ 継続ボーナス（月額パック3ヶ月以上）</span>
           <span style="font-size:0.95rem;font-weight:900;color:#FDE68A;font-family:'Inter';">+¥1,000</span>
         </div>
       </div>
@@ -2122,7 +2710,7 @@ footer {
       <div style="background:#131F35;border:1px solid #1E2D4A;border-radius:12px;padding:16px 12px;">
         <p style="font-size:1.4rem;margin-bottom:8px;">💳</p>
         <p style="font-size:0.72rem;font-weight:800;color:#F1F5F9;margin-bottom:4px;">③ 成約で報酬GET</p>
-        <p style="font-size:0.7rem;color:#64748B;line-height:1.5;">成約確認後に<br>PayPayで自動送金</p>
+        <p style="font-size:0.7rem;color:#64748B;line-height:1.5;">成約確認後に<br>銀行振込でお支払い</p>
       </div>
     </div>
 
@@ -2196,7 +2784,7 @@ footer {
       </div>
 
       <div class="form-card fade-up">
-        <form id="contact-form">
+        <form id="contact-form" novalidate>
           <div class="form-grid">
             <div class="form-row">
               <label>お名前<span>*</span></label>
@@ -2219,6 +2807,7 @@ footer {
             <label>ご関心のあるサービス<span>*</span></label>
             <select class="form-control" name="plan" required>
               <option value="">-- 選択してください --</option>
+              <!-- 個別プランがURLパラメータで渡された場合、JSで先頭に追加されます -->
               <optgroup label="── 単品">
                 <option>ショート動画編集（単品 ¥4,000〜）</option>
                 <option>長尺動画編集（単品 ¥20,000〜）</option>
@@ -2284,6 +2873,9 @@ footer {
 
 <!-- ── Footer ── -->
 <footer>
+  <div style="text-align:center;margin-bottom:16px;">
+    <img src="img/mc-logo-full.png" alt="mono.create" class="footer-logo-img">
+  </div>
   <div class="footer-logo">mono<span>.</span>create</div>
   <div class="footer-links">
     <a href="#services">サービス</a>
@@ -2503,7 +3095,7 @@ function pfBuildThumbs() {
   return _pfItems.map(function(item, i) {
     var src = pfThumbSrc(item);
     var imgHtml = src
-      ? '<img src="' + src + '" alt="' + (item.title||'') + '" loading="lazy">'
+      ? '<img src="' + src + '" alt="' + (item.title||'') + '" loading="lazy" onerror="this.style.display=\'none\';this.parentNode.querySelector(\'.pf-thumb-blank\')||this.insertAdjacentHTML(\'afterend\',\'<div class=\\\"pf-thumb-blank\\\">▶</div>\')">'
       : '<div class="pf-thumb-blank">▶</div>';
     return '<div class="pf-thumb' + (i===0?' pf-active':'') + '" onclick="pfSelect(' + i + ')" data-idx="' + i + '">'
       + imgHtml
@@ -2666,17 +3258,24 @@ function pfInit(items) {
   _pfInitialized = true; // 初期ロード完了 → 以降のthumb切替でscrollIntoView有効
 }
 
-async function loadPortfolio() {
+async function loadPortfolio(retries) {
   if (!GAS_URL) {
-    document.getElementById('portfolio-loading-txt').textContent = 'ポートフォリオは準備中です。';
+    document.getElementById('portfolio-loading-txt').textContent = '';
     return;
   }
+  retries = (retries == null) ? 0 : retries;
   try {
-    var res = await fetch(GAS_URL + '?action=portfolio');
+    var res = await fetch(GAS_URL + '?action=portfolio&_t=' + Date.now());
     var json = await res.json();
     pfInit(json.data || []);
   } catch(e) {
-    document.getElementById('portfolio-loading-txt').textContent = 'ポートフォリオの読み込みに失敗しました。';
+    if (retries < 2) {
+      // GASコールドスタート対策：3秒後に自動リトライ（最大2回）
+      setTimeout(function() { loadPortfolio(retries + 1); }, 3000);
+    } else {
+      // 3回すべて失敗した場合は静かに非表示
+      document.getElementById('portfolio-loading-txt').style.display = 'none';
+    }
   }
 }
 loadPortfolio();
@@ -2806,6 +3405,30 @@ async function loadPFSection() {
 }
 
 function renderPFGenres() {
+  // セレクトボックスを受付中ジャンルで更新（満席・成約済みは除外）
+  const sel = document.getElementById('pf-genre-select');
+  if (sel) {
+    sel.innerHTML = '<option value="">— 選択してください —</option>';
+    _pfGenres.forEach(g => {
+      const full = !g.active || g.count >= g.max;
+      const contracted = g.contracted > 0;
+      if (!full && !contracted) {
+        const opt = document.createElement('option');
+        opt.value = g.name;
+        const remain = Math.max(0, g.max - g.count);
+        opt.textContent = g.name + '（残り' + remain + '名）';
+        sel.appendChild(opt);
+      }
+    });
+    // 受付中が0件なら「その他・相談」だけ表示
+    if (sel.options.length === 1) {
+      const opt = document.createElement('option');
+      opt.value = 'その他・相談';
+      opt.textContent = 'その他・相談';
+      sel.appendChild(opt);
+    }
+  }
+
   const grid = document.getElementById('pf-genres-grid');
   if (!_pfGenres.length) { grid.innerHTML = '<p style="color:#94a3b8;">受付中のジャンルがありません。</p>'; return; }
   grid.innerHTML = _pfGenres.map(g => {
@@ -2843,12 +3466,43 @@ function openPFDirect() {
     alert('現在、受付は満席です。次回募集をお待ちください。');
     return;
   }
-  openPFModal('未定（申し込み後に相談）');
+  // 直接申込はジャンル選択UIを表示
+  openPFModal(null);
 }
 
 function openPFModal(genre) {
   _pfSelectedGenre = genre;
-  document.getElementById('pf-modal-genre').textContent = genre;
+  const fixedEl  = document.getElementById('pf-genre-fixed');
+  const selectEl = document.getElementById('pf-genre-select-wrap');
+  if (genre) {
+    // ジャンルカードから開いた場合 → 固定表示
+    document.getElementById('pf-modal-genre').textContent = genre;
+    fixedEl.style.display  = '';
+    selectEl.style.display = 'none';
+  } else {
+    // 直接申込 → 受付中ジャンルをセレクトに構築して表示
+    const sel = document.getElementById('pf-genre-select');
+    sel.innerHTML = '<option value="">— 選択してください —</option>';
+    _pfGenres.forEach(g => {
+      const full = !g.active || g.count >= g.max;
+      const contracted = g.contracted > 0;
+      if (!full && !contracted) {
+        const opt = document.createElement('option');
+        opt.value = g.name;
+        const remain = Math.max(0, g.max - g.count);
+        opt.textContent = g.name + '（残り' + remain + '名）';
+        sel.appendChild(opt);
+      }
+    });
+    if (sel.options.length === 1) {
+      const opt = document.createElement('option');
+      opt.value = 'その他・相談';
+      opt.textContent = 'その他・相談';
+      sel.appendChild(opt);
+    }
+    fixedEl.style.display  = 'none';
+    selectEl.style.display = '';
+  }
   document.getElementById('pf-name').value = '';
   document.getElementById('pf-email').value = '';
   document.getElementById('pf-message').value = '';
@@ -2862,9 +3516,34 @@ function closePFModal() {
 }
 
 async function submitPFForm() {
-  const name  = document.getElementById('pf-name').value.trim();
-  const email = document.getElementById('pf-email').value.trim();
-  if (!name || !email) { alert('お名前とメールアドレスを入力してください。'); return; }
+  const nameEl  = document.getElementById('pf-name');
+  const emailEl = document.getElementById('pf-email');
+  const ok = _validateFields([
+    { el: nameEl,  msg: 'お名前を入力してください' },
+    { el: emailEl, msg: 'メールアドレスを入力してください',
+      test: el => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim()) },
+  ]);
+  if (!ok) return;
+  const name  = nameEl.value.trim();
+  const email = emailEl.value.trim();
+  // ジャンル解決：カード選択 or セレクト
+  if (!_pfSelectedGenre) {
+    const sel = document.getElementById('pf-genre-select');
+    if (!sel || !sel.value) {
+      const selWrap = document.getElementById('pf-genre-select-wrap');
+      const errExist = selWrap.querySelector('.field-err-msg');
+      if (!errExist) {
+        const errEl = document.createElement('p');
+        errEl.className = 'field-err-msg';
+        errEl.style.cssText = 'color:#EF4444;font-size:0.76rem;margin:4px 0 0;';
+        errEl.textContent = '⚠ ジャンルを選択してください';
+        selWrap.appendChild(errEl);
+      }
+      selWrap.scrollIntoView({ behavior:'smooth', block:'center' });
+      return;
+    }
+    _pfSelectedGenre = sel.value;
+  }
   const btn = document.getElementById('pf-submit-btn');
   btn.disabled = true;
   btn.textContent = '送信中...';
@@ -2942,13 +3621,55 @@ document.getElementById('referral-code').addEventListener('input', function() {
   badge.style.display = this.value.trim().length >= 2 ? 'block' : 'none';
 });
 
+/* ── フォームバリデーション共通関数 ── */
+function _setFieldError(el, msg) {
+  el.style.borderColor = '#EF4444';
+  el.style.boxShadow   = '0 0 0 3px rgba(239,68,68,0.18)';
+  let errEl = el.parentNode.querySelector('.field-err-msg');
+  if (!errEl) {
+    errEl = document.createElement('p');
+    errEl.className = 'field-err-msg';
+    errEl.style.cssText = 'color:#EF4444;font-size:0.76rem;margin:4px 0 0;line-height:1.4;';
+    el.insertAdjacentElement('afterend', errEl);
+  }
+  errEl.textContent = '⚠ ' + msg;
+}
+function _clearFieldError(el) {
+  el.style.borderColor = '';
+  el.style.boxShadow   = '';
+  const errEl = el.parentNode.querySelector('.field-err-msg');
+  if (errEl) errEl.remove();
+}
+function _validateFields(checks) {
+  // checks: [{el, test, msg}]  test: 関数 or 省略(空でなければOK)
+  let firstBad = null;
+  checks.forEach(({ el, test, msg }) => {
+    const ok = test ? test(el) : el.value.trim() !== '';
+    if (!ok) { _setFieldError(el, msg || 'この項目は必須です'); if (!firstBad) firstBad = el; }
+    else       _clearFieldError(el);
+  });
+  if (firstBad) { firstBad.scrollIntoView({ behavior: 'smooth', block: 'center' }); firstBad.focus(); return false; }
+  return true;
+}
+
 document.getElementById('contact-form').addEventListener('submit', async (e) => {
   e.preventDefault();
+
+  const form = e.target;
+  const ok = _validateFields([
+    { el: form.name,    msg: 'お名前を入力してください' },
+    { el: form.email,   msg: 'メールアドレスを入力してください',
+      test: el => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim()) },
+    { el: form.plan,    msg: 'ご関心のあるサービスを選択してください',
+      test: el => el.value !== '' },
+    { el: form.message, msg: 'ご相談内容を入力してください' },
+  ]);
+  if (!ok) return;
+
   const btn = document.getElementById('submit-btn');
   btn.disabled = true;
   btn.textContent = '送信中...';
 
-  const form = e.target;
   const data = {
     name:          form.name.value,
     company:       form.company.value,
@@ -2963,7 +3684,6 @@ document.getElementById('contact-form').addEventListener('submit', async (e) => 
     await fetch(GAS_URL, {
       method:  'POST',
       mode:    'no-cors',
-      headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify(data),
     });
     form.style.display = 'none';
@@ -2974,6 +3694,114 @@ document.getElementById('contact-form').addEventListener('submit', async (e) => 
     alert('送信に失敗しました。時間をおいて再度お試しください。');
   }
 });
+</script>
+
+<!-- ── 個別見積もりバナー（URLパラメータ ?sv=1 の場合のみ表示） ── -->
+<div id="custom-plan-bar">
+  <div class="cpb-inner">
+    <span class="cpb-badge">✦ あなた専用プラン</span>
+    <div class="cpb-text">
+      <p class="cpb-label" id="cpb-client-name"></p>
+      <p class="cpb-plan" id="cpb-plan-name"></p>
+    </div>
+    <span class="cpb-price" id="cpb-price"></span>
+    <div class="cpb-actions">
+      <button class="cpb-btn cpb-btn-primary" onclick="applyCustomPlan()">このプランで申し込む →</button>
+      <button class="cpb-btn cpb-btn-close" onclick="document.getElementById('custom-plan-bar').style.display='none'">✕</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════════════
+   個別見積もりリンク（Custom Pricing）
+   URL: ?sv=1&pr=49800&pn=プラン名&note=備考&cl=クライアント名
+   ════════════════════════════════════════════════════════════════ */
+(function() {
+  var p = new URLSearchParams(location.search);
+  if (p.get('sv') !== '1') return;
+
+  var price  = parseInt(p.get('pr') || '0', 10);
+  var plan   = decodeURIComponent(p.get('pn') || '個別プラン');
+  var note   = decodeURIComponent(p.get('note') || '');
+  var client = decodeURIComponent(p.get('cl') || '');
+
+  // Show banner
+  var bar = document.getElementById('custom-plan-bar');
+  if (bar) bar.classList.add('visible');
+
+  document.getElementById('cpb-plan-name').textContent = plan + (note ? '（' + note + '）' : '');
+  document.getElementById('cpb-price').textContent = price > 0 ? '¥' + price.toLocaleString() : '';
+  document.getElementById('cpb-client-name').textContent = client ? client + ' 様へのご提案' : 'お客様専用のご提案';
+
+  // Store for contact form
+  window.__customPlan = { price: price, plan: plan, note: note, client: client };
+})();
+
+function applyCustomPlan() {
+  var cp = window.__customPlan;
+  if (!cp) return;
+
+  // Scroll to contact
+  var sec = document.getElementById('contact');
+  if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  setTimeout(function() {
+    // Add custom option to plan select if not present
+    var sel = document.querySelector('#contact-form [name="plan"]');
+    if (sel) {
+      var optVal = '【個別プラン】' + cp.plan + (cp.price > 0 ? '（¥' + cp.price.toLocaleString() + '）' : '');
+      var exists = false;
+      for (var i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value === optVal) { exists = true; break; }
+      }
+      if (!exists) {
+        var opt = new Option(optVal, optVal);
+        sel.insertBefore(opt, sel.options[0]);
+      }
+      sel.value = optVal;
+    }
+
+    // Pre-fill message
+    var msg = document.querySelector('#contact-form [name="message"]');
+    if (msg && !msg.value) {
+      msg.value = '【個別プランのお申し込み】\n' + cp.plan
+        + (cp.price > 0 ? '（¥' + cp.price.toLocaleString() + '）' : '')
+        + (cp.note ? '\n備考：' + cp.note : '');
+    }
+  }, 800);
+
+  // Hide bar
+  document.getElementById('custom-plan-bar').style.display = 'none';
+}
+
+/* ── Nav scroll behavior ── */
+window.addEventListener('scroll', function() {
+  var nav = document.getElementById('main-nav');
+  if (nav) {
+    if (window.scrollY > 80) nav.classList.add('nav-scrolled');
+    else nav.classList.remove('nav-scrolled');
+  }
+}, { passive: true });
+</script>
+
+
+<script>
+/* ── IntersectionObserver: fade-up on scroll ── */
+(function() {
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.fade-up').forEach(function(el) {
+    io.observe(el);
+  });
+})();
 </script>
 </body>
 </html>

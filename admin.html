@@ -6,6 +6,11 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
+<!-- ▼ セキュリティヘッダー -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https://script.google.com https://script.googleusercontent.com https://fonts.googleapis.com https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; frame-ancestors 'none';">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="X-Frame-Options" content="DENY">
 <title>管理画面 | mono.create</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -371,9 +376,31 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
   pointer-events: none;
 }
 .toast.show { transform: translateY(0); opacity: 1; }
+
+/* ── 請求書 印刷スタイル ── */
+@media print {
+  body > *:not(#inv-print-frame) { display: none !important; }
+  #inv-print-frame { display: block !important; position: fixed; inset: 0; z-index: 9999; background: #fff; border: none; width: 100%; height: 100%; }
+}
 </style>
 </head>
 <body>
+
+<!-- ── 初回セットアップ画面 ── -->
+<div id="setup-screen" style="display:none;">
+  <div class="login-card">
+    <div class="login-logo">mono<span>.</span>create</div>
+    <p class="login-sub" style="color:#F59E0B;font-weight:700;">🔐 初回セットアップ</p>
+    <p style="font-size:0.8rem;color:var(--sub);margin-bottom:18px;text-align:center;line-height:1.6;">管理者パスワードを設定してください。<br>11文字以上、英数字を含めてください。</p>
+    <input type="password" class="login-input" id="setup-pw1" placeholder="新しいパスワード（11文字以上）"
+           oninput="checkSetupStrength()">
+    <div id="setup-strength" style="font-size:0.75rem;margin-bottom:8px;height:16px;"></div>
+    <input type="password" class="login-input" id="setup-pw2" placeholder="もう一度入力"
+           onkeydown="if(event.key==='Enter') doSetup()">
+    <button class="login-btn" onclick="doSetup()">パスワードを設定する</button>
+    <p class="login-error" id="setup-error"></p>
+  </div>
+</div>
 
 <!-- ── Login ── -->
 <div id="login-screen">
@@ -384,6 +411,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
            onkeydown="if(event.key==='Enter') doLogin()">
     <button class="login-btn" onclick="doLogin()">ログイン</button>
     <p class="login-error" id="login-error">パスワードが正しくありません。</p>
+    <p id="lockout-msg" style="display:none;font-size:0.78rem;color:#F59E0B;margin-top:8px;text-align:center;"></p>
   </div>
 </div>
 
@@ -424,7 +452,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       </button>
       <button id="tab-sales-btn" onclick="switchAdminTab('sales')"
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
-        💰 売上帳（青色申告）
+        💰 収支帳（青色申告）
       </button>
       <button id="tab-schedule-btn" onclick="switchAdminTab('schedule')"
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
@@ -458,10 +486,22 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
         🤝 パートナー
       </button>
+      <button id="tab-private-link-btn" onclick="switchAdminTab('private-link')"
+        style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
+        🔗 個別見積もりリンク
+      </button>
     </div>
 
     <!-- ── 問い合わせタブ ── -->
     <div id="tab-inquiries">
+
+    <!-- リマインダーボタン -->
+    <div style="margin-bottom:16px;display:flex;justify-content:flex-end;">
+      <button onclick="sendPaymentReminders()"
+        style="padding:9px 18px;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.35);border-radius:8px;color:var(--yellow);font-size:0.85rem;font-weight:700;font-family:inherit;cursor:pointer;display:flex;align-items:center;gap:6px;">
+        🔔 期限当日リマインダー送信
+      </button>
+    </div>
 
     <!-- Stats -->
     <div class="stats-bar" id="stats-bar">
@@ -637,8 +677,40 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
 
     <!-- ── 売上帳タブ ── -->
     <div id="tab-sales" style="display:none;">
+
+      <!-- ═══ 月次収支サマリー ═══ -->
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+          <h3 style="font-size:0.95rem;font-weight:700;">📊 月次収支サマリー</h3>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="month" id="summary-month" style="padding:6px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:#fff;font-size:0.82rem;font-family:inherit;" onchange="loadMonthlySummary()">
+            <button class="refresh-btn" onclick="loadMonthlySummary()">更新</button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:14px;">
+          <div class="stat-card" style="background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.3);">
+            <p class="stat-label">売上（税込）</p>
+            <p class="stat-val green" id="sum-sales">¥—</p>
+          </div>
+          <div class="stat-card" style="background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.3);">
+            <p class="stat-label">経費合計</p>
+            <p class="stat-val red" id="sum-expense">¥—</p>
+          </div>
+          <div class="stat-card" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.3);">
+            <p class="stat-label">利益</p>
+            <p class="stat-val blue" id="sum-profit">¥—</p>
+          </div>
+          <div class="stat-card" style="background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.3);">
+            <p class="stat-label">利益率</p>
+            <p class="stat-val" style="color:#F59E0B;" id="sum-margin">—%</p>
+          </div>
+        </div>
+        <div id="sum-by-category" style="font-size:0.78rem;color:var(--sub);"></div>
+      </div>
+
+      <!-- ═══ 売上（収入）セクション ═══ -->
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px;">
-        <h3 style="font-size:0.95rem;font-weight:700;margin-bottom:16px;">売上を記録（青色申告対応）</h3>
+        <h3 style="font-size:0.95rem;font-weight:700;margin-bottom:16px;">📈 売上を記録（青色申告対応）</h3>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;">
           <div>
             <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">取引日 *</label>
@@ -689,7 +761,79 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
           </tbody>
         </table>
       </div>
-    </div>
+
+      <!-- ═══ 経費（支出）セクション ═══ -->
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px;">
+        <h3 style="font-size:0.95rem;font-weight:700;margin-bottom:16px;">📉 経費を記録（外注費・パートナー報酬など）</h3>
+        <div style="background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:0.78rem;color:#FCA5A5;">
+          💡 パートナー報酬は「支払済」ボタンを押すと自動記帳されます。ここでは外注費などを手動入力できます。
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:12px;">
+          <div>
+            <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">取引日 *</label>
+            <input type="date" id="ex-date" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;">
+          </div>
+          <div>
+            <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">相手先名 *</label>
+            <input type="text" id="ex-name" placeholder="田中太郎（編集者）" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;">
+          </div>
+          <div>
+            <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">経費種別 *</label>
+            <select id="ex-category" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;">
+              <option>外注費（編集者）</option>
+              <option>パートナー報酬</option>
+              <option>広告宣伝費</option>
+              <option>通信費</option>
+              <option>ソフトウェア・ツール費</option>
+              <option>その他経費</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">金額 *</label>
+            <input type="number" id="ex-amount" placeholder="2000" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;">
+          </div>
+          <div>
+            <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">支払方法</label>
+            <select id="ex-method" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;">
+              <option selected>銀行振込</option>
+              <option>クレジットカード</option>
+              <option>現金</option>
+              <option>その他</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">摘要</label>
+            <input type="text" id="ex-summary" placeholder="ショート動画編集 3本" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;">
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <button onclick="addExpenseRecord()" style="padding:10px 24px;background:var(--red);color:#fff;border:none;border-radius:50px;font-size:0.88rem;font-weight:700;font-family:inherit;cursor:pointer;">経費を記録</button>
+          <span id="ex-msg" style="font-size:0.82rem;color:var(--green);display:none;">記録しました！</span>
+        </div>
+      </div>
+
+      <!-- 経費一覧 -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+        <div>
+          <span style="font-size:0.82rem;color:var(--sub);">今月の経費合計：</span>
+          <span id="expense-total" style="font-size:1.1rem;font-weight:900;color:var(--red);font-family:'Inter',sans-serif;">¥—</span>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="export-btn" onclick="exportExpenseCSV()">経費CSV出力</button>
+          <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="clearAllRecords('expenses','経費帳',loadExpenses)">🗑 全件削除</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>取引日</th><th>相手先</th><th>種別</th><th>摘要</th><th>金額</th><th>支払方法</th><th></th>
+          </tr></thead>
+          <tbody id="expense-body">
+            <tr><td colspan="7" class="table-empty"><span class="spinner"></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div><!-- /tab-sales -->
 
     <!-- ── 制作スケジュール（納期管理）タブ ── -->
     <div id="tab-schedule" style="display:none;">
@@ -936,6 +1080,20 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         ※ 別のブラウザやデバイスからログインする場合は、同じパスワードを設定してください。
       </p>
 
+      <!-- GAS 認証キー同期（復旧用） -->
+      <div style="background:var(--bg2);border:1px solid rgba(245,158,11,0.3);border-radius:12px;padding:24px;margin-top:20px;">
+        <h3 style="font-size:0.9rem;font-weight:700;margin-bottom:8px;color:#F59E0B;">🔄 GAS認証キー同期</h3>
+        <p style="font-size:0.76rem;color:var(--sub);margin-bottom:16px;line-height:1.6;">
+          「読み込みに失敗しました」「削除に失敗しました」が表示される場合は、ブラウザに保存されているパスワードとGASの認証キーが一致していない可能性があります。<br>
+          下のボタンで同期してください。
+        </p>
+        <p id="gas-sync-msg" style="font-size:0.8rem;margin-bottom:12px;display:none;"></p>
+        <button onclick="syncGasKey()"
+          style="width:100%;padding:12px;background:#92400E;color:#FDE68A;border:1px solid #F59E0B;border-radius:8px;font-weight:700;font-size:0.9rem;cursor:pointer;font-family:inherit;">
+          GASとパスワードを同期する
+        </button>
+      </div>
+
       <!-- サービス受付管理 -->
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-top:28px;">
         <h3 style="font-size:0.9rem;font-weight:700;margin-bottom:6px;color:var(--lt);">🔧 サービス受付管理</h3>
@@ -1064,6 +1222,58 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
 
     <!-- ── パートナー申請タブ ── -->
     <div id="tab-partner-apps" style="display:none;">
+
+      <!-- ══════════════════════════════════════════════════════
+           💰 自動計算 報酬管理セクション
+      ══════════════════════════════════════════════════════ -->
+      <div style="margin-bottom:32px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+          <h2 style="font-size:1rem;font-weight:700;">💰 パートナー報酬管理（自動計算）</h2>
+          <button class="refresh-btn" onclick="loadPartnerRewards()">更新</button>
+        </div>
+
+        <!-- 報酬サマリーバー -->
+        <div class="stats-bar" style="margin-bottom:20px;">
+          <div class="stat-card"><p class="stat-label">未送信</p><p class="stat-val red" id="rw-unsent">—</p></div>
+          <div class="stat-card"><p class="stat-label">メール済み</p><p class="stat-val yellow" id="rw-mailed">—</p></div>
+          <div class="stat-card"><p class="stat-label">支払済み</p><p class="stat-val green" id="rw-paid">—</p></div>
+          <div class="stat-card"><p class="stat-label">未払い総額</p><p class="stat-val" style="color:#F59E0B;" id="rw-amount">—</p></div>
+        </div>
+
+        <!-- フロー説明 -->
+        <div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:0.78rem;color:#FCD34D;line-height:1.8;">
+          <strong>自動フロー：</strong> 振込承認 → 紹介コードを自動検索 → 報酬額を自動計算 →
+          ここに表示 → <strong>「📧 送信」</strong>でメール自動送信 → 銀行振込（手動） → <strong>「✅ 支払済」</strong>クリック
+        </div>
+
+        <!-- 報酬テーブル -->
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>日時</th>
+                <th>パートナー</th>
+                <th>クライアント</th>
+                <th>プラン</th>
+                <th>基本</th>
+                <th>ボーナス</th>
+                <th>合計</th>
+                <th>ステータス</th>
+                <th>アクション</th>
+              </tr>
+            </thead>
+            <tbody id="rw-body">
+              <tr><td colspan="9" class="table-empty"><span class="spinner"></span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <hr style="border-color:var(--border);margin:0 0 28px;">
+
+      <!-- ══════════════════════════════════════════════════════
+           🤝 パートナー申請管理セクション
+      ══════════════════════════════════════════════════════ -->
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
         <h2 style="font-size:1rem;font-weight:700;">🤝 パートナー申請管理</h2>
         <div style="display:flex;gap:10px;">
@@ -1078,12 +1288,6 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         <div class="stat-card"><p class="stat-label">未対応</p><p class="stat-val red" id="pa-new">—</p></div>
         <div class="stat-card"><p class="stat-label">承認済み</p><p class="stat-val green" id="pa-approved">—</p></div>
         <div class="stat-card"><p class="stat-label">却下</p><p class="stat-val" style="color:var(--sub)" id="pa-rejected">—</p></div>
-      </div>
-
-      <!-- 報酬の仕組み説明 -->
-      <div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);border-radius:12px;padding:14px 18px;margin-bottom:20px;font-size:0.8rem;color:#FCD34D;line-height:1.9;">
-        <strong>💰 報酬フロー：</strong> 申請受付 → 審査 → 【承認】ボタンで自動的にコードをメール送信 →
-        成約時に「報酬メール」ボタンで報酬確定メール送信 → PayPayで手動送金 → 確認
       </div>
 
       <!-- フィルター -->
@@ -1131,8 +1335,171 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       </div>
     </div><!-- /tab-partner-apps -->
 
+    <!-- ══════════════════════════════════════════════════════════════════
+         🔗 個別見積もりリンク生成タブ
+         ══════════════════════════════════════════════════════════════════ -->
+    <div id="tab-private-link" style="display:none;max-width:640px;margin:0 auto;padding:32px 0;">
+      <h2 style="font-size:1.1rem;font-weight:900;margin-bottom:6px;">🔗 個別見積もりリンク生成</h2>
+      <p style="font-size:0.82rem;color:var(--sub);margin-bottom:28px;line-height:1.7;">
+        クライアント専用の価格リンクを生成します。このURLを受け取った方のみ、専用プランが表示されます。<br>
+        ホームページの一般公開ページには影響しません。
+      </p>
+
+      <div style="background:#F8FAFC;border:1.5px solid #CBD5E1;border-radius:14px;padding:24px;">
+        <div style="margin-bottom:16px;">
+          <label style="display:block;font-size:0.78rem;font-weight:700;color:#475569;margin-bottom:6px;">クライアント名<span style="color:#EF4444;">*</span></label>
+          <input id="pl-client" type="text" placeholder="例：山田 太郎 様" style="width:100%;padding:10px 12px;border:1.5px solid #CBD5E1;border-radius:8px;font-size:0.88rem;font-family:inherit;outline:none;">
+        </div>
+        <div style="margin-bottom:16px;">
+          <label style="display:block;font-size:0.78rem;font-weight:700;color:#475569;margin-bottom:6px;">プラン名<span style="color:#EF4444;">*</span></label>
+          <input id="pl-plan" type="text" placeholder="例：ショート動画5本セット・テロップ特急込み" style="width:100%;padding:10px 12px;border:1.5px solid #CBD5E1;border-radius:8px;font-size:0.88rem;font-family:inherit;outline:none;">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+          <div>
+            <label style="display:block;font-size:0.78rem;font-weight:700;color:#475569;margin-bottom:6px;">金額（円）</label>
+            <input id="pl-price" type="number" placeholder="例：49800" style="width:100%;padding:10px 12px;border:1.5px solid #CBD5E1;border-radius:8px;font-size:0.88rem;font-family:inherit;outline:none;">
+          </div>
+          <div>
+            <label style="display:block;font-size:0.78rem;font-weight:700;color:#475569;margin-bottom:6px;">備考・割引理由</label>
+            <input id="pl-note" type="text" placeholder="例：初回特別価格" style="width:100%;padding:10px 12px;border:1.5px solid #CBD5E1;border-radius:8px;font-size:0.88rem;font-family:inherit;outline:none;">
+          </div>
+        </div>
+
+        <!-- セットプラン内訳 -->
+        <div style="border:1px solid #CBD5E1;border-radius:10px;padding:14px;margin-bottom:16px;background:#fff;">
+          <p style="font-size:0.78rem;font-weight:700;color:#475569;margin-bottom:10px;">📦 セットプラン内訳（任意）</p>
+          <div id="pl-items-list"></div>
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <input id="pl-item-input" type="text" placeholder="例：ショート動画5本 ¥20,000" style="flex:1;padding:8px 12px;border:1.5px solid #CBD5E1;border-radius:8px;font-size:0.82rem;font-family:inherit;outline:none;">
+            <button onclick="addPLItem()" style="padding:8px 14px;background:#1E40AF;color:#fff;border:none;border-radius:8px;font-size:0.82rem;font-weight:700;cursor:pointer;white-space:nowrap;">＋ 追加</button>
+          </div>
+        </div>
+
+        <button onclick="generatePrivateLink()" style="width:100%;padding:13px;background:linear-gradient(135deg,#1E40AF,#2563EB);color:#fff;border:none;border-radius:10px;font-size:0.95rem;font-weight:800;cursor:pointer;font-family:inherit;margin-bottom:16px;">
+          🔗 リンクを生成する
+        </button>
+
+        <!-- 生成結果 -->
+        <div id="pl-result" style="display:none;">
+          <p style="font-size:0.78rem;font-weight:700;color:#059669;margin-bottom:8px;">✅ リンクが生成されました</p>
+          <div style="background:#EFF6FF;border:1.5px solid #BFDBFE;border-radius:8px;padding:12px;word-break:break-all;">
+            <p id="pl-url" style="font-size:0.78rem;color:#1E40AF;font-family:monospace;line-height:1.6;"></p>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px;">
+            <button onclick="copyPLUrl()" style="flex:1;padding:10px;background:#059669;color:#fff;border:none;border-radius:8px;font-size:0.85rem;font-weight:700;cursor:pointer;">📋 URLをコピー</button>
+            <button onclick="openPLUrl()" style="flex:1;padding:10px;background:#6B7280;color:#fff;border:none;border-radius:8px;font-size:0.85rem;font-weight:700;cursor:pointer;">🔗 ブラウザで確認</button>
+          </div>
+          <div id="pl-summary" style="margin-top:16px;padding:14px;background:#F9FAFB;border:1px solid #E5E7EB;border-radius:10px;font-size:0.8rem;color:#374151;line-height:1.8;"></div>
+        </div>
+      </div>
+
+      <!-- 生成履歴 -->
+      <div style="margin-top:28px;">
+        <p style="font-size:0.82rem;font-weight:800;color:#374151;margin-bottom:12px;">📋 生成履歴（このセッション）</p>
+        <div id="pl-history" style="display:flex;flex-direction:column;gap:10px;"></div>
+      </div>
+    </div><!-- /tab-private-link -->
+
   </main>
 </div>
+
+<script>
+/* ─── 個別見積もりリンク生成 ─────────────────────────────────── */
+var _plItems = [];
+var _plHistory = [];
+var LP_BASE_URL = 'https://mono-create-group.github.io/lp/';
+
+function addPLItem() {
+  var inp = document.getElementById('pl-item-input');
+  var val = inp.value.trim();
+  if (!val) return;
+  _plItems.push(val);
+  inp.value = '';
+  renderPLItems();
+}
+function removePLItem(i) {
+  _plItems.splice(i, 1);
+  renderPLItems();
+}
+function renderPLItems() {
+  var list = document.getElementById('pl-items-list');
+  if (!list) return;
+  list.innerHTML = _plItems.map(function(item, i) {
+    return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">'
+      + '<span style="flex:1;font-size:0.82rem;color:#374151;background:#F3F4F6;padding:6px 10px;border-radius:6px;">' + item + '</span>'
+      + '<button onclick="removePLItem(' + i + ')" style="background:#EF4444;color:#fff;border:none;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:0.75rem;">✕</button>'
+      + '</div>';
+  }).join('');
+}
+
+function generatePrivateLink() {
+  var client = document.getElementById('pl-client').value.trim();
+  var plan   = document.getElementById('pl-plan').value.trim();
+  var price  = document.getElementById('pl-price').value.trim();
+  var note   = document.getElementById('pl-note').value.trim();
+
+  if (!plan) { alert('プラン名は必須です'); return; }
+
+  var params = new URLSearchParams();
+  params.set('sv', '1');
+  if (plan)   params.set('pn', plan);
+  if (price)  params.set('pr', price);
+  if (note)   params.set('note', note);
+  if (client) params.set('cl', client);
+
+  var url = LP_BASE_URL + '?' + params.toString();
+  document.getElementById('pl-url').textContent = url;
+
+  // Summary
+  var summary = '<strong>クライアント：</strong>' + (client || '（未設定）') + '<br>'
+    + '<strong>プラン：</strong>' + plan + '<br>'
+    + (price ? '<strong>金額：</strong>¥' + parseInt(price, 10).toLocaleString() + '<br>' : '')
+    + (note ? '<strong>備考：</strong>' + note + '<br>' : '')
+    + (_plItems.length > 0 ? '<strong>内訳：</strong><br>' + _plItems.map(function(x){ return '　・' + x; }).join('<br>') : '');
+  document.getElementById('pl-summary').innerHTML = summary;
+  document.getElementById('pl-result').style.display = 'block';
+
+  // Add to history
+  var hist = { client: client, plan: plan, price: price, note: note, url: url, ts: new Date().toLocaleString('ja-JP') };
+  _plHistory.unshift(hist);
+  renderPLHistory();
+}
+
+function copyPLUrl() {
+  var url = document.getElementById('pl-url').textContent;
+  navigator.clipboard.writeText(url).then(function() {
+    alert('URLをコピーしました！');
+  });
+}
+function openPLUrl() {
+  var url = document.getElementById('pl-url').textContent;
+  window.open(url, '_blank');
+}
+
+function renderPLHistory() {
+  var hist = document.getElementById('pl-history');
+  if (!hist) return;
+  hist.innerHTML = _plHistory.map(function(h, i) {
+    return '<div style="background:#F8FAFC;border:1px solid #E5E7EB;border-radius:10px;padding:12px 16px;">'
+      + '<div style="display:flex;justify-content:space-between;align-items:flex-start;">'
+      + '<div style="flex:1;">'
+      + '<p style="font-size:0.82rem;font-weight:800;color:#0F172A;margin-bottom:2px;">' + (h.client || '（クライアント名なし）') + '</p>'
+      + '<p style="font-size:0.78rem;color:#475569;margin-bottom:4px;">' + h.plan + (h.price ? '　¥' + parseInt(h.price, 10).toLocaleString() : '') + '</p>'
+      + '<p style="font-size:0.7rem;color:#94A3B8;">' + h.ts + '</p>'
+      + '</div>'
+      + '<button onclick="navigator.clipboard.writeText(\'' + h.url.replace(/'/g, "\\'") + '\').then(function(){alert(\'コピーしました\')})" '
+      + 'style="padding:6px 12px;background:#1E40AF;color:#fff;border:none;border-radius:6px;font-size:0.75rem;cursor:pointer;white-space:nowrap;margin-left:10px;">コピー</button>'
+      + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+// Tab init
+(function() {
+  var allTabs = document.querySelectorAll('[id^="tab-"][id$="-btn"]:not([id="tab-private-link-btn"])');
+  // handled by switchAdminTab
+})();
+</script>
 
 <!-- ── Modal ── -->
 <div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
@@ -1274,15 +1641,166 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         <input type="text" id="pm-due" placeholder="例: 2026年6月5日（5日以内）"
           style="width:100%;padding:9px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.9rem;">
       </div>
+      <div style="margin-bottom:12px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <label style="font-size:0.82rem;color:var(--sub);">支払い形式</label>
+          <button id="pm-special-pay-btn" onclick="toggleSpecialPayOptions()" style="font-size:0.72rem;padding:2px 8px;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--sub);cursor:pointer;">🔒 特例払いを設定</button>
+        </div>
+        <select id="pm-pay-type" style="width:100%;padding:9px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.88rem;font-family:inherit;outline:none;" onchange="toggleDateInputVisibility()">
+          <option value="spot">つど払い（基本・全員適用）</option>
+          <!-- 特例オプション（非公開・管理者のみ） -->
+          <option value="month_end" class="special-pay-option" style="display:none;">【特例】当月払い（月末締め・翌月1日払い）</option>
+          <option value="next_month_end" class="special-pay-option" style="display:none;">【特例】翌月末払い（月末締め・翌月末払い）</option>
+          <option value="custom_date" class="special-pay-option" style="display:none;">【特例】日付指定払い</option>
+        </select>
+        <div id="pm-custom-date-wrap" style="display:none;margin-top:8px;">
+          <input type="date" id="pm-custom-date" style="width:100%;padding:9px 12px;background:var(--bg2);border:1px solid #F59E0B;border-radius:6px;color:var(--text);font-size:0.88rem;">
+          <p style="font-size:0.72rem;color:var(--sub);margin-top:4px;">振込期限の日付を指定してください</p>
+        </div>
+      </div>
       <div style="margin-bottom:16px;">
         <label style="display:block;font-size:0.82rem;color:var(--sub);margin-bottom:6px;">備考・メッセージ（任意）</label>
         <textarea id="pm-note" rows="3" placeholder="特記事項があれば入力してください"
           style="width:100%;padding:9px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;resize:vertical;"></textarea>
       </div>
-      <div class="modal-actions" style="margin-top:20px;">
-        <button class="modal-btn" onclick="closePaymentReqModal()" style="background:var(--bg2);color:var(--sub);">キャンセル</button>
-        <button class="modal-btn mail" id="pm-send-btn" onclick="submitPaymentRequest()">💳 振込依頼を送信</button>
+      <div class="modal-actions" style="margin-top:20px;flex-wrap:wrap;">
+        <button class="modal-btn" onclick="closePaymentReqModal()" style="background:var(--bg2);color:var(--sub);flex:0 0 auto;">キャンセル</button>
+        <button class="modal-btn" onclick="openInvoiceModal()" style="background:rgba(245,158,11,0.12);color:var(--yellow);border:1px solid rgba(245,158,11,0.3);flex:0 0 auto;">📄 請求書を作成</button>
+        <button class="modal-btn mail" id="pm-send-btn" onclick="submitPaymentRequest()" style="flex:1;">💳 振込依頼を送信</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── 請求書モーダル ── -->
+<div class="modal-overlay" id="invoice-modal" onclick="if(event.target===this)closeInvoiceModal()">
+  <div class="modal" style="max-width:640px;">
+    <div class="modal-header">
+      <h2 class="modal-title">📄 請求書を作成</h2>
+      <button class="modal-close" onclick="closeInvoiceModal()">×</button>
+    </div>
+    <div style="padding:4px 0 0;">
+
+      <!-- 基本情報 -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+        <div>
+          <label style="display:block;font-size:0.75rem;color:var(--sub);margin-bottom:4px;">請求書番号</label>
+          <input type="text" id="inv-number" style="width:100%;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;font-family:inherit;outline:none;">
+        </div>
+        <div>
+          <label style="display:block;font-size:0.75rem;color:var(--sub);margin-bottom:4px;">発行日</label>
+          <input type="date" id="inv-issue-date" style="width:100%;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;font-family:inherit;outline:none;">
+        </div>
+        <div>
+          <label style="display:block;font-size:0.75rem;color:var(--sub);margin-bottom:4px;">支払期限</label>
+          <input type="text" id="inv-due" style="width:100%;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;font-family:inherit;outline:none;">
+        </div>
+        <div>
+          <label style="display:block;font-size:0.75rem;color:var(--sub);margin-bottom:4px;">請求先</label>
+          <input type="text" id="inv-client" style="width:100%;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;font-family:inherit;outline:none;">
+        </div>
+        <div style="grid-column:1/-1;">
+          <label style="display:block;font-size:0.75rem;color:var(--sub);margin-bottom:4px;">件名</label>
+          <input type="text" id="inv-subject" placeholder="例: 動画編集代行サービス" style="width:100%;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;font-family:inherit;outline:none;">
+        </div>
+      </div>
+
+      <!-- 明細欄 -->
+      <div style="margin-bottom:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <label style="font-size:0.75rem;color:var(--sub);">明細</label>
+          <button onclick="addInvoiceRow()" style="padding:4px 10px;background:#1a2a3a;color:#60a5fa;border:1px solid #1d4ed8;border-radius:6px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;">＋ 行を追加</button>
+        </div>
+        <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+          <div style="display:grid;grid-template-columns:1fr 60px 90px 90px 32px;gap:0;background:var(--bg3);padding:6px 10px;font-size:0.7rem;color:var(--sub);font-weight:700;">
+            <span>品目</span><span style="text-align:center;">数量</span><span style="text-align:right;">単価</span><span style="text-align:right;">金額</span><span></span>
+          </div>
+          <div id="inv-rows"></div>
+        </div>
+      </div>
+
+      <!-- 税・源泉 設定 -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;">
+        <div>
+          <label style="display:block;font-size:0.75rem;color:var(--sub);margin-bottom:4px;">消費税率</label>
+          <select id="inv-tax-rate" onchange="calcInvoice()" style="width:100%;padding:7px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.82rem;font-family:inherit;">
+            <option value="0.10">10%</option>
+            <option value="0.08">8%</option>
+            <option value="0.08r">軽減税率8%</option>
+            <option value="0">非課税0%</option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block;font-size:0.75rem;color:var(--sub);margin-bottom:4px;">税計算方式</label>
+          <select id="inv-tax-method" onchange="calcInvoice()" style="width:100%;padding:7px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.82rem;font-family:inherit;">
+            <option value="exclusive">外税（税抜）</option>
+            <option value="inclusive">内税（税込）</option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block;font-size:0.75rem;color:var(--sub);margin-bottom:4px;">源泉徴収</label>
+          <select id="inv-withholding" onchange="calcInvoice()" style="width:100%;padding:7px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.82rem;font-family:inherit;">
+            <option value="none">なし</option>
+            <option value="10.21">あり（10.21%）</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 計算結果 -->
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:0.82rem;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="color:var(--sub);">小計</span><span id="inv-subtotal">¥0</span></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="color:var(--sub);">消費税額</span><span id="inv-tax-amt">¥0</span></div>
+        <div id="inv-withholding-row" style="display:flex;justify-content:space-between;margin-bottom:4px;display:none;"><span style="color:var(--sub);">源泉徴収額</span><span id="inv-withholding-amt" style="color:var(--red);">-¥0</span></div>
+        <div style="display:flex;justify-content:space-between;padding-top:8px;border-top:1px solid var(--border);font-weight:700;font-size:0.95rem;">
+          <span>請求合計</span><span id="inv-total" style="color:var(--green);">¥0</span>
+        </div>
+      </div>
+
+      <!-- 備考 -->
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:0.75rem;color:var(--sub);margin-bottom:4px;">備考</label>
+        <textarea id="inv-note" rows="2" style="width:100%;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;font-family:inherit;resize:vertical;outline:none;" placeholder="お振込先や特記事項など"></textarea>
+      </div>
+
+      <!-- 振込先 -->
+      <details style="margin-bottom:14px;">
+        <summary style="font-size:0.78rem;color:var(--lt);cursor:pointer;font-weight:700;margin-bottom:8px;">🏦 振込先（クリックで展開 / localStorageに保存されます）</summary>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+          <div>
+            <label style="font-size:0.72rem;color:var(--sub);display:block;margin-bottom:3px;">銀行名</label>
+            <input type="text" id="inv-bank-name" placeholder="例: ゆうちょ銀行" style="width:100%;padding:7px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.82rem;font-family:inherit;outline:none;">
+          </div>
+          <div>
+            <label style="font-size:0.72rem;color:var(--sub);display:block;margin-bottom:3px;">支店名</label>
+            <input type="text" id="inv-bank-branch" placeholder="例: 〇〇支店" style="width:100%;padding:7px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.82rem;font-family:inherit;outline:none;">
+          </div>
+          <div>
+            <label style="font-size:0.72rem;color:var(--sub);display:block;margin-bottom:3px;">口座種別</label>
+            <select id="inv-bank-type" style="width:100%;padding:7px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.82rem;font-family:inherit;">
+              <option value="普通">普通</option>
+              <option value="当座">当座</option>
+              <option value="貯蓄">貯蓄</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:0.72rem;color:var(--sub);display:block;margin-bottom:3px;">口座番号</label>
+            <input type="text" id="inv-bank-number" placeholder="例: 1234567" style="width:100%;padding:7px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.82rem;font-family:inherit;outline:none;">
+          </div>
+          <div style="grid-column:1/-1;">
+            <label style="font-size:0.72rem;color:var(--sub);display:block;margin-bottom:3px;">口座名義（カタカナ）</label>
+            <input type="text" id="inv-bank-holder" placeholder="例: ナカムラコウタ" style="width:100%;padding:7px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.82rem;font-family:inherit;outline:none;">
+          </div>
+        </div>
+        <button onclick="saveBankInfo()" style="margin-top:8px;padding:6px 14px;background:#1a2a3a;color:#60a5fa;border:1px solid #1d4ed8;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;">💾 振込先を保存</button>
+      </details>
+
+      <!-- アクションボタン -->
+      <div class="modal-actions" style="flex-wrap:wrap;gap:8px;">
+        <button class="modal-btn" onclick="closeInvoiceModal()" style="background:var(--bg2);color:var(--sub);flex:0 0 auto;">閉じる</button>
+        <button class="modal-btn" onclick="printInvoice()" style="background:rgba(16,185,129,0.12);color:var(--green);border:1px solid rgba(16,185,129,0.3);flex:0 0 auto;">🖨 PDFとして保存</button>
+        <button class="modal-btn mail" onclick="sendInvoiceMail()" style="flex:1;">📧 メールで送付</button>
+      </div>
+
     </div>
   </div>
 </div>
@@ -1292,46 +1810,182 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
 
 <script>
 // ─── 設定 ──────────────────────────────────────────────────────
-// Google Apps Script Web App URL（editor.htmlと同じURLに差し替え）
+// Google Apps Script Web App URL（全LPページ共通のGAS URL）
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
-
-// 管理画面パスワード（初期値。管理画面の設定タブから変更可能）
-const DEFAULT_PASSWORD = '20180412k';
-// ★ 毎回 localStorage から読む（パスワード変更後も即反映）
-function getAdminPw() {
-  return localStorage.getItem('mc_admin_pw') || DEFAULT_PASSWORD;
-}
+// ★ DEFAULT_PASSWORD はソースコードに記述しない（初回は setup-screen で設定）
 // ───────────────────────────────────────────────────────────────
 
-let inquiries = [];
-let currentRow = null;
+// ── GASフェッチ共通ラッパー（タイムアウト付き）──
+const GAS_TIMEOUT_MS = 12000; // 12秒でタイムアウト
+async function gasFetch(url, options = {}) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), GAS_TIMEOUT_MS);
+  try {
+    const res = await fetch(url, { ...options, signal: ctrl.signal });
+    clearTimeout(timer);
+    return res;
+  } catch(e) {
+    clearTimeout(timer);
+    throw e;
+  }
+}
 
-// ── Auth ──
+// ── セキュリティ定数 ──
+const SESSION_KEY    = 'mc_admin_session';   // sessionStorage
+const PW_STORE_KEY   = 'mc_admin_pw';        // localStorage（実際のパスワード）
+const LOCK_KEY       = 'mc_login_lock';      // localStorage
+const MAX_FAIL       = 3;                    // 連続失敗許容回数
+const LOCK_DURATION  = 5 * 60 * 1000;       // ロックアウト時間（5分）
+const SESSION_TTL    = 24 * 60 * 60 * 1000; // セッション有効期限（24時間）
+
+function getAdminPw() {
+  return localStorage.getItem(PW_STORE_KEY) || '';
+}
+
+// ── ロックアウト管理 ──
+function getLockState() {
+  try { return JSON.parse(localStorage.getItem(LOCK_KEY)) || { fails: 0, until: 0 }; }
+  catch { return { fails: 0, until: 0 }; }
+}
+function setLockState(state) {
+  localStorage.setItem(LOCK_KEY, JSON.stringify(state));
+}
+function isLockedOut() {
+  const s = getLockState();
+  if (s.until && Date.now() < s.until) return s.until;
+  if (s.until && Date.now() >= s.until) { setLockState({ fails: 0, until: 0 }); }
+  return false;
+}
+function recordLoginFail() {
+  const s = getLockState();
+  s.fails++;
+  if (s.fails >= MAX_FAIL) { s.until = Date.now() + LOCK_DURATION; s.fails = 0; }
+  setLockState(s);
+}
+function clearLoginFails() { setLockState({ fails: 0, until: 0 }); }
+
+// ── パスワード強度チェック ──
+function checkPasswordStrength(pw) {
+  if (pw.length < 11) return { ok: false, msg: '11文字以上が必要です', color: '#EF4444' };
+  const hasNum  = /[0-9]/.test(pw);
+  const hasLow  = /[a-z]/.test(pw);
+  const hasUp   = /[A-Z]/.test(pw);
+  const hasSymb = /[^a-zA-Z0-9]/.test(pw);
+  const score   = [hasNum, hasLow, hasUp, hasSymb].filter(Boolean).length;
+  if (score <= 2) return { ok: true, msg: '強度：弱 — 大文字・記号も加えることを推奨', color: '#F59E0B' };
+  if (score === 3) return { ok: true, msg: '強度：中', color: '#3B82F6' };
+  return { ok: true, msg: '強度：強 ✅', color: '#10B981' };
+}
+
+function checkSetupStrength() {
+  const pw = document.getElementById('setup-pw1').value;
+  const el = document.getElementById('setup-strength');
+  if (!pw) { el.textContent = ''; return; }
+  const r = checkPasswordStrength(pw);
+  el.textContent = r.msg;
+  el.style.color = r.color;
+}
+
+// ── 初回セットアップ ──
+async function doSetup() {
+  const pw1 = document.getElementById('setup-pw1').value;
+  const pw2 = document.getElementById('setup-pw2').value;
+  const err = document.getElementById('setup-error');
+  const btn = document.querySelector('#setup-screen .login-btn');
+  const strength = checkPasswordStrength(pw1);
+  if (!strength.ok) { err.textContent = '❌ ' + strength.msg; err.style.display = 'block'; return; }
+  if (pw1 !== pw2)  { err.textContent = '❌ パスワードが一致しません。'; err.style.display = 'block'; return; }
+
+  // GASのADMIN_KEYも同期（初期値から新パスワードへ）
+  if (btn) { btn.disabled = true; btn.textContent = '同期中...'; }
+  try {
+    const r = await gasFetch(GAS_URL, {
+      method: 'POST',
+
+      body: JSON.stringify({ type: 'changePw', old_key: '20180412k', new_key: pw1 })
+    });
+    const j = await r.json();
+    if (j.error && j.error === 'unauthorized') {
+      // GAS側のキーが既に変更済み → ローカルに保存して続行（後で手動同期）
+      err.textContent = '⚠️ GAS同期をスキップしました（後でGAS同期ボタンから再試行できます）';
+      err.style.color = '#F59E0B'; err.style.display = 'block';
+    }
+  } catch(e) {
+    // ネットワークエラー等はスキップ
+    err.textContent = '⚠️ GAS同期に失敗しました（オフライン？）後で設定画面から再試行できます。';
+    err.style.color = '#F59E0B'; err.style.display = 'block';
+  }
+  if (btn) { btn.disabled = false; btn.textContent = 'パスワードを設定する'; }
+
+  localStorage.setItem(PW_STORE_KEY, pw1);
+  document.getElementById('setup-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('pw-input').focus();
+}
+
+// ── ログイン ──
 function doLogin() {
+  const lockUntil = isLockedOut();
+  if (lockUntil) {
+    const remain = Math.ceil((lockUntil - Date.now()) / 1000);
+    document.getElementById('lockout-msg').style.display = 'block';
+    document.getElementById('lockout-msg').textContent = `⚠️ ${Math.ceil(remain/60)}分間ロックされています（残り${remain}秒）`;
+    return;
+  }
   const val = document.getElementById('pw-input').value;
-  const currentPw = localStorage.getItem('mc_admin_pw') || DEFAULT_PASSWORD;
-  if (val === currentPw) {
-    sessionStorage.setItem('mc_admin', '1');
+  const storedPw = getAdminPw();
+  if (!storedPw) { alert('パスワード未設定です。ページをリロードしてください。'); return; }
+  if (val === storedPw) {
+    clearLoginFails();
+    // セッション：パスワードそのものは保存せず expiry のみ
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify({ exp: Date.now() + SESSION_TTL }));
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     loadData();
   } else {
+    recordLoginFail();
+    const s = getLockState();
+    const remaining = MAX_FAIL - s.fails;
     document.getElementById('login-error').style.display = 'block';
+    if (remaining <= 0 || s.until) {
+      document.getElementById('login-error').textContent = `⚠️ ${MAX_FAIL}回失敗しました。5分間ロックします。`;
+    } else {
+      document.getElementById('login-error').textContent = `パスワードが正しくありません。（残り${remaining}回）`;
+    }
     document.getElementById('pw-input').value = '';
     document.getElementById('pw-input').focus();
   }
 }
 
 function doLogout() {
-  sessionStorage.removeItem('mc_admin');
+  sessionStorage.removeItem(SESSION_KEY);
   location.reload();
 }
 
-// Auto-login if session exists
-if (sessionStorage.getItem('mc_admin') === '1') {
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
+// ── セッション検証 ──
+function isSessionValid() {
+  try {
+    const data = JSON.parse(sessionStorage.getItem(SESSION_KEY));
+    return data && data.exp && Date.now() < data.exp;
+  } catch { return false; }
 }
+
+// ── 初期化：セットアップ or ログイン画面を表示 ──
+(function initAuth() {
+  if (isSessionValid()) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    return;
+  }
+  // パスワード未設定なら初回セットアップへ
+  if (!getAdminPw()) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('setup-screen').style.display = 'flex';
+    return;
+  }
+  // 通常ログイン画面
+  document.getElementById('login-screen').style.display = 'flex';
+})();
 
 // ── Load data from GAS ──
 async function loadData() {
@@ -1339,7 +1993,7 @@ async function loadData() {
     '<tr><td colspan="7" class="table-empty"><span class="spinner"></span></td></tr>';
 
   try {
-    const res = await fetch(`${GAS_URL}?action=list&key=${encodeURIComponent(getAdminPw())}`);
+    const res = await gasFetch(`${GAS_URL}?action=list&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
     if (json.error) throw new Error(json.error);
     inquiries = json.data || [];
@@ -1464,7 +2118,7 @@ async function toggleTrial(e, row, sheet, currentIsTrial) {
   e.stopPropagation();
   const newVal = currentIsTrial ? '' : 'トライアル';
   try {
-    await fetch(`${GAS_URL}?action=set_trial&key=${encodeURIComponent(getAdminPw())}&row=${row}&sheet=${sheet}&value=${encodeURIComponent(newVal)}`);
+    await gasFetch(`${GAS_URL}?action=set_trial&key=${encodeURIComponent(getAdminPw())}&row=${row}&sheet=${sheet}&value=${encodeURIComponent(newVal)}`);
     // ローカル状態を更新して再描画
     if (sheet === 'inquiries') {
       const item = inquiries.find(x => x.row === row);
@@ -1490,7 +2144,7 @@ async function openTrialMail(row) {
 
   let folderUrl = '';
   try {
-    const res  = await fetch(`${GAS_URL}?action=create_trial_folder&key=${encodeURIComponent(getAdminPw())}&name=${encodeURIComponent(h.name || 'unknown')}`);
+    const res  = await gasFetch(`${GAS_URL}?action=create_trial_folder&key=${encodeURIComponent(getAdminPw())}&name=${encodeURIComponent(h.name || 'unknown')}`);
     const json = await res.json();
     if (json.success) {
       folderUrl = json.url || '';
@@ -1557,7 +2211,7 @@ async function setStatus(row, status) {
 
 async function updateStatusGAS(row, status) {
   try {
-    await fetch(`${GAS_URL}?action=update&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(status)}`);
+    await gasFetch(`${GAS_URL}?action=update&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(status)}`);
     showToast(`✅ ステータスを「${status}」に更新`);
   } catch (e) {
     showToast('⚠ GAS未接続 — ステータスはローカルのみ変更');
@@ -1572,7 +2226,7 @@ async function cycleHearingStatus(row) {
   h.status = order[(order.indexOf(h.status) + 1) % 3];
   renderHearings();
   try {
-    await fetch(`${GAS_URL}?action=update_hearing_status&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(h.status)}`);
+    await gasFetch(`${GAS_URL}?action=update_hearing_status&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(h.status)}`);
     showToast(`✅ ステータスを「${h.status}」に更新`);
   } catch(e) {
     showToast('⚠ GAS未接続 — ステータスはローカルのみ変更');
@@ -1693,7 +2347,7 @@ function openMail(email, name, plan, type) {
 async function deleteInquiry(row, name) {
   if (!confirm(`「${name}」のお問い合わせを削除しますか？\n\nこの操作は元に戻せません。`)) return;
   try {
-    await fetch(`${GAS_URL}?action=inquiry_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    await gasFetch(`${GAS_URL}?action=inquiry_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
     // ローカルデータからも除去してテーブル再描画
     inquiries = inquiries.filter(i => i.row !== row);
     renderTable();
@@ -1717,7 +2371,7 @@ function exportCSV() {
 }
 
 // ── Tab switch ──
-const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps','partner-apps'];
+const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps','partner-apps','private-link'];
 function switchAdminTab(tab) {
   ADMIN_TABS.forEach(t => {
     document.getElementById('tab-' + t).style.display = t === tab ? '' : 'none';
@@ -1730,13 +2384,13 @@ function switchAdminTab(tab) {
   if (tab === 'payments')  loadPayments();
   if (tab === 'contracts') loadContracts();
   if (tab === 'hearings')  loadHearings();
-  if (tab === 'sales')     loadSales();
+  if (tab === 'sales')     { loadSales(); initSummaryMonth(); loadMonthlySummary(); loadExpenses(); }
   if (tab === 'schedule')  loadSchedule();
   if (tab === 'settings')  { loadServiceStatus(); loadPFAdmin(); }
   if (tab === 'pf')          loadPFAdmin();
   if (tab === 'content')     loadLpContent();
   if (tab === 'editor-apps')  loadEditorApps();
-  if (tab === 'partner-apps') loadPartnerApps();
+  if (tab === 'partner-apps') { loadPartnerRewards(); loadPartnerApps(); }
 }
 
 // ── LP コンテンツ編集 ─────────────────────────────────────────
@@ -1795,7 +2449,7 @@ async function loadLpContent() {
   const area = document.getElementById('content-form-area');
   area.innerHTML = '<p style="color:var(--sub);font-size:0.85rem;">読み込み中...</p>';
   try {
-    const res = await fetch(`${GAS_URL}?action=content_get`);
+    const res = await gasFetch(`${GAS_URL}?action=content_get`);
     const d = await res.json();
     _currentContent = d.content || {};
     renderContentForm();
@@ -1847,10 +2501,17 @@ async function saveContent() {
 
   try {
     // まず全クリアしてから保存（空欄キーも反映するため）
-    await fetch(GAS_URL, {
-      method: 'POST', mode: 'no-cors',
+    const res  = await gasFetch(GAS_URL, {
+      method: 'POST',
+
       body: JSON.stringify({ action: 'content_update', key: getAdminPw(), content })
     });
+    const json = await res.json();
+    if (json.error) {
+      msg.style.color = 'var(--red)';
+      msg.textContent = '❌ 保存に失敗しました: ' + json.error;
+      return;
+    }
     _currentContent = content;
     msg.style.color = 'var(--green)';
     msg.textContent = '✅ 保存しました。LPに反映されました。';
@@ -1867,7 +2528,7 @@ async function loadSchedule() {
   document.getElementById('schedule-body').innerHTML =
     '<tr><td colspan="8" class="table-empty"><span class="spinner"></span></td></tr>';
   try {
-    const res = await fetch(`${GAS_URL}?action=schedule_list&key=${encodeURIComponent(getAdminPw())}`);
+    const res = await gasFetch(`${GAS_URL}?action=schedule_list&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
     scheduleData = json.data || [];
     renderSchedule();
@@ -1961,11 +2622,13 @@ async function addScheduleItem() {
     showToast('クライアント名・素材タイトル・初稿納期は必須です', true); return;
   }
   try {
-    await fetch(`${GAS_URL}?action=schedule_add&key=${encodeURIComponent(getAdminPw())}`, {
-      method: 'POST', mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
+    const res  = await gasFetch(`${GAS_URL}?action=schedule_add&key=${encodeURIComponent(getAdminPw())}`, {
+      method: 'POST',
+
       body: JSON.stringify(data)
     });
+    const json = await res.json();
+    if (json.error) { showToast('登録エラー: ' + json.error, true); return; }
     showToast('📅 案件を登録しました（Chatworkに通知）');
     document.getElementById('sch-title').value = '';
     document.getElementById('sch-deadline-draft').value = '';
@@ -1978,7 +2641,7 @@ async function updateScheduleStatus(row, status) {
   if (!status) return;
   try {
     const url = `${GAS_URL}?action=schedule_status&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(status)}`;
-    await fetch(url);
+    await gasFetch(url);
     showToast(`ステータス→ ${status}`);
     setTimeout(loadSchedule, 800);
   } catch(e) { showToast('更新エラー', true); }
@@ -1995,7 +2658,7 @@ async function loadPayments() {
   document.getElementById('payments-body').innerHTML =
     '<tr><td colspan="8" class="table-empty"><span class="spinner"></span></td></tr>';
   try {
-    const res  = await fetch(`${GAS_URL}?action=payments&key=${encodeURIComponent(getAdminPw())}`);
+    const res  = await gasFetch(`${GAS_URL}?action=payments&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
     payments   = json.data || [];
     renderPayments();
@@ -2020,18 +2683,18 @@ function renderPayments() {
            ✅ 承認・記帳
          </button>`
       : `<span style="font-size:0.75rem;color:#10B981;font-weight:700;">記帳済み</span>`;
-    const delBtn = `<button onclick="deletePayment(${p.row},'${p.name.replace(/'/g,'\\\'')}')"
+    const delBtn = `<button onclick="deletePayment(${p.row},${JSON.stringify(p.name||'')})"
       style="padding:5px 10px;background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;margin-left:6px;">
       🗑
     </button>`;
     return `<tr>
-      <td>${p.date}</td>
-      <td style="font-weight:600;">${p.name}</td>
-      <td>${p.contact}</td>
-      <td>${p.plan}</td>
-      <td style="font-weight:700;color:var(--gold);">${p.amount}</td>
-      <td>${p.payDate}</td>
-      <td style="color:${statusColor};font-weight:700;">${p.status}</td>
+      <td>${esc(p.date)}</td>
+      <td style="font-weight:600;">${esc(p.name)}</td>
+      <td>${esc(p.contact)}</td>
+      <td>${esc(p.plan)}</td>
+      <td style="font-weight:700;color:var(--gold);">${esc(p.amount)}</td>
+      <td>${esc(p.payDate)}</td>
+      <td style="color:${statusColor};font-weight:700;">${esc(p.status)}</td>
       <td style="white-space:nowrap;">${btn}${delBtn}</td>
     </tr>`;
   }).join('');
@@ -2040,7 +2703,7 @@ function renderPayments() {
 async function deleteContract(row, name) {
   if (!confirm(`「${name}」の契約同意記録を削除しますか？\n\nこの操作は元に戻せません。`)) return;
   try {
-    await fetch(`${GAS_URL}?action=contract_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    await gasFetch(`${GAS_URL}?action=contract_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
     showToast('削除しました');
     loadContracts();
   } catch(e) {
@@ -2051,7 +2714,7 @@ async function deleteContract(row, name) {
 async function deleteHearing(row, name) {
   if (!confirm(`「${name}」のヒアリング回答を削除しますか？\n\nこの操作は元に戻せません。`)) return;
   try {
-    await fetch(`${GAS_URL}?action=hearing_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    await gasFetch(`${GAS_URL}?action=hearing_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
     showToast('削除しました');
     loadHearings();
   } catch(e) {
@@ -2064,7 +2727,7 @@ async function clearAllRecords(sheet, label, reloadFn) {
   if (input !== '全件削除') { if (input !== null) alert('キャンセルしました。'); return; }
   try {
     const actionMap = { inquiries:'clear_inquiries', payments:'clear_payments', sales:'clear_sales', contracts:'clear_contracts', hearings:'clear_hearings' };
-    await fetch(`${GAS_URL}?action=${actionMap[sheet]}&key=${encodeURIComponent(getAdminPw())}`);
+    await gasFetch(`${GAS_URL}?action=${actionMap[sheet]}&key=${encodeURIComponent(getAdminPw())}`);
     showToast(`${label}を全件削除しました`);
     reloadFn();
   } catch(e) {
@@ -2075,7 +2738,7 @@ async function clearAllRecords(sheet, label, reloadFn) {
 async function deletePayment(row, name) {
   if (!confirm(`「${name}」の振込記録を削除しますか？\n\nこの操作は元に戻せません。`)) return;
   try {
-    await fetch(`${GAS_URL}?action=payment_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    await gasFetch(`${GAS_URL}?action=payment_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
     showToast('削除しました');
     loadPayments();
   } catch(e) {
@@ -2089,7 +2752,7 @@ async function approvePayment(row) {
   btn.disabled = true;
   btn.textContent = '処理中...';
   try {
-    const res = await fetch(`${GAS_URL}?action=approve_payment&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    const res = await gasFetch(`${GAS_URL}?action=approve_payment&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
     const json = await res.json();
     if (json.error === 'already_approved') {
       alert('この振込はすでに承認済みです。');
@@ -2109,12 +2772,59 @@ async function approvePayment(row) {
 }
 
 // ── パスワード変更 ──
-function changePassword() {
+// ── GAS認証キー同期（復旧用） ──
+async function syncGasKey() {
+  const msg = document.getElementById('gas-sync-msg');
+  const btn = document.querySelector('button[onclick="syncGasKey()"]');
+  const showMsg = (text, color) => {
+    msg.textContent = text; msg.style.color = color; msg.style.display = 'block';
+  };
+
+  const currentPw = getAdminPw();
+  if (!currentPw) { showMsg('❌ パスワードが設定されていません。先にパスワードを設定してください。', '#EF4444'); return; }
+
+  if (btn) { btn.disabled = true; btn.textContent = '同期中...'; }
+  showMsg('🔄 GASと同期中...', '#F59E0B');
+
+  // まず現在のパスワードで試みる（既に同期済みの場合）
+  try {
+    const testRes = await gasFetch(`${GAS_URL}?action=editors&key=${encodeURIComponent(currentPw)}`);
+    const testJson = await testRes.json();
+    if (!testJson.error) {
+      showMsg('✅ GASとの認証は既に一致しています。', '#10B981');
+      if (btn) { btn.disabled = false; btn.textContent = 'GASとパスワードを同期する'; }
+      return;
+    }
+  } catch(e) {}
+
+  // 初期キーで同期を試みる
+  try {
+    const r = await gasFetch(GAS_URL, {
+      method: 'POST',
+
+      body: JSON.stringify({ type: 'changePw', old_key: '20180412k', new_key: currentPw })
+    });
+    const j = await r.json();
+    if (j.success) {
+      showMsg('✅ GASの認証キーをブラウザのパスワードに合わせました。管理機能が正常に動作します。', '#10B981');
+    } else if (j.error === 'unauthorized') {
+      showMsg('❌ 初期キーでの同期に失敗しました。GASのScriptPropertiesでADMIN_KEYを手動で現在のパスワードに設定してください。', '#EF4444');
+    } else {
+      showMsg('❌ エラー: ' + JSON.stringify(j), '#EF4444');
+    }
+  } catch(e) {
+    showMsg('❌ ネットワークエラー。GASのデプロイURLを確認してください。', '#EF4444');
+  }
+  if (btn) { btn.disabled = false; btn.textContent = 'GASとパスワードを同期する'; }
+}
+
+// ── パスワード変更 ──
+async function changePassword() {
   const current  = document.getElementById('pw-current').value;
   const newPw    = document.getElementById('pw-new').value;
   const confirm  = document.getElementById('pw-confirm').value;
   const msg      = document.getElementById('pw-msg');
-  const currentPw = localStorage.getItem('mc_admin_pw') || DEFAULT_PASSWORD;
+  const currentPw = getAdminPw();
 
   const showMsg = (text, color) => {
     msg.textContent = text;
@@ -2123,14 +2833,33 @@ function changePassword() {
   };
 
   if (current !== currentPw) { showMsg('❌ 現在のパスワードが違います。', '#EF4444'); return; }
-  if (newPw.length < 4)      { showMsg('❌ 新しいパスワードは4文字以上にしてください。', '#EF4444'); return; }
-  if (newPw !== confirm)     { showMsg('❌ 新しいパスワードが一致しません。', '#EF4444'); return; }
+  const strength = checkPasswordStrength(newPw);
+  if (!strength.ok) { showMsg('❌ ' + strength.msg, '#EF4444'); return; }
+  if (newPw !== confirm) { showMsg('❌ 新しいパスワードが一致しません。', '#EF4444'); return; }
 
-  localStorage.setItem('mc_admin_pw', newPw);
+  showMsg('🔄 GASと同期中...', '#F59E0B');
+  try {
+    const r = await gasFetch(GAS_URL, {
+      method: 'POST',
+
+      body: JSON.stringify({ type: 'changePw', old_key: currentPw, new_key: newPw })
+    });
+    const j = await r.json();
+    if (j.error) {
+      showMsg('❌ GAS同期失敗: ' + j.error + '（ローカルのみ変更しました）', '#EF4444');
+    } else {
+      showMsg('✅ パスワードを変更しました（GASとの同期も完了）。', '#10B981');
+    }
+  } catch(e) {
+    showMsg('⚠️ GAS同期失敗（ローカルのみ変更）。設定画面の「GAS同期」ボタンから再試行を。', '#F59E0B');
+  }
+
+  localStorage.setItem(PW_STORE_KEY, newPw);
+  // セッションを更新（新パスワードで継続）
+  sessionStorage.setItem(SESSION_KEY, JSON.stringify({ exp: Date.now() + SESSION_TTL }));
   document.getElementById('pw-current').value = '';
   document.getElementById('pw-new').value = '';
   document.getElementById('pw-confirm').value = '';
-  showMsg('✅ パスワードを変更しました。次回ログインから反映されます。', '#10B981');
 }
 
 // ── サービス受付管理 ──────────────────────────────────────────────
@@ -2154,7 +2883,7 @@ async function loadServiceStatus() {
   const list = document.getElementById('service-status-list');
   if (!list) return;
   try {
-    const res = await fetch(GAS_URL + '?action=service_status');
+    const res = await gasFetch(GAS_URL + '?action=service_status');
     const status = await res.json();
     list.innerHTML = Object.keys(SERVICE_LABELS).map(key => {
       const info = SERVICE_LABELS[key];
@@ -2197,12 +2926,24 @@ async function toggleService(key, trackEl) {
   try {
     const body = { action: 'update_service_status', key: getAdminPw() };
     body[key] = newVal;
-    await fetch(GAS_URL, {
-      method: 'POST', mode: 'no-cors',
+    const res  = await gasFetch(GAS_URL, {
+      method: 'POST',
+
       body: JSON.stringify(body)
     });
-    msg.textContent = '✅ 保存しました（LPに即時反映されます）';
-    msg.style.color = '#10B981';
+    const json = await res.json();
+    if (json.error) {
+      msg.textContent = '❌ 保存に失敗しました: ' + json.error;
+      msg.style.color = '#EF4444';
+      // UIを元に戻す
+      track.style.background = isCurrentlyOn ? '#10B981' : '#4B5563';
+      thumb.style.left = isCurrentlyOn ? '23px' : '3px';
+      label.textContent = isCurrentlyOn ? '受付中' : '停止中';
+      label.style.color = isCurrentlyOn ? '#10B981' : '#EF4444';
+    } else {
+      msg.textContent = '✅ 保存しました（LPに即時反映されます）';
+      msg.style.color = '#10B981';
+    }
     msg.style.display = 'block';
     setTimeout(() => { msg.style.display = 'none'; }, 3000);
   } catch(e) {
@@ -2218,7 +2959,7 @@ async function loadContracts() {
   document.getElementById('contracts-body').innerHTML =
     '<tr><td colspan="6" class="table-empty"><span class="spinner"></span></td></tr>';
   try {
-    const res = await fetch(`${GAS_URL}?action=contracts&key=${encodeURIComponent(getAdminPw())}`);
+    const res = await gasFetch(`${GAS_URL}?action=contracts&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
     contracts = json.data || [];
     renderContracts();
@@ -2266,7 +3007,7 @@ async function loadHearings() {
   document.getElementById('hearings-body').innerHTML =
     '<tr><td colspan="6" class="table-empty"><span class="spinner"></span></td></tr>';
   try {
-    const res = await fetch(`${GAS_URL}?action=hearings&key=${encodeURIComponent(getAdminPw())}`);
+    const res = await gasFetch(`${GAS_URL}?action=hearings&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
     hearings = json.data || [];
     renderHearings();
@@ -2469,7 +3210,7 @@ async function submitHearingLink() {
       + `&name=${encodeURIComponent(i.name||'')}`
       + `&plan=${encodeURIComponent(i.plan||'')}`
       + `&planKey=${encodeURIComponent(planKey)}`;
-    const res  = await fetch(url);
+    const res  = await gasFetch(url);
     const json = await res.json();
     if (json.success) {
       showToast('📋 ヒアリング案内メールを送信しました');
@@ -2664,7 +3405,7 @@ async function submitManualPaymentRequest() {
       + `&plan=${encodeURIComponent(plan || 'ご依頼プラン')}`
       + `&amount=${encodeURIComponent(amount)}`
       + `&due=${encodeURIComponent(due || '7日以内')}`;
-    const res  = await fetch(url);
+    const res  = await gasFetch(url);
     const json = await res.json();
     if (json.success) {
       showToast(`💳 ${name} 様に見積もりメールを送信しました`);
@@ -2827,7 +3568,7 @@ async function submitPaymentRequest() {
       + `&amount=${encodeURIComponent(amount)}`
       + `&due=${encodeURIComponent(due)}`
       + `&note=${encodeURIComponent(note)}`;
-    const res  = await fetch(url);
+    const res  = await gasFetch(url);
     const json = await res.json();
     if (json.success) {
       showToast('💳 振込依頼メールを送信しました');
@@ -2848,7 +3589,7 @@ async function loadSales() {
   document.getElementById('sales-body').innerHTML =
     '<tr><td colspan="8" class="table-empty"><span class="spinner"></span></td></tr>';
   try {
-    const res = await fetch(`${GAS_URL}?action=sales&key=${encodeURIComponent(getAdminPw())}`);
+    const res = await gasFetch(`${GAS_URL}?action=sales&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
     salesData = json.data || [];
     renderSales();
@@ -2897,7 +3638,7 @@ function renderSales() {
 async function deleteSalesRecord(row, client) {
   if (!confirm(`「${client}」の売上記録を削除しますか？\n\nこの操作は元に戻せません。`)) return;
   try {
-    await fetch(`${GAS_URL}?action=sales_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    await gasFetch(`${GAS_URL}?action=sales_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
     showToast('削除しました');
     loadSales();
   } catch(e) {
@@ -2916,16 +3657,18 @@ async function addSalesRecord() {
   const note    = document.getElementById('sl-note').value.trim();
   if (!date || !client || !amount) { alert('取引日・取引先・金額は必須です'); return; }
   try {
-    await fetch(GAS_URL, {
-      method: 'POST', mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type:'sales', date, client, amount, plan, payDate, note, confirmed:'未確認' })
+    const res  = await gasFetch(GAS_URL, {
+      method: 'POST',
+
+      body: JSON.stringify({ type:'sales', key: getAdminPw(), date, client, amount, plan, payDate, note, confirmed:'未確認' })
     });
+    const json = await res.json();
+    if (json.error) { alert('記録に失敗しました: ' + json.error); return; }
     const msg = document.getElementById('sl-msg');
     msg.style.display = 'inline';
     setTimeout(() => { msg.style.display='none'; }, 2500);
     setTimeout(loadSales, 800);
-  } catch(e) { alert('記録に失敗しました'); }
+  } catch(e) { alert('記録に失敗しました。ネットワークを確認してください。'); }
 }
 function exportSalesCSV() {
   const rows = [['取引日','取引先名','プラン（摘要）','売上金額（税抜）','消費税額','売上金額（税込）','入金日','入金確認']];
@@ -2942,6 +3685,116 @@ function downloadCSV(rows, filename) {
   a.click();
 }
 
+// ── 収支帳（経費帳）──
+let expenseData = [];
+
+function initSummaryMonth() {
+  const el = document.getElementById('summary-month');
+  if (el && !el.value) {
+    const now = new Date();
+    el.value = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+  }
+}
+
+async function loadMonthlySummary() {
+  const month = document.getElementById('summary-month').value; // 'YYYY-MM'
+  try {
+    const res = await gasFetch(`${GAS_URL}?action=monthly_summary&month=${encodeURIComponent(month)}&key=${encodeURIComponent(getAdminPw())}`);
+    const json = await res.json();
+    const d = json.data || {};
+    document.getElementById('sum-sales').textContent   = '¥' + Number(d.sales   || 0).toLocaleString();
+    document.getElementById('sum-expense').textContent = '¥' + Number(d.expense || 0).toLocaleString();
+    document.getElementById('sum-profit').textContent  = '¥' + Number(d.profit  || 0).toLocaleString();
+    const margin = d.margin != null ? d.margin : (d.sales ? Math.round((d.profit / d.sales) * 100) : 0);
+    const marginEl = document.getElementById('sum-margin');
+    marginEl.textContent = margin + '%';
+    marginEl.style.color = margin >= 30 ? 'var(--green)' : 'var(--red)';
+
+    // カテゴリ別内訳
+    const cat = d.byCategory || {};
+    const catEl = document.getElementById('sum-by-category');
+    const keys = Object.keys(cat);
+    if (keys.length === 0) {
+      catEl.innerHTML = '<span style="color:var(--sub);font-size:0.8rem;">経費なし</span>';
+    } else {
+      catEl.innerHTML = keys.map(k =>
+        `<span style="background:var(--bg3);border-radius:6px;padding:3px 10px;font-size:0.78rem;">${esc(k)}: ¥${Number(cat[k]).toLocaleString()}</span>`
+      ).join(' ');
+    }
+  } catch(e) { console.error('月次サマリー取得失敗', e); }
+}
+
+async function addExpenseRecord() {
+  const date     = document.getElementById('ex-date').value;
+  const name     = document.getElementById('ex-name').value.trim();
+  const category = document.getElementById('ex-category').value;
+  const amount   = document.getElementById('ex-amount').value;
+  const method   = document.getElementById('ex-method').value;
+  const summary  = document.getElementById('ex-summary').value.trim();
+  if (!date || !name || !amount) { alert('取引日・相手先名・金額は必須です'); return; }
+  try {
+    const res  = await gasFetch(GAS_URL, {
+      method: 'POST',
+
+      body: JSON.stringify({ type:'expense', key: getAdminPw(), date, name, category, amount: Number(amount), method, summary })
+    });
+    const json = await res.json();
+    if (json.error) { alert('記録に失敗しました: ' + json.error); return; }
+    // フォームリセット
+    ['ex-date','ex-name','ex-amount','ex-summary'].forEach(id => { document.getElementById(id).value = ''; });
+    document.getElementById('ex-category').value = '外注費';
+    document.getElementById('ex-method').value   = '銀行振込';
+    setTimeout(() => { loadExpenses(); loadMonthlySummary(); }, 800);
+  } catch(e) { alert('記録に失敗しました。ネットワークを確認してください。'); }
+}
+
+async function loadExpenses() {
+  document.getElementById('expense-body').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--sub);"><span class="spinner"></span></td></tr>';
+  try {
+    const res  = await gasFetch(`${GAS_URL}?action=expenses&key=${encodeURIComponent(getAdminPw())}`);
+    const json = await res.json();
+    expenseData = json.data || [];
+    renderExpenses();
+  } catch(e) {
+    document.getElementById('expense-body').innerHTML = '<tr><td colspan="7" style="color:var(--red);padding:12px;">読み込み失敗</td></tr>';
+  }
+}
+
+function renderExpenses() {
+  const tbody = document.getElementById('expense-body');
+  if (!expenseData.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--sub);">経費データがありません</td></tr>';
+    return;
+  }
+  tbody.innerHTML = expenseData.map((ex, i) => `
+    <tr>
+      <td>${esc(ex.date||'')}</td>
+      <td>${esc(ex.name||'')}</td>
+      <td><span style="background:var(--bg3);border-radius:6px;padding:2px 8px;font-size:0.78rem;">${esc(ex.category||'')}</span></td>
+      <td style="font-size:0.82rem;color:var(--sub);">${esc(ex.summary||'')}</td>
+      <td style="font-weight:700;color:var(--red);">¥${Number(ex.amount||0).toLocaleString()}</td>
+      <td>${esc(ex.method||'')}</td>
+      <td><button onclick="deleteExpense(${ex.row})" style="background:none;border:1px solid var(--border);border-radius:6px;padding:3px 10px;cursor:pointer;font-size:0.78rem;color:var(--sub);">削除</button></td>
+    </tr>
+  `).join('');
+}
+
+async function deleteExpense(row) {
+  if (!confirm('この経費を削除しますか？')) return;
+  try {
+    const res = await gasFetch(`${GAS_URL}?action=expense_delete&row=${row}&key=${encodeURIComponent(getAdminPw())}`);
+    const json = await res.json();
+    if (json.success) { loadExpenses(); loadMonthlySummary(); }
+    else alert('削除に失敗しました');
+  } catch(e) { alert('削除に失敗しました'); }
+}
+
+function exportExpenseCSV() {
+  const rows = [['取引日','相手先名','経費種別','摘要','金額','支払方法']];
+  expenseData.forEach(ex => rows.push([ex.date, ex.name, ex.category, ex.summary, ex.amount, ex.method]));
+  downloadCSV(rows, 'monocreate_keiei_' + new Date().getFullYear());
+}
+
 // ── Portfolio ──
 let portfolioItems = [];
 
@@ -2955,7 +3808,7 @@ async function autoFillDriveTitle(url) {
   const fetching = document.getElementById('pf-title-fetching');
   if (fetching) fetching.style.display = '';
   try {
-    const res = await fetch(`${GAS_URL}?action=drive_file_info&url=${encodeURIComponent(url)}&key=${encodeURIComponent(getAdminPw())}`);
+    const res = await gasFetch(`${GAS_URL}?action=drive_file_info&url=${encodeURIComponent(url)}&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
     if (json.name) {
       titleEl.value = json.name;
@@ -2974,7 +3827,7 @@ let editors = [];
 async function loadEditors() {
   document.getElementById('editors-list').innerHTML = '<div style="text-align:center;padding:40px;color:var(--sub);"><span class="spinner"></span></div>';
   try {
-    const res  = await fetch(`${GAS_URL}?action=editors&key=${encodeURIComponent(getAdminPw())}`);
+    const res  = await gasFetch(`${GAS_URL}?action=editors&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
     editors = json.data || [];
     renderEditors();
@@ -3080,7 +3933,7 @@ async function saveEditorForm() {
     portfolios
   };
   try {
-    const res = await fetch(GAS_URL, { method:'POST', body: JSON.stringify(payload) });
+    const res = await gasFetch(GAS_URL, { method:'POST', body: JSON.stringify(payload) });
     const json = await res.json();
     if (json.success) {
       showToast('✅ 編集者を保存しました');
@@ -3097,7 +3950,7 @@ async function saveEditorForm() {
 async function deleteEditorRow(row, name) {
   if (!confirm(`「${name}」を削除しますか？`)) return;
   try {
-    await fetch(`${GAS_URL}?action=editor_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    await gasFetch(`${GAS_URL}?action=editor_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
     showToast('🗑 削除しました');
     await loadEditors();
   } catch(e) {
@@ -3112,7 +3965,7 @@ async function loadPortfolioAdmin() {
     return;
   }
   try {
-    const res  = await fetch(`${GAS_URL}?action=portfolio&key=${encodeURIComponent(getAdminPw())}`);
+    const res  = await gasFetch(`${GAS_URL}?action=portfolio&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
     portfolioItems = json.data || [];
     renderPortfolioList();
@@ -3157,26 +4010,28 @@ async function addPortfolioItem() {
   if (!url) { alert('URLを入力してください。'); return; }
   if (!GAS_URL) { alert('GAS URLが設定されていません。'); return; }
   try {
-    await fetch(GAS_URL, {
-      method: 'POST', mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
+    const res  = await gasFetch(GAS_URL, {
+      method: 'POST',
+
       body: JSON.stringify({ action: 'portfolio_add', key: getAdminPw(), url, title, genre, type })
     });
+    const json = await res.json();
+    if (json.error) { alert('追加に失敗しました: ' + json.error); return; }
     document.getElementById('pf-url').value   = '';
     document.getElementById('pf-title').value = '';
     document.getElementById('pf-genre').value = '';
     const msg = document.getElementById('pf-msg');
     msg.style.display = 'inline';
     setTimeout(() => { msg.style.display = 'none'; }, 2500);
-    setTimeout(loadPortfolioAdmin, 800);
-  } catch(e) { alert('追加に失敗しました。'); }
+    setTimeout(loadPortfolioAdmin, 1500); // GAS書き込み完了を待つ
+  } catch(e) { alert('追加に失敗しました。ネットワークを確認してください。'); }
 }
 
 async function deletePortfolioItem(row) {
   if (!confirm('削除しますか？')) return;
   if (!GAS_URL) { alert('GAS URLが設定されていません。'); return; }
   try {
-    await fetch(`${GAS_URL}?action=portfolio_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    await gasFetch(`${GAS_URL}?action=portfolio_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
     showToast('削除しました');
     loadPortfolioAdmin();
   } catch(e) { alert('削除に失敗しました。'); }
@@ -3187,7 +4042,7 @@ let _pfConfig = { max_slots: 5, genres: [], total_count: 0, remaining: 5 };
 
 async function loadPFAdmin() {
   try {
-    const res  = await fetch(`${GAS_URL}?action=pf_config&key=${encodeURIComponent(getAdminPw())}`);
+    const res  = await gasFetch(`${GAS_URL}?action=pf_config&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
     _pfConfig  = json;
     const el = document.getElementById('pf-max-slots');
@@ -3247,8 +4102,9 @@ function addPFGenre() {
 
 async function savePFConfig() {
   try {
-    await fetch(GAS_URL, {
+    const res  = await gasFetch(GAS_URL, {
       method: 'POST',
+
       body: JSON.stringify({
         action: 'pf_config_update',
         key: getAdminPw(),
@@ -3256,6 +4112,8 @@ async function savePFConfig() {
         genres: _pfConfig.genres
       })
     });
+    const json = await res.json();
+    if (json.error) { showToast('⚠ 保存に失敗しました: ' + json.error, true); return; }
     showToast('✅ 設定を保存しました');
     renderPFGenresAdmin();
   } catch(e) {
@@ -3267,7 +4125,7 @@ async function loadPFInquiriesAdmin() {
   const el = document.getElementById('pf-admin-list');
   if (!el) return;
   try {
-    const res  = await fetch(`${GAS_URL}?action=pf_inquiries&key=${encodeURIComponent(getAdminPw())}`);
+    const res  = await gasFetch(`${GAS_URL}?action=pf_inquiries&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
     const items = json.data || [];
     if (!items.length) { el.innerHTML = '<p style="color:var(--sub);">申込がありません。</p>'; return; }
@@ -3300,13 +4158,13 @@ async function cyclePFStatus(row, currentStatus) {
   const order = ['未対応','対応中','成約済み','完了','キャンセル'];
   const idx = order.indexOf(currentStatus);
   const nextStatus = order[(idx + 1) % order.length];
-  await fetch(`${GAS_URL}?action=pf_status&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(nextStatus)}`);
+  await gasFetch(`${GAS_URL}?action=pf_status&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(nextStatus)}`);
   await loadPFInquiriesAdmin();
 }
 
 async function deletePFItem(row, name) {
   if (!confirm(`「${name}」の申込を削除しますか？`)) return;
-  await fetch(`${GAS_URL}?action=pf_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+  await gasFetch(`${GAS_URL}?action=pf_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
   showToast('🗑 削除しました');
   await loadPFAdmin();
 }
@@ -3318,7 +4176,7 @@ async function loadEditorApps() {
   document.getElementById('ea-body').innerHTML =
     '<tr><td colspan="10" class="table-empty"><span class="spinner"></span></td></tr>';
   try {
-    const res  = await fetch(`${GAS_URL}?action=editor_applications&key=${encodeURIComponent(getAdminPw())}`);
+    const res  = await gasFetch(`${GAS_URL}?action=editor_applications&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
     editorApps = json.data || [];
     updateEditorAppsStats();
@@ -3402,7 +4260,7 @@ function renderEditorApps() {
           <div class="td-actions">
             ${a.status !== '採用決定'
               ? `<button class="action-btn" style="background:rgba(16,185,129,0.15);color:#10B981;border:1px solid rgba(16,185,129,0.4);font-weight:800;" onclick="hireEditor(${a.row},'${esc(a.name).replace(/'/g,"\\'")}')">✅ 採用</button>`
-              : `<span style="font-size:0.72rem;color:#10B981;font-weight:800;">採用済み</span>`}
+              : `<button class="action-btn" style="background:rgba(99,102,241,0.15);color:#818cf8;border:1px solid rgba(99,102,241,0.4);font-weight:800;" onclick="openContractModal(${a.row},'${esc(a.name).replace(/'/g,"\\'")}','${esc(a.email||'').replace(/'/g,"\\'")}')">📜 契約書</button>`}
             <button class="action-btn btn-mail" onclick="openEditorAppMail('${esc(a.email)}','${esc(a.name)}')">✉ メール</button>
             <button class="action-btn btn-expand" onclick="openEditorAppDetail(${a.row})">詳細</button>
             ${a.dispatch === '希望する'
@@ -3423,7 +4281,7 @@ async function hireEditor(row, name) {
 
 async function updateEditorAppStatus(row, status) {
   try {
-    await fetch(`${GAS_URL}?action=editor_app_status&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(status)}`);
+    await gasFetch(`${GAS_URL}?action=editor_app_status&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(status)}`);
     const item = editorApps.find(a => a.row === row);
     if (item) item.status = status;
     updateEditorAppsStats();
@@ -3436,7 +4294,7 @@ async function updateEditorAppStatus(row, status) {
 async function deleteEditorApp(row, name) {
   if (!confirm(`「${name}」の応募を削除しますか？\n\nこの操作は元に戻せません。`)) return;
   try {
-    await fetch(`${GAS_URL}?action=editor_app_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    await gasFetch(`${GAS_URL}?action=editor_app_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
     editorApps = editorApps.filter(a => a.row !== row);
     updateEditorAppsStats();
     renderEditorApps();
@@ -3524,12 +4382,106 @@ function exportEditorAppsCSV() {
 // ═══════════════════════════════════════════════
 // ── パートナー申請管理 ──
 // ═══════════════════════════════════════════════
+// ────────────────────────────────────────────────
+// 💰 パートナー報酬管理（自動計算版）
+// ────────────────────────────────────────────────
+let partnerRewards = [];
+
+async function loadPartnerRewards() {
+  try {
+    const res  = await gasFetch(`${GAS_URL}?action=partner_rewards&key=${encodeURIComponent(getAdminPw())}`);
+    const json = await res.json();
+    if (json.error) { document.getElementById('rw-body').innerHTML = `<tr><td colspan="9" class="table-empty">読み込みエラー: ${json.error}</td></tr>`; return; }
+    partnerRewards = json.data || [];
+    renderPartnerRewards();
+  } catch(e) {
+    document.getElementById('rw-body').innerHTML = '<tr><td colspan="9" class="table-empty">読み込みエラー</td></tr>';
+  }
+}
+
+function renderPartnerRewards() {
+  const tbody = document.getElementById('rw-body');
+  if (!partnerRewards.length) {
+    tbody.innerHTML = '<tr><td colspan="9" class="table-empty">報酬データなし（振込承認すると自動追加されます）</td></tr>';
+    updateRewardStats();
+    return;
+  }
+  const esc = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  tbody.innerHTML = partnerRewards.map(r => {
+    const sc = r.status === '未送信' ? 'var(--red)' : r.status === 'メール済み' ? 'var(--yellow)' : 'var(--green)';
+    const bonusCell = r.bonus > 0
+      ? `<span style="color:#F59E0B;font-weight:800;">+¥${Number(r.bonus).toLocaleString()}</span>`
+      : '<span style="color:var(--sub)">—</span>';
+    const actions = r.status === '未送信'
+      ? `<button class="action-btn" style="background:rgba(245,158,11,0.15);color:#F59E0B;border:1px solid rgba(245,158,11,0.4);font-weight:800;" onclick="sendRewardEmailAuto(${r.row},'${esc(r.pName)}',${r.total})">📧 送信</button>`
+      : r.status === 'メール済み'
+      ? `<button class="action-btn" style="background:rgba(16,185,129,0.15);color:#10B981;border:1px solid rgba(16,185,129,0.4);font-weight:800;" onclick="markRewardPaid(${r.row},'${esc(r.pName)}',${r.total})">✅ 支払済</button>`
+      : `<span style="font-size:0.72rem;color:#10B981;font-weight:800;">支払済み✓</span>`;
+    return `<tr>
+      <td style="font-size:0.72rem;color:var(--sub);">${r.date.slice(0,10)}</td>
+      <td><strong>${esc(r.pName)}</strong><br><span style="font-size:0.7rem;color:var(--sub);">${esc(r.code)}</span></td>
+      <td style="font-size:0.8rem;">${esc(r.client)}</td>
+      <td style="font-size:0.78rem;">${esc(r.plan)}</td>
+      <td style="color:#93C5FD;font-weight:800;">¥${Number(r.base).toLocaleString()}</td>
+      <td>${bonusCell}</td>
+      <td style="color:#F59E0B;font-weight:900;font-size:1rem;">¥${Number(r.total).toLocaleString()}</td>
+      <td><span style="color:${sc};font-size:0.75rem;font-weight:800;">${r.status}</span></td>
+      <td><div class="td-actions">${actions}</div></td>
+    </tr>`;
+  }).join('');
+  updateRewardStats();
+}
+
+function updateRewardStats() {
+  const unsent = partnerRewards.filter(r => r.status === '未送信').length;
+  const mailed = partnerRewards.filter(r => r.status === 'メール済み').length;
+  const paid   = partnerRewards.filter(r => r.status === '支払済み').length;
+  const unpaidAmt = partnerRewards
+    .filter(r => r.status !== '支払済み')
+    .reduce((s, r) => s + (Number(r.total) || 0), 0);
+  document.getElementById('rw-unsent').textContent = unsent;
+  document.getElementById('rw-mailed').textContent = mailed;
+  document.getElementById('rw-paid').textContent   = paid;
+  document.getElementById('rw-amount').textContent = '¥' + unpaidAmt.toLocaleString();
+}
+
+async function sendRewardEmailAuto(row, name, total) {
+  if (!confirm(`「${name}」さんへ報酬確定メール（¥${Number(total).toLocaleString()}）を送信しますか？`)) return;
+  try {
+    const res  = await gasFetch(`${GAS_URL}?action=partner_reward_email_auto&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    const json = await res.json();
+    if (json.success) {
+      showToast(`✅ 「${name}」さんへ報酬メールを送信しました（¥${Number(total).toLocaleString()}）`);
+      await loadPartnerRewards();
+    } else {
+      showToast('❌ ' + (json.error || '送信失敗'));
+    }
+  } catch(e) { showToast('❌ 通信エラー'); }
+}
+
+async function markRewardPaid(row, name, total) {
+  if (!confirm(`「${name}」さんへの¥${Number(total).toLocaleString()}の支払いを完了しましたか？`)) return;
+  try {
+    const res  = await gasFetch(`${GAS_URL}?action=partner_reward_paid&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    const json = await res.json();
+    if (json.success) {
+      showToast(`✅ 「${name}」さんの報酬を支払済みにしました`);
+      await loadPartnerRewards();
+    } else {
+      showToast('❌ ' + (json.error || '更新失敗'));
+    }
+  } catch(e) { showToast('❌ 通信エラー'); }
+}
+
+// ────────────────────────────────────────────────
+// 🤝 パートナー申請管理
+// ────────────────────────────────────────────────
 let partnerApps = [];
 let rewardTargetRow = null;
 
 async function loadPartnerApps() {
   try {
-    const res  = await fetch(`${GAS_URL}?action=partner_applications&key=${encodeURIComponent(getAdminPw())}`);
+    const res  = await gasFetch(`${GAS_URL}?action=partner_applications&key=${encodeURIComponent(getAdminPw())}`);
     const json = await res.json();
     partnerApps = json.data || [];
     updatePartnerAppsStats();
@@ -3606,7 +4558,7 @@ function renderPartnerApps() {
 
 async function updatePartnerAppStatus(row, status) {
   try {
-    await fetch(`${GAS_URL}?action=partner_app_status&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(status)}`);
+    await gasFetch(`${GAS_URL}?action=partner_app_status&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(status)}`);
     const item = partnerApps.find(a => a.row === row);
     if (item) item.status = status;
     updatePartnerAppsStats();
@@ -3649,13 +4601,13 @@ function openPartnerDetail(row) {
     </div>
     ${a.message ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);"><p style="font-size:0.8rem;color:var(--sub);margin-bottom:6px;">メッセージ</p><p style="font-size:0.85rem;white-space:pre-wrap;">${esc(a.message)}</p></div>` : ''}
   `;
-  modal.style.display = 'flex';
+  modal.classList.add('open');
 }
 
 async function deletePartnerApp(row, name) {
   if (!confirm(`「${name}」の申請を削除しますか？\nこの操作は元に戻せません。`)) return;
   try {
-    await fetch(`${GAS_URL}?action=partner_app_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    await gasFetch(`${GAS_URL}?action=partner_app_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
     partnerApps = partnerApps.filter(a => a.row !== row);
     updatePartnerAppsStats();
     renderPartnerApps();
@@ -3682,7 +4634,7 @@ async function submitRewardEmail() {
   if (!amount || isNaN(amount)) { alert('金額を入力してください'); return; }
   if (!rewardTargetRow) return;
   try {
-    await fetch(`${GAS_URL}?action=partner_reward_send&key=${encodeURIComponent(getAdminPw())}&row=${rewardTargetRow}&amount=${encodeURIComponent(amount)}`);
+    await gasFetch(`${GAS_URL}?action=partner_reward_send&key=${encodeURIComponent(getAdminPw())}&row=${rewardTargetRow}&amount=${encodeURIComponent(amount)}`);
     closeRewardModal();
     showToast(`✅ 報酬確定メール（¥${amount}）を送信しました`);
   } catch(e) {
@@ -3712,8 +4664,551 @@ function esc(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+// ══════════════════════════════════════════════════════════════
+// ── 機能1: 請求書モーダル ──
+// ══════════════════════════════════════════════════════════════
+
+// 請求書の明細行データ
+var _invRows = [];
+
+function _genInvNumber() {
+  var now = new Date();
+  var y = now.getFullYear();
+  var m = String(now.getMonth()+1).padStart(2,'0');
+  var d = String(now.getDate()).padStart(2,'0');
+  return 'INV-' + y + m + d + '-001';
+}
+
+function openInvoiceModal() {
+  // 振込依頼モーダルから値を引用
+  var pmName  = (document.getElementById('pm-name')  ? document.getElementById('pm-name').textContent  : '') || '';
+  var pmDue   = (document.getElementById('pm-due')   ? document.getElementById('pm-due').value         : '') || '';
+  var pmAmount = (document.getElementById('pm-amount') ? document.getElementById('pm-amount').value    : '') || '';
+
+  // 基本フィールドを設定
+  var numEl = document.getElementById('inv-number');
+  if (numEl && !numEl.value) numEl.value = _genInvNumber();
+
+  var issueDateEl = document.getElementById('inv-issue-date');
+  if (issueDateEl && !issueDateEl.value) {
+    var now = new Date();
+    issueDateEl.value = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+  }
+
+  var dueEl = document.getElementById('inv-due');
+  if (dueEl) dueEl.value = pmDue || '';
+
+  var clientEl = document.getElementById('inv-client');
+  if (clientEl) clientEl.value = pmName !== '—' ? pmName : '';
+
+  // 明細を初期化（金額があれば1行目に自動設定）
+  _invRows = [];
+  if (pmAmount && Number(pmAmount) > 0) {
+    var pmPlan = (document.getElementById('pm-plan') ? document.getElementById('pm-plan').value : '') || 'サービス代金';
+    _invRows.push({ name: pmPlan, qty: 1, unit: Number(pmAmount) });
+  } else {
+    _invRows.push({ name: '', qty: 1, unit: 0 });
+  }
+  renderInvRows();
+  calcInvoice();
+
+  // localStorageから振込先を復元
+  loadBankInfo();
+
+  document.getElementById('invoice-modal').classList.add('open');
+}
+
+function closeInvoiceModal() {
+  document.getElementById('invoice-modal').classList.remove('open');
+}
+
+function renderInvRows() {
+  var el = document.getElementById('inv-rows');
+  if (!el) return;
+  el.innerHTML = _invRows.map(function(r, i) {
+    return '<div style="display:grid;grid-template-columns:1fr 60px 90px 90px 32px;gap:0;padding:6px 10px;border-top:1px solid var(--border);align-items:center;">'
+      + '<input type="text" value="' + esc(r.name) + '" placeholder="品目" onchange="_invRows['+i+'].name=this.value;calcInvoice()" '
+      + 'style="padding:5px 6px;background:var(--bg2);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:0.8rem;font-family:inherit;outline:none;width:100%;">'
+      + '<input type="number" value="' + r.qty + '" min="1" onchange="_invRows['+i+'].qty=Number(this.value)||1;calcInvoice()" '
+      + 'style="padding:5px 6px;background:var(--bg2);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:0.8rem;font-family:inherit;outline:none;width:100%;text-align:center;">'
+      + '<input type="number" value="' + r.unit + '" min="0" onchange="_invRows['+i+'].unit=Number(this.value)||0;calcInvoice()" '
+      + 'style="padding:5px 6px;background:var(--bg2);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:0.8rem;font-family:inherit;outline:none;width:100%;text-align:right;">'
+      + '<span style="font-size:0.8rem;text-align:right;padding:0 4px;">¥' + ((r.qty||1)*(r.unit||0)).toLocaleString() + '</span>'
+      + '<button onclick="_invRows.splice('+i+',1);renderInvRows();calcInvoice()" '
+      + 'style="background:none;border:none;color:#f87171;cursor:pointer;font-size:0.9rem;padding:0;text-align:center;">✕</button>'
+      + '</div>';
+  }).join('');
+}
+
+function addInvoiceRow() {
+  _invRows.push({ name: '', qty: 1, unit: 0 });
+  renderInvRows();
+}
+
+function calcInvoice() {
+  var subtotal = _invRows.reduce(function(s,r){ return s + (r.qty||1)*(r.unit||0); }, 0);
+  var taxRateRaw = (document.getElementById('inv-tax-rate') ? document.getElementById('inv-tax-rate').value : '0.10') || '0.10';
+  var taxRate = taxRateRaw === '0.08r' ? 0.08 : parseFloat(taxRateRaw) || 0;
+  var method  = (document.getElementById('inv-tax-method') ? document.getElementById('inv-tax-method').value : 'exclusive') || 'exclusive';
+  var withholdingVal = (document.getElementById('inv-withholding') ? document.getElementById('inv-withholding').value : 'none') || 'none';
+
+  var taxAmt, totalBeforeWithholding;
+  if (method === 'inclusive') {
+    // 内税: subtotalは税込
+    taxAmt = Math.round(subtotal - subtotal / (1 + taxRate));
+    totalBeforeWithholding = subtotal;
+  } else {
+    // 外税
+    taxAmt = Math.round(subtotal * taxRate);
+    totalBeforeWithholding = subtotal + taxAmt;
+  }
+
+  var withholdingAmt = 0;
+  var wRow = document.getElementById('inv-withholding-row');
+  if (withholdingVal !== 'none') {
+    withholdingAmt = Math.round(subtotal * 0.1021);
+    if (wRow) { wRow.style.display = 'flex'; }
+    var wAmtEl = document.getElementById('inv-withholding-amt');
+    if (wAmtEl) wAmtEl.textContent = '-¥' + withholdingAmt.toLocaleString();
+  } else {
+    if (wRow) { wRow.style.display = 'none'; }
+  }
+
+  var total = totalBeforeWithholding - withholdingAmt;
+
+  var subEl = document.getElementById('inv-subtotal');
+  var taxEl = document.getElementById('inv-tax-amt');
+  var totEl = document.getElementById('inv-total');
+  if (subEl) subEl.textContent = '¥' + subtotal.toLocaleString();
+  if (taxEl) taxEl.textContent = '¥' + taxAmt.toLocaleString();
+  if (totEl) totEl.textContent = '¥' + total.toLocaleString();
+}
+
+function saveBankInfo() {
+  var info = {
+    name:   (document.getElementById('inv-bank-name')   ? document.getElementById('inv-bank-name').value   : '') || '',
+    branch: (document.getElementById('inv-bank-branch') ? document.getElementById('inv-bank-branch').value : '') || '',
+    type:   (document.getElementById('inv-bank-type')   ? document.getElementById('inv-bank-type').value   : '') || '普通',
+    number: (document.getElementById('inv-bank-number') ? document.getElementById('inv-bank-number').value : '') || '',
+    holder: (document.getElementById('inv-bank-holder') ? document.getElementById('inv-bank-holder').value : '') || '',
+  };
+  try { localStorage.setItem('mc_bank_info', JSON.stringify(info)); } catch(e) {}
+  showToast('💾 振込先を保存しました');
+}
+
+function loadBankInfo() {
+  try {
+    var saved = JSON.parse(localStorage.getItem('mc_bank_info') || 'null');
+    if (!saved) return;
+    if (document.getElementById('inv-bank-name'))   document.getElementById('inv-bank-name').value   = saved.name   || '';
+    if (document.getElementById('inv-bank-branch')) document.getElementById('inv-bank-branch').value = saved.branch || '';
+    if (document.getElementById('inv-bank-type'))   document.getElementById('inv-bank-type').value   = saved.type   || '普通';
+    if (document.getElementById('inv-bank-number')) document.getElementById('inv-bank-number').value = saved.number || '';
+    if (document.getElementById('inv-bank-holder')) document.getElementById('inv-bank-holder').value = saved.holder || '';
+  } catch(e) {}
+}
+
+function _buildInvoiceHtml() {
+  var invNum    = (document.getElementById('inv-number')     ? document.getElementById('inv-number').value     : '') || '';
+  var issueDate = (document.getElementById('inv-issue-date') ? document.getElementById('inv-issue-date').value : '') || '';
+  var due       = (document.getElementById('inv-due')        ? document.getElementById('inv-due').value        : '') || '';
+  var client    = (document.getElementById('inv-client')     ? document.getElementById('inv-client').value     : '') || '';
+  var subject   = (document.getElementById('inv-subject')    ? document.getElementById('inv-subject').value    : '') || 'サービス代金';
+  var note      = (document.getElementById('inv-note')       ? document.getElementById('inv-note').value       : '') || '';
+  var bankName  = (document.getElementById('inv-bank-name')   ? document.getElementById('inv-bank-name').value   : '') || '';
+  var bankBranch = (document.getElementById('inv-bank-branch') ? document.getElementById('inv-bank-branch').value : '') || '';
+  var bankType  = (document.getElementById('inv-bank-type')   ? document.getElementById('inv-bank-type').value   : '') || '普通';
+  var bankNum   = (document.getElementById('inv-bank-number') ? document.getElementById('inv-bank-number').value : '') || '';
+  var bankHolder = (document.getElementById('inv-bank-holder') ? document.getElementById('inv-bank-holder').value : '') || '';
+
+  var subtotalEl = document.getElementById('inv-subtotal');
+  var taxAmtEl   = document.getElementById('inv-tax-amt');
+  var totalEl    = document.getElementById('inv-total');
+  var withholdingAmtEl = document.getElementById('inv-withholding-amt');
+  var withholdingRow = document.getElementById('inv-withholding-row');
+
+  var subtotalTxt   = subtotalEl ? subtotalEl.textContent : '¥0';
+  var taxAmtTxt     = taxAmtEl   ? taxAmtEl.textContent   : '¥0';
+  var totalTxt      = totalEl    ? totalEl.textContent     : '¥0';
+  var withAmt       = (withholdingRow && withholdingRow.style.display !== 'none' && withholdingAmtEl) ? withholdingAmtEl.textContent : '';
+
+  var rowsHtml = _invRows.map(function(r) {
+    var lineAmt = (r.qty||1) * (r.unit||0);
+    return '<tr>'
+      + '<td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;">' + (r.name || '') + '</td>'
+      + '<td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;text-align:center;">' + (r.qty||1) + '</td>'
+      + '<td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;text-align:right;">¥' + (r.unit||0).toLocaleString() + '</td>'
+      + '<td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;text-align:right;font-weight:700;">¥' + lineAmt.toLocaleString() + '</td>'
+      + '</tr>';
+  }).join('');
+
+  var bankSection = (bankName || bankNum) ? (
+    '<div style="margin-top:28px;padding:16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;">'
+    + '<p style="font-size:0.85rem;font-weight:700;color:#374151;margin-bottom:8px;">【お振込先】</p>'
+    + '<p style="font-size:0.85rem;color:#374151;line-height:2;">'
+    + (bankName ? '銀行名: ' + bankName + '<br>' : '')
+    + (bankBranch ? '支店名: ' + bankBranch + '<br>' : '')
+    + (bankType  ? '口座種別: ' + bankType + '<br>' : '')
+    + (bankNum   ? '口座番号: ' + bankNum + '<br>' : '')
+    + (bankHolder ? '口座名義: ' + bankHolder : '')
+    + '</p></div>'
+  ) : '';
+
+  var withholdingHtml = withAmt
+    ? '<tr><td style="padding:4px 12px;color:#6b7280;text-align:right;" colspan="3">源泉徴収額</td><td style="padding:4px 12px;text-align:right;color:#ef4444;">' + withAmt + '</td></tr>'
+    : '';
+
+  return '<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">'
+    + '<title>請求書 ' + invNum + '</title>'
+    + '<style>body{font-family:"Noto Sans JP",sans-serif;color:#1f2937;margin:0;padding:40px;font-size:14px;}'
+    + 'h1{font-size:1.8rem;font-weight:900;margin:0 0 4px;}table{width:100%;border-collapse:collapse;}'
+    + 'thead th{background:#1e40af;color:#fff;padding:9px 12px;text-align:left;font-size:0.82rem;}'
+    + 'thead th:last-child{text-align:right;}thead th:nth-child(2){text-align:center;}'
+    + 'thead th:nth-child(3){text-align:right;}'
+    + '@media print{body{padding:20px;}}</style></head><body>'
+    + '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px;">'
+    + '<div><h1>請求書</h1><p style="font-size:0.75rem;color:#6b7280;margin:0;">請求書番号: ' + invNum + '</p></div>'
+    + '<div style="text-align:right;font-size:0.85rem;color:#374151;">'
+    + '<p>発行日: ' + issueDate + '</p>'
+    + '<p>支払期限: ' + due + '</p>'
+    + '</div></div>'
+    + '<p style="font-size:1.1rem;font-weight:700;margin-bottom:4px;">' + (client || '') + ' 御中</p>'
+    + '<p style="color:#6b7280;font-size:0.88rem;margin-bottom:28px;">件名: ' + subject + '</p>'
+    + '<table><thead><tr><th>品目</th><th style="width:60px;text-align:center;">数量</th><th style="width:100px;text-align:right;">単価</th><th style="width:110px;text-align:right;">金額</th></tr></thead>'
+    + '<tbody>' + rowsHtml + '</tbody>'
+    + '<tfoot>'
+    + '<tr><td style="padding:6px 12px;color:#6b7280;text-align:right;" colspan="3">小計</td><td style="padding:6px 12px;text-align:right;">' + subtotalTxt + '</td></tr>'
+    + '<tr><td style="padding:4px 12px;color:#6b7280;text-align:right;" colspan="3">消費税</td><td style="padding:4px 12px;text-align:right;">' + taxAmtTxt + '</td></tr>'
+    + withholdingHtml
+    + '<tr style="border-top:2px solid #1e40af;"><td style="padding:10px 12px;font-weight:900;font-size:1.05rem;text-align:right;" colspan="3">請求合計</td><td style="padding:10px 12px;font-weight:900;font-size:1.2rem;color:#1e40af;text-align:right;">' + totalTxt + '</td></tr>'
+    + '</tfoot></table>'
+    + (note ? '<div style="margin-top:24px;padding:14px;background:#f9fafb;border-radius:6px;font-size:0.85rem;color:#374151;white-space:pre-wrap;">' + note + '</div>' : '')
+    + bankSection
+    + '<p style="margin-top:48px;font-size:0.8rem;color:#9ca3af;text-align:center;">mono.create — https://mono-create-group.github.io/lp/</p>'
+    + '</body></html>';
+}
+
+function printInvoice() {
+  var html = _buildInvoiceHtml();
+  var win = window.open('', '_blank', 'width=800,height=1000');
+  if (!win) { alert('ポップアップがブロックされました。ポップアップを許可してください。'); return; }
+  win.document.write(html);
+  win.document.close();
+  win.focus();
+  setTimeout(function() { win.print(); }, 500);
+}
+
+async function sendInvoiceMail() {
+  var client    = (document.getElementById('inv-client')     ? document.getElementById('inv-client').value     : '') || '';
+  var invNum    = (document.getElementById('inv-number')     ? document.getElementById('inv-number').value     : '') || '';
+  var issueDate = (document.getElementById('inv-issue-date') ? document.getElementById('inv-issue-date').value : '') || '';
+  var due       = (document.getElementById('inv-due')        ? document.getElementById('inv-due').value        : '') || '';
+  var note      = (document.getElementById('inv-note')       ? document.getElementById('inv-note').value       : '') || '';
+  var totalEl   = document.getElementById('inv-total');
+  var total     = totalEl ? totalEl.textContent : '¥0';
+
+  // メールアドレスを振込依頼モーダルから取得
+  var emailEl   = document.getElementById('pm-email');
+  var email     = (emailEl ? emailEl.textContent : '') || '';
+  if (!email || email === '—') { showToast('⚠ メールアドレスが取得できません', true); return; }
+
+  var invHtml = _buildInvoiceHtml();
+
+  // GAS経由でメール送信
+  try {
+    const res  = await gasFetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action:    'send_invoice',
+        key:       getAdminPw(),
+        to:        email,
+        client:    client,
+        inv_num:   invNum,
+        issue_date: issueDate,
+        due:       due,
+        total:     total,
+        note:      note,
+        html_body: invHtml
+      })
+    });
+    const json = await res.json();
+    if (json.success) {
+      showToast('📧 請求書メールを送信しました');
+      closeInvoiceModal();
+    } else {
+      showToast('送信失敗: ' + (json.error || 'エラー'), true);
+    }
+  } catch(e) {
+    showToast('送信エラー。GASを確認してください。', true);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// ── 機能2: submitPaymentRequestに pay_type を追加 ──
+// （既存の submitPaymentRequest 関数をオーバーライドします）
+// ══════════════════════════════════════════════════════════════
+// pay_typeをGAS送信時に含める — 元の関数を拡張してオーバーライド
+var _origSubmitPaymentRequest = submitPaymentRequest;
+submitPaymentRequest = async function() {
+  var h = hearings.find(function(x) { return x.row === _paymentReqRow; });
+  if (!h || !h.email) { showToast('メールアドレスがありません'); return; }
+  var amount = document.getElementById('pm-amount').value.trim();
+  var isTrial = (amount === '0' || (h.answers && h.answers['__planKey'] === 'trial'));
+  if (!isTrial && (!amount || isNaN(amount) || Number(amount) < 0)) {
+    showToast('金額を正しく入力してください', true); return;
+  }
+  var due  = document.getElementById('pm-due').value.trim();
+  var note = document.getElementById('pm-note').value.trim();
+  var editedPlan = document.getElementById('pm-plan').value.trim() || h.plan || '';
+  var payType = (document.getElementById('pm-pay-type') ? document.getElementById('pm-pay-type').value : 'spot') || 'spot';
+  var btn  = document.getElementById('pm-send-btn');
+  btn.disabled = true; btn.textContent = '送信中...';
+  try {
+    var url = GAS_URL + '?action=send_payment_request&key=' + encodeURIComponent(getAdminPw())
+      + '&email=' + encodeURIComponent(h.email)
+      + '&name='  + encodeURIComponent(h.name||'')
+      + '&plan='  + encodeURIComponent(editedPlan)
+      + '&amount='+ encodeURIComponent(amount)
+      + '&due='   + encodeURIComponent(due)
+      + '&note='  + encodeURIComponent(note)
+      + '&pay_type=' + encodeURIComponent(payType);
+    var res  = await gasFetch(url);
+    var json = await res.json();
+    if (json.success) {
+      showToast('💳 振込依頼メールを送信しました');
+      closePaymentReqModal();
+    } else {
+      showToast('送信失敗: ' + (json.error || 'エラー'), true);
+    }
+  } catch(e) {
+    showToast('送信エラー', true);
+  } finally {
+    btn.disabled = false; btn.textContent = '💳 振込依頼を送信';
+  }
+};
+
+// ══════════════════════════════════════════════════════════════
+// ── 特例払いオプション：ロック解除（管理者のみ）──
+// ══════════════════════════════════════════════════════════════
+var _specialPayUnlocked = false;
+function toggleSpecialPayOptions() {
+  if (!_specialPayUnlocked) {
+    var pw = prompt('管理者確認：パスワードを入力してください');
+    if (pw !== getAdminPw()) { showToast('パスワードが違います', true); return; }
+    _specialPayUnlocked = true;
+  }
+  var opts = document.querySelectorAll('.special-pay-option');
+  var btn  = document.getElementById('pm-special-pay-btn');
+  if (_specialPayUnlocked && opts[0].style.display === 'none') {
+    opts.forEach(function(o) { o.style.display = ''; o.removeAttribute('disabled'); });
+    btn.textContent = '🔓 特例払い（有効）';
+    btn.style.color = '#F59E0B';
+    btn.style.borderColor = '#F59E0B';
+    showToast('⚠️ 特例払いオプションを有効にしました');
+  } else {
+    opts.forEach(function(o) { o.style.display = 'none'; });
+    document.getElementById('pm-pay-type').value = 'spot';
+    document.getElementById('pm-custom-date-wrap').style.display = 'none';
+    btn.textContent = '🔒 特例払いを設定';
+    btn.style.color = '';
+    btn.style.borderColor = '';
+    _specialPayUnlocked = false;
+  }
+}
+function toggleDateInputVisibility() {
+  var v = document.getElementById('pm-pay-type').value;
+  document.getElementById('pm-custom-date-wrap').style.display = (v === 'custom_date') ? 'block' : 'none';
+  if (v === 'custom_date') {
+    // 振込期限フィールドも更新
+    var d = document.getElementById('pm-custom-date').value;
+    if (d) {
+      var dt = new Date(d);
+      document.getElementById('pm-due').value = dt.getFullYear() + '年' + (dt.getMonth()+1) + '月' + dt.getDate() + '日';
+    }
+  }
+}
+// 日付指定時に振込期限を自動反映
+document.addEventListener('DOMContentLoaded', function() {
+  var cd = document.getElementById('pm-custom-date');
+  if (cd) cd.addEventListener('change', function() {
+    var dt = new Date(this.value);
+    if (!isNaN(dt)) document.getElementById('pm-due').value = dt.getFullYear() + '年' + (dt.getMonth()+1) + '月' + dt.getDate() + '日';
+  });
+});
+
+// ══════════════════════════════════════════════════════════════
+// ── 機能3: 期限当日リマインダー送信 ──
+// ══════════════════════════════════════════════════════════════
+async function sendPaymentReminders() {
+  showToast('🔍 期限当日のデータを確認中...');
+  var allData;
+  try {
+    var res  = await gasFetch(GAS_URL + '?action=list&key=' + encodeURIComponent(getAdminPw()));
+    var json = await res.json();
+    if (json.error) { showToast('データ取得失敗: ' + json.error, true); return; }
+    allData = json.data || [];
+  } catch(e) {
+    showToast('データ取得エラー', true); return;
+  }
+
+  // 今日の日付文字列（複数フォーマット対応）
+  var now = new Date();
+  var todayY = now.getFullYear();
+  var todayM = now.getMonth() + 1;
+  var todayD = now.getDate();
+  var todayFormats = [
+    todayY + '/' + String(todayM).padStart(2,'0') + '/' + String(todayD).padStart(2,'0'),
+    todayY + '-' + String(todayM).padStart(2,'0') + '-' + String(todayD).padStart(2,'0'),
+    todayY + '年' + todayM + '月' + todayD + '日',
+  ];
+
+  // 振込期限が今日と一致するレコードを絞り込み
+  var targets = allData.filter(function(item) {
+    var due = String(item.due || item.pm_due || '');
+    if (!due) return false;
+    return todayFormats.some(function(fmt) { return due.indexOf(fmt) !== -1; })
+      || (due.indexOf(todayY + '年' + todayM + '月' + todayD) !== -1);
+  });
+
+  if (!targets.length) {
+    alert('本日が振込期限のお客様は見つかりませんでした。');
+    return;
+  }
+
+  if (!confirm(targets.length + '件の期限当日のお客様にリマインダーを送信しますか？')) return;
+
+  var reminderBody = '○○様\n\n'
+    + 'いつもお世話になっております。mono.createの中村です。\n\n'
+    + '本日が振込期限となっておりますため、念のためご確認のご連絡を差し上げました。\n\n'
+    + '・プラン: {plan}\n'
+    + '・金額: ¥{amount}\n'
+    + '・お振込み期限: 本日（{date}）\n\n'
+    + 'もしすでにお手続きいただいている場合は、どうかご放念ください。\n'
+    + 'もし何かご不明点がございましたら、お気軽にご連絡ください。\n\n'
+    + '引き続きよろしくお願いいたします。';
+
+  var todayStr = todayY + '年' + todayM + '月' + todayD + '日';
+  var successCount = 0;
+  var failCount    = 0;
+
+  for (var i = 0; i < targets.length; i++) {
+    var item = targets[i];
+    var email = item.email || '';
+    if (!email) { failCount++; continue; }
+    var plan   = item.plan   || 'ご依頼プラン';
+    var amount = item.amount || '';
+    var body   = reminderBody
+      .replace('{plan}',   plan)
+      .replace('{amount}', amount ? Number(amount).toLocaleString() : '—')
+      .replace('{date}',   todayStr);
+    try {
+      var res = await gasFetch(GAS_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action:  'send_payment_reminder',
+          key:     getAdminPw(),
+          to:      email,
+          name:    item.name || '',
+          plan:    plan,
+          amount:  amount,
+          date:    todayStr,
+          subject: '【mono.create】お振込みのご確認',
+          body:    body.replace('○○様', (item.name || 'お客様') + '様')
+        })
+      });
+      var json = await res.json();
+      if (json.success) { successCount++; } else { failCount++; }
+    } catch(e) { failCount++; }
+  }
+
+  showToast('✅ リマインダー送信完了: ' + successCount + '件成功 / ' + failCount + '件失敗');
+}
+
 // Start
 if (sessionStorage.getItem('mc_admin') === '1') loadData();
+
+// ══════════════════════════════════════════════════════════════
+// ── 編集者契約書送付機能 ──
+// ══════════════════════════════════════════════════════════════
+const EDITOR_CONTRACT_URL = 'https://docs.google.com/document/d/108LpKal-QeMve2pcsvMUs6OkyUbxQyunHsHQUaYj428/edit?usp=sharing';
+const EDITOR_CONTRACT_DRIVE_FOLDER = 'https://drive.google.com/drive/folders/1cKPzB0xdMRTyCjYv_OIyNK-hm5ssiQPh?usp=drive_link';
+
+function openContractModal(row, name, email) {
+  document.getElementById('contract-modal-name').textContent  = name;
+  document.getElementById('contract-modal-email').textContent = email;
+  document.getElementById('contract-modal-row').value         = row;
+  document.getElementById('contract-modal-email-val').value   = email;
+  document.getElementById('contract-modal').style.display     = 'flex';
+}
+function closeContractModal() {
+  document.getElementById('contract-modal').style.display = 'none';
+}
+
+async function sendEditorContract() {
+  const row   = document.getElementById('contract-modal-row').value;
+  const email = document.getElementById('contract-modal-email-val').value;
+  const name  = document.getElementById('contract-modal-name').textContent;
+  const note  = document.getElementById('contract-modal-note').value.trim();
+  const btn   = document.getElementById('contract-send-btn');
+  if (!email) { showToast('メールアドレスがありません', true); return; }
+  btn.disabled = true; btn.textContent = '送信中...';
+  try {
+    const url = GAS_URL + '?action=send_editor_contract'
+      + '&key='           + encodeURIComponent(getAdminPw())
+      + '&email='         + encodeURIComponent(email)
+      + '&name='          + encodeURIComponent(name)
+      + '&contract_url='  + encodeURIComponent(EDITOR_CONTRACT_URL)
+      + '&drive_folder='  + encodeURIComponent(EDITOR_CONTRACT_DRIVE_FOLDER)
+      + '&note='          + encodeURIComponent(note);
+    const res  = await gasFetch(url);
+    const json = await res.json();
+    if (json.success) {
+      showToast('📜 契約書送付メールを送信しました');
+      closeContractModal();
+    } else {
+      // GASにアクションがない場合でもUIは表示（メール手動送信の補助として使用）
+      showToast('⚠ GASにsend_editor_contractが未実装。手動で送付してください。', true);
+    }
+  } catch(e) {
+    showToast('GAS未対応。手動送付を行ってください。', true);
+  } finally {
+    btn.disabled = false; btn.textContent = '📧 契約書メールを送信';
+  }
+}
 </script>
+
+<!-- ── 編集者契約書送付モーダル ── -->
+<div class="modal-overlay" id="contract-modal" onclick="if(event.target===this)closeContractModal()" style="display:none;">
+  <div class="modal" style="max-width:520px;">
+    <div class="modal-header">
+      <h3 class="modal-title">📜 編集者契約書送付</h3>
+      <button class="modal-close" onclick="closeContractModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.3);border-radius:10px;padding:14px;margin-bottom:16px;">
+        <p style="font-size:0.82rem;color:var(--sub);margin-bottom:4px;">送付先</p>
+        <p style="font-weight:800;" id="contract-modal-name"></p>
+        <p style="font-size:0.85rem;color:#60A5FA;" id="contract-modal-email"></p>
+        <input type="hidden" id="contract-modal-row">
+        <input type="hidden" id="contract-modal-email-val">
+      </div>
+      <div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);border-radius:8px;padding:12px;margin-bottom:16px;">
+        <p style="font-size:0.78rem;font-weight:700;color:#F59E0B;margin-bottom:6px;">📄 送付する契約書</p>
+        <a href="https://docs.google.com/document/d/108LpKal-QeMve2pcsvMUs6OkyUbxQyunHsHQUaYj428/edit?usp=sharing" target="_blank" style="font-size:0.8rem;color:#60A5FA;word-break:break-all;">業務委託契約書（Google Docs）</a>
+        <p style="font-size:0.72rem;color:var(--sub);margin-top:6px;">🗂 保存先フォルダ：<a href="https://drive.google.com/drive/folders/1cKPzB0xdMRTyCjYv_OIyNK-hm5ssiQPh" target="_blank" style="color:#60A5FA;">契約書フォルダ</a></p>
+      </div>
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:0.82rem;color:var(--sub);margin-bottom:6px;">追加メッセージ（任意）</label>
+        <textarea id="contract-modal-note" rows="3" placeholder="契約開始日、特記事項など" style="width:100%;padding:9px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;resize:vertical;"></textarea>
+      </div>
+      <p style="font-size:0.72rem;color:var(--sub);margin-bottom:16px;">※ 契約書URLをメールで送付します。署名後のPDFは保存先フォルダに格納してください。</p>
+      <div class="modal-actions">
+        <button class="modal-btn" onclick="closeContractModal()" style="background:var(--bg2);color:var(--sub);">キャンセル</button>
+        <button class="modal-btn mail" id="contract-send-btn" onclick="sendEditorContract()">📧 契約書メールを送信</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
