@@ -102,30 +102,59 @@ function sendAutoReply(toEmail, name, subject, bodyLines) {
   ];
   var plainBody = greetingTxt + bodyLines.join('\n') + footerLines.join('\n');
 
-  // HTML版：URLをクリッカブルリンクに変換
+  // HTML版：table-based layout (Outlook/Gmail/Apple Mail 全対応)
   function escHtml(s) {
     return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
   function lineToHtml(line) {
-    // URLをaタグに変換
-    return escHtml(line).replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" style="color:#2563EB;word-break:break-all;">$1</a>');
+    return escHtml(line).replace(/(https?:\/\/[^\s<>"]+)/g,
+      '<a href="$1" style="color:#2563EB;text-decoration:underline;word-break:break-all;">$1</a>');
   }
-  var greetingHtml = name ? '<p style="margin:0 0 16px;">' + escHtml(name) + ' 様</p>' : '';
-  var bodyHtml = bodyLines.map(function(l) {
-    if (!l) return '<br>';
-    return '<p style="margin:0 0 6px;line-height:1.7;">' + lineToHtml(l) + '</p>';
-  }).join('');
-  var footerHtml = footerLines.map(function(l) {
-    return '<p style="margin:0;color:#64748B;font-size:0.85em;">' + escHtml(l) + '</p>';
-  }).join('');
-  var htmlBody = [
-    '<div style="font-family:\'Noto Sans JP\',sans-serif;font-size:15px;color:#1E293B;max-width:600px;margin:0 auto;">',
-    greetingHtml,
-    bodyHtml,
-    '<hr style="border:none;border-top:1px solid #E2E8F0;margin:20px 0;">',
-    footerHtml,
-    '</div>'
-  ].join('');
+  var rows = [];
+  // 宛名
+  if (name) {
+    rows.push('<tr><td style="padding:0 0 18px 0;font-family:Arial,\'Noto Sans JP\',sans-serif;font-size:15px;color:#1E293B;">'
+      + escHtml(name) + ' 様</td></tr>');
+  }
+  // 本文
+  bodyLines.forEach(function(l) {
+    if (!l) {
+      rows.push('<tr><td style="padding:4px 0;font-size:15px;">&nbsp;</td></tr>');
+    } else {
+      rows.push('<tr><td style="padding:2px 0 4px 0;font-family:Arial,\'Noto Sans JP\',sans-serif;font-size:15px;color:#1E293B;line-height:1.75;">'
+        + lineToHtml(l) + '</td></tr>');
+    }
+  });
+  // 区切り
+  rows.push('<tr><td style="padding:18px 0 12px 0;"><table width="100%" cellpadding="0" cellspacing="0" border="0">'
+    + '<tr><td style="border-top:1px solid #E2E8F0;font-size:0px;line-height:0;">&nbsp;</td></tr></table></td></tr>');
+  // フッター
+  footerLines.forEach(function(l) {
+    rows.push('<tr><td style="padding:1px 0;font-family:Arial,\'Noto Sans JP\',sans-serif;font-size:13px;color:#64748B;">'
+      + escHtml(l) + '</td></tr>');
+  });
+  var htmlBody = '<!DOCTYPE html><html><head>'
+    + '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">'
+    + '<meta name="viewport" content="width=device-width, initial-scale=1.0">'
+    + '</head><body style="margin:0;padding:0;background-color:#F8FAFC;">'
+    + '<!--[if mso]><table width="100%" cellpadding="0" cellspacing="0"><tr><td><![endif]-->'
+    + '<table align="center" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;margin:0 auto;">'
+    + '<tr><td style="padding:0;">'
+    + '<table width="100%" cellpadding="0" cellspacing="0" border="0">'
+    + '<tr><td style="background:#1E40AF;padding:18px 28px;">'
+    + '<span style="font-family:Arial,sans-serif;font-size:16px;font-weight:bold;color:#ffffff;letter-spacing:1px;">mono.create</span>'
+    + '</td></tr>'
+    + '<tr><td style="background:#ffffff;padding:32px 28px;">'
+    + '<table width="100%" cellpadding="0" cellspacing="0" border="0">'
+    + rows.join('')
+    + '</table></td></tr>'
+    + '<tr><td style="background:#F1F5F9;padding:14px 28px;text-align:center;">'
+    + '<span style="font-family:Arial,sans-serif;font-size:12px;color:#94A3B8;">© mono.create | '
+    + '<a href="' + LP_BASE_URL + '" style="color:#94A3B8;text-decoration:underline;">' + LP_BASE_URL + '</a></span>'
+    + '</td></tr>'
+    + '</table></td></tr></table>'
+    + '<!--[if mso]></td></tr></table><![endif]-->'
+    + '</body></html>';
 
   MailApp.sendEmail({
     to:       toEmail,

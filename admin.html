@@ -422,11 +422,13 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       <div class="header-logo">mono<span>.</span>create<span class="header-badge">ADMIN</span></div>
     </div>
     <div class="header-right">
+      <span id="session-timer" style="font-size:0.7rem;color:rgba(255,255,255,0.45);display:none;" title="セッション有効期限"></span>
       <a href="index.html" class="back-btn">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
         LPに戻る
       </a>
-      <button class="logout-btn" onclick="doLogout()">ログアウト</button>
+      <button class="logout-btn" onclick="doLogout()" title="セッションのみ終了（パスワードはこのデバイスに保存されたまま）">ログアウト</button>
+      <button class="logout-btn" onclick="doFullLogout()" title="パスワードも完全削除（共有PCで作業後はこちら）" style="background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.3);color:#F87171;margin-left:4px;font-size:0.75rem;">🔒 完全ログアウト</button>
     </div>
   </header>
 
@@ -1357,7 +1359,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
           <div>
             <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--sub);margin-bottom:5px;">クライアント名 <span style="color:#EF4444;">*</span></label>
-            <input id="pl-client" type="text" list="pl-client-list" placeholder="例：山田 太郎 様" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-size:0.88rem;font-family:inherit;outline:none;">
+            <input id="pl-client" type="text" list="pl-client-list" placeholder="例：山田 太郎 様" oninput="autoFillFromClientMaster(this.value,'pl')" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-size:0.88rem;font-family:inherit;outline:none;">
             <datalist id="pl-client-list"></datalist>
           </div>
           <div>
@@ -1693,7 +1695,24 @@ function renderPrivateLinks(data) {
       + '</div>'
       + '<p style="font-size:0.72rem;color:var(--sub);word-break:break-all;font-family:monospace;margin-bottom:4px;">' + url + '</p>'
       + '<div style="display:flex;gap:10px;flex-wrap:wrap;">'
-      + '<span style="font-size:0.7rem;color:' + (expired ? 'var(--red)' : 'var(--sub)') + ';">期限: ' + esc(d.expires_at || '') + (expired ? ' ⚠️ 期限切れ' : '') + '</span>'
+      + (function(){
+          var expStr = '';
+          if (d.expires_at) {
+            var expDate = new Date(d.expires_at);
+            var now = new Date();
+            var diffDays = Math.ceil((expDate - now) / (1000*60*60*24));
+            if (expired) {
+              expStr = '<span style="font-size:0.7rem;color:#F87171;font-weight:700;">⚠️ 期限切れ（' + expDate.toLocaleDateString('ja-JP') + '）</span>';
+            } else if (diffDays <= 3) {
+              expStr = '<span style="font-size:0.7rem;color:#FBBF24;font-weight:700;">⚡ あと' + diffDays + '日（' + expDate.toLocaleDateString('ja-JP') + '）</span>';
+            } else {
+              expStr = '<span style="font-size:0.7rem;color:#4ADE80;">✅ あと' + diffDays + '日有効（' + expDate.toLocaleDateString('ja-JP') + '）</span>';
+            }
+          } else {
+            expStr = '<span style="font-size:0.7rem;color:var(--sub);">期限なし</span>';
+          }
+          return expStr;
+        })()
       + '<span style="font-size:0.7rem;color:var(--sub);">' + viewsStr + '</span>'
       + (d.note ? '<span style="font-size:0.7rem;color:var(--sub);">備考: ' + esc(d.note) + '</span>' : '')
       + '</div>'
@@ -1705,6 +1724,26 @@ function renderPrivateLinks(data) {
       + '</div>'
       + '</div>';
   }).join('');
+}
+
+// クライアントマスタから金額・支払形式を自動入力
+function autoFillFromClientMaster(inputName, prefix) {
+  if (!_clientMasterData || !_clientMasterData.length) return;
+  var match = _clientMasterData.find(function(c) {
+    return c.name && c.name.trim() === inputName.trim();
+  });
+  if (!match) return;
+  var priceEl   = document.getElementById(prefix + '-price');
+  var payTypeEl = document.getElementById(prefix + '-pay-type');
+  if (priceEl && match.base_price && !priceEl.value) {
+    priceEl.value = match.base_price;
+    priceEl.style.background = 'rgba(74,222,128,0.08)';
+    priceEl.title = 'クライアントマスタから自動入力';
+  }
+  if (payTypeEl && match.pay_type) {
+    payTypeEl.value = match.pay_type;
+    payTypeEl.style.background = 'rgba(74,222,128,0.08)';
+  }
 }
 
 async function deletePrivateLink(token) {
@@ -2325,7 +2364,18 @@ function doLogin() {
 }
 
 function doLogout() {
+  // セッションを終了してページ再読み込み
+  // → パスワードはlocalStorageに残るため次回入力不要
   sessionStorage.removeItem(SESSION_KEY);
+  location.reload();
+}
+
+// 完全ログアウト：パスワードもlocalStorageから削除（共有PC向け）
+function doFullLogout() {
+  if (!confirm('このデバイスのパスワード情報も削除してログアウトします。\n次回アクセス時は新しいパスワードの設定が必要です。\n\nよろしいですか？')) return;
+  sessionStorage.removeItem(SESSION_KEY);
+  localStorage.removeItem(PW_STORE_KEY);
+  localStorage.removeItem(LOCK_KEY);
   location.reload();
 }
 
@@ -2336,6 +2386,32 @@ function isSessionValid() {
     return data && data.exp && Date.now() < data.exp;
   } catch { return false; }
 }
+
+// ── セッション残り時間タイマー ──
+(function startSessionTimer() {
+  var el = document.getElementById('session-timer');
+  if (!el) return;
+  function tick() {
+    try {
+      var d = JSON.parse(sessionStorage.getItem(SESSION_KEY));
+      if (!d || !d.exp) { el.style.display = 'none'; return; }
+      var remain = d.exp - Date.now();
+      if (remain <= 0) { doLogout(); return; }
+      el.style.display = '';
+      var h = Math.floor(remain / 3600000);
+      var m = Math.floor((remain % 3600000) / 60000);
+      if (remain < 30 * 60 * 1000) {
+        el.style.color = '#FBBF24';
+        el.textContent = '⏱ セッション残り ' + m + '分';
+      } else {
+        el.style.color = 'rgba(255,255,255,0.35)';
+        el.textContent = '🔐 セッション残り ' + h + '時間' + m + '分';
+      }
+    } catch(e) { el.style.display = 'none'; }
+  }
+  tick();
+  setInterval(tick, 60000);
+})();
 
 // ── 初期化：セットアップ or ログイン画面を表示 ──
 (function initAuth() {
@@ -4390,9 +4466,8 @@ async function addPortfolioItem() {
     document.getElementById('pf-title').value = '';
     document.getElementById('pf-genre').value = '';
     const msg = document.getElementById('pf-msg');
-    msg.style.display = 'inline';
-    setTimeout(() => { msg.style.display = 'none'; }, 2500);
-    setTimeout(loadPortfolioAdmin, 1500); // GAS書き込み完了を待つ
+    if (msg) { msg.textContent = '✅ 追加しました（LPへの反映は10秒以内）'; msg.style.display = 'inline'; setTimeout(() => { msg.style.display = 'none'; }, 5000); }
+    setTimeout(loadPortfolioAdmin, 2000); // GAS書き込み完了を待つ
   } catch(e) { alert('追加に失敗しました。ネットワークを確認してください。'); }
 }
 
