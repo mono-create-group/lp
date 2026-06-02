@@ -376,6 +376,12 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
   pointer-events: none;
 }
 .toast.show { transform: translateY(0); opacity: 1; }
+
+/* ── 請求書 印刷スタイル ── */
+@media print {
+  body > *:not(#inv-print-frame) { display: none !important; }
+  #inv-print-frame { display: block !important; position: fixed; inset: 0; z-index: 9999; background: #fff; border: none; width: 100%; height: 100%; }
+}
 </style>
 </head>
 <body>
@@ -488,6 +494,14 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
 
     <!-- ── 問い合わせタブ ── -->
     <div id="tab-inquiries">
+
+    <!-- リマインダーボタン -->
+    <div style="margin-bottom:16px;display:flex;justify-content:flex-end;">
+      <button onclick="sendPaymentReminders()"
+        style="padding:9px 18px;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.35);border-radius:8px;color:var(--yellow);font-size:0.85rem;font-weight:700;font-family:inherit;cursor:pointer;display:flex;align-items:center;gap:6px;">
+        🔔 期限当日リマインダー送信
+      </button>
+    </div>
 
     <!-- Stats -->
     <div class="stats-bar" id="stats-bar">
@@ -1627,15 +1641,157 @@ function renderPLHistory() {
         <input type="text" id="pm-due" placeholder="例: 2026年6月5日（5日以内）"
           style="width:100%;padding:9px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.9rem;">
       </div>
+      <div style="margin-bottom:12px;">
+        <label style="display:block;font-size:0.82rem;color:var(--sub);margin-bottom:6px;">支払い形式</label>
+        <select id="pm-pay-type" style="width:100%;padding:9px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.88rem;font-family:inherit;outline:none;">
+          <option value="spot">つど払い（基本・全員適用）</option>
+          <option value="month_end">当月払い（管理者承認制）</option>
+          <option value="next_month">翌月払い（管理者承認制）</option>
+        </select>
+      </div>
       <div style="margin-bottom:16px;">
         <label style="display:block;font-size:0.82rem;color:var(--sub);margin-bottom:6px;">備考・メッセージ（任意）</label>
         <textarea id="pm-note" rows="3" placeholder="特記事項があれば入力してください"
           style="width:100%;padding:9px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;resize:vertical;"></textarea>
       </div>
-      <div class="modal-actions" style="margin-top:20px;">
-        <button class="modal-btn" onclick="closePaymentReqModal()" style="background:var(--bg2);color:var(--sub);">キャンセル</button>
-        <button class="modal-btn mail" id="pm-send-btn" onclick="submitPaymentRequest()">💳 振込依頼を送信</button>
+      <div class="modal-actions" style="margin-top:20px;flex-wrap:wrap;">
+        <button class="modal-btn" onclick="closePaymentReqModal()" style="background:var(--bg2);color:var(--sub);flex:0 0 auto;">キャンセル</button>
+        <button class="modal-btn" onclick="openInvoiceModal()" style="background:rgba(245,158,11,0.12);color:var(--yellow);border:1px solid rgba(245,158,11,0.3);flex:0 0 auto;">📄 請求書を作成</button>
+        <button class="modal-btn mail" id="pm-send-btn" onclick="submitPaymentRequest()" style="flex:1;">💳 振込依頼を送信</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── 請求書モーダル ── -->
+<div class="modal-overlay" id="invoice-modal" onclick="if(event.target===this)closeInvoiceModal()">
+  <div class="modal" style="max-width:640px;">
+    <div class="modal-header">
+      <h2 class="modal-title">📄 請求書を作成</h2>
+      <button class="modal-close" onclick="closeInvoiceModal()">×</button>
+    </div>
+    <div style="padding:4px 0 0;">
+
+      <!-- 基本情報 -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+        <div>
+          <label style="display:block;font-size:0.75rem;color:var(--sub);margin-bottom:4px;">請求書番号</label>
+          <input type="text" id="inv-number" style="width:100%;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;font-family:inherit;outline:none;">
+        </div>
+        <div>
+          <label style="display:block;font-size:0.75rem;color:var(--sub);margin-bottom:4px;">発行日</label>
+          <input type="date" id="inv-issue-date" style="width:100%;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;font-family:inherit;outline:none;">
+        </div>
+        <div>
+          <label style="display:block;font-size:0.75rem;color:var(--sub);margin-bottom:4px;">支払期限</label>
+          <input type="text" id="inv-due" style="width:100%;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;font-family:inherit;outline:none;">
+        </div>
+        <div>
+          <label style="display:block;font-size:0.75rem;color:var(--sub);margin-bottom:4px;">請求先</label>
+          <input type="text" id="inv-client" style="width:100%;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;font-family:inherit;outline:none;">
+        </div>
+        <div style="grid-column:1/-1;">
+          <label style="display:block;font-size:0.75rem;color:var(--sub);margin-bottom:4px;">件名</label>
+          <input type="text" id="inv-subject" placeholder="例: 動画編集代行サービス" style="width:100%;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;font-family:inherit;outline:none;">
+        </div>
+      </div>
+
+      <!-- 明細欄 -->
+      <div style="margin-bottom:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <label style="font-size:0.75rem;color:var(--sub);">明細</label>
+          <button onclick="addInvoiceRow()" style="padding:4px 10px;background:#1a2a3a;color:#60a5fa;border:1px solid #1d4ed8;border-radius:6px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;">＋ 行を追加</button>
+        </div>
+        <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+          <div style="display:grid;grid-template-columns:1fr 60px 90px 90px 32px;gap:0;background:var(--bg3);padding:6px 10px;font-size:0.7rem;color:var(--sub);font-weight:700;">
+            <span>品目</span><span style="text-align:center;">数量</span><span style="text-align:right;">単価</span><span style="text-align:right;">金額</span><span></span>
+          </div>
+          <div id="inv-rows"></div>
+        </div>
+      </div>
+
+      <!-- 税・源泉 設定 -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;">
+        <div>
+          <label style="display:block;font-size:0.75rem;color:var(--sub);margin-bottom:4px;">消費税率</label>
+          <select id="inv-tax-rate" onchange="calcInvoice()" style="width:100%;padding:7px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.82rem;font-family:inherit;">
+            <option value="0.10">10%</option>
+            <option value="0.08">8%</option>
+            <option value="0.08r">軽減税率8%</option>
+            <option value="0">非課税0%</option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block;font-size:0.75rem;color:var(--sub);margin-bottom:4px;">税計算方式</label>
+          <select id="inv-tax-method" onchange="calcInvoice()" style="width:100%;padding:7px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.82rem;font-family:inherit;">
+            <option value="exclusive">外税（税抜）</option>
+            <option value="inclusive">内税（税込）</option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block;font-size:0.75rem;color:var(--sub);margin-bottom:4px;">源泉徴収</label>
+          <select id="inv-withholding" onchange="calcInvoice()" style="width:100%;padding:7px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.82rem;font-family:inherit;">
+            <option value="none">なし</option>
+            <option value="10.21">あり（10.21%）</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 計算結果 -->
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:0.82rem;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="color:var(--sub);">小計</span><span id="inv-subtotal">¥0</span></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="color:var(--sub);">消費税額</span><span id="inv-tax-amt">¥0</span></div>
+        <div id="inv-withholding-row" style="display:flex;justify-content:space-between;margin-bottom:4px;display:none;"><span style="color:var(--sub);">源泉徴収額</span><span id="inv-withholding-amt" style="color:var(--red);">-¥0</span></div>
+        <div style="display:flex;justify-content:space-between;padding-top:8px;border-top:1px solid var(--border);font-weight:700;font-size:0.95rem;">
+          <span>請求合計</span><span id="inv-total" style="color:var(--green);">¥0</span>
+        </div>
+      </div>
+
+      <!-- 備考 -->
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:0.75rem;color:var(--sub);margin-bottom:4px;">備考</label>
+        <textarea id="inv-note" rows="2" style="width:100%;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;font-family:inherit;resize:vertical;outline:none;" placeholder="お振込先や特記事項など"></textarea>
+      </div>
+
+      <!-- 振込先 -->
+      <details style="margin-bottom:14px;">
+        <summary style="font-size:0.78rem;color:var(--lt);cursor:pointer;font-weight:700;margin-bottom:8px;">🏦 振込先（クリックで展開 / localStorageに保存されます）</summary>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+          <div>
+            <label style="font-size:0.72rem;color:var(--sub);display:block;margin-bottom:3px;">銀行名</label>
+            <input type="text" id="inv-bank-name" placeholder="例: ゆうちょ銀行" style="width:100%;padding:7px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.82rem;font-family:inherit;outline:none;">
+          </div>
+          <div>
+            <label style="font-size:0.72rem;color:var(--sub);display:block;margin-bottom:3px;">支店名</label>
+            <input type="text" id="inv-bank-branch" placeholder="例: 〇〇支店" style="width:100%;padding:7px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.82rem;font-family:inherit;outline:none;">
+          </div>
+          <div>
+            <label style="font-size:0.72rem;color:var(--sub);display:block;margin-bottom:3px;">口座種別</label>
+            <select id="inv-bank-type" style="width:100%;padding:7px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.82rem;font-family:inherit;">
+              <option value="普通">普通</option>
+              <option value="当座">当座</option>
+              <option value="貯蓄">貯蓄</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:0.72rem;color:var(--sub);display:block;margin-bottom:3px;">口座番号</label>
+            <input type="text" id="inv-bank-number" placeholder="例: 1234567" style="width:100%;padding:7px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.82rem;font-family:inherit;outline:none;">
+          </div>
+          <div style="grid-column:1/-1;">
+            <label style="font-size:0.72rem;color:var(--sub);display:block;margin-bottom:3px;">口座名義（カタカナ）</label>
+            <input type="text" id="inv-bank-holder" placeholder="例: ナカムラコウタ" style="width:100%;padding:7px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.82rem;font-family:inherit;outline:none;">
+          </div>
+        </div>
+        <button onclick="saveBankInfo()" style="margin-top:8px;padding:6px 14px;background:#1a2a3a;color:#60a5fa;border:1px solid #1d4ed8;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;">💾 振込先を保存</button>
+      </details>
+
+      <!-- アクションボタン -->
+      <div class="modal-actions" style="flex-wrap:wrap;gap:8px;">
+        <button class="modal-btn" onclick="closeInvoiceModal()" style="background:var(--bg2);color:var(--sub);flex:0 0 auto;">閉じる</button>
+        <button class="modal-btn" onclick="printInvoice()" style="background:rgba(16,185,129,0.12);color:var(--green);border:1px solid rgba(16,185,129,0.3);flex:0 0 auto;">🖨 PDFとして保存</button>
+        <button class="modal-btn mail" onclick="sendInvoiceMail()" style="flex:1;">📧 メールで送付</button>
+      </div>
+
     </div>
   </div>
 </div>
@@ -4497,6 +4653,417 @@ function showToast(msg) {
 
 function esc(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ══════════════════════════════════════════════════════════════
+// ── 機能1: 請求書モーダル ──
+// ══════════════════════════════════════════════════════════════
+
+// 請求書の明細行データ
+var _invRows = [];
+
+function _genInvNumber() {
+  var now = new Date();
+  var y = now.getFullYear();
+  var m = String(now.getMonth()+1).padStart(2,'0');
+  var d = String(now.getDate()).padStart(2,'0');
+  return 'INV-' + y + m + d + '-001';
+}
+
+function openInvoiceModal() {
+  // 振込依頼モーダルから値を引用
+  var pmName  = (document.getElementById('pm-name')  ? document.getElementById('pm-name').textContent  : '') || '';
+  var pmDue   = (document.getElementById('pm-due')   ? document.getElementById('pm-due').value         : '') || '';
+  var pmAmount = (document.getElementById('pm-amount') ? document.getElementById('pm-amount').value    : '') || '';
+
+  // 基本フィールドを設定
+  var numEl = document.getElementById('inv-number');
+  if (numEl && !numEl.value) numEl.value = _genInvNumber();
+
+  var issueDateEl = document.getElementById('inv-issue-date');
+  if (issueDateEl && !issueDateEl.value) {
+    var now = new Date();
+    issueDateEl.value = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+  }
+
+  var dueEl = document.getElementById('inv-due');
+  if (dueEl) dueEl.value = pmDue || '';
+
+  var clientEl = document.getElementById('inv-client');
+  if (clientEl) clientEl.value = pmName !== '—' ? pmName : '';
+
+  // 明細を初期化（金額があれば1行目に自動設定）
+  _invRows = [];
+  if (pmAmount && Number(pmAmount) > 0) {
+    var pmPlan = (document.getElementById('pm-plan') ? document.getElementById('pm-plan').value : '') || 'サービス代金';
+    _invRows.push({ name: pmPlan, qty: 1, unit: Number(pmAmount) });
+  } else {
+    _invRows.push({ name: '', qty: 1, unit: 0 });
+  }
+  renderInvRows();
+  calcInvoice();
+
+  // localStorageから振込先を復元
+  loadBankInfo();
+
+  document.getElementById('invoice-modal').classList.add('open');
+}
+
+function closeInvoiceModal() {
+  document.getElementById('invoice-modal').classList.remove('open');
+}
+
+function renderInvRows() {
+  var el = document.getElementById('inv-rows');
+  if (!el) return;
+  el.innerHTML = _invRows.map(function(r, i) {
+    return '<div style="display:grid;grid-template-columns:1fr 60px 90px 90px 32px;gap:0;padding:6px 10px;border-top:1px solid var(--border);align-items:center;">'
+      + '<input type="text" value="' + esc(r.name) + '" placeholder="品目" onchange="_invRows['+i+'].name=this.value;calcInvoice()" '
+      + 'style="padding:5px 6px;background:var(--bg2);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:0.8rem;font-family:inherit;outline:none;width:100%;">'
+      + '<input type="number" value="' + r.qty + '" min="1" onchange="_invRows['+i+'].qty=Number(this.value)||1;calcInvoice()" '
+      + 'style="padding:5px 6px;background:var(--bg2);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:0.8rem;font-family:inherit;outline:none;width:100%;text-align:center;">'
+      + '<input type="number" value="' + r.unit + '" min="0" onchange="_invRows['+i+'].unit=Number(this.value)||0;calcInvoice()" '
+      + 'style="padding:5px 6px;background:var(--bg2);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:0.8rem;font-family:inherit;outline:none;width:100%;text-align:right;">'
+      + '<span style="font-size:0.8rem;text-align:right;padding:0 4px;">¥' + ((r.qty||1)*(r.unit||0)).toLocaleString() + '</span>'
+      + '<button onclick="_invRows.splice('+i+',1);renderInvRows();calcInvoice()" '
+      + 'style="background:none;border:none;color:#f87171;cursor:pointer;font-size:0.9rem;padding:0;text-align:center;">✕</button>'
+      + '</div>';
+  }).join('');
+}
+
+function addInvoiceRow() {
+  _invRows.push({ name: '', qty: 1, unit: 0 });
+  renderInvRows();
+}
+
+function calcInvoice() {
+  var subtotal = _invRows.reduce(function(s,r){ return s + (r.qty||1)*(r.unit||0); }, 0);
+  var taxRateRaw = (document.getElementById('inv-tax-rate') ? document.getElementById('inv-tax-rate').value : '0.10') || '0.10';
+  var taxRate = taxRateRaw === '0.08r' ? 0.08 : parseFloat(taxRateRaw) || 0;
+  var method  = (document.getElementById('inv-tax-method') ? document.getElementById('inv-tax-method').value : 'exclusive') || 'exclusive';
+  var withholdingVal = (document.getElementById('inv-withholding') ? document.getElementById('inv-withholding').value : 'none') || 'none';
+
+  var taxAmt, totalBeforeWithholding;
+  if (method === 'inclusive') {
+    // 内税: subtotalは税込
+    taxAmt = Math.round(subtotal - subtotal / (1 + taxRate));
+    totalBeforeWithholding = subtotal;
+  } else {
+    // 外税
+    taxAmt = Math.round(subtotal * taxRate);
+    totalBeforeWithholding = subtotal + taxAmt;
+  }
+
+  var withholdingAmt = 0;
+  var wRow = document.getElementById('inv-withholding-row');
+  if (withholdingVal !== 'none') {
+    withholdingAmt = Math.round(subtotal * 0.1021);
+    if (wRow) { wRow.style.display = 'flex'; }
+    var wAmtEl = document.getElementById('inv-withholding-amt');
+    if (wAmtEl) wAmtEl.textContent = '-¥' + withholdingAmt.toLocaleString();
+  } else {
+    if (wRow) { wRow.style.display = 'none'; }
+  }
+
+  var total = totalBeforeWithholding - withholdingAmt;
+
+  var subEl = document.getElementById('inv-subtotal');
+  var taxEl = document.getElementById('inv-tax-amt');
+  var totEl = document.getElementById('inv-total');
+  if (subEl) subEl.textContent = '¥' + subtotal.toLocaleString();
+  if (taxEl) taxEl.textContent = '¥' + taxAmt.toLocaleString();
+  if (totEl) totEl.textContent = '¥' + total.toLocaleString();
+}
+
+function saveBankInfo() {
+  var info = {
+    name:   (document.getElementById('inv-bank-name')   ? document.getElementById('inv-bank-name').value   : '') || '',
+    branch: (document.getElementById('inv-bank-branch') ? document.getElementById('inv-bank-branch').value : '') || '',
+    type:   (document.getElementById('inv-bank-type')   ? document.getElementById('inv-bank-type').value   : '') || '普通',
+    number: (document.getElementById('inv-bank-number') ? document.getElementById('inv-bank-number').value : '') || '',
+    holder: (document.getElementById('inv-bank-holder') ? document.getElementById('inv-bank-holder').value : '') || '',
+  };
+  try { localStorage.setItem('mc_bank_info', JSON.stringify(info)); } catch(e) {}
+  showToast('💾 振込先を保存しました');
+}
+
+function loadBankInfo() {
+  try {
+    var saved = JSON.parse(localStorage.getItem('mc_bank_info') || 'null');
+    if (!saved) return;
+    if (document.getElementById('inv-bank-name'))   document.getElementById('inv-bank-name').value   = saved.name   || '';
+    if (document.getElementById('inv-bank-branch')) document.getElementById('inv-bank-branch').value = saved.branch || '';
+    if (document.getElementById('inv-bank-type'))   document.getElementById('inv-bank-type').value   = saved.type   || '普通';
+    if (document.getElementById('inv-bank-number')) document.getElementById('inv-bank-number').value = saved.number || '';
+    if (document.getElementById('inv-bank-holder')) document.getElementById('inv-bank-holder').value = saved.holder || '';
+  } catch(e) {}
+}
+
+function _buildInvoiceHtml() {
+  var invNum    = (document.getElementById('inv-number')     ? document.getElementById('inv-number').value     : '') || '';
+  var issueDate = (document.getElementById('inv-issue-date') ? document.getElementById('inv-issue-date').value : '') || '';
+  var due       = (document.getElementById('inv-due')        ? document.getElementById('inv-due').value        : '') || '';
+  var client    = (document.getElementById('inv-client')     ? document.getElementById('inv-client').value     : '') || '';
+  var subject   = (document.getElementById('inv-subject')    ? document.getElementById('inv-subject').value    : '') || 'サービス代金';
+  var note      = (document.getElementById('inv-note')       ? document.getElementById('inv-note').value       : '') || '';
+  var bankName  = (document.getElementById('inv-bank-name')   ? document.getElementById('inv-bank-name').value   : '') || '';
+  var bankBranch = (document.getElementById('inv-bank-branch') ? document.getElementById('inv-bank-branch').value : '') || '';
+  var bankType  = (document.getElementById('inv-bank-type')   ? document.getElementById('inv-bank-type').value   : '') || '普通';
+  var bankNum   = (document.getElementById('inv-bank-number') ? document.getElementById('inv-bank-number').value : '') || '';
+  var bankHolder = (document.getElementById('inv-bank-holder') ? document.getElementById('inv-bank-holder').value : '') || '';
+
+  var subtotalEl = document.getElementById('inv-subtotal');
+  var taxAmtEl   = document.getElementById('inv-tax-amt');
+  var totalEl    = document.getElementById('inv-total');
+  var withholdingAmtEl = document.getElementById('inv-withholding-amt');
+  var withholdingRow = document.getElementById('inv-withholding-row');
+
+  var subtotalTxt   = subtotalEl ? subtotalEl.textContent : '¥0';
+  var taxAmtTxt     = taxAmtEl   ? taxAmtEl.textContent   : '¥0';
+  var totalTxt      = totalEl    ? totalEl.textContent     : '¥0';
+  var withAmt       = (withholdingRow && withholdingRow.style.display !== 'none' && withholdingAmtEl) ? withholdingAmtEl.textContent : '';
+
+  var rowsHtml = _invRows.map(function(r) {
+    var lineAmt = (r.qty||1) * (r.unit||0);
+    return '<tr>'
+      + '<td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;">' + (r.name || '') + '</td>'
+      + '<td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;text-align:center;">' + (r.qty||1) + '</td>'
+      + '<td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;text-align:right;">¥' + (r.unit||0).toLocaleString() + '</td>'
+      + '<td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;text-align:right;font-weight:700;">¥' + lineAmt.toLocaleString() + '</td>'
+      + '</tr>';
+  }).join('');
+
+  var bankSection = (bankName || bankNum) ? (
+    '<div style="margin-top:28px;padding:16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;">'
+    + '<p style="font-size:0.85rem;font-weight:700;color:#374151;margin-bottom:8px;">【お振込先】</p>'
+    + '<p style="font-size:0.85rem;color:#374151;line-height:2;">'
+    + (bankName ? '銀行名: ' + bankName + '<br>' : '')
+    + (bankBranch ? '支店名: ' + bankBranch + '<br>' : '')
+    + (bankType  ? '口座種別: ' + bankType + '<br>' : '')
+    + (bankNum   ? '口座番号: ' + bankNum + '<br>' : '')
+    + (bankHolder ? '口座名義: ' + bankHolder : '')
+    + '</p></div>'
+  ) : '';
+
+  var withholdingHtml = withAmt
+    ? '<tr><td style="padding:4px 12px;color:#6b7280;text-align:right;" colspan="3">源泉徴収額</td><td style="padding:4px 12px;text-align:right;color:#ef4444;">' + withAmt + '</td></tr>'
+    : '';
+
+  return '<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">'
+    + '<title>請求書 ' + invNum + '</title>'
+    + '<style>body{font-family:"Noto Sans JP",sans-serif;color:#1f2937;margin:0;padding:40px;font-size:14px;}'
+    + 'h1{font-size:1.8rem;font-weight:900;margin:0 0 4px;}table{width:100%;border-collapse:collapse;}'
+    + 'thead th{background:#1e40af;color:#fff;padding:9px 12px;text-align:left;font-size:0.82rem;}'
+    + 'thead th:last-child{text-align:right;}thead th:nth-child(2){text-align:center;}'
+    + 'thead th:nth-child(3){text-align:right;}'
+    + '@media print{body{padding:20px;}}</style></head><body>'
+    + '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px;">'
+    + '<div><h1>請求書</h1><p style="font-size:0.75rem;color:#6b7280;margin:0;">請求書番号: ' + invNum + '</p></div>'
+    + '<div style="text-align:right;font-size:0.85rem;color:#374151;">'
+    + '<p>発行日: ' + issueDate + '</p>'
+    + '<p>支払期限: ' + due + '</p>'
+    + '</div></div>'
+    + '<p style="font-size:1.1rem;font-weight:700;margin-bottom:4px;">' + (client || '') + ' 御中</p>'
+    + '<p style="color:#6b7280;font-size:0.88rem;margin-bottom:28px;">件名: ' + subject + '</p>'
+    + '<table><thead><tr><th>品目</th><th style="width:60px;text-align:center;">数量</th><th style="width:100px;text-align:right;">単価</th><th style="width:110px;text-align:right;">金額</th></tr></thead>'
+    + '<tbody>' + rowsHtml + '</tbody>'
+    + '<tfoot>'
+    + '<tr><td style="padding:6px 12px;color:#6b7280;text-align:right;" colspan="3">小計</td><td style="padding:6px 12px;text-align:right;">' + subtotalTxt + '</td></tr>'
+    + '<tr><td style="padding:4px 12px;color:#6b7280;text-align:right;" colspan="3">消費税</td><td style="padding:4px 12px;text-align:right;">' + taxAmtTxt + '</td></tr>'
+    + withholdingHtml
+    + '<tr style="border-top:2px solid #1e40af;"><td style="padding:10px 12px;font-weight:900;font-size:1.05rem;text-align:right;" colspan="3">請求合計</td><td style="padding:10px 12px;font-weight:900;font-size:1.2rem;color:#1e40af;text-align:right;">' + totalTxt + '</td></tr>'
+    + '</tfoot></table>'
+    + (note ? '<div style="margin-top:24px;padding:14px;background:#f9fafb;border-radius:6px;font-size:0.85rem;color:#374151;white-space:pre-wrap;">' + note + '</div>' : '')
+    + bankSection
+    + '<p style="margin-top:48px;font-size:0.8rem;color:#9ca3af;text-align:center;">mono.create — https://mono-create-group.github.io/lp/</p>'
+    + '</body></html>';
+}
+
+function printInvoice() {
+  var html = _buildInvoiceHtml();
+  var win = window.open('', '_blank', 'width=800,height=1000');
+  if (!win) { alert('ポップアップがブロックされました。ポップアップを許可してください。'); return; }
+  win.document.write(html);
+  win.document.close();
+  win.focus();
+  setTimeout(function() { win.print(); }, 500);
+}
+
+async function sendInvoiceMail() {
+  var client    = (document.getElementById('inv-client')     ? document.getElementById('inv-client').value     : '') || '';
+  var invNum    = (document.getElementById('inv-number')     ? document.getElementById('inv-number').value     : '') || '';
+  var issueDate = (document.getElementById('inv-issue-date') ? document.getElementById('inv-issue-date').value : '') || '';
+  var due       = (document.getElementById('inv-due')        ? document.getElementById('inv-due').value        : '') || '';
+  var note      = (document.getElementById('inv-note')       ? document.getElementById('inv-note').value       : '') || '';
+  var totalEl   = document.getElementById('inv-total');
+  var total     = totalEl ? totalEl.textContent : '¥0';
+
+  // メールアドレスを振込依頼モーダルから取得
+  var emailEl   = document.getElementById('pm-email');
+  var email     = (emailEl ? emailEl.textContent : '') || '';
+  if (!email || email === '—') { showToast('⚠ メールアドレスが取得できません', true); return; }
+
+  var invHtml = _buildInvoiceHtml();
+
+  // GAS経由でメール送信
+  try {
+    const res  = await gasFetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action:    'send_invoice',
+        key:       getAdminPw(),
+        to:        email,
+        client:    client,
+        inv_num:   invNum,
+        issue_date: issueDate,
+        due:       due,
+        total:     total,
+        note:      note,
+        html_body: invHtml
+      })
+    });
+    const json = await res.json();
+    if (json.success) {
+      showToast('📧 請求書メールを送信しました');
+      closeInvoiceModal();
+    } else {
+      showToast('送信失敗: ' + (json.error || 'エラー'), true);
+    }
+  } catch(e) {
+    showToast('送信エラー。GASを確認してください。', true);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// ── 機能2: submitPaymentRequestに pay_type を追加 ──
+// （既存の submitPaymentRequest 関数をオーバーライドします）
+// ══════════════════════════════════════════════════════════════
+// pay_typeをGAS送信時に含める — 元の関数を拡張してオーバーライド
+var _origSubmitPaymentRequest = submitPaymentRequest;
+submitPaymentRequest = async function() {
+  var h = hearings.find(function(x) { return x.row === _paymentReqRow; });
+  if (!h || !h.email) { showToast('メールアドレスがありません'); return; }
+  var amount = document.getElementById('pm-amount').value.trim();
+  var isTrial = (amount === '0' || (h.answers && h.answers['__planKey'] === 'trial'));
+  if (!isTrial && (!amount || isNaN(amount) || Number(amount) < 0)) {
+    showToast('金額を正しく入力してください', true); return;
+  }
+  var due  = document.getElementById('pm-due').value.trim();
+  var note = document.getElementById('pm-note').value.trim();
+  var editedPlan = document.getElementById('pm-plan').value.trim() || h.plan || '';
+  var payType = (document.getElementById('pm-pay-type') ? document.getElementById('pm-pay-type').value : 'spot') || 'spot';
+  var btn  = document.getElementById('pm-send-btn');
+  btn.disabled = true; btn.textContent = '送信中...';
+  try {
+    var url = GAS_URL + '?action=send_payment_request&key=' + encodeURIComponent(getAdminPw())
+      + '&email=' + encodeURIComponent(h.email)
+      + '&name='  + encodeURIComponent(h.name||'')
+      + '&plan='  + encodeURIComponent(editedPlan)
+      + '&amount='+ encodeURIComponent(amount)
+      + '&due='   + encodeURIComponent(due)
+      + '&note='  + encodeURIComponent(note)
+      + '&pay_type=' + encodeURIComponent(payType);
+    var res  = await gasFetch(url);
+    var json = await res.json();
+    if (json.success) {
+      showToast('💳 振込依頼メールを送信しました');
+      closePaymentReqModal();
+    } else {
+      showToast('送信失敗: ' + (json.error || 'エラー'), true);
+    }
+  } catch(e) {
+    showToast('送信エラー', true);
+  } finally {
+    btn.disabled = false; btn.textContent = '💳 振込依頼を送信';
+  }
+};
+
+// ══════════════════════════════════════════════════════════════
+// ── 機能3: 期限当日リマインダー送信 ──
+// ══════════════════════════════════════════════════════════════
+async function sendPaymentReminders() {
+  showToast('🔍 期限当日のデータを確認中...');
+  var allData;
+  try {
+    var res  = await gasFetch(GAS_URL + '?action=list&key=' + encodeURIComponent(getAdminPw()));
+    var json = await res.json();
+    if (json.error) { showToast('データ取得失敗: ' + json.error, true); return; }
+    allData = json.data || [];
+  } catch(e) {
+    showToast('データ取得エラー', true); return;
+  }
+
+  // 今日の日付文字列（複数フォーマット対応）
+  var now = new Date();
+  var todayY = now.getFullYear();
+  var todayM = now.getMonth() + 1;
+  var todayD = now.getDate();
+  var todayFormats = [
+    todayY + '/' + String(todayM).padStart(2,'0') + '/' + String(todayD).padStart(2,'0'),
+    todayY + '-' + String(todayM).padStart(2,'0') + '-' + String(todayD).padStart(2,'0'),
+    todayY + '年' + todayM + '月' + todayD + '日',
+  ];
+
+  // 振込期限が今日と一致するレコードを絞り込み
+  var targets = allData.filter(function(item) {
+    var due = String(item.due || item.pm_due || '');
+    if (!due) return false;
+    return todayFormats.some(function(fmt) { return due.indexOf(fmt) !== -1; })
+      || (due.indexOf(todayY + '年' + todayM + '月' + todayD) !== -1);
+  });
+
+  if (!targets.length) {
+    alert('本日が振込期限のお客様は見つかりませんでした。');
+    return;
+  }
+
+  if (!confirm(targets.length + '件の期限当日のお客様にリマインダーを送信しますか？')) return;
+
+  var reminderBody = '○○様\n\n'
+    + 'いつもお世話になっております。mono.createの中村です。\n\n'
+    + '本日が振込期限となっておりますため、念のためご確認のご連絡を差し上げました。\n\n'
+    + '・プラン: {plan}\n'
+    + '・金額: ¥{amount}\n'
+    + '・お振込み期限: 本日（{date}）\n\n'
+    + 'もしすでにお手続きいただいている場合は、どうかご放念ください。\n'
+    + 'もし何かご不明点がございましたら、お気軽にご連絡ください。\n\n'
+    + '引き続きよろしくお願いいたします。';
+
+  var todayStr = todayY + '年' + todayM + '月' + todayD + '日';
+  var successCount = 0;
+  var failCount    = 0;
+
+  for (var i = 0; i < targets.length; i++) {
+    var item = targets[i];
+    var email = item.email || '';
+    if (!email) { failCount++; continue; }
+    var plan   = item.plan   || 'ご依頼プラン';
+    var amount = item.amount || '';
+    var body   = reminderBody
+      .replace('{plan}',   plan)
+      .replace('{amount}', amount ? Number(amount).toLocaleString() : '—')
+      .replace('{date}',   todayStr);
+    try {
+      var res = await gasFetch(GAS_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action:  'send_payment_reminder',
+          key:     getAdminPw(),
+          to:      email,
+          name:    item.name || '',
+          plan:    plan,
+          amount:  amount,
+          date:    todayStr,
+          subject: '【mono.create】お振込みのご確認',
+          body:    body.replace('○○様', (item.name || 'お客様') + '様')
+        })
+      });
+      var json = await res.json();
+      if (json.success) { successCount++; } else { failCount++; }
+    } catch(e) { failCount++; }
+  }
+
+  showToast('✅ リマインダー送信完了: ' + successCount + '件成功 / ' + failCount + '件失敗');
 }
 
 // Start
