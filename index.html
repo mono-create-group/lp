@@ -8,12 +8,15 @@
 <script>
 // ── キャッシュ自動更新 ──────────────────────────────────────────
 (function(){
-  var BUILT = 'v20260602-3';
+  var BUILT = 'v20260602-4';
   fetch('/lp/version.json?_=' + Date.now(), {cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(d){
       if (d.v && d.v !== BUILT) {
-        location.replace(location.pathname + '?_=' + d.v);
+        // カスタムパラメータ（sv, pr, pn, cl, note）を保持したままバージョン更新
+        var sp = new URLSearchParams(location.search);
+        sp.set('_', d.v);
+        location.replace(location.pathname + '?' + sp.toString());
       }
     }).catch(function(){});
 })();
