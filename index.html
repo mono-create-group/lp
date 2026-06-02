@@ -1440,6 +1440,10 @@ footer {
   border-radius: 16px;
   overflow: hidden;
 }
+/* 4枚目が1人で余ったら全幅 */
+.problem-card:last-child:nth-child(3n+1) {
+  grid-column: 1 / -1;
+}
 .problem-card {
   background: #0B1525 !important;
   border: none !important;
@@ -1531,8 +1535,12 @@ footer {
   color: rgba(59,130,246,0.22) !important;
   margin-bottom: 20px !important;
 }
+.strengths .strength-item { color: rgba(255,255,255,0.80) !important; }
+.strengths .strength-item h3,
 .strength-item h3 { color: #fff !important; font-size: 1.05rem !important; }
-.strength-label { color: rgba(255,255,255,0.48) !important; }
+.strengths .strength-label,
+.strength-label { color: rgba(255,255,255,0.60) !important; }
+.strengths .strength-num { color: rgba(96,165,250,0.40) !important; }
 
 /* ── PRICING section ── */
 .pricing { background: #F8FAFC; }
