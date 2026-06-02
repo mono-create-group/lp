@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- build:v20260602-12 -->
+<!-- build:v20260602-13 -->
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 <script>
 // ── キャッシュ自動更新 ──────────────────────────────────────────
 (function(){
-  var BUILT = 'v20260602-12';
+  var BUILT = 'v20260602-13';
   fetch('/lp/version.json?_=' + Date.now(), {cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(d){
@@ -2097,6 +2097,308 @@ section { contain: layout style; }
   }
 }
 
+/* ── sp-br: スマホのみ改行 ── */
+.sp-br { display: none; }
+@media (max-width: 640px) { .sp-br { display: inline !important; } }
+
+/* ── Hamburger button ── */
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 40px; height: 40px;
+  background: none; border: none;
+  cursor: pointer; padding: 4px;
+}
+.nav-hamburger span {
+  display: block; width: 24px; height: 2px;
+  background: #0F172A; border-radius: 2px;
+  transition: all 0.25s;
+}
+@media (max-width: 640px) {
+  .nav-hamburger { display: flex; }
+}
+
+/* ── Mobile nav drawer ── */
+.mobile-nav-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.45); z-index: 200;
+}
+.mobile-nav-overlay.open { display: block; }
+.mobile-nav-drawer {
+  position: fixed; top: 0; right: -280px;
+  width: 280px; height: 100%; z-index: 201;
+  background: #fff;
+  box-shadow: -4px 0 24px rgba(0,0,0,0.12);
+  transition: right 0.3s ease;
+  display: flex; flex-direction: column;
+  overflow-y: auto;
+}
+.mobile-nav-drawer.open { right: 0; }
+.mobile-nav-header {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #E2E8F0;
+}
+.mobile-nav-links {
+  flex: 1; padding: 12px 0;
+  display: flex; flex-direction: column;
+}
+.mobile-nav-links a {
+  display: block; padding: 14px 24px;
+  font-size: 0.95rem; font-weight: 700;
+  color: #0F172A; border-bottom: 1px solid #F1F5F9;
+  transition: background 0.15s;
+}
+.mobile-nav-links a:hover { background: #F8FAFC; }
+
+/* ══════════════════════════════════════════════════
+   📱 MOBILE DESIGN (max-width: 640px)
+   ══════════════════════════════════════════════════ */
+
+/* スマホのみ表示 / PCのみ表示ユーティリティ */
+.sp-only { display: none !important; }
+.pc-only { display: block; }
+@media (max-width: 640px) {
+  .sp-only { display: block !important; }
+  .pc-only { display: none !important; }
+}
+
+@media (max-width: 640px) {
+  /* ── Base ── */
+  body { font-size: 15px; }
+  .section { padding: 60px 0; }
+  .section-sm { padding: 44px 0; }
+  .container { padding: 0 16px; }
+  .section-title { font-size: clamp(1.35rem, 6vw, 1.75rem) !important; }
+  .section-sub { font-size: 0.88rem !important; }
+
+  /* ── 日本語テキスト自然改行 ── */
+  h1, h2, h3, h4, p, li, td, th,
+  .section-title, .section-sub,
+  .hero-desc, .pricing-row-desc,
+  .pack-volume, .strength-label {
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    line-break: strict;
+  }
+
+  /* ── Referral bar ── */
+  .referral-bar {
+    font-size: 0.68rem !important;
+    padding: 6px 12px !important;
+    line-height: 1.55 !important;
+    letter-spacing: 0 !important;
+  }
+
+  /* ── Nav ── */
+  nav {
+    padding: 10px 16px !important;
+    top: var(--ref-bar-h, 34px) !important;
+  }
+  .nav-logo img { height: 34px !important; }
+  .nav-links { display: none !important; }
+
+  /* ── Hero ── */
+  .hero {
+    padding: 120px 16px 52px !important;
+    min-height: auto !important;
+  }
+  .hero-grid {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+  /* ヒーロービジュアル（画像）をテキストの下に */
+  .hero-grid > div:first-child { order: 1; }
+  .hero-visual { order: 2; }
+
+  .hero-eyebrow {
+    font-size: 0.6rem !important;
+    letter-spacing: 0.06em !important;
+    margin-bottom: 10px !important;
+  }
+  .hero h1 {
+    font-size: clamp(1.9rem, 8.5vw, 2.5rem) !important;
+    line-height: 1.2 !important;
+    letter-spacing: -0.02em !important;
+    margin-bottom: 14px !important;
+  }
+  .hero-desc {
+    font-size: 0.88rem !important;
+    margin-bottom: 20px !important;
+    line-height: 1.85 !important;
+  }
+  .hero-cta {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  .hero-cta .btn {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 15px 20px !important;
+    font-size: 0.95rem !important;
+  }
+  .hero-cta .btn-outline {
+    border-color: rgba(15,23,42,0.25) !important;
+    color: #0F172A !important;
+    background: transparent !important;
+  }
+  .achievement-badges {
+    gap: 8px !important;
+    margin-top: 18px !important;
+    flex-wrap: wrap !important;
+  }
+  .achievement-badge {
+    padding: 7px 10px !important;
+    border-radius: 10px !important;
+    font-size: 0.78rem !important;
+  }
+  .achievement-badge-num { font-size: 0.88rem !important; }
+  .achievement-badge-label { font-size: 0.64rem !important; }
+
+  /* Hero visual: 画像を小さく・中央寄せ */
+  .hero-visual {
+    justify-content: center !important;
+    padding: 20px 24px !important;
+  }
+  .hero-img-ring {
+    width: 220px !important;
+    height: 220px !important;
+  }
+  /* フローティングピルを非表示（スペース節約） */
+  .hero-float { display: none !important; }
+
+  /* ── Metrics strip ── */
+  #hero-metrics-strip {
+    padding: 24px 16px !important;
+  }
+  #hero-metrics-strip > div {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  /* ── Problems ── */
+  .problem-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  .problem-card { padding: 20px 16px !important; }
+  .problem-card:last-child:nth-child(3n+1) { grid-column: auto !important; }
+
+  /* ── Services ── */
+  .services-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  .service-card { padding: 22px 18px !important; }
+
+  /* ── Strengths ── */
+  .strengths-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+  .strength-num { font-size: 2.6rem !important; }
+
+  /* ── Pricing ── */
+  .pricing-tabs { width: 100% !important; }
+  .ptab {
+    flex: 1 !important;
+    padding: 8px 6px !important;
+    font-size: 0.74rem !important;
+    text-align: center !important;
+  }
+
+  /* 単品料金行: 縦積みで価格とボタンを横並び */
+  .pricing-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    padding: 16px !important;
+  }
+  .pricing-row > div:last-child,
+  .pricing-row > p.pricing-price {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+  }
+  .pricing-price { font-size: 1.05rem !important; }
+  .pricing-row-name { font-size: 0.92rem !important; font-weight: 800 !important; }
+  .pricing-row-desc { font-size: 0.78rem !important; line-height: 1.7 !important; }
+
+  /* 無料トライアルバナー: 1列 */
+  .pricing [style*="grid-template-columns:1fr 1fr"],
+  [style*="grid-template-columns: 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  /* Pack cards */
+  .pack-grid { grid-template-columns: 1fr !important; }
+  .pack-card { padding: 22px 18px !important; }
+  .pack-price { font-size: 1.9rem !important; }
+
+  /* ── Flow ── */
+  .flow-steps { grid-template-columns: 1fr !important; }
+  .flow-step { padding: 18px 14px !important; }
+  .flow-step::before { display: none !important; }
+
+  /* ── FAQ ── */
+  .faq-q { font-size: 0.88rem !important; padding: 14px 16px !important; }
+  .faq-a { font-size: 0.82rem !important; }
+  .faq-list { margin-top: 28px !important; }
+
+  /* ── Contact ── */
+  .contact-wrap {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+  .form-card { padding: 20px 16px !important; }
+  .form-grid { grid-template-columns: 1fr !important; }
+  .contact-info h3 { font-size: 1rem !important; }
+
+  /* ── Footer ── */
+  footer { padding: 32px 16px !important; }
+  .footer-links { gap: 12px !important; flex-wrap: wrap !important; }
+  .footer-links a { font-size: 0.78rem !important; }
+
+  /* ── Floating CTA: 全幅 ── */
+  .floating-cta {
+    bottom: 12px !important;
+    right: 12px !important;
+    left: 12px !important;
+    justify-content: center !important;
+    padding: 14px 12px !important;
+    font-size: 0.88rem !important;
+    border-radius: 14px !important;
+  }
+
+  /* ── Contract modal ── */
+  .contract-fields { grid-template-columns: 1fr !important; }
+  .contract-box { border-radius: 12px !important; }
+  .contract-body { max-height: 260px !important; }
+
+  /* ── PF無料制作 ── */
+  #pf-genres-grid { grid-template-columns: repeat(2,1fr) !important; }
+  #pf-section-inner { padding: 0 !important; }
+}
+
+/* ── Tablet (641〜900px) ── */
+@media (min-width: 641px) and (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+  .hero-visual { order: -1; }
+  .hero-img-ring { width: 280px !important; height: 280px !important; }
+  .hero h1 { font-size: clamp(2rem, 5vw, 2.8rem) !important; }
+  .hero-cta { flex-wrap: wrap !important; }
+  .hero-cta .btn { min-width: 180px !important; flex: 1 !important; }
+  .pricing-row {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -2118,7 +2420,7 @@ section { contain: layout style; }
       <span class="nav-logo-text" style="display:none;">mono.create</span>
     </a>
   </div>
-  <div class="nav-links">
+  <div class="nav-links" id="nav-links">
     <a href="#services">サービス</a>
     <a href="#works">実績</a>
     <a href="#pricing">料金</a>
@@ -2127,7 +2429,28 @@ section { contain: layout style; }
     <a href="editor-recruit.html" style="color:#34D399;font-weight:700;">編集者募集</a>
     <a href="#contact" class="btn btn-primary" style="padding:9px 22px;font-size:0.82rem;color:#fff;background:linear-gradient(135deg,#3B82F6,#1E40AF);border:none;">無料で相談する →</a>
   </div>
+  <!-- ハンバーガーボタン（スマホのみ表示） -->
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="メニューを開く" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+<!-- スマホ用ドロワーメニュー -->
+<div class="mobile-nav-overlay" id="mobile-nav-overlay" onclick="closeMobileNav()"></div>
+<div class="mobile-nav-drawer" id="mobile-nav-drawer">
+  <div class="mobile-nav-header">
+    <span style="font-weight:900;font-size:1rem;color:#0F172A;">mono.create</span>
+    <button onclick="closeMobileNav()" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:#64748B;">✕</button>
+  </div>
+  <div class="mobile-nav-links">
+    <a href="#services" onclick="closeMobileNav()">📱 サービス</a>
+    <a href="#works" onclick="closeMobileNav()">🎬 実績</a>
+    <a href="#pricing" onclick="closeMobileNav()">💰 料金</a>
+    <a href="#section-pf-free" onclick="closeMobileNav()">📸 無料PF制作</a>
+    <a href="#faq" onclick="closeMobileNav()">❓ FAQ</a>
+    <a href="editor-recruit.html" onclick="closeMobileNav()" style="color:#10B981;">✨ 編集者募集</a>
+  </div>
+  <a href="#contact" onclick="closeMobileNav()" class="btn btn-primary" style="margin:0 20px 24px;justify-content:center;display:flex;">無料で相談する →</a>
+</div>
 
 <!-- ── Hero ── -->
 <section class="hero">
@@ -2143,8 +2466,8 @@ section { contain: layout style; }
         <em data-ck="hero_h1_em">運用に全集中。</em>
       </h1>
       <p class="hero-desc" data-ck="hero_desc">
-        プロのフリーランスチームが最短当日で仕上げます。<br>
-        編集から運用代行まで、丸ごとお任せください。
+        プロのフリーランスチームが<br class="sp-br">最短当日で仕上げます。<br>
+        編集から運用代行まで、<br class="sp-br">丸ごとお任せください。
       </p>
       <div class="hero-cta">
         <a href="#contact" class="btn btn-primary" style="background:linear-gradient(135deg,#3B82F6,#1E40AF);box-shadow:0 6px 24px rgba(59,130,246,0.40);padding:15px 32px;font-size:1rem;">
@@ -2355,7 +2678,7 @@ section { contain: layout style; }
   <div class="container">
     <p class="label">WORKS</p>
     <h2 class="section-title fade-up">制作実績</h2>
-    <p class="section-sub fade-up">ビジネス系からエンタメ系まで、採用や集客を目的にした多様なジャンルに対応しております。</p>
+    <p class="section-sub fade-up">ビジネス系からエンタメ系まで、<br class="sp-br">採用や集客を目的にした多様なジャンルに対応しております。</p>
 
     <!-- ポートフォリオ ショーケース -->
     <div class="pf-showcase">
@@ -4372,6 +4695,20 @@ function applyCustomPlan() {
     io.observe(el);
   });
 })();
+
+// ── Mobile Nav ──────────────────────────────────────
+function toggleMobileNav() {
+  const d = document.getElementById('mobile-nav-drawer');
+  const o = document.getElementById('mobile-nav-overlay');
+  const open = d.classList.toggle('open');
+  o.classList.toggle('open');
+  document.body.style.overflow = open ? 'hidden' : '';
+}
+function closeMobileNav() {
+  document.getElementById('mobile-nav-drawer').classList.remove('open');
+  document.getElementById('mobile-nav-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
 </script>
 </body>
 </html>
