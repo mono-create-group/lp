@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- build:v20260602-11 -->
+<!-- build:v20260602-12 -->
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 <script>
 // ── キャッシュ自動更新 ──────────────────────────────────────────
 (function(){
-  var BUILT = 'v20260602-11';
+  var BUILT = 'v20260602-12';
   fetch('/lp/version.json?_=' + Date.now(), {cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(d){
@@ -3485,7 +3485,8 @@ function pfBuildThumbs() {
   return _pfItems.map(function(item, i) {
     var src = pfThumbSrc(item);
     var imgHtml = src
-      ? '<img src="' + src + '" alt="' + (item.title||'') + '" loading="lazy" onerror="this.style.display=\'none\';this.parentNode.querySelector(\'.pf-thumb-blank\')||this.insertAdjacentHTML(\'afterend\',\'<div class=\\\"pf-thumb-blank\\\">▶</div>\')">'
+      ? '<img src="' + src + '" alt="' + (item.title||'') + '" loading="lazy" onerror="this.style.display=\'none\';var b=this.nextElementSibling;if(b&&b.classList.contains(\'pf-thumb-blank\'))b.style.display=\'flex\'">'
+        + '<div class="pf-thumb-blank" style="display:none;">▶</div>'
       : '<div class="pf-thumb-blank">▶</div>';
     return '<div class="pf-thumb' + (i===0?' pf-active':'') + '" onclick="pfSelect(' + i + ')" data-idx="' + i + '">'
       + imgHtml
