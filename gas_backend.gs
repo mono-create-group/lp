@@ -12,7 +12,7 @@
 //   6. デプロイURLを editor.html・admin.html の GAS_URL に貼る
 // ================================================================
 
-// ─── 設定 ───────────────────────────────────────────────────────
+// ─── 設定（フォールバック値。ScriptProperties で上書き可能）────────
 var ADMIN_KEY         = '20180412k';
 var SPREADSHEET_ID    = '13RESWCy5tuOqVzzG5aoeIFtyDk--OrLnpaPDep5yjj0';
 var CHATWORK_TOKEN    = 'f79405b3d71215d721e6a9d3f86f55a6';
@@ -25,8 +25,31 @@ var OWNER_EMAIL       = 'mono.create.group@gmail.com';  // オーナー通知先
 var LP_BASE_URL       = 'https://mono-create-group.github.io/lp/';
 
 // 素材アップロード用：親フォルダID（mono.create.group@gmail.comが所有）
-// この親フォルダ配下にクライアントごとの専用サブフォルダを自動作成する
 var MATERIAL_PARENT_FOLDER_ID = '1YdwuPGNqYQZiHeseuMtyXF2GKkyqmSvo';
+
+// ─── ScriptProperties で上書き（推奨）──────────────────────────────
+// GAS エディタ → プロジェクトの設定 → スクリプトプロパティ で以下を設定：
+//   ADMIN_KEY / SPREADSHEET_ID / CHATWORK_TOKEN / CHATWORK_ROOM_ID
+//   PAYMENT_ROOM_ID / EDITOR_ROOM_ID / MATERIAL_PARENT_FOLDER_ID
+// 設定するとソースコードからシークレットを完全分離できます。
+(function applyScriptProps() {
+  try {
+    var p = PropertiesService.getScriptProperties();
+    var overrides = {
+      ADMIN_KEY: 'ADMIN_KEY', SPREADSHEET_ID: 'SPREADSHEET_ID',
+      CHATWORK_TOKEN: 'CHATWORK_TOKEN', CHATWORK_ROOM_ID: 'CHATWORK_ROOM_ID',
+      PAYMENT_ROOM_ID: 'PAYMENT_ROOM_ID', EDITOR_ROOM_ID: 'EDITOR_ROOM_ID',
+      MATERIAL_PARENT_FOLDER_ID: 'MATERIAL_PARENT_FOLDER_ID'
+    };
+    if (p.getProperty('ADMIN_KEY'))              ADMIN_KEY              = p.getProperty('ADMIN_KEY');
+    if (p.getProperty('SPREADSHEET_ID'))         SPREADSHEET_ID         = p.getProperty('SPREADSHEET_ID');
+    if (p.getProperty('CHATWORK_TOKEN'))         CHATWORK_TOKEN         = p.getProperty('CHATWORK_TOKEN');
+    if (p.getProperty('CHATWORK_ROOM_ID'))       CHATWORK_ROOM_ID       = p.getProperty('CHATWORK_ROOM_ID');
+    if (p.getProperty('PAYMENT_ROOM_ID'))        PAYMENT_ROOM_ID        = p.getProperty('PAYMENT_ROOM_ID');
+    if (p.getProperty('EDITOR_ROOM_ID'))         EDITOR_ROOM_ID         = p.getProperty('EDITOR_ROOM_ID');
+    if (p.getProperty('MATERIAL_PARENT_FOLDER_ID')) MATERIAL_PARENT_FOLDER_ID = p.getProperty('MATERIAL_PARENT_FOLDER_ID');
+  } catch(e) { Logger.log('ScriptProperties load error: ' + e); }
+})();
 
 // 契約書PDF保管用：親フォルダ配下に「_契約書PDF」サブフォルダを作成・使用
 // 絶対に削除されないよう、専用フォルダで永久保管する
@@ -150,6 +173,11 @@ function doPost(e) {
       return applyEditor(data);
     }
 
+    // 採用編集者 自己プロフィール登録（認証不要・採用メールリンク経由）
+    if (data.action === 'editor_self_register') {
+      return editorSelfRegister(data);
+    }
+
     // パートナー登録フォーム（認証不要）
     if (data.action === 'partner_apply') {
       return applyPartner(data);
@@ -160,19 +188,54 @@ function doPost(e) {
       return notifyPayment(data);
     }
 
-    // 契約同意記録
+    // クライアントマスタ 保存（追加・更新）
+    if (data.action === 'client_master_save') {
+      if (data.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+      return saveClientMaster(data);
+    }
+
+    // プライベートリンク 生成
+    if (data.action === 'private_link_create') {
+      if (data.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+      return createPrivateLink(data);
+    }
+
+    // 編集者契約書送付メール
+    if (data.action === 'send_editor_contract') {
+      if (data.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+      return sendEditorContractMail(data);
+    }
+
+    // 契約同意記録（管理者のみ書き込み可）
     if (data.type === 'contract') {
+      if (data.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
       return saveContract(data);
     }
 
-    // ヒアリングシート回答
+    // ヒアリングシート回答（管理者のみ書き込み可）
     if (data.type === 'hearing') {
+      if (data.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
       return saveHearing(data);
     }
 
-    // 売上記録（青色申告対応）
+    // 売上記録（管理者のみ書き込み可）
     if (data.type === 'sales') {
+      if (data.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
       return saveSales(data);
+    }
+
+    // 経費記録（手動入力）
+    if (data.type === 'expense') {
+      if (data.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+      return saveExpense(data);
+    }
+
+    // 管理者パスワード（ADMIN_KEY）変更
+    if (data.type === 'changePw') {
+      if (!data.old_key || data.old_key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+      if (!data.new_key || String(data.new_key).length < 8) return jsonResponse({ error: 'invalid key' });
+      PropertiesService.getScriptProperties().setProperty('ADMIN_KEY', String(data.new_key));
+      return jsonResponse({ success: true });
     }
 
     // 制作スケジュール追加（POST via URL?action=schedule_add）
@@ -284,6 +347,11 @@ function doGet(e) {
     return getDriveFileInfo(e.parameter.url || '');
   }
 
+  // LP コンテンツ取得（認証不要 — LPから直接呼ばれる）
+  if (action === 'content_get') {
+    return getLpContent();
+  }
+
   // ── 以降は管理者キー必須 ──────────────────────────────────────
   if (key !== ADMIN_KEY) {
     return jsonResponse({ error: 'unauthorized' });
@@ -358,6 +426,7 @@ function doGet(e) {
 
   if (action === 'partner_app_delete') {
     var row = parseInt(e.parameter.row, 10);
+    if (!row || row < 2) return jsonResponse({ error: 'invalid row' });
     var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
     var sh = ss.getSheetByName('partner_applications');
     if (sh) sh.deleteRow(row);
@@ -368,6 +437,25 @@ function doGet(e) {
     var row = parseInt(e.parameter.row, 10);
     var amount = e.parameter.amount || '';
     return sendPartnerReward(row, amount);
+  }
+
+  // 報酬一覧（自動計算版）
+  if (action === 'partner_rewards') {
+    return listPartnerRewards();
+  }
+
+  // 報酬確定メール自動送信
+  if (action === 'partner_reward_email_auto') {
+    if (e.parameter.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+    var row = parseInt(e.parameter.row, 10);
+    return sendPartnerRewardEmailAuto(row);
+  }
+
+  // 報酬 支払済みマーク
+  if (action === 'partner_reward_paid') {
+    if (e.parameter.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+    var row = parseInt(e.parameter.row, 10);
+    return markRewardPaid(row);
   }
 
   if (action === 'editor_app_status') {
@@ -411,9 +499,21 @@ function doGet(e) {
           '▼ ご参加後の流れ',
           '━━━━━━━━━━━━━━━━━━━━',
           '1️⃣ Chatworkグループに参加',
-          '2️⃣ 担当者からご挨拶・案件のご案内',
-          '3️⃣ テスト編集（1本）→ 本格稼働',
+          '2️⃣ プロフィールをご登録いただく（下記リンク）',
+          '3️⃣ 担当者からご挨拶・案件のご案内',
+          '4️⃣ テスト編集（1本）→ 本格稼働',
           '',
+          '━━━━━━━━━━━━━━━━━━━━',
+          '▼ ② プロフィール登録（LP掲載・必須）',
+          '━━━━━━━━━━━━━━━━━━━━',
+          'LP（サービスページ）の「編集者紹介」欄に掲載するため、',
+          '下記フォームにプロフィール情報をご入力ください。',
+          '（スキル・対応ジャンル・ポートフォリオURLなど）',
+          '',
+          '📝 プロフィール登録フォーム',
+          LP_BASE_URL + 'editor-self-register.html?email=' + encodeURIComponent(editorEmail) + '&name=' + encodeURIComponent(editorName),
+          '',
+          '━━━━━━━━━━━━━━━━━━━━',
           '不明点があればこのメールへ返信ください。',
           'よろしくお願いいたします。',
           '',
@@ -458,6 +558,7 @@ function doGet(e) {
 
   if (action === 'editor_app_delete') {
     var row = parseInt(e.parameter.row, 10);
+    if (!row || row < 2) return jsonResponse({ error: 'invalid row' });
     var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
     var sh = ss.getSheetByName('editor_applications');
     if (sh) sh.deleteRow(row);
@@ -491,6 +592,22 @@ function doGet(e) {
   if (action === 'clear_inquiries')  return clearSheet(SHEET_NAME);
   if (action === 'clear_payments')   return clearSheet('payments');
   if (action === 'clear_sales')      return clearSheet('uriage');
+  if (action === 'clear_expenses')   return clearSheet('keiei');
+
+  if (action === 'expenses') {
+    return listExpenses();
+  }
+  if (action === 'expense_delete') {
+    if (e.parameter.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+    var row = parseInt(e.parameter.row, 10);
+    var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    var sh = ss.getSheetByName('keiei');
+    if (sh && row > 1) sh.deleteRow(row);
+    return jsonResponse({ success: true });
+  }
+  if (action === 'monthly_summary') {
+    return getMonthlySummary(e.parameter.month || '');
+  }
   if (action === 'clear_contracts')  return clearSheet('contracts');
   if (action === 'clear_hearings')   return clearSheet('hearings');
 
@@ -545,14 +662,36 @@ function doGet(e) {
     );
   }
 
-  // LP コンテンツ取得（認証不要 — LPから直接呼ばれる）
-  if (action === 'content_get') {
-    return getLpContent();
-  }
-
   // LP コンテンツ更新（admin認証必須）
   if (action === 'content_update') {
     return jsonResponse({ error: 'use POST' });
+  }
+
+  // ── クライアントマスタ ──────────────────────────────────────
+  if (action === 'client_master_list') {
+    if (e.parameter.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+    return listClientMaster();
+  }
+  if (action === 'client_master_delete') {
+    if (e.parameter.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+    return deleteClientMaster(parseInt(e.parameter.row));
+  }
+
+  // ── プライベートリンク ──────────────────────────────────────
+  if (action === 'private_link_get') {
+    return getPrivateLink(e.parameter.t || '');
+  }
+  if (action === 'private_link_list') {
+    if (e.parameter.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+    return listPrivateLinks();
+  }
+  if (action === 'private_link_delete') {
+    if (e.parameter.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+    return deletePrivateLink(e.parameter.t || '');
+  }
+  if (action === 'private_link_view') {
+    // 閲覧カウントインクリメント（認証不要）
+    return recordPrivateLinkView(e.parameter.t || '');
   }
 
   return jsonResponse({ error: 'unknown action' });
@@ -773,6 +912,7 @@ function addPortfolio(data) {
   var now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
   var count = sheet.getLastRow() - 1;
   sheet.appendRow([now, data.url || '', data.title || '', data.genre || '', data.type || 'ショート', count + 1]);
+  SpreadsheetApp.flush(); // 書き込みを即時コミット
   return jsonResponse({ success: true });
 }
 
@@ -789,7 +929,7 @@ function updatePortfolio(data) {
 }
 
 function deletePortfolio(row) {
-  if (!row) return jsonResponse({ error: 'invalid row' });
+  if (!row || row < 2) return jsonResponse({ error: 'invalid row' });
   var sheet = getOrCreatePortfolioSheet();
   sheet.deleteRow(row);
   return jsonResponse({ success: true });
@@ -851,6 +991,65 @@ function listEditors() {
   return jsonResponse({ data: data });
 }
 
+// ── 採用編集者 自己プロフィール登録（採用メールリンク経由） ──────────────
+function editorSelfRegister(data) {
+  var sheet = getOrCreateEditorsSheet();
+  var now   = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
+  var portfoliosJson = JSON.stringify(Array.isArray(data.portfolios) ? data.portfolios : []);
+
+  // 既存行のチェック（同名 or 同メールがあれば上書き）
+  var values = sheet.getDataRange().getValues();
+  var targetRow = -1;
+  for (var i = 1; i < values.length; i++) {
+    if (data.name && values[i][1] === data.name) { targetRow = i + 1; break; }
+  }
+
+  var vals = [
+    now,
+    data.name             || '',
+    data.icon             || '',
+    data.occupation       || '',
+    data.experience       || '',
+    data.genres           || '',
+    data.style            || '',
+    data.software         || '',
+    data.monthly_capacity || '',
+    '',  // weekly_capacity（派遣登録なし）
+    '',  // daily_hours
+    '',  // weekly_hours
+    data.work_hours       || '',
+    data.comment          || '',
+    portfoliosJson,
+    99   // 表示順（管理者が後で整える）
+  ];
+
+  if (targetRow > 1) {
+    sheet.getRange(targetRow, 1, 1, 16).setValues([vals]);
+  } else {
+    sheet.appendRow(vals);
+  }
+
+  // オーナーへ通知
+  notifyOwnerEmail(
+    '【編集者プロフィール登録】' + (data.name || '名前なし'),
+    [
+      '登録日時 : ' + now,
+      '名前     : ' + (data.name || ''),
+      '職業     : ' + (data.occupation || ''),
+      '編集歴   : ' + (data.experience || ''),
+      'ジャンル : ' + (data.genres || ''),
+      'ソフト   : ' + (data.software || ''),
+      '月対応   : ' + (data.monthly_capacity || ''),
+      '稼働時間 : ' + (data.work_hours || ''),
+      'コメント : ' + (data.comment || ''),
+      '',
+      '▶ 管理画面（編集者タブ）: ' + LP_BASE_URL + 'admin.html',
+    ]
+  );
+
+  return jsonResponse({ success: true });
+}
+
 function saveEditor(data) {
   var sheet = getOrCreateEditorsSheet();
   var now   = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
@@ -883,13 +1082,14 @@ function saveEditor(data) {
 }
 
 function deleteEditor(row) {
-  if (!row) return jsonResponse({ error: 'invalid row' });
+  if (!row || row < 2) return jsonResponse({ error: 'invalid row' });
   var sheet = getOrCreateEditorsSheet();
   sheet.deleteRow(row);
   return jsonResponse({ success: true });
 }
 
 function deleteContract(row) {
+  if (!row || row < 2) return jsonResponse({ error: 'invalid row' });
   var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
   var sheet = ss.getSheetByName('contracts');
   if (!sheet) return jsonResponse({ error: 'sheet not found' });
@@ -898,6 +1098,7 @@ function deleteContract(row) {
 }
 
 function deleteHearing(row) {
+  if (!row || row < 2) return jsonResponse({ error: 'invalid row' });
   var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
   var sheet = ss.getSheetByName('hearings');
   if (!sheet) return jsonResponse({ error: 'sheet not found' });
@@ -921,13 +1122,12 @@ function applyPartner(data) {
   }
   var now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
 
-  // 紹介コード自動生成（MC-名前5文字-4桁ランダム）
-  var prefix = (data.name || 'MONO').replace(/[^A-Za-z0-9゠-ヿ぀-ゟ一-鿿]/g, '').substring(0, 5);
-  if (!prefix) prefix = 'MONO';
-  // 日本語が含まれる場合はローマ字変換の代わりにランダム文字列を使用
-  if (/[^\x00-\x7F]/.test(prefix)) prefix = 'MC';
-  var suffix = Math.random().toString(36).substring(2, 6).toUpperCase();
-  var autoCode = 'MC-' + prefix.toUpperCase() + '-' + suffix;
+  // 紹介コード自動生成（英大文字＋数字 8文字ランダム）
+  var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // 紛らわしい文字(I,O,0,1)を除外
+  var autoCode = '';
+  for (var i = 0; i < 8; i++) {
+    autoCode += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
 
   sheet.appendRow([
     now,
@@ -986,7 +1186,7 @@ function applyPartner(data) {
         'ショート動画編集（単品）  : ¥500/件',
         '長尺動画・編集セット      : ¥1,500/件',
         '月額パック・運用代行      : ¥3,000/件',
-        '継続ボーナス（3ヶ月〜）   : +¥1,000/件',
+        '継続ボーナス（月額パック3ヶ月〜）: +¥1,000/件',
         '',
         'ご不明な点がございましたら、このメールに返信してください。',
       ]
@@ -1163,6 +1363,7 @@ function clearSheet(sheetName) {
 }
 
 function deletePayment(row) {
+  if (!row || row < 2) return jsonResponse({ error: 'invalid row' });
   var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
   var sheet = ss.getSheetByName('payments');
   if (!sheet) return jsonResponse({ error: 'sheet not found' });
@@ -1171,6 +1372,7 @@ function deletePayment(row) {
 }
 
 function deleteSales(row) {
+  if (!row || row < 2) return jsonResponse({ error: 'invalid row' });
   var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
   var sheet = ss.getSheetByName('uriage');
   if (!sheet) return jsonResponse({ error: 'sheet not found' });
@@ -1179,7 +1381,7 @@ function deleteSales(row) {
 }
 
 function deleteInquiry(row) {
-  if (!row) return jsonResponse({ error: 'invalid row' });
+  if (!row || row < 2) return jsonResponse({ error: 'invalid row' });
   var sheet = getOrCreateSheet(); // inquiries シート
   sheet.deleteRow(row);
   return jsonResponse({ success: true });
@@ -1867,6 +2069,113 @@ function listSales() {
   return jsonResponse({ data: data });
 }
 
+// ================================================================
+// 経費帳（keiei）
+// 取引日|相手先名|経費種別|摘要|金額|支払方法|備考
+//   1      2       3       4    5      6       7
+// 経費種別: パートナー報酬 / 外注費（編集者） / 広告宣伝費 / その他経費
+// ================================================================
+
+function getOrCreateKeieiSheet() {
+  var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName('keiei');
+  if (!sheet) {
+    sheet = ss.insertSheet('keiei');
+    sheet.appendRow(['取引日','相手先名','経費種別','摘要','金額','支払方法','備考']);
+    sheet.setFrozenRows(1);
+    sheet.getRange(1,1,1,7).setFontWeight('bold');
+    sheet.setColumnWidth(1,100); sheet.setColumnWidth(2,160);
+    sheet.setColumnWidth(3,140); sheet.setColumnWidth(4,220);
+    sheet.setColumnWidth(5,100); sheet.setColumnWidth(6,100);
+    sheet.setColumnWidth(7,200);
+  }
+  return sheet;
+}
+
+// 経費を記録（手動入力 & 自動記帳共用）
+function saveExpense(data) {
+  var sheet = getOrCreateKeieiSheet();
+  var today = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd');
+  sheet.appendRow([
+    data.date     || today,
+    data.name     || '',
+    data.category || 'その他経費',
+    data.summary  || '',
+    parseFloat(data.amount) || 0,
+    data.method   || 'PayPay',
+    data.note     || ''
+  ]);
+  return jsonResponse({ success: true });
+}
+
+// 経費一覧
+function listExpenses() {
+  var sheet  = getOrCreateKeieiSheet();
+  var values = sheet.getDataRange().getValues();
+  var data   = [];
+  for (var i = 1; i < values.length; i++) {
+    var r = values[i];
+    data.push({
+      row:      i + 1,
+      date:     r[0] || '',
+      name:     r[1] || '',
+      category: r[2] || '',
+      summary:  r[3] || '',
+      amount:   Number(r[4]) || 0,
+      method:   r[5] || '',
+      note:     r[6] || ''
+    });
+  }
+  data.sort(function(a,b){ return b.date > a.date ? 1 : -1; });
+  return jsonResponse({ data: data });
+}
+
+// 月次収支サマリー
+function getMonthlySummary(monthStr) {
+  // monthStr: "2026-05" 形式。空なら当月
+  var now = new Date();
+  var ym  = monthStr || Utilities.formatDate(now, 'Asia/Tokyo', 'yyyy-MM');
+
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+
+  // 売上合計
+  var uriage = ss.getSheetByName('uriage');
+  var salesTotal = 0;
+  if (uriage) {
+    var sv = uriage.getDataRange().getValues();
+    for (var i = 1; i < sv.length; i++) {
+      var d = sv[i][0] ? sv[i][0].toString().substring(0,7) : '';
+      if (d === ym) salesTotal += Number(sv[i][6]) || 0; // 税込（7列目）
+    }
+  }
+
+  // 経費合計
+  var keiei = ss.getSheetByName('keiei');
+  var expenseTotal = 0;
+  var expenseByCategory = {};
+  if (keiei) {
+    var kv = keiei.getDataRange().getValues();
+    for (var i = 1; i < kv.length; i++) {
+      var d = kv[i][0] ? kv[i][0].toString().substring(0,7) : '';
+      if (d === ym) {
+        var amt = Number(kv[i][4]) || 0;
+        var cat = kv[i][2] || 'その他';
+        expenseTotal += amt;
+        expenseByCategory[cat] = (expenseByCategory[cat] || 0) + amt;
+      }
+    }
+  }
+
+  return jsonResponse({
+    month:    ym,
+    sales:    salesTotal,
+    expense:  expenseTotal,
+    profit:   salesTotal - expenseTotal,
+    margin:   salesTotal > 0 ? Math.round((salesTotal - expenseTotal) / salesTotal * 100) : 0,
+    byCategory: expenseByCategory
+  });
+}
+
 // ── 振込報告一覧 ──────────────────────────────────────────────
 function listPayments() {
   var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
@@ -2057,6 +2366,13 @@ function approvePayment(row) {
       'フォルダ名: '   + (folderName || '-'),
     ]
   );
+
+  // ⑧ パートナー報酬 自動計算（紹介コードがあれば）
+  try {
+    autoCreatePartnerRewardRecord(name, contact, plan);
+  } catch(e) {
+    Logger.log('パートナー報酬自動計算エラー: ' + e);
+  }
 
   return jsonResponse({
     success: true,
@@ -2375,6 +2691,7 @@ function updatePFStatus(row, status) {
 }
 
 function deletePFInquiry(row) {
+  if (!row || row < 2) return jsonResponse({ error: 'invalid row' });
   var sheet = getOrCreatePFSheet();
   sheet.deleteRow(row);
   return jsonResponse({ success: true });
@@ -2444,14 +2761,15 @@ function updatePartnerAppStatus(row, status) {
         '  ✅ あなた（パートナー）：成約のたびに報酬をお支払い',
         '',
         '━━━━━━━━━━━━━━━━━━━━',
-        '▼ 成約報酬テーブル（PayPay振込）',
+        '▼ 成約報酬テーブル（銀行振込）',
         '━━━━━━━━━━━━━━━━━━━━',
         '  ショート動画編集（単品）  ¥500 / 件',
         '  長尺動画・編集セット      ¥1,500 / 件',
         '  月額パック・運用代行      ¥3,000 / 件',
-        '  継続ボーナス（3ヶ月〜）   +¥1,000 / 件',
+        '  継続ボーナス（月額パック3ヶ月〜） +¥1,000 / 件',
         '',
-        '  ※ 報酬は成約確認後14日以内にPayPayでお支払いします。',
+        '  ※ 継続ボーナスは月額パック・運用代行プランのみ対象です。',
+        '  ※ 報酬は成約確認後14日以内に銀行振込でお支払いします。',
         '  ※ 割引は初回ご成約時のみ適用されます。',
         '',
         '━━━━━━━━━━━━━━━━━━━━',
@@ -2459,7 +2777,7 @@ function updatePartnerAppStatus(row, status) {
         '━━━━━━━━━━━━━━━━━━━━',
         '1. 上記コードをSNS・サイト・DMなどで紹介先に共有',
         '2. 紹介先がお問い合わせ時にコードを入力（自動でOFF適用）',
-        '3. 成約確認後14日以内にPayPayで報酬をお支払い',
+        '3. 成約確認後14日以内に銀行振込で報酬をお支払い',
         '',
         '報酬確定時は別途メールにてご連絡します。',
         '引き続きよろしくお願いいたします。',
@@ -2493,7 +2811,263 @@ function updatePartnerAppStatus(row, status) {
   return jsonResponse({ success: true });
 }
 
-// 報酬確定メール送信
+// ================================================================
+// ── パートナー報酬 自動計算システム ─────────────────────────────
+// partner_rewards シート:
+// 受信日時|パートナー名|パートナーメール|紹介コード|クライアント名|プラン|基本報酬|継続ボーナス|合計報酬|ステータス
+//    1         2            3              4           5           6      7        8            9         10
+// ================================================================
+
+function getOrCreatePartnerRewardsSheet() {
+  var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName('partner_rewards');
+  if (!sheet) {
+    sheet = ss.insertSheet('partner_rewards');
+    sheet.appendRow([
+      '受信日時','パートナー名','パートナーメール','紹介コード',
+      'クライアント名','プラン','基本報酬','継続ボーナス','合計報酬','ステータス'
+    ]);
+    sheet.setFrozenRows(1);
+    sheet.getRange(1,1,1,10).setFontWeight('bold');
+  }
+  return sheet;
+}
+
+// プラン文字列から基本報酬を返す
+function calcRewardFromPlan(plan) {
+  var p = (plan || '').toString();
+  // 月額パック・運用代行（最優先）
+  if (p.match(/月額|運用|パック|ops|pack/i)) return 3000;
+  // 長尺・YouTube・セット
+  if (p.match(/長尺|youtube|long|セット|set/i)) return 1500;
+  // ショート・単品
+  return 500;
+}
+
+// 同パートナーコードの月額成約件数をカウント → 継続ボーナス判定
+function calcContinuityBonus(partnerCode) {
+  var sheet = getOrCreatePartnerRewardsSheet();
+  var values = sheet.getDataRange().getValues();
+  var count = 0;
+  for (var i = 1; i < values.length; i++) {
+    if (values[i][3] === partnerCode) {                         // 紹介コード一致
+      var plan = (values[i][5] || '').toString();
+      if (plan.match(/月額|運用|パック/)) count++;               // 月額プランのみカウント
+    }
+  }
+  // 4件目以降は継続ボーナス対象（＝過去3件+今回が4件目から）
+  return count >= 3 ? 1000 : 0;
+}
+
+// inquiriesシートからクライアント名/メールで紹介コードを検索
+function findReferralCodeByClient(clientName, clientEmail) {
+  var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) return '';
+  var values = sheet.getDataRange().getValues();
+  for (var i = 1; i < values.length; i++) {
+    var name  = (values[i][1] || '').toString().trim();
+    var email = (values[i][3] || '').toString().trim();
+    var code  = (values[i][9] || '').toString().trim();
+    if (!code) continue;
+    if ((clientName && name === clientName.trim()) ||
+        (clientEmail && email === clientEmail.trim())) {
+      return code;
+    }
+  }
+  return '';
+}
+
+// partner_applicationsシートから紹介コードでパートナー情報を取得
+function findPartnerByCode(code) {
+  if (!code) return null;
+  var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName('partner_applications');
+  if (!sheet) return null;
+  var values = sheet.getDataRange().getValues();
+  for (var i = 1; i < values.length; i++) {
+    if ((values[i][7] || '').toString().trim() === code.trim()) {
+      return { row: i + 1, name: values[i][1] || '', email: values[i][2] || '', code: code };
+    }
+  }
+  return null;
+}
+
+// 振込承認時に自動呼び出し → 報酬レコード作成
+function autoCreatePartnerRewardRecord(clientName, clientEmail, plan) {
+  var code = findReferralCodeByClient(clientName, clientEmail);
+  if (!code) return;  // 紹介コードなし → スキップ
+
+  var partner = findPartnerByCode(code);
+  if (!partner) return;  // パートナー不明 → スキップ
+
+  var base    = calcRewardFromPlan(plan);
+  var bonus   = (plan.match(/月額|運用|パック/i)) ? calcContinuityBonus(code) : 0;
+  var total   = base + bonus;
+  var now     = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
+
+  var sheet = getOrCreatePartnerRewardsSheet();
+  sheet.appendRow([
+    now, partner.name, partner.email, code,
+    clientName, plan, base, bonus, total, '未送信'
+  ]);
+
+  // オーナーへ通知（Chatwork）
+  var msg = '[To:' + CHATWORK_MENTION + '] 中村航汰\n\n' +
+    '━━━━━━━━━━━━━━━━━━━━\n' +
+    '💰 パートナー報酬が自動計算されました\n' +
+    '━━━━━━━━━━━━━━━━━━━━\n' +
+    'パートナー : ' + partner.name + '\n' +
+    'クライアント: ' + clientName + '\n' +
+    'プラン     : ' + plan + '\n' +
+    '報酬額     : ¥' + total + '（基本¥' + base + (bonus ? ' + ボーナス¥' + bonus : '') + '）\n' +
+    '━━━━━━━━━━━━━━━━━━━━\n' +
+    '▶ 管理画面で報酬メールを送信してください\n' +
+    LP_BASE_URL + 'admin.html';
+  try {
+    UrlFetchApp.fetch('https://api.chatwork.com/v2/rooms/' + CHATWORK_ROOM_ID + '/messages', {
+      method: 'POST',
+      headers: { 'X-ChatWorkToken': CHATWORK_TOKEN },
+      payload: { body: msg, self_unread: 1 }
+    });
+  } catch(e) {}
+}
+
+// 報酬一覧を返す
+function listPartnerRewards() {
+  var sheet  = getOrCreatePartnerRewardsSheet();
+  var values = sheet.getDataRange().getValues();
+  var data   = [];
+  for (var i = 1; i < values.length; i++) {
+    var r = values[i];
+    data.push({
+      row:      i + 1,
+      date:     r[0]  || '',
+      pName:    r[1]  || '',
+      pEmail:   r[2]  || '',
+      code:     r[3]  || '',
+      client:   r[4]  || '',
+      plan:     r[5]  || '',
+      base:     r[6]  || 0,
+      bonus:    r[7]  || 0,
+      total:    r[8]  || 0,
+      status:   r[9]  || '未送信'
+    });
+  }
+  data.sort(function(a,b){ return b.date > a.date ? 1 : -1; });
+  return jsonResponse({ data: data });
+}
+
+// 報酬確定メール自動送信（admin操作）
+function sendPartnerRewardEmailAuto(row) {
+  var sheet   = getOrCreatePartnerRewardsSheet();
+  var rowData = sheet.getRange(row, 1, 1, 10).getValues()[0];
+  var pName   = rowData[1] || '';
+  var pEmail  = rowData[2] || '';
+  var code    = rowData[3] || '';
+  var client  = rowData[4] || '';
+  var plan    = rowData[5] || '';
+  var base    = rowData[6] || 0;
+  var bonus   = rowData[7] || 0;
+  var total   = rowData[8] || 0;
+  var now     = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
+
+  if (!pEmail || pEmail.indexOf('@') === -1) return jsonResponse({ error: 'no email' });
+  if (rowData[9] !== '未送信') return jsonResponse({ error: 'already_sent' });
+
+  var bonusLine = bonus > 0
+    ? ['', '⭐ 継続ボーナス（3ヶ月以上）: +¥' + bonus, '   合計報酬            : ¥' + total]
+    : [];
+
+  var body = [
+    pName + ' 様',
+    '',
+    'お世話になっております。mono.createです。',
+    'この度は紹介のご協力、誠にありがとうございます。',
+    '',
+    '━━━━━━━━━━━━━━━━━━━━',
+    '▼ 成約報酬のご連絡',
+    '━━━━━━━━━━━━━━━━━━━━',
+    '紹介コード  : ' + code,
+    'ご成約プラン: ' + plan,
+    'クライアント: ' + client + ' 様',
+    '',
+    '基本報酬    : ¥' + base,
+  ].concat(bonusLine).concat([
+    '',
+    '【お支払い報酬額】 ¥' + total,
+    '【お支払い方法】   銀行振込',
+    '【お支払い時期】   ' + now + ' より14日以内',
+    '',
+    '━━━━━━━━━━━━━━━━━━━━',
+    '▼ 振込先口座',
+    '━━━━━━━━━━━━━━━━━━━━',
+    BANK_INFO,
+    '',
+    '恐れ入りますが、振込手数料はご負担をお願いいたします。',
+    'お振込完了後、このメールにご返信いただけますと幸いです。',
+    '',
+    'ご不明な点はいつでもご返信ください。',
+    'よろしくお願いいたします。',
+    '',
+    '担当：mono.create 運営',
+  ]);
+
+  MailApp.sendEmail({
+    to:      pEmail,
+    subject: '【mono.create】成約報酬のご連絡 — ¥' + total + ' をお支払いします',
+    body:    body.join('\n'),
+    name:    'mono.create',
+    replyTo: OWNER_EMAIL
+  });
+
+  // ステータス更新
+  sheet.getRange(row, 10).setValue('メール済み');
+
+  notifyOwnerEmail(
+    '【報酬メール送信済み】' + pName + ' — ¥' + total,
+    ['パートナー: ' + pName, '報酬額: ¥' + total, 'プラン: ' + plan, 'クライアント: ' + client]
+  );
+
+  return jsonResponse({ success: true });
+}
+
+// 支払済みマーク → 経費帳に自動記帳
+function markRewardPaid(row) {
+  var sheet   = getOrCreatePartnerRewardsSheet();
+  var rowData = sheet.getRange(row, 1, 1, 10).getValues()[0];
+  var pName   = rowData[1] || '';
+  var total   = Number(rowData[8]) || 0;
+  var plan    = rowData[5] || '';
+  var code    = rowData[3] || '';
+  var client  = rowData[4] || '';
+
+  // ステータス更新
+  sheet.getRange(row, 10).setValue('支払済み');
+
+  // 経費帳に自動記帳
+  try {
+    saveExpense({
+      date:     Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd'),
+      name:     pName,
+      category: 'パートナー報酬',
+      summary:  '紹介料 ' + pName + ' — ' + plan + '（' + client + ' 様成約 / コード:' + code + '）',
+      amount:   total,
+      method:   '銀行振込',
+      note:     '自動記帳'
+    });
+  } catch(e) {
+    Logger.log('経費自動記帳エラー: ' + e);
+  }
+
+  notifyOwnerEmail(
+    '【報酬支払済み＆経費記帳】' + pName + ' — ¥' + total,
+    ['パートナー: ' + pName, '報酬額: ¥' + total, 'プラン: ' + plan, '経費帳: 自動記帳済み']
+  );
+  return jsonResponse({ success: true });
+}
+
+// 報酬確定メール送信（旧来の手動版・互換性維持）
 function sendPartnerReward(row, amount) {
   var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   var sh = ss.getSheetByName('partner_applications');
@@ -2626,4 +3200,197 @@ function updateServiceStatus(data) {
   });
   props.setProperty('service_status', JSON.stringify(status));
   return jsonResponse({ success: true, status: status });
+}
+
+// ══════════════════════════════════════════════════════════════
+// ── クライアントマスタ ────────────────────────────────────────
+// シート: client_master
+// 列: [row, name, email, plan, amount, pay_type, note, created_at]
+// ══════════════════════════════════════════════════════════════
+function getOrCreateClientMasterSheet() {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sh = ss.getSheetByName('client_master');
+  if (!sh) {
+    sh = ss.insertSheet('client_master');
+    sh.appendRow(['name', 'email', 'plan', 'amount', 'pay_type', 'note', 'created_at']);
+  }
+  return sh;
+}
+
+function listClientMaster() {
+  var sh = getOrCreateClientMasterSheet();
+  var vals = sh.getDataRange().getValues();
+  var data = [];
+  for (var i = 1; i < vals.length; i++) {
+    var r = vals[i];
+    if (!r[0] && !r[1]) continue; // 空行スキップ
+    data.push({
+      row: i + 1,
+      name: r[0] || '', email: r[1] || '', plan: r[2] || '',
+      amount: r[3] || '', pay_type: r[4] || 'spot', note: r[5] || '',
+      created_at: r[6] ? r[6].toString() : ''
+    });
+  }
+  return jsonResponse({ data: data });
+}
+
+function saveClientMaster(d) {
+  var sh = getOrCreateClientMasterSheet();
+  var now = new Date().toISOString();
+  if (d.row) {
+    // 更新
+    var rowNum = parseInt(d.row);
+    sh.getRange(rowNum, 1, 1, 7).setValues([[
+      d.name || '', d.email || '', d.plan || '',
+      d.amount || '', d.pay_type || 'spot', d.note || '', now
+    ]]);
+  } else {
+    // 追加
+    sh.appendRow([d.name || '', d.email || '', d.plan || '',
+      d.amount || '', d.pay_type || 'spot', d.note || '', now]);
+  }
+  return jsonResponse({ success: true });
+}
+
+function deleteClientMaster(rowNum) {
+  var sh = getOrCreateClientMasterSheet();
+  if (rowNum >= 2) sh.deleteRow(rowNum);
+  return jsonResponse({ success: true });
+}
+
+// ══════════════════════════════════════════════════════════════
+// ── プライベートリンク ────────────────────────────────────────
+// シート: private_links
+// 列: [token, client, plan, amount, pay_type, note, expires_at, views, created_at]
+// ══════════════════════════════════════════════════════════════
+function getOrCreatePrivateLinksSheet() {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sh = ss.getSheetByName('private_links');
+  if (!sh) {
+    sh = ss.insertSheet('private_links');
+    sh.appendRow(['token', 'client', 'plan', 'amount', 'pay_type', 'note', 'expires_at', 'views', 'created_at', 'hearing_url']);
+  }
+  return sh;
+}
+
+function generateToken() {
+  var chars = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+  var t = 'mc_';
+  for (var i = 0; i < 12; i++) t += chars[Math.floor(Math.random() * chars.length)];
+  return t;
+}
+
+function createPrivateLink(d) {
+  var sh = getOrCreatePrivateLinksSheet();
+  var token = generateToken();
+  var expireDays = parseInt(d.expire_days) || 30;
+  var expiresAt = new Date();
+  expiresAt.setDate(expiresAt.getDate() + expireDays);
+  sh.appendRow([
+    token, d.client || '', d.plan || '', d.amount || '',
+    d.pay_type || 'spot', d.note || '',
+    expiresAt.toISOString(), 0, new Date().toISOString(), d.hearing_url || ''
+  ]);
+  return jsonResponse({ success: true, token: token });
+}
+
+function getPrivateLink(token) {
+  if (!token) return jsonResponse({ error: 'no token' });
+  var sh = getOrCreatePrivateLinksSheet();
+  var vals = sh.getDataRange().getValues();
+  for (var i = 1; i < vals.length; i++) {
+    var r = vals[i];
+    if (r[0] === token) {
+      // 期限チェック
+      var exp = r[6] ? new Date(r[6]) : null;
+      if (exp && exp < new Date()) return jsonResponse({ error: 'expired' });
+      return jsonResponse({
+        success: true,
+        token: r[0], client: r[1], plan: r[2], amount: r[3],
+        pay_type: r[4], note: r[5], expires_at: r[6] ? r[6].toString() : '',
+        views: r[7] || 0, hearing_url: r[9] || ''
+      });
+    }
+  }
+  return jsonResponse({ error: 'not found' });
+}
+
+function listPrivateLinks() {
+  var sh = getOrCreatePrivateLinksSheet();
+  var vals = sh.getDataRange().getValues();
+  var data = [];
+  for (var i = 1; i < vals.length; i++) {
+    var r = vals[i];
+    if (!r[0]) continue;
+    var exp = r[6] ? new Date(r[6]) : null;
+    data.push({
+      row: i + 1, token: r[0], client: r[1], plan: r[2],
+      amount: r[3], pay_type: r[4], note: r[5],
+      expires_at: r[6] ? r[6].toString() : '', views: r[7] || 0,
+      created_at: r[8] ? r[8].toString() : '', hearing_url: r[9] || '',
+      expired: exp ? exp < new Date() : false
+    });
+  }
+  return jsonResponse({ data: data.reverse() }); // 新しい順
+}
+
+function deletePrivateLink(token) {
+  var sh = getOrCreatePrivateLinksSheet();
+  var vals = sh.getDataRange().getValues();
+  for (var i = 1; i < vals.length; i++) {
+    if (vals[i][0] === token) { sh.deleteRow(i + 1); break; }
+  }
+  return jsonResponse({ success: true });
+}
+
+function recordPrivateLinkView(token) {
+  if (!token) return jsonResponse({ error: 'no token' });
+  var sh = getOrCreatePrivateLinksSheet();
+  var vals = sh.getDataRange().getValues();
+  for (var i = 1; i < vals.length; i++) {
+    if (vals[i][0] === token) {
+      var views = (parseInt(vals[i][7]) || 0) + 1;
+      sh.getRange(i + 1, 8).setValue(views);
+      return jsonResponse({ success: true, views: views });
+    }
+  }
+  return jsonResponse({ error: 'not found' });
+}
+
+// ══════════════════════════════════════════════════════════════
+// ── 編集者契約書送付メール ────────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+function sendEditorContractMail(d) {
+  var name         = d.name || '';
+  var email        = d.email || '';
+  var contractUrl  = d.contract_url || '';
+  var driveFolder  = d.drive_folder || '';
+  var note         = d.note || '';
+  if (!email) return jsonResponse({ error: 'no email' });
+
+  var body = '【mono.create】業務委託契約書のご送付\n\n'
+    + name + ' 様\n\n'
+    + 'この度は、mono.createへのご参加ありがとうございます。\n'
+    + '業務委託契約書をお送りします。内容をご確認の上、ご署名・ご返信ください。\n\n'
+    + '▼ 契約書\n' + contractUrl + '\n\n'
+    + (note ? '▼ 追加事項\n' + note + '\n\n' : '')
+    + '署名済みのPDFは、下記フォルダへご提出いただくか、メール添付でご返送ください。\n'
+    + '▼ 提出先フォルダ\n' + driveFolder + '\n\n'
+    + 'ご不明点はお気軽にご連絡ください。\n\n'
+    + '───────────────\n'
+    + 'mono.create\n'
+    + '代表：中村 航汰\n'
+    + 'E-mail: mono.create.group@gmail.com\n';
+
+  GmailApp.sendEmail(email, '【mono.create】業務委託契約書のご送付', body, {
+    from: 'mono.create.group@gmail.com',
+    name: 'mono.create（中村 航汰）'
+  });
+
+  // 管理者にも通知
+  GmailApp.sendEmail('mono.create.group@gmail.com',
+    '【送付完了】' + name + ' 様へ契約書を送付しました',
+    name + '（' + email + '）様へ契約書を送付しました。\n契約書: ' + contractUrl, {});
+
+  return jsonResponse({ success: true });
 }

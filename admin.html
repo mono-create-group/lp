@@ -488,7 +488,11 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       </button>
       <button id="tab-private-link-btn" onclick="switchAdminTab('private-link')"
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
-        🔗 個別見積もりリンク
+        🔗 個別提案リンク
+      </button>
+      <button id="tab-client-master-btn" onclick="switchAdminTab('client-master')"
+        style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
+        👤 クライアント管理
       </button>
     </div>
 
@@ -1338,67 +1342,162 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
     <!-- ══════════════════════════════════════════════════════════════════
          🔗 個別見積もりリンク生成タブ
          ══════════════════════════════════════════════════════════════════ -->
-    <div id="tab-private-link" style="display:none;max-width:640px;margin:0 auto;padding:32px 0;">
-      <h2 style="font-size:1.1rem;font-weight:900;margin-bottom:6px;">🔗 個別見積もりリンク生成</h2>
-      <p style="font-size:0.82rem;color:var(--sub);margin-bottom:28px;line-height:1.7;">
-        クライアント専用の価格リンクを生成します。このURLを受け取った方のみ、専用プランが表示されます。<br>
-        ホームページの一般公開ページには影響しません。
+    <!-- ══════ 個別提案リンク タブ（DB化済み）══════ -->
+    <div id="tab-private-link" style="display:none;max-width:780px;margin:0 auto;padding:28px 0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <h2 style="font-size:1.1rem;font-weight:900;">🔗 個別提案リンク生成</h2>
+        <button onclick="loadPrivateLinks()" style="padding:7px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--sub);font-size:0.8rem;cursor:pointer;">🔄 一覧を更新</button>
+      </div>
+      <p style="font-size:0.82rem;color:var(--sub);margin-bottom:20px;line-height:1.7;">
+        トークンURLで管理。価格は非公開・有効期限付き。クライアントが開くと専用プランが表示されます。
       </p>
 
-      <div style="background:#F8FAFC;border:1.5px solid #CBD5E1;border-radius:14px;padding:24px;">
-        <div style="margin-bottom:16px;">
-          <label style="display:block;font-size:0.78rem;font-weight:700;color:#475569;margin-bottom:6px;">クライアント名<span style="color:#EF4444;">*</span></label>
-          <input id="pl-client" type="text" placeholder="例：山田 太郎 様" style="width:100%;padding:10px 12px;border:1.5px solid #CBD5E1;border-radius:8px;font-size:0.88rem;font-family:inherit;outline:none;">
-        </div>
-        <div style="margin-bottom:16px;">
-          <label style="display:block;font-size:0.78rem;font-weight:700;color:#475569;margin-bottom:6px;">プラン名<span style="color:#EF4444;">*</span></label>
-          <input id="pl-plan" type="text" placeholder="例：ショート動画5本セット・テロップ特急込み" style="width:100%;padding:10px 12px;border:1.5px solid #CBD5E1;border-radius:8px;font-size:0.88rem;font-family:inherit;outline:none;">
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+      <div style="background:var(--bg2);border:1.5px solid var(--border);border-radius:14px;padding:22px;margin-bottom:24px;">
+        <!-- Row1 -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
           <div>
-            <label style="display:block;font-size:0.78rem;font-weight:700;color:#475569;margin-bottom:6px;">金額（円）</label>
-            <input id="pl-price" type="number" placeholder="例：49800" style="width:100%;padding:10px 12px;border:1.5px solid #CBD5E1;border-radius:8px;font-size:0.88rem;font-family:inherit;outline:none;">
+            <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--sub);margin-bottom:5px;">クライアント名 <span style="color:#EF4444;">*</span></label>
+            <input id="pl-client" type="text" list="pl-client-list" placeholder="例：山田 太郎 様" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-size:0.88rem;font-family:inherit;outline:none;">
+            <datalist id="pl-client-list"></datalist>
           </div>
           <div>
-            <label style="display:block;font-size:0.78rem;font-weight:700;color:#475569;margin-bottom:6px;">備考・割引理由</label>
-            <input id="pl-note" type="text" placeholder="例：初回特別価格" style="width:100%;padding:10px 12px;border:1.5px solid #CBD5E1;border-radius:8px;font-size:0.88rem;font-family:inherit;outline:none;">
+            <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--sub);margin-bottom:5px;">プラン名 <span style="color:#EF4444;">*</span></label>
+            <input id="pl-plan" type="text" placeholder="例：ショート動画5本セット・テロップ特急込み" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-size:0.88rem;font-family:inherit;outline:none;">
+          </div>
+        </div>
+        <!-- Row2 -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px;">
+          <div>
+            <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--sub);margin-bottom:5px;">金額（円）</label>
+            <input id="pl-price" type="number" placeholder="例：49800" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-size:0.88rem;font-family:inherit;outline:none;">
+          </div>
+          <div>
+            <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--sub);margin-bottom:5px;">支払い形式</label>
+            <select id="pl-pay-type" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-size:0.82rem;font-family:inherit;outline:none;">
+              <option value="spot">つど払い</option>
+              <option value="month_end">当月払い</option>
+              <option value="next_month_end">翌月末払い</option>
+              <option value="custom_date">日付指定</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--sub);margin-bottom:5px;">有効期限（日）</label>
+            <input id="pl-expire" type="number" value="30" min="1" max="365" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-size:0.88rem;font-family:inherit;outline:none;">
+          </div>
+        </div>
+        <!-- Row3 -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+          <div>
+            <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--sub);margin-bottom:5px;">備考・割引理由</label>
+            <input id="pl-note" type="text" placeholder="例：初回特別価格" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-size:0.88rem;font-family:inherit;outline:none;">
+          </div>
+          <div>
+            <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--sub);margin-bottom:5px;">ヒアリングURL（任意）</label>
+            <input id="pl-hearing-url" type="text" placeholder="例：https://mono-create-group.github.io/lp/hearing/short.html" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-size:0.82rem;font-family:inherit;outline:none;">
           </div>
         </div>
 
-        <!-- セットプラン内訳 -->
-        <div style="border:1px solid #CBD5E1;border-radius:10px;padding:14px;margin-bottom:16px;background:#fff;">
-          <p style="font-size:0.78rem;font-weight:700;color:#475569;margin-bottom:10px;">📦 セットプラン内訳（任意）</p>
-          <div id="pl-items-list"></div>
-          <div style="display:flex;gap:8px;margin-top:8px;">
-            <input id="pl-item-input" type="text" placeholder="例：ショート動画5本 ¥20,000" style="flex:1;padding:8px 12px;border:1.5px solid #CBD5E1;border-radius:8px;font-size:0.82rem;font-family:inherit;outline:none;">
-            <button onclick="addPLItem()" style="padding:8px 14px;background:#1E40AF;color:#fff;border:none;border-radius:8px;font-size:0.82rem;font-weight:700;cursor:pointer;white-space:nowrap;">＋ 追加</button>
-          </div>
-        </div>
-
-        <button onclick="generatePrivateLink()" style="width:100%;padding:13px;background:linear-gradient(135deg,#1E40AF,#2563EB);color:#fff;border:none;border-radius:10px;font-size:0.95rem;font-weight:800;cursor:pointer;font-family:inherit;margin-bottom:16px;">
-          🔗 リンクを生成する
+        <button onclick="generatePrivateLinkDB()" id="pl-gen-btn" style="width:100%;padding:13px;background:linear-gradient(135deg,#1E40AF,#2563EB);color:#fff;border:none;border-radius:10px;font-size:0.95rem;font-weight:800;cursor:pointer;font-family:inherit;margin-bottom:14px;">
+          🔗 リンクを生成・DB保存
         </button>
 
         <!-- 生成結果 -->
         <div id="pl-result" style="display:none;">
-          <p style="font-size:0.78rem;font-weight:700;color:#059669;margin-bottom:8px;">✅ リンクが生成されました</p>
-          <div style="background:#EFF6FF;border:1.5px solid #BFDBFE;border-radius:8px;padding:12px;word-break:break-all;">
-            <p id="pl-url" style="font-size:0.78rem;color:#1E40AF;font-family:monospace;line-height:1.6;"></p>
+          <p style="font-size:0.78rem;font-weight:700;color:#059669;margin-bottom:8px;">✅ リンクが生成されました（DB保存済み）</p>
+          <div style="background:rgba(37,99,235,0.08);border:1.5px solid rgba(37,99,235,0.25);border-radius:8px;padding:12px;word-break:break-all;">
+            <p id="pl-url" style="font-size:0.78rem;color:#60A5FA;font-family:monospace;line-height:1.6;"></p>
           </div>
           <div style="display:flex;gap:8px;margin-top:10px;">
             <button onclick="copyPLUrl()" style="flex:1;padding:10px;background:#059669;color:#fff;border:none;border-radius:8px;font-size:0.85rem;font-weight:700;cursor:pointer;">📋 URLをコピー</button>
             <button onclick="openPLUrl()" style="flex:1;padding:10px;background:#6B7280;color:#fff;border:none;border-radius:8px;font-size:0.85rem;font-weight:700;cursor:pointer;">🔗 ブラウザで確認</button>
           </div>
-          <div id="pl-summary" style="margin-top:16px;padding:14px;background:#F9FAFB;border:1px solid #E5E7EB;border-radius:10px;font-size:0.8rem;color:#374151;line-height:1.8;"></div>
         </div>
       </div>
 
-      <!-- 生成履歴 -->
-      <div style="margin-top:28px;">
-        <p style="font-size:0.82rem;font-weight:800;color:#374151;margin-bottom:12px;">📋 生成履歴（このセッション）</p>
-        <div id="pl-history" style="display:flex;flex-direction:column;gap:10px;"></div>
+      <!-- 発行済みリンク一覧 -->
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <p style="font-size:0.9rem;font-weight:800;">📋 発行済みリンク一覧</p>
+          <p id="pl-list-meta" style="font-size:0.75rem;color:var(--sub);"></p>
+        </div>
+        <div id="pl-list" style="display:flex;flex-direction:column;gap:10px;">
+          <p style="font-size:0.82rem;color:var(--sub);">読み込み中...</p>
+        </div>
       </div>
     </div><!-- /tab-private-link -->
+
+    <!-- ══════ クライアントマスタ タブ ══════ -->
+    <div id="tab-client-master" style="display:none;max-width:860px;margin:0 auto;padding:28px 0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+        <div>
+          <h2 style="font-size:1.1rem;font-weight:900;margin-bottom:4px;">👤 クライアント単価マスタ</h2>
+          <p style="font-size:0.8rem;color:var(--sub);">クライアントごとの単価・支払い方法を登録。振込依頼モーダルで自動補完されます。</p>
+        </div>
+        <button onclick="openClientMasterForm()" style="padding:9px 18px;background:linear-gradient(135deg,#1E40AF,#2563EB);color:#fff;border:none;border-radius:8px;font-size:0.85rem;font-weight:800;cursor:pointer;">＋ 追加</button>
+      </div>
+
+      <!-- 追加・編集フォーム -->
+      <div id="cm-form-wrap" style="display:none;background:var(--bg2);border:1.5px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px;">
+        <h3 id="cm-form-title" style="font-size:0.9rem;font-weight:800;margin-bottom:14px;">新規クライアント追加</h3>
+        <input type="hidden" id="cm-row">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+          <div>
+            <label style="display:block;font-size:0.75rem;color:var(--sub);margin-bottom:5px;">クライアント名 <span style="color:#EF4444;">*</span></label>
+            <input id="cm-name" type="text" placeholder="例：山田 太郎 様" style="width:100%;padding:9px 12px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.88rem;font-family:inherit;outline:none;">
+          </div>
+          <div>
+            <label style="display:block;font-size:0.75rem;color:var(--sub);margin-bottom:5px;">メールアドレス</label>
+            <input id="cm-email" type="email" placeholder="例：yamada@example.com" style="width:100%;padding:9px 12px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.88rem;font-family:inherit;outline:none;">
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;">
+          <div>
+            <label style="display:block;font-size:0.75rem;color:var(--sub);margin-bottom:5px;">プラン名</label>
+            <input id="cm-plan" type="text" placeholder="例：ショート5本/月" style="width:100%;padding:9px 12px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.88rem;font-family:inherit;outline:none;">
+          </div>
+          <div>
+            <label style="display:block;font-size:0.75rem;color:var(--sub);margin-bottom:5px;">単価（円）</label>
+            <input id="cm-amount" type="number" placeholder="例：15000" style="width:100%;padding:9px 12px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.88rem;font-family:inherit;outline:none;">
+          </div>
+          <div>
+            <label style="display:block;font-size:0.75rem;color:var(--sub);margin-bottom:5px;">支払い形式</label>
+            <select id="cm-pay-type" style="width:100%;padding:9px 12px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.82rem;font-family:inherit;outline:none;">
+              <option value="spot">つど払い</option>
+              <option value="month_end">当月払い（特例）</option>
+              <option value="next_month_end">翌月末払い（特例）</option>
+              <option value="custom_date">日付指定（特例）</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:14px;">
+          <label style="display:block;font-size:0.75rem;color:var(--sub);margin-bottom:5px;">備考</label>
+          <input id="cm-note" type="text" placeholder="例：初回特別価格・紹介経由" style="width:100%;padding:9px 12px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.88rem;font-family:inherit;outline:none;">
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;">
+          <button onclick="closeClientMasterForm()" style="padding:9px 18px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--sub);cursor:pointer;">キャンセル</button>
+          <button onclick="saveClientMaster()" style="padding:9px 18px;background:var(--accent);color:#fff;border:none;border-radius:6px;font-weight:800;cursor:pointer;">💾 保存</button>
+        </div>
+      </div>
+
+      <!-- クライアント一覧テーブル -->
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:0.82rem;">
+          <thead>
+            <tr style="background:var(--bg2);border-bottom:2px solid var(--border);">
+              <th style="padding:10px 12px;text-align:left;color:var(--sub);font-weight:700;">クライアント</th>
+              <th style="padding:10px 12px;text-align:left;color:var(--sub);font-weight:700;">プラン</th>
+              <th style="padding:10px 12px;text-align:right;color:var(--sub);font-weight:700;">単価</th>
+              <th style="padding:10px 12px;text-align:center;color:var(--sub);font-weight:700;">支払い形式</th>
+              <th style="padding:10px 12px;text-align:left;color:var(--sub);font-weight:700;">備考</th>
+              <th style="padding:10px 12px;text-align:center;color:var(--sub);font-weight:700;">操作</th>
+            </tr>
+          </thead>
+          <tbody id="cm-table-body">
+            <tr><td colspan="6" style="padding:24px;text-align:center;color:var(--sub);">読み込み中...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div><!-- /tab-client-master -->
 
   </main>
 </div>
@@ -1499,6 +1598,274 @@ function renderPLHistory() {
   var allTabs = document.querySelectorAll('[id^="tab-"][id$="-btn"]:not([id="tab-private-link-btn"])');
   // handled by switchAdminTab
 })();
+
+/* ═══════════════════════════════════════════════════════════
+   個別提案リンク DB 版（generatePrivateLinkDB / loadPrivateLinks）
+═══════════════════════════════════════════════════════════ */
+async function generatePrivateLinkDB() {
+  var client = document.getElementById('pl-client').value.trim();
+  var plan   = document.getElementById('pl-plan').value.trim();
+  var price  = document.getElementById('pl-price').value.trim();
+  var payType = document.getElementById('pl-pay-type').value;
+  var expire = parseInt(document.getElementById('pl-expire').value, 10) || 30;
+  var note   = document.getElementById('pl-note').value.trim();
+  var hearingUrl = document.getElementById('pl-hearing-url').value.trim();
+
+  if (!client) { alert('クライアント名は必須です'); return; }
+  if (!plan)   { alert('プラン名は必須です'); return; }
+
+  var btn = document.getElementById('pl-gen-btn');
+  btn.disabled = true;
+  btn.textContent = '🔄 生成中...';
+
+  try {
+    var res = await gasFetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'private_link_create',
+        key: getAdminPw(),
+        client: client,
+        plan: plan,
+        amount: price ? parseInt(price, 10) : '',
+        pay_type: payType,
+        expires_days: expire,
+        note: note,
+        hearing_url: hearingUrl
+      })
+    });
+
+    if (!res.ok) { alert('生成に失敗しました: ' + (res.error || res.message || '不明なエラー')); return; }
+
+    var token = res.token;
+    var url = LP_BASE_URL + '?t=' + token;
+    document.getElementById('pl-url').textContent = url;
+    document.getElementById('pl-result').style.display = 'block';
+    loadPrivateLinks();
+
+    // clear form
+    document.getElementById('pl-client').value = '';
+    document.getElementById('pl-plan').value = '';
+    document.getElementById('pl-price').value = '';
+    document.getElementById('pl-expire').value = '30';
+    document.getElementById('pl-note').value = '';
+    document.getElementById('pl-hearing-url').value = '';
+  } catch(e) {
+    alert('エラーが発生しました: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🔗 リンクを生成・DB保存';
+  }
+}
+
+async function loadPrivateLinks() {
+  var el = document.getElementById('pl-list');
+  if (el) el.innerHTML = '<p style="font-size:0.82rem;color:var(--sub);">読み込み中...</p>';
+  try {
+    var res = await gasFetch(GAS_URL + '?action=private_link_list&key=' + encodeURIComponent(getAdminPw()));
+    renderPrivateLinks(res.data || []);
+  } catch(e) {
+    if (el) el.innerHTML = '<p style="font-size:0.82rem;color:var(--red);">読み込みに失敗しました</p>';
+  }
+}
+
+function renderPrivateLinks(data) {
+  var el = document.getElementById('pl-list');
+  var meta = document.getElementById('pl-list-meta');
+  if (!el) return;
+  if (meta) meta.textContent = data.length + '件';
+  if (!data.length) {
+    el.innerHTML = '<p style="font-size:0.82rem;color:var(--sub);padding:16px 0;">発行済みリンクはありません</p>';
+    return;
+  }
+  var payLabel = { spot: 'つど払い', month_end: '当月払い', next_month_end: '翌月末払い', custom_date: '日付指定' };
+  el.innerHTML = data.map(function(d) {
+    var url = LP_BASE_URL + '?t=' + d.token;
+    var expired = d.is_expired;
+    var viewsStr = (d.views || 0) + '回閲覧';
+    return '<div style="background:var(--bg2);border:1.5px solid ' + (expired ? 'rgba(239,68,68,0.3)' : 'var(--border)') + ';border-radius:10px;padding:14px 16px;">'
+      + '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;">'
+      + '<div style="flex:1;min-width:0;">'
+      + '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">'
+      + '<p style="font-size:0.85rem;font-weight:800;color:#E8EDF5;">' + esc(d.client || '（未設定）') + '</p>'
+      + '<span style="font-size:0.7rem;padding:2px 7px;border-radius:10px;background:rgba(37,99,235,0.15);color:#60A5FA;">' + esc(d.plan || '') + '</span>'
+      + (d.amount ? '<span style="font-size:0.7rem;color:#4ADE80;font-weight:700;">¥' + parseInt(d.amount, 10).toLocaleString() + '</span>' : '')
+      + '<span style="font-size:0.7rem;color:var(--sub);">' + (payLabel[d.pay_type] || d.pay_type || '') + '</span>'
+      + '</div>'
+      + '<p style="font-size:0.72rem;color:var(--sub);word-break:break-all;font-family:monospace;margin-bottom:4px;">' + url + '</p>'
+      + '<div style="display:flex;gap:10px;flex-wrap:wrap;">'
+      + '<span style="font-size:0.7rem;color:' + (expired ? 'var(--red)' : 'var(--sub)') + ';">期限: ' + esc(d.expires_at || '') + (expired ? ' ⚠️ 期限切れ' : '') + '</span>'
+      + '<span style="font-size:0.7rem;color:var(--sub);">' + viewsStr + '</span>'
+      + (d.note ? '<span style="font-size:0.7rem;color:var(--sub);">備考: ' + esc(d.note) + '</span>' : '')
+      + '</div>'
+      + '</div>'
+      + '<div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;">'
+      + '<button onclick="navigator.clipboard.writeText(\'' + url.replace(/'/g, "\\'") + '\').then(function(){alert(\'コピーしました\')})" style="padding:5px 10px;background:#1E40AF;color:#fff;border:none;border-radius:5px;font-size:0.72rem;cursor:pointer;white-space:nowrap;">📋 コピー</button>'
+      + '<button onclick="if(confirm(\'このリンクを削除しますか？\'))deletePrivateLink(\'' + d.token + '\')" style="padding:5px 10px;background:rgba(239,68,68,0.15);color:#F87171;border:1px solid rgba(239,68,68,0.3);border-radius:5px;font-size:0.72rem;cursor:pointer;">🗑 削除</button>'
+      + '</div>'
+      + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+async function deletePrivateLink(token) {
+  try {
+    await gasFetch(GAS_URL + '?action=private_link_delete&key=' + encodeURIComponent(getAdminPw()) + '&t=' + encodeURIComponent(token));
+    loadPrivateLinks();
+  } catch(e) {
+    alert('削除に失敗しました');
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   クライアント単価マスタ
+═══════════════════════════════════════════════════════════ */
+var _clientMasterData = [];
+
+async function loadClientMaster() {
+  var tbody = document.getElementById('cm-table-body');
+  if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="padding:24px;text-align:center;color:var(--sub);">読み込み中...</td></tr>';
+  try {
+    var res = await gasFetch(GAS_URL + '?action=client_master_list&key=' + encodeURIComponent(getAdminPw()));
+    _clientMasterData = res.data || [];
+    renderClientMaster(_clientMasterData);
+    populateClientDatalist();
+  } catch(e) {
+    if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="padding:24px;text-align:center;color:var(--red);">読み込みに失敗しました</td></tr>';
+  }
+}
+
+function renderClientMaster(data) {
+  var tbody = document.getElementById('cm-table-body');
+  if (!tbody) return;
+  if (!data.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="padding:24px;text-align:center;color:var(--sub);">登録されたクライアントがありません</td></tr>';
+    return;
+  }
+  var payLabel = { spot: 'つど払い', month_end: '当月払い（特例）', next_month_end: '翌月末払い（特例）', custom_date: '日付指定（特例）' };
+  tbody.innerHTML = data.map(function(d) {
+    return '<tr style="border-bottom:1px solid var(--border);">'
+      + '<td style="padding:10px 12px;">'
+      + '<p style="font-size:0.85rem;font-weight:700;">' + esc(d.name || '') + '</p>'
+      + (d.email ? '<p style="font-size:0.72rem;color:var(--sub);">' + esc(d.email) + '</p>' : '')
+      + '</td>'
+      + '<td style="padding:10px 12px;font-size:0.82rem;color:var(--sub);">' + esc(d.plan || '—') + '</td>'
+      + '<td style="padding:10px 12px;text-align:right;font-size:0.85rem;font-weight:700;color:#4ADE80;">'
+      + (d.amount ? '¥' + parseInt(d.amount, 10).toLocaleString() : '—') + '</td>'
+      + '<td style="padding:10px 12px;text-align:center;">'
+      + '<span style="font-size:0.75rem;padding:3px 8px;border-radius:10px;background:rgba(37,99,235,0.12);color:#60A5FA;">'
+      + (payLabel[d.pay_type] || d.pay_type || '—') + '</span></td>'
+      + '<td style="padding:10px 12px;font-size:0.78rem;color:var(--sub);">' + esc(d.note || '') + '</td>'
+      + '<td style="padding:10px 12px;text-align:center;">'
+      + '<div style="display:flex;gap:6px;justify-content:center;">'
+      + '<button onclick="editClientMaster(' + d.row + ')" style="padding:4px 10px;font-size:0.75rem;background:rgba(37,99,235,0.12);color:#60A5FA;border:1px solid rgba(37,99,235,0.3);border-radius:5px;cursor:pointer;">編集</button>'
+      + '<button onclick="if(confirm(\'削除しますか？\'))deleteClientMasterRow(' + d.row + ')" style="padding:4px 10px;font-size:0.75rem;background:rgba(239,68,68,0.1);color:#F87171;border:1px solid rgba(239,68,68,0.3);border-radius:5px;cursor:pointer;">削除</button>'
+      + '</div></td>'
+      + '</tr>';
+  }).join('');
+}
+
+function openClientMasterForm(row) {
+  document.getElementById('cm-form-wrap').style.display = 'block';
+  document.getElementById('cm-form-title').textContent = row ? 'クライアント情報を編集' : '新規クライアント追加';
+  document.getElementById('cm-row').value = row || '';
+  if (!row) {
+    document.getElementById('cm-name').value = '';
+    document.getElementById('cm-email').value = '';
+    document.getElementById('cm-plan').value = '';
+    document.getElementById('cm-amount').value = '';
+    document.getElementById('cm-pay-type').value = 'spot';
+    document.getElementById('cm-note').value = '';
+  }
+  document.getElementById('cm-name').focus();
+}
+
+function closeClientMasterForm() {
+  document.getElementById('cm-form-wrap').style.display = 'none';
+}
+
+function editClientMaster(row) {
+  var d = _clientMasterData.find(function(x) { return x.row === row; });
+  if (!d) { alert('データが見つかりません'); return; }
+  openClientMasterForm(row);
+  document.getElementById('cm-name').value = d.name || '';
+  document.getElementById('cm-email').value = d.email || '';
+  document.getElementById('cm-plan').value = d.plan || '';
+  document.getElementById('cm-amount').value = d.amount || '';
+  document.getElementById('cm-pay-type').value = d.pay_type || 'spot';
+  document.getElementById('cm-note').value = d.note || '';
+}
+
+async function saveClientMaster() {
+  var name = document.getElementById('cm-name').value.trim();
+  if (!name) { alert('クライアント名は必須です'); return; }
+  var row = document.getElementById('cm-row').value;
+  var btn = document.querySelector('#cm-form-wrap button[onclick="saveClientMaster()"]');
+  if (btn) { btn.disabled = true; btn.textContent = '保存中...'; }
+  try {
+    await gasFetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'client_master_save',
+        key: getAdminPw(),
+        row: row ? parseInt(row, 10) : null,
+        name: name,
+        email: document.getElementById('cm-email').value.trim(),
+        plan: document.getElementById('cm-plan').value.trim(),
+        amount: document.getElementById('cm-amount').value.trim(),
+        pay_type: document.getElementById('cm-pay-type').value,
+        note: document.getElementById('cm-note').value.trim()
+      })
+    });
+    closeClientMasterForm();
+    loadClientMaster();
+  } catch(e) {
+    alert('保存に失敗しました: ' + e.message);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '💾 保存'; }
+  }
+}
+
+async function deleteClientMasterRow(row) {
+  try {
+    await gasFetch(GAS_URL + '?action=client_master_delete&key=' + encodeURIComponent(getAdminPw()) + '&row=' + row);
+    loadClientMaster();
+  } catch(e) {
+    alert('削除に失敗しました');
+  }
+}
+
+function populateClientDatalist() {
+  // pl-client-listをクライアントマスタで補完
+  var dl = document.getElementById('pl-client-list');
+  if (!dl) return;
+  dl.innerHTML = _clientMasterData.map(function(d) {
+    return '<option value="' + esc(d.name || '') + '">';
+  }).join('');
+  // 振込依頼モーダルでも補完（pm-client-datalistが存在する場合）
+  var dl2 = document.getElementById('pm-client-datalist');
+  if (dl2) dl2.innerHTML = dl.innerHTML;
+}
+
+// 振込依頼モーダルで名前からクライアントマスタを自動補完
+function applyClientMasterToPaymentModal(name) {
+  if (!name || !_clientMasterData.length) return;
+  var d = _clientMasterData.find(function(x) { return x.name === name; });
+  if (!d) return;
+  if (d.amount) {
+    var amtEl = document.getElementById('pm-amount');
+    if (amtEl && !amtEl.value) amtEl.value = d.amount;
+  }
+  if (d.pay_type && d.pay_type !== 'spot') {
+    // 特例払いを自動展開してセット
+    var pts = document.querySelectorAll('.special-pay-option');
+    pts.forEach(function(o) { o.style.display = ''; });
+    var btn = document.getElementById('pm-special-pay-btn');
+    if (btn) { btn.textContent = '🔓 特例払い設定済み'; btn.style.color = '#F59E0B'; }
+    document.getElementById('pm-pay-type').value = d.pay_type;
+    toggleDateInputVisibility();
+  }
+}
+
 </script>
 
 <!-- ── Modal ── -->
@@ -2371,7 +2738,7 @@ function exportCSV() {
 }
 
 // ── Tab switch ──
-const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps','partner-apps','private-link'];
+const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps','partner-apps','private-link','client-master'];
 function switchAdminTab(tab) {
   ADMIN_TABS.forEach(t => {
     document.getElementById('tab-' + t).style.display = t === tab ? '' : 'none';
@@ -2391,6 +2758,8 @@ function switchAdminTab(tab) {
   if (tab === 'content')     loadLpContent();
   if (tab === 'editor-apps')  loadEditorApps();
   if (tab === 'partner-apps') { loadPartnerRewards(); loadPartnerApps(); }
+  if (tab === 'private-link') loadPrivateLinks();
+  if (tab === 'client-master') loadClientMaster();
 }
 
 // ── LP コンテンツ編集 ─────────────────────────────────────────

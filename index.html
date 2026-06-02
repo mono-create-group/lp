@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- build:v20260602-3 -->
+<!-- build:v20260602-6 -->
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 <script>
 // ── キャッシュ自動更新 ──────────────────────────────────────────
 (function(){
-  var BUILT = 'v20260602-5';
+  var BUILT = 'v20260602-6';
   fetch('/lp/version.json?_=' + Date.now(), {cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(d){
@@ -3783,6 +3783,63 @@ window.addEventListener('scroll', function() {
     else nav.classList.remove('nav-scrolled');
   }
 }, { passive: true });
+
+/* ════════════════════════════════════════════════════════════════
+   個別提案リンク トークン版（?t=TOKEN）
+   GAS から private_link_get でプラン情報を取得してCPBバナーを表示
+   ════════════════════════════════════════════════════════════════ */
+(function() {
+  var sp = new URLSearchParams(location.search);
+  var token = sp.get('t');
+  if (!token) return;
+  if (window.__customPlan) return; // ?sv=1 が先に処理済みなら重複しない
+
+  var GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
+
+  fetch(GAS_URL + '?action=private_link_get&t=' + encodeURIComponent(token), { mode: 'cors' })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (!d || !d.ok || !d.data) {
+        // 無効 or 期限切れ → 静かに無視（通常LPとして表示）
+        return;
+      }
+      var link = d.data;
+      var price  = link.amount ? parseInt(link.amount, 10) : 0;
+      var plan   = link.plan   || '個別プラン';
+      var note   = link.note   || '';
+      var client = link.client || '';
+
+      // CPBバナーを表示
+      var bar = document.getElementById('custom-plan-bar');
+      if (bar) bar.classList.add('visible');
+      var nameEl  = document.getElementById('cpb-client-name');
+      var planEl  = document.getElementById('cpb-plan-name');
+      var priceEl = document.getElementById('cpb-price');
+      if (nameEl)  nameEl.textContent  = client ? client + ' 様へのご提案' : 'お客様専用のご提案';
+      if (planEl)  planEl.textContent  = plan + (note ? '（' + note + '）' : '');
+      if (priceEl) priceEl.textContent = price > 0 ? '¥' + price.toLocaleString() : '';
+
+      // ヒアリングURLがあれば申し込みボタンを変更
+      if (link.hearing_url) {
+        var btn = bar.querySelector('.cpb-btn-primary');
+        if (btn) {
+          btn.textContent = 'ヒアリングシートへ →';
+          btn.onclick = function() {
+            window.location.href = link.hearing_url;
+          };
+        }
+      }
+
+      // 閲覧記録
+      fetch(GAS_URL + '?action=private_link_view&t=' + encodeURIComponent(token), { mode: 'no-cors' }).catch(function(){});
+
+      // 問い合わせフォームでも使えるように保存
+      window.__customPlan = { price: price, plan: plan, note: note, client: client, token: token };
+    })
+    .catch(function() {
+      // ネットワークエラー → 通常LPとして表示、エラー表示なし
+    });
+})();
 </script>
 
 
