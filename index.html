@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- build:v20260602-7 -->
+<!-- build:v20260602-8 -->
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 <script>
 // ── キャッシュ自動更新 ──────────────────────────────────────────
 (function(){
-  var BUILT = 'v20260602-7';
+  var BUILT = 'v20260602-8';
   fetch('/lp/version.json?_=' + Date.now(), {cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(d){
@@ -289,7 +289,7 @@ a { text-decoration: none; color: inherit; }
 
 /* ── Nav ── */
 nav {
-  position: fixed; top: 40px; left: 0; right: 0; z-index: 100;
+  position: fixed; top: var(--ref-bar-h, 40px); left: 0; right: 0; z-index: 100;
   background: rgba(255,255,255,0.90);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -3775,35 +3775,34 @@ function applyCustomPlan() {
   document.getElementById('custom-plan-bar').style.display = 'none';
 }
 
-/* ── Nav scroll behavior + referral-bar hide ── */
+/* ── Nav scroll behavior + referral-bar adaptive top ── */
 (function() {
   var nav = document.getElementById('main-nav');
   var bar = document.querySelector('.referral-bar');
-  function onScroll() {
-    if (!nav) return;
-    var scrolled = window.scrollY > 60;
-    nav.classList.toggle('nav-scrolled', scrolled);
-    if (bar) {
-      // スクロールしたら referral-bar を非表示にして nav を top:0 に上げる
-      if (scrolled) {
-        bar.style.opacity = '0';
-        bar.style.pointerEvents = 'none';
-        nav.style.top = '0';
-      } else {
-        bar.style.opacity = '1';
-        bar.style.pointerEvents = '';
-        nav.style.top = bar.offsetHeight + 'px';
-      }
-    }
+  var root = document.documentElement;
+
+  function syncBarHeight() {
+    if (!bar) return;
+    var h = window.scrollY > 60 ? 0 : bar.offsetHeight;
+    root.style.setProperty('--ref-bar-h', h + 'px');
   }
-  // 初期化: nav の top を referral-bar の実際の高さに合わせる
-  window.addEventListener('load', function() {
-    if (nav && bar) nav.style.top = bar.offsetHeight + 'px';
-  });
+
+  function onScroll() {
+    var scrolled = window.scrollY > 60;
+    if (nav) nav.classList.toggle('nav-scrolled', scrolled);
+    if (bar) {
+      bar.style.opacity   = scrolled ? '0' : '1';
+      bar.style.pointerEvents = scrolled ? 'none' : '';
+    }
+    syncBarHeight();
+  }
+
+  // 初期化: DOMContentLoaded / load / resize いずれかで高さを同期
+  syncBarHeight();
+  document.addEventListener('DOMContentLoaded', syncBarHeight);
+  window.addEventListener('load', syncBarHeight);
+  window.addEventListener('resize', syncBarHeight, { passive: true });
   window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', function() {
-    if (!window.scrollY && nav && bar) nav.style.top = bar.offsetHeight + 'px';
-  }, { passive: true });
 })();
 
 /* ════════════════════════════════════════════════════════════════
