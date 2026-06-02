@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- build:v20260602-1 -->
+<!-- build:v20260602-2 -->
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 <script>
 // ── キャッシュ自動更新 ──────────────────────────────────────────
 (function(){
-  var BUILT = 'v20260602-1';
+  var BUILT = 'v20260602-2';
   fetch('/lp/version.json?_=' + Date.now(), {cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(d){
@@ -148,8 +148,9 @@
 <style>
 /* ── Referral Bar ── */
 .referral-bar {
-  background: linear-gradient(90deg, #92400E 0%, #B45309 50%, #92400E 100%);
-  color: #FEF3C7;
+  background: linear-gradient(90deg, #0B1422 0%, #162035 50%, #0B1422 100%);
+  border-bottom: 1px solid rgba(59,130,246,0.25);
+  color: rgba(255,255,255,0.75);
   text-align: center;
   font-size: 0.82rem;
   font-weight: 700;
@@ -159,8 +160,8 @@
   top: 0; left: 0; right: 0;
   z-index: 101;
 }
-.referral-bar a { color: #FDE68A; text-decoration: underline; }
-.referral-bar strong { color: #FDE68A; }
+.referral-bar a { color: #60A5FA; text-decoration: underline; }
+.referral-bar strong { color: #93C5FD; }
 .referral-code-badge {
   display: none;
   margin-top: 8px;
@@ -340,7 +341,7 @@ nav.nav-scrolled {
 .hero > * { position: relative; z-index: 1; }
 .hero-grid {
   display: grid;
-  grid-template-columns: 55% 1fr;
+  grid-template-columns: 52% 1fr;
   gap: 56px;
   align-items: center;
   max-width: 1080px;
@@ -363,7 +364,7 @@ nav.nav-scrolled {
   background: linear-gradient(90deg, #60A5FA, #818CF8);
 }
 .hero h1 {
-  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  font-size: clamp(2.4rem, 5.5vw, 4rem);
   font-weight: 900;
   line-height: 1.18;
   margin-bottom: 24px;
@@ -379,44 +380,33 @@ nav.nav-scrolled {
 }
 
 /* ── Achievement Badges (参考: PRONIアイミツ) ── */
+/* Hero trust badges — inline chips */
 .achievement-badges {
-  display: flex; gap: 16px; flex-wrap: wrap;
-  margin-top: 36px;
+  display: flex; gap: 10px; flex-wrap: wrap;
+  margin-top: 32px;
 }
 .achievement-badge {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  width: 110px; height: 110px;
-  border-radius: 50%;
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px;
   background: rgba(255,255,255,0.06);
-  border: 1.5px solid rgba(250,204,21,0.55);
-  text-align: center;
-  padding: 10px 6px;
-  position: relative;
-  box-shadow: 0 0 20px rgba(250,204,21,0.12);
-  backdrop-filter: blur(8px);
-  flex-shrink: 0;
-}
-.achievement-badge::before {
-  content: '';
-  position: absolute; inset: 5px;
-  border-radius: 50%;
-  border: 1px dashed rgba(250,204,21,0.35);
-  pointer-events: none;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  backdrop-filter: blur(12px);
 }
 .achievement-badge-num {
-  font-size: 1.35rem; font-weight: 900; color: #fff;
-  line-height: 1; letter-spacing: -0.03em;
-  font-family: 'Inter', sans-serif;
+  font-size: 1.05rem; font-weight: 900; color: #fff;
+  font-family: 'Inter', sans-serif; letter-spacing: -0.02em;
+  white-space: nowrap;
 }
-.achievement-badge-num span { font-size: 0.72rem; font-weight: 700; color: #FCD34D; }
+.achievement-badge-num span { font-size: 0.72rem; color: #60A5FA; font-weight: 700; }
 .achievement-badge-label {
-  font-size: 0.62rem; font-weight: 700; color: #FCD34D;
-  letter-spacing: 0.03em; line-height: 1.4; margin-top: 4px;
+  font-size: 0.72rem; font-weight: 600; color: rgba(255,255,255,0.55);
+  letter-spacing: 0.01em; line-height: 1.3;
 }
+.achievement-badge::before { display: none; }
 @media (max-width: 480px) {
-  .achievement-badges { gap: 12px; }
-  .achievement-badge { width: 90px; height: 90px; }
-  .achievement-badge-num { font-size: 1.1rem; }
+  .achievement-badges { gap: 8px; }
+  .achievement-badge { padding: 7px 12px; }
 }
 .hero-desc {
   color: rgba(255,255,255,0.68);
@@ -436,64 +426,116 @@ nav.nav-scrolled {
 .hero-badge svg { color: #34D399; flex-shrink: 0; }
 .hero-card { display: none; }
 
-/* ── Hero Visual (editor image + floating stats) ── */
+/* ═══════════════════════════════════════════════════════
+   HERO VISUAL — circular image + floating pills
+   ═══════════════════════════════════════════════════════ */
 .hero-visual {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 48px 72px; /* room for pills on both sides */
 }
-.hero-img-wrap {
+/* Circular glow ring layers */
+.hero-img-ring {
   position: relative;
-  width: 100%;
-  max-width: 420px;
-  margin: 0 auto;
+  width: 320px;
+  height: 320px;
+  flex-shrink: 0;
+}
+.hero-img-ring::before {
+  content: '';
+  position: absolute;
+  inset: -18px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    rgba(59,130,246,0.65),
+    rgba(139,92,246,0.55),
+    rgba(59,130,246,0.0),
+    rgba(59,130,246,0.0),
+    rgba(59,130,246,0.65)
+  );
+  animation: ringRotate 8s linear infinite;
+  filter: blur(2px);
+}
+.hero-img-ring::after {
+  content: '';
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+  background: rgba(5,13,31,0.95);
+}
+@keyframes ringRotate { to { transform: rotate(360deg); } }
+
+/* The circle image itself */
+.hero-img-wrap {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  z-index: 1;
 }
 .hero-img-wrap img {
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
   display: block;
-  border-radius: 24px;
-  filter: drop-shadow(0 0 48px rgba(37,99,235,0.35)) drop-shadow(0 24px 64px rgba(0,0,0,0.6));
-  animation: heroFloat 6s ease-in-out infinite;
+  animation: heroFloat 7s ease-in-out infinite;
 }
 @keyframes heroFloat {
-  0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
+  0%,100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-10px) scale(1.02); }
 }
-/* Floating stat pills */
+
+/* Floating stat pills — positioned relative to .hero-visual */
 .hero-float {
   position: absolute;
-  background: rgba(255,255,255,0.10);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255,255,255,0.20);
-  border-radius: 12px;
-  padding: 10px 14px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 14px;
+  padding: 10px 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
   white-space: nowrap;
+  z-index: 10;
 }
+.hero-float-icon { font-size: 1rem; margin-bottom: 2px; }
 .hero-float-val {
   display: block;
-  font-size: 1rem; font-weight: 900; color: #fff;
-  font-family: 'Inter', sans-serif; letter-spacing: -0.02em;
+  font-size: 1.05rem; font-weight: 900; color: #fff;
+  font-family: 'Inter', sans-serif; letter-spacing: -0.02em; line-height: 1;
 }
 .hero-float-lbl {
   display: block;
-  font-size: 0.68rem; color: rgba(255,255,255,0.62); margin-top: 1px;
+  font-size: 0.67rem; color: rgba(255,255,255,0.55); margin-top: 3px;
+  font-weight: 500;
 }
-.hero-float--1 { top: 12%; left: -10%; animation: floatA 5s ease-in-out infinite; }
-.hero-float--2 { top: 44%; right: -12%; animation: floatB 5.5s ease-in-out infinite; }
-.hero-float--3 { bottom: 12%; left: -8%; animation: floatA 6s ease-in-out infinite 1s; }
-@keyframes floatA { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
-@keyframes floatB { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
+.hero-float--1 {
+  top: 18%; left: -8px;
+  animation: pill1 5s ease-in-out infinite;
+}
+.hero-float--2 {
+  top: 42%; right: -8px;
+  animation: pill2 5.5s ease-in-out infinite;
+}
+.hero-float--3 {
+  bottom: 18%; left: 12%;
+  animation: pill1 6.5s ease-in-out infinite 0.8s;
+}
+@keyframes pill1 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }
+@keyframes pill2 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(7px)} }
+
 @media (max-width: 768px) {
-  .hero-float--1 { left: 0; top: 4%; }
-  .hero-float--2 { right: 0; top: 40%; }
-  .hero-float--3 { left: 0; bottom: 4%; }
+  .hero-visual { padding: 36px 48px; }
+  .hero-img-ring { width: 260px; height: 260px; }
+  .hero-float--1 { left: -4px; }
+  .hero-float--2 { right: -4px; }
 }
 
-/* keep hero-stat and hero-card-label hidden */
+/* keep legacy hero-stat hidden */
+.hero-card { display: none; }
 .hero-stat, .hero-card-label { display: none; }
 .hero-stat-value, .hero-stat-label { display: none; }
 
@@ -1352,7 +1394,7 @@ footer {
 <nav id="main-nav">
   <div class="nav-logo">
     <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" style="display:flex;align-items:center;gap:8px;">
-      <img src="img/mc-logo-full.png" alt="mono.create" style="height:34px;width:auto;filter:brightness(0) invert(1);">
+      <img src="img/mc-logo-full.png" alt="mono.create" style="height:42px;width:auto;filter:brightness(0) invert(1);">
       <span class="nav-logo-text" style="display:none;">mono.create</span>
     </a>
   </div>
@@ -1389,41 +1431,74 @@ footer {
       </div>
       <div class="achievement-badges">
         <div class="achievement-badge">
-          <p class="achievement-badge-num">丸投<span>げOK</span></p>
-          <p class="achievement-badge-label">完全外注<br>お任せ対応</p>
+          <span style="font-size:1.1rem;">✅</span>
+          <div>
+            <p class="achievement-badge-num">丸投げ<span>OK</span></p>
+            <p class="achievement-badge-label">完全外注対応</p>
+          </div>
         </div>
         <div class="achievement-badge">
-          <p class="achievement-badge-num">3<span>回</span></p>
-          <p class="achievement-badge-label">修正<br>無料保証</p>
+          <span style="font-size:1.1rem;">🔄</span>
+          <div>
+            <p class="achievement-badge-num">修正<span>3回</span>無料</p>
+            <p class="achievement-badge-label">何度でも丁寧に</p>
+          </div>
         </div>
         <div class="achievement-badge">
-          <p class="achievement-badge-num">全<span>ジャンル</span></p>
-          <p class="achievement-badge-label">業種・用途<br>対応実績あり</p>
+          <span style="font-size:1.1rem;">⚡</span>
+          <div>
+            <p class="achievement-badge-num">最短<span>当日</span>納品</p>
+            <p class="achievement-badge-label">12時までのご依頼</p>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Hero Visual: Editor Image -->
+    <!-- Hero Visual: Editor Image (circle + floating pills) -->
     <div class="hero-visual">
-      <div class="hero-img-wrap">
-        <img src="img/editor-hero.png" alt="mono.create プロ編集者チーム" loading="eager">
-        <!-- Floating stat pills -->
-        <div class="hero-float hero-float--1">
-          <span class="hero-float-val">¥4,000〜</span>
-          <span class="hero-float-lbl">ショート1本</span>
-        </div>
-        <div class="hero-float hero-float--2">
-          <span class="hero-float-val">最短当日</span>
-          <span class="hero-float-lbl">納品対応</span>
-        </div>
-        <div class="hero-float hero-float--3">
-          <span class="hero-float-val">修正3回</span>
-          <span class="hero-float-lbl">無料保証</span>
+      <!-- Floating stat pills — OUTSIDE the image circle -->
+      <div class="hero-float hero-float--1">
+        <span class="hero-float-icon">💰</span>
+        <span class="hero-float-val">¥4,000〜</span>
+        <span class="hero-float-lbl">ショート1本</span>
+      </div>
+      <div class="hero-float hero-float--2">
+        <span class="hero-float-icon">⚡</span>
+        <span class="hero-float-val">最短当日</span>
+        <span class="hero-float-lbl">納品対応</span>
+      </div>
+      <div class="hero-float hero-float--3">
+        <span class="hero-float-icon">🔄</span>
+        <span class="hero-float-val">修正3回</span>
+        <span class="hero-float-lbl">無料保証</span>
+      </div>
+      <!-- Circular ring + image -->
+      <div class="hero-img-ring">
+        <div class="hero-img-wrap">
+          <img src="img/editor-hero.png" alt="mono.create プロ編集者チーム" loading="eager">
         </div>
       </div>
     </div>
   </div>
 </section>
+
+<!-- ── Hero Metrics Strip ── -->
+<div style="background:#050D1F;border-top:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.06);padding:36px 24px;">
+  <div style="max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,0.06);">
+    <div style="background:#050D1F;text-align:center;padding:28px 16px;">
+      <p style="font-size:2.8rem;font-weight:900;color:#fff;font-family:'Inter',sans-serif;letter-spacing:-0.04em;line-height:1;margin-bottom:8px;">¥4,000<span style="font-size:1.2rem;color:#60A5FA;">〜</span></p>
+      <p style="font-size:0.78rem;color:rgba(255,255,255,0.45);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;">ショート1本から</p>
+    </div>
+    <div style="background:#050D1F;text-align:center;padding:28px 16px;">
+      <p style="font-size:2.8rem;font-weight:900;color:#fff;font-family:'Inter',sans-serif;letter-spacing:-0.04em;line-height:1;margin-bottom:8px;"><span style="font-size:1.2rem;color:#60A5FA;">最短</span>当日</p>
+      <p style="font-size:0.78rem;color:rgba(255,255,255,0.45);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;">納品スピード</p>
+    </div>
+    <div style="background:#050D1F;text-align:center;padding:28px 16px;">
+      <p style="font-size:2.8rem;font-weight:900;color:#fff;font-family:'Inter',sans-serif;letter-spacing:-0.04em;line-height:1;margin-bottom:8px;">3<span style="font-size:1.2rem;color:#60A5FA;">回</span></p>
+      <p style="font-size:0.78rem;color:rgba(255,255,255,0.45);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;">修正無料保証</p>
+    </div>
+  </div>
+</div>
 
 <!-- ── Marquee ── -->
 <div class="marquee-wrap">
