@@ -91,22 +91,49 @@ var HEARING_MAP = {
 // お客様への自動返信（メールアドレスがある場合のみ送信）
 function sendAutoReply(toEmail, name, subject, bodyLines) {
   if (!toEmail || toEmail.indexOf('@') === -1) return;
-  var greeting = name ? name + ' 様\n\n' : '';
-  var footer = [
+  var greetingTxt = name ? name + ' 様\n\n' : '';
+  var footerLines = [
     '',
     '─────────────────────────',
     'mono.create',
     'メール: ' + OWNER_EMAIL,
     'HP: ' + LP_BASE_URL,
     '─────────────────────────'
-  ].join('\n');
-  var body = greeting + bodyLines.join('\n') + footer;
+  ];
+  var plainBody = greetingTxt + bodyLines.join('\n') + footerLines.join('\n');
+
+  // HTML版：URLをクリッカブルリンクに変換
+  function escHtml(s) {
+    return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function lineToHtml(line) {
+    // URLをaタグに変換
+    return escHtml(line).replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" style="color:#2563EB;word-break:break-all;">$1</a>');
+  }
+  var greetingHtml = name ? '<p style="margin:0 0 16px;">' + escHtml(name) + ' 様</p>' : '';
+  var bodyHtml = bodyLines.map(function(l) {
+    if (!l) return '<br>';
+    return '<p style="margin:0 0 6px;line-height:1.7;">' + lineToHtml(l) + '</p>';
+  }).join('');
+  var footerHtml = footerLines.map(function(l) {
+    return '<p style="margin:0;color:#64748B;font-size:0.85em;">' + escHtml(l) + '</p>';
+  }).join('');
+  var htmlBody = [
+    '<div style="font-family:\'Noto Sans JP\',sans-serif;font-size:15px;color:#1E293B;max-width:600px;margin:0 auto;">',
+    greetingHtml,
+    bodyHtml,
+    '<hr style="border:none;border-top:1px solid #E2E8F0;margin:20px 0;">',
+    footerHtml,
+    '</div>'
+  ].join('');
+
   MailApp.sendEmail({
-    to:      toEmail,
-    subject: subject,
-    body:    body,
-    name:    'mono.create',
-    replyTo: OWNER_EMAIL
+    to:       toEmail,
+    subject:  subject,
+    body:     plainBody,
+    htmlBody: htmlBody,
+    name:     'mono.create',
+    replyTo:  OWNER_EMAIL
   });
 }
 

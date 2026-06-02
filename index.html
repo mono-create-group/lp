@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- build:v20260602-6 -->
+<!-- build:v20260602-7 -->
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 <script>
 // ── キャッシュ自動更新 ──────────────────────────────────────────
 (function(){
-  var BUILT = 'v20260602-6';
+  var BUILT = 'v20260602-7';
   fetch('/lp/version.json?_=' + Date.now(), {cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(d){
@@ -1843,8 +1843,8 @@ footer {
     <span class="marquee-item"><span class="marquee-dot">◆</span> ナイト業界</span>
     <span class="marquee-item"><span class="marquee-dot">◆</span> スポーツ解説</span>
     <span class="marquee-item"><span class="marquee-dot">◆</span> SNS広告</span>
-    <span class="marquee-item"><span class="marquee-dot">◆</span> 縦型ショート動画</span>
-    <span class="marquee-item"><span class="marquee-dot">◆</span> ショート動画</span>
+    <span class="marquee-item"><span class="marquee-dot">◆</span> ゲーム実況</span>
+    <span class="marquee-item"><span class="marquee-dot">◆</span> 教育・解説</span>
     <!-- 繰り返し -->
     <span class="marquee-item"><span class="marquee-dot">◆</span> ビジネス系</span>
     <span class="marquee-item"><span class="marquee-dot">◆</span> エンタメ系</span>
@@ -1852,8 +1852,8 @@ footer {
     <span class="marquee-item"><span class="marquee-dot">◆</span> ナイト業界</span>
     <span class="marquee-item"><span class="marquee-dot">◆</span> スポーツ解説</span>
     <span class="marquee-item"><span class="marquee-dot">◆</span> SNS広告</span>
-    <span class="marquee-item"><span class="marquee-dot">◆</span> 縦型ショート動画</span>
-    <span class="marquee-item"><span class="marquee-dot">◆</span> ショート動画</span>
+    <span class="marquee-item"><span class="marquee-dot">◆</span> ゲーム実況</span>
+    <span class="marquee-item"><span class="marquee-dot">◆</span> 教育・解説</span>
   </div>
 </div>
 
@@ -3775,14 +3775,36 @@ function applyCustomPlan() {
   document.getElementById('custom-plan-bar').style.display = 'none';
 }
 
-/* ── Nav scroll behavior ── */
-window.addEventListener('scroll', function() {
+/* ── Nav scroll behavior + referral-bar hide ── */
+(function() {
   var nav = document.getElementById('main-nav');
-  if (nav) {
-    if (window.scrollY > 80) nav.classList.add('nav-scrolled');
-    else nav.classList.remove('nav-scrolled');
+  var bar = document.querySelector('.referral-bar');
+  function onScroll() {
+    if (!nav) return;
+    var scrolled = window.scrollY > 60;
+    nav.classList.toggle('nav-scrolled', scrolled);
+    if (bar) {
+      // スクロールしたら referral-bar を非表示にして nav を top:0 に上げる
+      if (scrolled) {
+        bar.style.opacity = '0';
+        bar.style.pointerEvents = 'none';
+        nav.style.top = '0';
+      } else {
+        bar.style.opacity = '1';
+        bar.style.pointerEvents = '';
+        nav.style.top = bar.offsetHeight + 'px';
+      }
+    }
   }
-}, { passive: true });
+  // 初期化: nav の top を referral-bar の実際の高さに合わせる
+  window.addEventListener('load', function() {
+    if (nav && bar) nav.style.top = bar.offsetHeight + 'px';
+  });
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', function() {
+    if (!window.scrollY && nav && bar) nav.style.top = bar.offsetHeight + 'px';
+  }, { passive: true });
+})();
 
 /* ════════════════════════════════════════════════════════════════
    個別提案リンク トークン版（?t=TOKEN）
