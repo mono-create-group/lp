@@ -379,6 +379,14 @@ function doGet(e) {
     return getLpContent();
   }
 
+  // ── 認証不要：クライアントがトークンリンクでアクセスする ────────
+  if (action === 'private_link_get') {
+    return getPrivateLink(e.parameter.t || '');
+  }
+  if (action === 'private_link_view') {
+    return recordPrivateLinkView(e.parameter.t || '');
+  }
+
   // ── 以降は管理者キー必須 ──────────────────────────────────────
   if (key !== ADMIN_KEY) {
     return jsonResponse({ error: 'unauthorized' });

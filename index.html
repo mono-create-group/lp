@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- build:v20260602-8 -->
+<!-- build:v20260602-9 -->
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 <script>
 // ── キャッシュ自動更新 ──────────────────────────────────────────
 (function(){
-  var BUILT = 'v20260602-8';
+  var BUILT = 'v20260602-9';
   fetch('/lp/version.json?_=' + Date.now(), {cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(d){
@@ -3820,11 +3820,12 @@ function applyCustomPlan() {
   fetch(GAS_URL + '?action=private_link_get&t=' + encodeURIComponent(token), { mode: 'cors' })
     .then(function(r) { return r.json(); })
     .then(function(d) {
-      if (!d || !d.ok || !d.data) {
+      if (!d || !d.success) {
         // 無効 or 期限切れ → 静かに無視（通常LPとして表示）
         return;
       }
-      var link = d.data;
+      // GAS は { success:true, token, client, plan, amount, ... } をフラットに返す
+      var link = d;
       var price  = link.amount ? parseInt(link.amount, 10) : 0;
       var plan   = link.plan   || '個別プラン';
       var note   = link.note   || '';
