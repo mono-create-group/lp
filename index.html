@@ -2213,7 +2213,7 @@ section { contain: layout style; }
 
   /* ── Hero ── */
   .hero {
-    padding: 120px 16px 52px !important;
+    padding: calc(var(--ref-bar-h, 30px) + 68px) 16px 52px !important;
     min-height: auto !important;
   }
   .hero-grid {
@@ -2418,8 +2418,8 @@ section { contain: layout style; }
 
 <!-- ── Referral Announcement Bar ── -->
 <div class="referral-bar">
-  🎁 <strong>紹介コードでさらに+5%OFF</strong>（初回のみ）｜ お問い合わせフォームにコードを入力するだけ。通常価格に<strong>+5%引き</strong>、すでに10%割引中のプランは<strong>+5% = 最大15%引き</strong>。
-  <a href="#contact" style="margin-left:10px;">今すぐ確認 →</a>
+  <span class="pc-only">🎁 <strong>紹介コードでさらに+5%OFF</strong>（初回のみ）｜ お問い合わせフォームにコードを入力するだけ。通常価格に<strong>+5%引き</strong>、すでに10%割引中のプランは<strong>+5% = 最大15%引き</strong>。<a href="#contact" style="margin-left:10px;">今すぐ確認 →</a></span>
+  <span class="sp-only">🎁 <strong>紹介コードで最大15%OFF</strong>（初回のみ）<a href="#contact" style="margin-left:8px;">今すぐ確認 →</a></span>
 </div>
 
 <!-- ── Navigation ── -->
