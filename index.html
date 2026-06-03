@@ -2179,10 +2179,19 @@ section { contain: layout style; }
   h1, h2, h3, h4, p, li, td, th,
   .section-title, .section-sub,
   .hero-desc, .pricing-row-desc,
-  .pack-volume, .strength-label {
+  .pack-volume, .strength-label,
+  .flow-step p {
     word-break: keep-all;
     overflow-wrap: break-word;
     line-break: strict;
+  }
+  .strength-item {
+    overflow: hidden;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .strengths-grid {
+    overflow-x: hidden;
   }
 
   /* ── Referral bar ── */
@@ -2605,7 +2614,7 @@ section { contain: layout style; }
   <div class="container">
     <p class="label">SERVICES</p>
     <h2 class="section-title fade-up"><span class="mark">提供サービス</span></h2>
-    <p class="section-sub fade-up">編集単体から運用丸投げまで、ビジネスフェーズに合わせて選べます。</p>
+    <p class="section-sub fade-up">編集単体から運用丸投げまで、<br class="sp-br">ビジネスフェーズに合わせて選べます。</p>
     <div class="services-grid stagger-children">
       <div class="service-card fade-up">
         <div class="service-icon">📱</div>
@@ -2616,7 +2625,7 @@ section { contain: layout style; }
       <div class="service-card fade-up">
         <div class="service-icon">🎬</div>
         <h3>YouTube長尺動画編集</h3>
-        <p>解説・セミナー・Vlogなど10〜30分超の長尺動画に対応。<br>カット・テロップ・BGM・SE・チャプター設定まで一括対応。</p>
+        <p>解説・セミナー・Vlogなど<br class="sp-br">10〜30分超の長尺動画に対応。<br>カット・テロップ・BGM・SE・<br class="sp-br">チャプター設定まで一括対応。</p>
         <span class="service-badge">¥20,000〜 / 1本</span>
       </div>
       <div class="service-card fade-up">
@@ -2628,13 +2637,13 @@ section { contain: layout style; }
       <div class="service-card fade-up">
         <div class="service-icon">📊</div>
         <h3>編集コンサルティング</h3>
-        <p>アカウント分析・市場調査をもとに、バズる動画の設計方針を提案。<br>再生数改善に直結する具体的アドバイス。</p>
+        <p>アカウント分析・市場調査をもとに、<br class="sp-br">バズる動画の設計方針を提案。<br>再生数改善に直結する具体的アドバイス。</p>
         <span class="service-badge">¥5,000 / 1時間</span>
       </div>
       <div class="service-card fade-up">
         <div class="service-icon">👥</div>
         <h3>編集者派遣</h3>
-        <p>即戦力の動画編集者をチームに追加。<br>採用・育成コストをゼロにしながら、すぐに生産力を上げられます。</p>
+        <p>即戦力の動画編集者をチームに追加。<br>採用・育成コストをゼロにしながら、<br class="sp-br">すぐに生産力を上げられます。</p>
         <span class="service-badge">ショート ¥2,500〜 / 本</span>
         <span class="service-badge" style="margin-top:6px;display:inline-block;">長尺 ¥6,000〜 / 本</span>
       </div>
@@ -2657,17 +2666,17 @@ section { contain: layout style; }
       <div class="strength-item fade-up">
         <div class="strength-num">01</div>
         <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;">マーケター視点の編集設計</h3>
-        <p class="strength-label">「視聴維持率」「コンバージョン」を意識した動画構成。<br>バズるだけでなく、ビジネス成果に直結する編集を提供します。</p>
+        <p class="strength-label">「視聴維持率」「コンバージョン」を<br class="sp-br">意識した動画構成。<br>バズるだけでなく、<br class="sp-br">ビジネス成果に直結する編集を提供します。</p>
       </div>
       <div class="strength-item fade-up">
         <div class="strength-num">02</div>
         <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;">チームによる迅速納品</h3>
-        <p class="strength-label">プロのフリーランス人材が多数所属しているため、依頼が増えてもキャパオーバーしません。<br>ご依頼の内容に合わせて、安定した品質と納期を実現します。</p>
+        <p class="strength-label">プロのフリーランス人材が多数所属しているため、<br class="sp-br">依頼が増えてもキャパオーバーしません。<br>ご依頼の内容に合わせて、<br class="sp-br">安定した品質と納期を実現します。</p>
       </div>
       <div class="strength-item fade-up">
         <div class="strength-num">03</div>
         <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;">制作→運用まで一気通貫</h3>
-        <p class="strength-label">編集単体だけでなく、投稿代行・SNS運用代行・アカウント分析・コンサルまで対応。<br>「丸投げ」できるパートナーです。</p>
+        <p class="strength-label">編集単体だけでなく、<br class="sp-br">投稿代行・SNS運用代行・<br class="sp-br">アカウント分析・コンサルまで対応。<br>「丸投げ」できるパートナーです。</p>
       </div>
     </div>
   </div>
@@ -2678,7 +2687,7 @@ section { contain: layout style; }
   <div class="container">
     <p class="label">WORKS</p>
     <h2 class="section-title fade-up">制作実績</h2>
-    <p class="section-sub fade-up">ビジネス系からエンタメ系まで、<br class="sp-br">採用や集客を目的にした多様なジャンルに対応しております。</p>
+    <p class="section-sub fade-up">ビジネス系からエンタメ系まで、<br class="sp-br">採用や集客を目的にした<br class="sp-br">多様なジャンルに対応しております。</p>
 
     <!-- ポートフォリオ ショーケース -->
     <div class="pf-showcase">
@@ -2717,7 +2726,7 @@ section { contain: layout style; }
     <div class="fade-up" style="text-align:center;margin-bottom:32px;">
       <span style="display:inline-block;background:#FEF3C7;border:1px solid #D97706;color:#B45309;font-size:0.78rem;font-weight:800;padding:4px 16px;border-radius:20px;margin-bottom:12px;">期間限定</span>
       <h2 class="section-title" style="font-size:1.5rem;">📸 無料ポートフォリオ制作</h2>
-      <p style="color:#64748B;font-size:0.9rem;line-height:1.8;max-width:520px;margin:12px auto 0;">ポートフォリオへの掲載を条件に、<strong>ショート動画1本を完全無料</strong>で編集します。<br>まず品質を体感してください。</p>
+      <p style="color:#64748B;font-size:0.9rem;line-height:1.8;max-width:520px;margin:12px auto 0;">ポートフォリオへの掲載を条件に、<br class="sp-br"><strong>ショート動画1本を完全無料</strong>で編集します。<br>まずクオリティをご確認ください。</p>
     </div>
 
     <!-- 先着表示 & ジャンルグリッド -->
@@ -2733,7 +2742,7 @@ section { contain: layout style; }
         <div>✅ 完全無料（素材のご提供をお願いします）</div>
         <div>✅ テロップ・BGM・SE込み</div>
         <div>✅ 3〜4日納品</div>
-        <div>📌 制作した動画はmono.createのポートフォリオとして掲載させていただきます</div>
+        <div>📌 制作した動画はmono.createの<br class="sp-br">ポートフォリオとして掲載させていただきます</div>
       </div>
 
       <!-- ジャンルカード -->
@@ -2867,7 +2876,7 @@ section { contain: layout style; }
           </div>
           <p class="pricing-price" data-ck="price_manual">¥5,000〜</p>
         </div>
-        <p style="font-size:0.8rem;color:var(--sub);margin-top:20px;padding:0 8px;">※ 修正3回まで無料。4回目以降¥1,000/回（長尺動画は¥5,000/回）。こちら側のミスは無制限対応。</p>
+        <p style="font-size:0.8rem;color:var(--sub);margin-top:20px;padding:0 8px;">※ 修正3回まで無料。<br class="sp-br">4回目以降¥1,000/回（長尺動画は¥5,000/回）。<br class="sp-br">こちら側のミスは無制限対応。</p>
 
         <!-- 編集者派遣 -->
         <p style="font-size:0.9rem;font-weight:700;margin-top:48px;margin-bottom:8px;color:var(--sub);">── 編集者派遣</p>
@@ -2898,7 +2907,7 @@ section { contain: layout style; }
           </ul>
           <a href="#" onclick="openContract('dispatch');return false;" class="btn btn-gold" style="width:100%;justify-content:center;">相談して申し込む →</a>
           <p class="pack-note" style="margin-top:12px;">※ 契約同意後すぐにヒアリングシートへ進みます。</p>
-          <p class="pack-note" style="margin-top:6px;">※ 条件に沿う編集者がご用意できない場合もございますので、あらかじめご了承ください。</p>
+          <p class="pack-note" style="margin-top:6px;">※ 条件に合う編集者がご用意できない場合もございますので、あらかじめご了承ください。</p>
         </div>
       </div>
 
@@ -3254,13 +3263,13 @@ section { contain: layout style; }
       <div class="flow-step fade-up">
         <p class="flow-num">STEP 01</p>
         <h3>無料相談・お問い合わせ</h3>
-        <p>目的・ご予算・参考動画をフォームからお送りください。<br>ChatworkまたはGmailにてご連絡します。</p>
+        <p>目的・ご予算・参考動画を<br class="sp-br">フォームからお送りください。<br>ChatworkまたはGmailにて<br class="sp-br">ご連絡します。</p>
         <a href="#contact" class="flow-pay-link" style="margin-top:10px;">↓ お問い合わせフォームへ</a>
       </div>
       <div class="flow-step fade-up">
         <p class="flow-num">STEP 02</p>
         <h3>ヒアリング</h3>
-        <p>ご要望・ターゲット・納品形式・本数などを詳しくお伺いします。<br>ご不明点はこの段階で全て解決します。</p>
+        <p>ご要望・ターゲット・納品形式・<br class="sp-br">本数などを詳しくお伺いします。<br>ご不明点はこの段階で<br class="sp-br">全て解決します。</p>
       </div>
       <div class="flow-step fade-up">
         <p class="flow-num">STEP 03</p>
@@ -3367,8 +3376,10 @@ section { contain: layout style; }
     <p style="font-size:0.72rem;font-weight:800;letter-spacing:0.14em;color:#F59E0B;margin-bottom:14px;">AFFILIATE &amp; PARTNER</p>
     <h2 style="font-size:1.7rem;font-weight:900;color:#F8FAFC;margin-bottom:10px;line-height:1.35;">紹介するたびに<br><span style="color:#FDE68A;">あなたにも現金報酬が入る</span></h2>
     <p style="font-size:0.84rem;color:#94A3B8;line-height:1.9;margin-bottom:36px;">
-      専用コードを発行。紹介相手には割引、あなたには成約報酬。<br>
-      月1件紹介するだけで副収入になる、シンプルな仕組みです。
+      専用コードを発行。<br>
+      紹介相手には割引<br>
+      あなたには成約報酬。<br><br>
+      紹介するだけで副収入が得られます。
     </p>
 
     <!-- 両者メリット -->
@@ -3960,14 +3971,14 @@ function pfInit(items) {
   var mobileCount = document.getElementById('pf-count-mobile');
   if (mobileGrid) {
     mobileGrid.innerHTML = pfBuildMobileCards(items);
-    if (mobileCount) { mobileCount.textContent = items.length + '本の実績'; mobileCount.style.display = ''; }
+    if (mobileCount) { mobileCount.style.display = 'none'; }
   }
 
   // PCショーケース
   document.getElementById('pf-main-wrap').style.display = '';
   document.getElementById('pf-thumbs-wrap').style.display = '';
   document.getElementById('pf-thumbs').innerHTML = pfBuildThumbs();
-  document.getElementById('pf-count').textContent = items.length + '本の実績';
+  document.getElementById('pf-count').textContent = '';
   pfShowCover(0);
   _pfInitialized = true; // 初期ロード完了 → 以降のthumb切替でscrollIntoView有効
 }
