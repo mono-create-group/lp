@@ -2347,10 +2347,16 @@ section { contain: layout style; }
   .pricing-row-desc { font-size: 0.78rem !important; line-height: 1.7 !important; }
 
   /* 無料トライアルバナー: 1列 */
+  .trial-grid,
   .pricing [style*="grid-template-columns:1fr 1fr"],
   [style*="grid-template-columns: 1fr 1fr"] {
     grid-template-columns: 1fr !important;
     gap: 10px !important;
+  }
+  /* strength-label overflow防止 */
+  .strength-label {
+    overflow-wrap: anywhere !important;
+    word-break: normal !important;
   }
 
   /* Pack cards */
@@ -2634,13 +2640,13 @@ section { contain: layout style; }
       <div class="service-card fade-up">
         <div class="service-icon">🎬</div>
         <h3>YouTube長尺動画編集</h3>
-        <p>解説・セミナー・Vlogなど<br class="sp-br">10〜30分超の長尺動画に対応。<br>カット・テロップ・BGM・SE・<br class="sp-br">チャプター設定まで一括対応。</p>
+        <p>解説・セミナー・Vlogなど<br class="sp-br">10〜30分超の長尺動画に対応。<br>カット・テロップ・BGM・SE<br>チャプター設定まで一括対応</p>
         <span class="service-badge">¥20,000〜 / 1本</span>
       </div>
       <div class="service-card fade-up">
         <div class="service-icon">🎯</div>
         <h3>編集ディレクション・外注管理</h3>
-        <p>アカウントの編集者管理・品質チェック・納品管理をまるごと代行。<br>チームの編集品質を統一します。</p>
+        <p>アカウントの編集者管理・品質チェック<br>納品管理を丸ごと代行</p>
         <span class="service-badge">要相談</span>
       </div>
       <div class="service-card fade-up">
@@ -2821,7 +2827,7 @@ section { contain: layout style; }
     <!-- 無料トライアルバナー -->
     <div class="fade-up" style="background:linear-gradient(135deg,rgba(16,185,129,0.13),rgba(59,130,246,0.08));border:1px solid rgba(16,185,129,0.45);border-radius:16px;padding:28px 32px;margin:36px 0;">
       <p style="font-size:1.2rem;font-weight:800;color:#10B981;margin-bottom:16px;text-align:center;">🎁 無料トライアルあり</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div class="trial-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
         <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.3);border-radius:10px;padding:16px;">
           <p style="font-size:0.8rem;font-weight:800;color:#059669;margin-bottom:8px;">🎬 ショート動画</p>
           <p style="font-size:0.82rem;color:#374151;line-height:1.8;margin:0;">まずは<strong style="color:#059669;">1本を完全無料</strong>で納品。品質を確認してからご契約いただけます。</p>
@@ -2846,7 +2852,7 @@ section { contain: layout style; }
         <div id="svc-edit-short" class="pricing-row fade-up">
           <div>
             <p class="pricing-row-name">ショート動画編集</p>
-            <p class="pricing-row-desc">縦型1本。テロップ・SE・BGM・エフェクト込み。最短当日〜3日納品。</p>
+            <p class="pricing-row-desc">縦型1本。テロップ・SE・BGM・エフェクト込み。<br class="sp-br">最短当日〜3日納品。</p>
           </div>
           <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
             <p class="pricing-price" data-ck="price_edit_short">¥4,000〜</p>
@@ -2885,7 +2891,7 @@ section { contain: layout style; }
           </div>
           <p class="pricing-price" data-ck="price_manual">¥5,000〜</p>
         </div>
-        <p style="font-size:0.8rem;color:var(--sub);margin-top:20px;padding:0 8px;">※ 修正3回まで無料。<br class="sp-br">4回目以降¥1,000/回（長尺動画は¥5,000/回）。<br class="sp-br">こちら側のミスは無制限対応。</p>
+        <p style="font-size:0.8rem;color:var(--sub);margin-top:20px;padding:0 8px;">※ 修正3回まで無料。<br>4回目以降¥1,000/回(長尺動画は¥5,000/回)<br>こちら側のミスは無制限対応</p>
 
         <!-- 編集者派遣 -->
         <p style="font-size:0.9rem;font-weight:700;margin-top:48px;margin-bottom:8px;color:var(--sub);">── 編集者派遣</p>
