@@ -2370,6 +2370,18 @@ section { contain: layout style; }
   .flow-step { padding: 18px 14px !important; }
   .flow-step::before { display: none !important; }
 
+  /* ── Affiliate flow / partner grids ── */
+  .affiliate-flow-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .affiliate-partner-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .affiliate-partner-grid p[style*="font-weight:800"] {
+    word-break: break-all !important;
+    white-space: normal !important;
+  }
+
   /* ── FAQ ── */
   .faq-q { font-size: 0.88rem !important; padding: 14px 16px !important; }
   .faq-a { font-size: 0.82rem !important; }
@@ -3438,7 +3450,7 @@ section { contain: layout style; }
     </div>
 
     <!-- 紹介の流れ -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:36px;text-align:center;">
+    <div class="affiliate-flow-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:36px;text-align:center;">
       <div style="background:#131F35;border:1px solid #1E2D4A;border-radius:12px;padding:16px 12px;">
         <p style="font-size:1.4rem;margin-bottom:8px;">📝</p>
         <p style="font-size:0.72rem;font-weight:800;color:#F1F5F9;margin-bottom:4px;">① パートナー登録</p>
@@ -3457,7 +3469,7 @@ section { contain: layout style; }
     </div>
 
     <!-- パートナータイプ -->
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:32px;text-align:left;">
+    <div class="affiliate-partner-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:32px;text-align:left;">
       <div style="background:#131F35;border:1px solid #1E2D4A;border-radius:10px;padding:14px 16px;">
         <p style="font-size:1rem;margin-bottom:5px;">🔍</p>
         <p style="font-weight:800;color:#F1F5F9;font-size:0.8rem;margin-bottom:3px;">SEO・比較サイト</p>
