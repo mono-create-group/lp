@@ -324,6 +324,7 @@ nav.nav-scrolled {
   padding: 160px 24px 80px;
   position: relative;
   color: #0F172A;
+  overflow: hidden; /* hero-blobがはみ出してbody幅を広げないよう封じ込め */
 }
 .hero::before {
   content: '';
@@ -821,6 +822,9 @@ nav.nav-scrolled {
   font-weight: 700;
 }
 /* ── Pricing ── */
+/* 無料トライアルバナー: PC は2列 */
+.trial-grid { grid-template-columns: 1fr 1fr; }
+
 .pricing { background: var(--bg2); }
 .pricing-tabs {
   display: flex; gap: 8px;
@@ -1345,7 +1349,8 @@ footer {
 .section-title { letter-spacing: -0.02em; }
 
 /* ── Footer logo ── */
-.footer-logo-img { height: 28px; width: auto; display: inline-block; filter: brightness(0) invert(1); margin-bottom: 14px; }
+.footer-logo-img { display: none !important; } /* PNG白背景問題のためテキストロゴに切替 */
+footer .footer-logo { color: rgba(255,255,255,0.92) !important; margin-bottom: 8px !important; }
 
 /* ── Pricing row improvements ── */
 .pricing-row {
@@ -2380,6 +2385,19 @@ section { contain: layout style; }
     max-width: 100vw !important;
     position: relative;
   }
+  /* 全セクション・コンテナを横幅に封じ込め */
+  section, .section, .container,
+  .contact, .contact-wrap, .form-card,
+  .form-row, .referral-code-badge {
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  /* 紹介コードの長テキストを折り返す */
+  .form-row p, .form-row label {
+    word-break: break-all !important;
+    overflow-wrap: anywhere !important;
+  }
 
   /* ── トライアルバナー padding縮小 ── */
   .trial-banner {
@@ -2447,10 +2465,18 @@ section { contain: layout style; }
     bottom: 12px !important;
     right: 12px !important;
     left: 12px !important;
+    width: auto !important;   /* left+right で幅を決める */
+    max-width: calc(100vw - 24px) !important;
     justify-content: center !important;
     padding: 14px 12px !important;
     font-size: 0.88rem !important;
     border-radius: 14px !important;
+  }
+  /* ── Footer overflow封じ込め ── */
+  footer {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+    box-sizing: border-box !important;
   }
 
   /* ── Contract modal ── */
@@ -2881,7 +2907,7 @@ section { contain: layout style; }
     <!-- 無料トライアルバナー -->
     <div class="fade-up trial-banner" style="background:linear-gradient(135deg,rgba(16,185,129,0.13),rgba(59,130,246,0.08));border:1px solid rgba(16,185,129,0.45);border-radius:16px;padding:28px 32px;margin:36px 0;">
       <p style="font-size:1.2rem;font-weight:800;color:#10B981;margin-bottom:16px;text-align:center;">🎁 無料トライアルあり</p>
-      <div class="trial-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div class="trial-grid" style="display:grid;gap:16px;">
         <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.3);border-radius:10px;padding:16px;">
           <p style="font-size:0.8rem;font-weight:800;color:#059669;margin-bottom:8px;">🎬 ショート動画</p>
           <p style="font-size:0.82rem;color:#374151;line-height:1.8;margin:0;">まずは<strong style="color:#059669;">1本を完全無料</strong>で納品。品質を確認してからご契約いただけます。</p>
@@ -2917,7 +2943,7 @@ section { contain: layout style; }
           <div style="flex:1;">
             <div style="display:flex;align-items:center;gap:10px;">
               <p class="pricing-row-name">長尺動画編集</p>
-              <span class="pricing-tag">YouTube・セミナー等</span>
+              <span class="pricing-tag">YouTube<br>セミナー等</span>
             </div>
             <p class="pricing-row-desc">納品7〜8日。動画の長さによって料金が変わります。<span class="longform-toggle-hint">▼ 詳細を見る</span><br><span style="font-size:0.75rem;color:#60A5FA;">🎁 トライアル：まず30秒を無償編集 → 問題なければ1本納品・1本分の料金</span></p>
             <div class="longform-detail">
@@ -3712,7 +3738,7 @@ section { contain: layout style; }
       <h4>💰 料金・お支払い</h4>
       <ul>
         <li>ショート動画プランは前払い、長尺動画プランは納品後の後払い</li>
-        <li>振込期限：請求書受領後3日以内（PayPay銀行）</li>
+        <li>振込期限：請求書受領後3日以内</li>
         <li>振込手数料はお客様ご負担</li>
       </ul>
 
