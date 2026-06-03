@@ -2171,7 +2171,7 @@ section { contain: layout style; }
 @media (max-width: 640px) {
   /* ── Base ── */
   body { font-size: 15px; }
-  .section { padding: 60px 0; }
+  .section { padding: 48px 0; }
   .section-sm { padding: 44px 0; }
   .container { padding: 0 16px; }
   .section-title { font-size: clamp(1.35rem, 6vw, 1.75rem) !important; }
@@ -2294,7 +2294,15 @@ section { contain: layout style; }
     grid-template-columns: 1fr !important;
     gap: 12px !important;
   }
-  .problem-card { padding: 20px 16px !important; }
+  .problem-card {
+    padding: 20px 16px !important;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .problem-card p {
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
   .problem-card:last-child:nth-child(3n+1) { grid-column: auto !important; }
 
   /* ── Services ── */
@@ -2476,8 +2484,8 @@ section { contain: layout style; }
         <em data-ck="hero_h1_em">運用に全集中。</em>
       </h1>
       <p class="hero-desc" data-ck="hero_desc">
-        プロのフリーランスチームが<br class="sp-br">最短当日で仕上げます。<br>
-        編集から運用代行まで、<br class="sp-br">丸ごとお任せください。
+        プロのフリーランスチームが最短当日で仕上げます。<br>
+        編集から運用代行まで、丸ごとお任せください。
       </p>
       <div class="hero-cta">
         <a href="#contact" class="btn btn-primary" style="background:linear-gradient(135deg,#3B82F6,#1E40AF);box-shadow:0 6px 24px rgba(59,130,246,0.40);padding:15px 32px;font-size:1rem;">
@@ -2589,7 +2597,7 @@ section { contain: layout style; }
       <div class="problem-card fade-up">
         <div class="problem-icon">⏱</div>
         <h3>編集が追いつかない</h3>
-        <p>撮影はできるのに、編集に時間を取られて投稿頻度が落ちている。</p>
+        <p>撮影はできるのに、<br class="sp-br">編集に時間を取られて<br class="sp-br">投稿頻度が落ちている。</p>
       </div>
       <div class="problem-card fade-up">
         <div class="problem-icon">📉</div>
@@ -2599,12 +2607,12 @@ section { contain: layout style; }
       <div class="problem-card fade-up">
         <div class="problem-icon">🤯</div>
         <h3>運用の手が回らない</h3>
-        <p>編集・投稿・分析まで一人でやるのが限界で、本業に集中できない。</p>
+        <p>編集・投稿・分析まで<br class="sp-br">一人でやるのが限界で、<br class="sp-br">本業に集中できない。</p>
       </div>
       <div class="problem-card fade-up">
         <div class="problem-icon">💸</div>
         <h3>外注したが期待外れだった</h3>
-        <p>フリーランスに依頼したが、<br>マーケ視点がなく言われた通りにしか動いてくれなかった。</p>
+        <p>フリーランスに依頼したが、<br>マーケ視点がなく<br class="sp-br">言われた通りにしか動いてくれなかった。</p>
       </div>
     </div>
   </div>
