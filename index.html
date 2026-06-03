@@ -2342,9 +2342,10 @@ section { contain: layout style; }
     justify-content: space-between !important;
     align-items: center !important;
   }
-  .pricing-price { font-size: 1.05rem !important; }
+  .pricing-price { font-size: 1.05rem !important; padding-right: 4px; }
   .pricing-row-name { font-size: 0.92rem !important; font-weight: 800 !important; }
-  .pricing-row-desc { font-size: 0.78rem !important; line-height: 1.7 !important; }
+  .pricing-row-desc { font-size: 0.78rem !important; line-height: 1.7 !important; overflow-wrap: anywhere; }
+  .pricing-row { box-sizing: border-box; max-width: 100%; }
 
   /* 無料トライアルバナー: 1列 */
   .trial-grid,
@@ -2931,7 +2932,7 @@ section { contain: layout style; }
         <div id="svc-same-day" class="pricing-row fade-up">
           <div>
             <p class="pricing-row-name">当日納品</p>
-            <p class="pricing-row-desc">12:00までのご依頼に限り、当日中に仕上げます。<br>場合によってはお受けできない場合もございますので、ご了承ください。</p>
+            <p class="pricing-row-desc">12:00までのご依頼に限り、<br class="sp-br">当日中に仕上げます。<br>場合によってはお受けできない場合も<br class="sp-br">ございますので、ご了承ください。</p>
           </div>
           <p class="pricing-price"><span data-ck="price_sameday">+¥2,000</span><br><span style="font-size:0.72rem;color:var(--sub);font-weight:500;">※ ショート動画のみ対応</span></p>
         </div>
@@ -2963,7 +2964,7 @@ section { contain: layout style; }
 
         <!-- まとめて編集プラン -->
         <p style="font-size:0.9rem;font-weight:700;margin-bottom:8px;color:var(--sub);">── まとめて編集プラン（編集のみ）</p>
-        <p style="font-size:0.85rem;color:var(--sub);margin-bottom:20px;line-height:1.6;">投稿代行なし・編集のみのセットプランです。10本以上から本数を細かく調整できます。</p>
+        <p style="font-size:0.85rem;color:var(--sub);margin-bottom:20px;line-height:1.6;">投稿代行なし・編集のみのセットプランです。<br>10本以上から本数を細かく調整できます。</p>
 
         <!-- まとめて編集プラン ショート -->
         <p style="font-size:0.8rem;font-weight:700;margin-bottom:12px;color:var(--sub);padding-left:8px;">◎ ショート動画</p>
@@ -3007,7 +3008,7 @@ section { contain: layout style; }
             </div>
           </div>
 
-          <p style="font-size:0.73rem;color:var(--sub);margin-bottom:16px;line-height:1.7;">※ 月額は各ティア最低本数の例（定価¥4,000/本）。本数は10本以上1本単位で調整可能。本数が増えるほど節約額も拡大。</p>
+          <p style="font-size:0.73rem;color:var(--sub);margin-bottom:16px;line-height:1.7;">※月額は各ティア最低本数の料金（定価¥4,000/本）<br>本数は10本以上で調整可能。<br>本数が増えるほど節約額も拡大。</p>
           <a href="#" onclick="openContract('edit-short');return false;" class="btn btn-gold" style="width:100%;justify-content:center;">申し込む →</a>
           <p class="pack-note" style="margin-top:12px;">※ 契約同意後すぐにヒアリングシートへ進みます。</p>
         </div>
