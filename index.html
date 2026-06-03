@@ -2408,11 +2408,19 @@ section { contain: layout style; }
   }
   .affiliate-partner-grid {
     grid-template-columns: 1fr 1fr !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .affiliate-partner-grid > div {
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
   }
   .affiliate-partner-grid p[style*="font-weight:800"] {
-    font-size: 0.72rem !important;
-    word-break: normal !important;
+    font-size: 0.68rem !important;
     white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
   }
 
   /* ── FAQ ── */
