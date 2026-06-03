@@ -2370,10 +2370,20 @@ section { contain: layout style; }
   .flow-step { padding: 18px 14px !important; }
   .flow-step::before { display: none !important; }
 
-  /* ── 横スクロール防止 ── */
-  html, body {
+  /* ── 横スクロール防止（iOS Safari対応）── */
+  html {
+    overflow-x: clip !important;
+    max-width: 100vw !important;
+  }
+  body {
     overflow-x: hidden !important;
     max-width: 100vw !important;
+    position: relative;
+  }
+
+  /* ── トライアルバナー padding縮小 ── */
+  .trial-banner {
+    padding: 20px 14px !important;
   }
 
   /* ── Contact form overflow防止 ── */
@@ -2861,7 +2871,7 @@ section { contain: layout style; }
     <p class="section-sub fade-up">記載は最低料金です。詳細はお問い合わせください。</p>
 
     <!-- 無料トライアルバナー -->
-    <div class="fade-up" style="background:linear-gradient(135deg,rgba(16,185,129,0.13),rgba(59,130,246,0.08));border:1px solid rgba(16,185,129,0.45);border-radius:16px;padding:28px 32px;margin:36px 0;">
+    <div class="fade-up trial-banner" style="background:linear-gradient(135deg,rgba(16,185,129,0.13),rgba(59,130,246,0.08));border:1px solid rgba(16,185,129,0.45);border-radius:16px;padding:28px 32px;margin:36px 0;">
       <p style="font-size:1.2rem;font-weight:800;color:#10B981;margin-bottom:16px;text-align:center;">🎁 無料トライアルあり</p>
       <div class="trial-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
         <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.3);border-radius:10px;padding:16px;">
