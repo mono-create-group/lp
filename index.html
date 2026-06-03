@@ -2193,6 +2193,9 @@ section { contain: layout style; }
   .strengths-grid {
     overflow-x: hidden;
   }
+  .affiliate-cards-grid {
+    grid-template-columns: 1fr !important;
+  }
 
   /* ── Referral bar ── */
   .referral-bar {
@@ -3279,13 +3282,13 @@ section { contain: layout style; }
       <div class="flow-step fade-up flow-step--payment">
         <p class="flow-num">STEP 04</p>
         <h3>お支払い <span class="badge-prepay">先払い</span></h3>
-        <p>契約締結後、<strong style="color:var(--text);">銀行振込にてお支払いをお願いします。</strong><br>入金確認後に作業を開始します。</p>
+        <p>契約締結後、<br class="sp-br"><strong style="color:var(--text);">銀行振込にてお支払いをお願いします。</strong><br>入金確認後に作業を開始します。</p>
         <a href="payment.html" class="flow-pay-link" target="_blank">振込先・お支払い方法を確認 →</a>
       </div>
       <div class="flow-step fade-up">
         <p class="flow-num">STEP 05</p>
         <h3>素材共有・作業開始</h3>
-        <p>入金確認後、動画素材・音声・台本・必須要素などを共有フォルダでお送りください。</p>
+        <p>入金確認後、<br class="sp-br">動画素材・音声・台本・<br class="sp-br">必須要素などを共有フォルダでお送りください。</p>
       </div>
       <div class="flow-step fade-up">
         <p class="flow-num">STEP 06</p>
@@ -3383,7 +3386,7 @@ section { contain: layout style; }
     </p>
 
     <!-- 両者メリット -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:36px;text-align:left;">
+    <div class="affiliate-cards-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:36px;text-align:left;">
       <div style="background:linear-gradient(145deg,#1A2840,#1E3250);border:2px solid #2563EB;border-radius:16px;padding:22px 20px;">
         <p style="font-size:0.65rem;font-weight:800;letter-spacing:0.1em;color:#60A5FA;margin-bottom:10px;">紹介された方（クライアント）</p>
         <p style="font-size:1.6rem;font-weight:900;color:#93C5FD;font-family:'Inter',sans-serif;margin-bottom:6px;">最大15%OFF</p>
@@ -3413,8 +3416,8 @@ section { contain: layout style; }
           <span style="font-size:0.95rem;font-weight:900;color:#86EFAC;font-family:'Inter';">¥3,000</span>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.2);border-radius:8px;">
-          <span style="font-size:0.82rem;color:#FDE68A;">⭐ 継続ボーナス（月額パック3ヶ月以上）</span>
-          <span style="font-size:0.95rem;font-weight:900;color:#FDE68A;font-family:'Inter';">+¥1,000</span>
+          <span style="font-size:0.82rem;color:#FDE68A;flex:1;min-width:0;">⭐ 継続ボーナス<br class="sp-br">（月額パック3ヶ月以上）</span>
+          <span style="font-size:0.95rem;font-weight:900;color:#FDE68A;font-family:'Inter';white-space:nowrap;">+¥1,000</span>
         </div>
       </div>
     </div>
