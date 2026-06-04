@@ -181,13 +181,15 @@
 }
 /* ── Reset & Base ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; font-size: 16px; }
+html { scroll-behavior: smooth; font-size: 16px; overflow-x: hidden; }
 body {
   font-family: 'Noto Sans JP', sans-serif;
   background: #FFFFFF;
   color: #0F172A;
   line-height: 1.8;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 img { max-width: 100%; display: block; }
 a { text-decoration: none; color: inherit; }
@@ -540,6 +542,12 @@ nav.nav-scrolled {
 /* ── Marquee ── */
 .marquee-wrap {
   overflow: hidden;
+  /* iOS Safari: transform子要素をoverflow:hiddenでclipできないバグの複合対策 */
+  clip-path: inset(0);           /* stacking context作成、transformも含めてクリップ */
+  contain: paint;                /* paint containment - overflow封じ込め */
+  -webkit-transform: translateZ(0); /* GPUレイヤー強制 → iOS SafariでのoverflowClip修正 */
+  transform: translateZ(0);
+  position: relative;
   border-top: 1px solid rgba(255,255,255,0.06);
   border-bottom: 1px solid rgba(255,255,255,0.06);
   background: #0B1422;
@@ -2178,7 +2186,7 @@ section { contain: layout style; }
   body { font-size: 15px; }
   .section { padding: 48px 0; }
   .section-sm { padding: 44px 0; }
-  .container { padding: 0 16px; }
+  .container { padding: 0 16px; width: 100% !important; max-width: 100vw !important; margin-left: 0 !important; margin-right: 0 !important; }
   .section-title { font-size: clamp(1.35rem, 6vw, 1.75rem) !important; }
   .section-sub { font-size: 0.88rem !important; }
 
@@ -2390,7 +2398,8 @@ section { contain: layout style; }
   .contact, .contact-wrap, .form-card,
   .form-row, .referral-code-badge {
     overflow-x: hidden !important;
-    max-width: 100% !important;
+    max-width: 100vw !important;
+    width: 100% !important;
     box-sizing: border-box !important;
   }
   /* 紹介コードの長テキストを折り返す */
