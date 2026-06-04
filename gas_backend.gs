@@ -528,10 +528,11 @@ function doGet(e) {
     var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
     var sh = ss.getSheetByName('editor_applications');
     if (!sh) return jsonResponse({ success: true });
+    var prevStatus = sh.getRange(row, 13).getValue();  // 変更前のステータスを取得
     sh.getRange(row, 13).setValue(status);  // 13列目=ステータス
 
-    // ── 採用決定 → Chatwork招待メールを自動送信 ──
-    if (status === '採用決定') {
+    // ── 採用決定 → Chatwork招待メールを自動送信（初回のみ・重複防止）──
+    if (status === '採用決定' && prevStatus !== '採用決定') {
       var rowData = sh.getRange(row, 1, 1, 13).getValues()[0];
       var editorName  = rowData[1] || '';
       var editorEmail = rowData[4] || '';
