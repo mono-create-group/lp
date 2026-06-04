@@ -229,8 +229,8 @@ textarea.form-control { min-height:80px; resize:vertical; }
 
       <!-- 実績・PF -->
       <div class="form-row">
-        <label>実績・ポートフォリオURL<span class="req">*</span></label>
-        <input type="text" class="form-control" name="portfolio" placeholder="https://... （複数あればカンマ区切りでOK）" required>
+        <label>実績・ポートフォリオURL<span style="font-size:0.75rem;color:#64748b;margin-left:4px;">（任意）</span></label>
+        <input type="text" class="form-control" name="portfolio" placeholder="https://... （複数あればカンマ区切りでOK）">
       </div>
 
       <!-- 対応本数 -->
@@ -366,7 +366,7 @@ document.getElementById('apply-form').addEventListener('submit', async (e) => {
       test: el => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim()) },
     { el: caseTypeEl,     msg: '動画ジャンルを選択してください',
       test: () => !!case_type },
-    { el: form.portfolio, msg: 'ポートフォリオURLを入力してください' },
+
   ]);
   if (!ok) return;
 
