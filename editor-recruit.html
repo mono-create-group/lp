@@ -197,16 +197,16 @@ textarea.form-control { min-height:80px; resize:vertical; }
           <input type="text" class="form-control" name="name" placeholder="山田 太郎" required>
         </div>
         <div class="form-row" style="margin-bottom:0;">
-          <label>年齢</label>
-          <input type="text" class="form-control" name="age" placeholder="例：22歳">
+          <label>年齢<span class="req">*</span></label>
+          <input type="text" class="form-control" name="age" placeholder="例：22歳" required>
         </div>
       </div>
 
       <div class="form-grid" style="margin-bottom:16px;">
         <div class="form-row" style="margin-bottom:0;">
-          <label>性別</label>
+          <label>性別<span class="req">*</span></label>
           <div class="radio-group" style="margin-top:4px;gap:14px;">
-            <div class="radio-item"><input type="radio" id="g-m" name="gender" value="男性"><label for="g-m">男性</label></div>
+            <div class="radio-item"><input type="radio" id="g-m" name="gender" value="男性" required><label for="g-m">男性</label></div>
             <div class="radio-item"><input type="radio" id="g-f" name="gender" value="女性"><label for="g-f">女性</label></div>
             <div class="radio-item"><input type="radio" id="g-o" name="gender" value="その他"><label for="g-o">その他</label></div>
           </div>
@@ -229,27 +229,27 @@ textarea.form-control { min-height:80px; resize:vertical; }
 
       <!-- 実績・PF -->
       <div class="form-row">
-        <label>実績・ポートフォリオURL<span style="font-size:0.75rem;color:#64748b;margin-left:4px;">（任意）</span></label>
-        <input type="text" class="form-control" name="portfolio" placeholder="https://... （複数あればカンマ区切りでOK）">
+        <label>実績・ポートフォリオURL<span class="req">*</span></label>
+        <input type="text" class="form-control" name="portfolio" placeholder="https://... （複数あればカンマ区切りでOK）" required>
       </div>
 
       <!-- 対応本数 -->
       <div class="form-row">
-        <label>週・月に納品可能な本数の目安</label>
-        <input type="text" class="form-control" name="weekly_monthly_vol" placeholder="例：週2〜3本 / 月8〜10本">
+        <label>週・月に納品可能な本数の目安<span class="req">*</span></label>
+        <input type="text" class="form-control" name="weekly_monthly_vol" placeholder="例：週2〜3本 / 月8〜10本" required>
       </div>
 
       <!-- 得意分野 -->
       <div class="form-row">
-        <label>得意分野・ジャンル</label>
-        <input type="text" class="form-control" name="specialty" placeholder="例：ビジネス系、Vlog、切り抜き、エンタメ">
+        <label>得意分野・ジャンル<span class="req">*</span></label>
+        <input type="text" class="form-control" name="specialty" placeholder="例：ビジネス系、Vlog、切り抜き、エンタメ" required>
       </div>
 
       <!-- 長期契約 -->
       <div class="form-row">
-        <label>長期でのご契約は可能ですか？</label>
+        <label>長期でのご契約は可能ですか？<span class="req">*</span></label>
         <div class="radio-group" style="margin-top:4px;gap:14px;">
-          <div class="radio-item"><input type="radio" id="lt-y" name="long_term" value="可能"><label for="lt-y">可能</label></div>
+          <div class="radio-item"><input type="radio" id="lt-y" name="long_term" value="可能" required><label for="lt-y">可能</label></div>
           <div class="radio-item"><input type="radio" id="lt-c" name="long_term" value="要相談"><label for="lt-c">要相談</label></div>
           <div class="radio-item"><input type="radio" id="lt-n" name="long_term" value="難しい"><label for="lt-n">現時点では難しい</label></div>
         </div>
@@ -273,8 +273,8 @@ textarea.form-control { min-height:80px; resize:vertical; }
 
       <!-- 一言メッセージ -->
       <div class="form-row">
-        <label>一言メッセージ・自己PR（任意）</label>
-        <textarea class="form-control" name="message" placeholder="現在のスキルレベル・稼働状況・意気込みなど自由にご記入ください。"></textarea>
+        <label>一言メッセージ・自己PR<span class="req">*</span></label>
+        <textarea class="form-control" name="message" placeholder="現在のスキルレベル・稼働状況・意気込みなど自由にご記入ください。" required></textarea>
       </div>
 
       <button type="submit" class="form-submit" id="submit-btn">応募する →</button>
@@ -298,7 +298,7 @@ textarea.form-control { min-height:80px; resize:vertical; }
     <div style="display:flex;flex-direction:column;gap:14px;">
       <div>
         <p style="font-size:0.82rem;font-weight:700;color:#1E40AF;margin-bottom:4px;">Q. 経験が浅くても応募できますか？</p>
-        <p style="font-size:0.78rem;color:#475569;line-height:1.7;">はい。スキルがあれば実績なしでもOKです。まずはテスト編集をお願いする場合があります。</p>
+        <p style="font-size:0.78rem;color:#475569;line-height:1.7;">はい、ご応募いただけます。実績・ポートフォリオURLは必須項目ですが、練習作品・個人制作の動画URLでも構いません。まずはテスト編集をお願いする場合があります。</p>
       </div>
       <div>
         <p style="font-size:0.82rem;font-weight:700;color:#1E40AF;margin-bottom:4px;">Q. 最低稼働本数はありますか？</p>
@@ -360,21 +360,28 @@ document.getElementById('apply-form').addEventListener('submit', async (e) => {
   const case_type = form.querySelector('[name="case_type"]:checked')?.value || '';
   const caseTypeEl = form.querySelector('[name="case_type"]');
 
-  const ok = _validateFields([
-    { el: form.name,      msg: 'お名前を入力してください' },
-    { el: form.email,     msg: 'メールアドレスを入力してください',
-      test: el => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim()) },
-    { el: caseTypeEl,     msg: '動画ジャンルを選択してください',
-      test: () => !!case_type },
+  const gender    = form.querySelector('[name="gender"]:checked')?.value    || '';
+  const long_term = form.querySelector('[name="long_term"]:checked')?.value || '';
+  const genderEl   = form.querySelector('[name="gender"]');
+  const longTermEl = form.querySelector('[name="long_term"]');
 
+  const ok = _validateFields([
+    { el: form.name,               msg: 'お名前を入力してください' },
+    { el: form.age,                msg: '年齢を入力してください' },
+    { el: genderEl,                msg: '性別を選択してください', test: () => !!gender },
+    { el: form.email,              msg: 'メールアドレスを入力してください',
+      test: el => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim()) },
+    { el: caseTypeEl,              msg: '希望する案件を選択してください', test: () => !!case_type },
+    { el: form.portfolio,          msg: '実績・ポートフォリオURLを入力してください' },
+    { el: form.weekly_monthly_vol, msg: '納品可能な本数の目安を入力してください' },
+    { el: form.specialty,          msg: '得意分野・ジャンルを入力してください' },
+    { el: longTermEl,              msg: '長期契約の可否を選択してください', test: () => !!long_term },
+    { el: form.message,            msg: '一言メッセージ・自己PRを入力してください' },
   ]);
   if (!ok) return;
 
   const btn = document.getElementById('submit-btn');
   btn.disabled = true; btn.textContent = '送信中...';
-
-  const gender    = form.querySelector('[name="gender"]:checked')?.value    || '';
-  const long_term = form.querySelector('[name="long_term"]:checked')?.value || '';
 
   const data = {
     action:             'editor_apply',
