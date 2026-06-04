@@ -275,6 +275,13 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
 
 /* ── スマホ対応：モーダル最適化 ── */
 @media (max-width: 640px) {
+  /* ── ヘッダースマホ対応 ── */
+  .header { padding: 10px 12px; }
+  .header-right { gap: 6px; }
+  #session-timer { display: none !important; }          /* タイマーは非表示 */
+  .logout-btn { font-size: 0.7rem; padding: 5px 8px; white-space: nowrap; }
+  .logout-btn + .logout-btn { display: none !important; } /* 完全ログアウトは非表示 */
+
   .modal-overlay {
     padding: 12px;
     align-items: flex-start;
