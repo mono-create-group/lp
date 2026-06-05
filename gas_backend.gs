@@ -55,6 +55,11 @@ var MATERIAL_PARENT_FOLDER_ID = '1YdwuPGNqYQZiHeseuMtyXF2GKkyqmSvo';
 // 絶対に削除されないよう、専用フォルダで永久保管する
 var CONTRACT_PDF_SUBFOLDER_NAME = '_契約書PDF';
 
+// 編集者向け業務委託契約書（Google Docs）
+var EDITOR_CONTRACT_URL = 'https://docs.google.com/document/d/108LpKal-QeMve2pcsvMUs6OkyUbxQyunHsHQUaYj428/edit?usp=sharing';
+// 署名済みPDF提出先フォルダ
+var EDITOR_CONTRACT_FOLDER_URL = 'https://drive.google.com/drive/folders/1cKPzB0xdMRTyCjYv_OIyNK-hm5ssiQPh';
+
 // ─── 振込先口座情報 ───────────────────────────────────────────────
 var BANK_INFO = [
   '【振込先口座】',
@@ -569,7 +574,20 @@ function doGet(e) {
           '4️⃣ テスト編集（1本）→ 本格稼働',
           '',
           '━━━━━━━━━━━━━━━━━━━━',
-          '▼ ② プロフィール登録（LP掲載・必須）',
+          '▼ ② 業務委託契約書のご確認・ご署名（必須）',
+          '━━━━━━━━━━━━━━━━━━━━',
+          '案件開始前に業務委託契約書へのご署名をお願いしております。',
+          '下記のGoogle Docsをご確認いただき、署名済みPDFを',
+          '提出先フォルダへアップロードしてください。',
+          '',
+          '📄 業務委託契約書',
+          EDITOR_CONTRACT_URL,
+          '',
+          '📂 署名済みPDF提出先フォルダ',
+          EDITOR_CONTRACT_FOLDER_URL,
+          '',
+          '━━━━━━━━━━━━━━━━━━━━',
+          '▼ ③ プロフィール登録（LP掲載・必須）',
           '━━━━━━━━━━━━━━━━━━━━',
           'LP（サービスページ）の「編集者紹介」欄に掲載するため、',
           '下記フォームにプロフィール情報をご入力ください。',
