@@ -553,6 +553,11 @@ nav.nav-scrolled {
 
 /* keep legacy hero-stat hidden */
 .hero-card { display: none; }
+
+/* ── スマホではマーキーを非表示（iOS Safari overflow原因を根絶）── */
+@media (max-width: 640px) {
+  .marquee-outer, .marquee-wrap { display: none !important; }
+}
 .hero-stat, .hero-card-label { display: none; }
 .hero-stat-value, .hero-stat-label { display: none; }
 
