@@ -540,14 +540,15 @@ nav.nav-scrolled {
 .hero-stat-value, .hero-stat-label { display: none; }
 
 /* ── Marquee ── */
+/* iOS Safari対策: transformアニメーション子要素のoverflow clip用外側ラッパー */
+.marquee-outer {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+}
 .marquee-wrap {
   overflow: hidden;
-  /* iOS Safari: transform子要素をoverflow:hiddenでclipできないバグの複合対策 */
-  clip-path: inset(0);           /* stacking context作成、transformも含めてクリップ */
-  contain: paint;                /* paint containment - overflow封じ込め */
-  -webkit-transform: translateZ(0); /* GPUレイヤー強制 → iOS SafariでのoverflowClip修正 */
-  transform: translateZ(0);
-  position: relative;
   border-top: 1px solid rgba(255,255,255,0.06);
   border-bottom: 1px solid rgba(255,255,255,0.06);
   background: #0B1422;
@@ -2661,7 +2662,7 @@ section { contain: layout style; }
 </div>
 
 <!-- ── Marquee ── -->
-<div class="marquee-wrap">
+<div class="marquee-outer"><div class="marquee-wrap">
   <div class="marquee">
     <span class="marquee-item"><span class="marquee-dot">◆</span> ビジネス系</span>
     <span class="marquee-item"><span class="marquee-dot">◆</span> エンタメ系</span>
@@ -2681,7 +2682,7 @@ section { contain: layout style; }
     <span class="marquee-item"><span class="marquee-dot">◆</span> ゲーム実況</span>
     <span class="marquee-item"><span class="marquee-dot">◆</span> 教育・解説</span>
   </div>
-</div>
+</div></div>
 
 <!-- ── Problems ── -->
 <section class="section problems" id="about">
