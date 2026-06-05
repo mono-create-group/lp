@@ -23,6 +23,23 @@
     }).catch(function(){});
 })();
 </script>
+<script>
+// ── iOS Safari 横スクロール完全封じ（CSS不可の場合のJS保険）──────
+(function(){
+  var vw = window.innerWidth;
+  var el = document.documentElement;
+  var bd = document.body;
+  if (el) { el.style.overflowX = 'hidden'; el.style.maxWidth = vw + 'px'; }
+  if (bd) { bd.style.overflowX = 'hidden'; bd.style.maxWidth = vw + 'px'; }
+  document.addEventListener('DOMContentLoaded', function(){
+    var vw2 = window.innerWidth;
+    document.documentElement.style.overflowX = 'hidden';
+    document.documentElement.style.maxWidth   = vw2 + 'px';
+    document.body.style.overflowX = 'hidden';
+    document.body.style.maxWidth   = vw2 + 'px';
+  });
+})();
+</script>
 <title>動画編集代行【¥4,000〜・最短当日納品】ショート・YouTube・SNS運用 | mono.create</title>
 <meta name="description" content="動画編集代行・SNS運用代行のプロチーム「mono.create」。ショート動画¥4,000〜/本、YouTube長尺¥15,000〜/本、月10本まとめて¥45,000〜。最短当日納品・修正3回無料。TikTok・Instagram・YouTube Shorts対応。無料相談受付中。">
 <meta name="keywords" content="動画編集代行,ショート動画編集代行,YouTube動画編集代行,SNS運用代行,動画編集外注,TikTok編集,Instagramリール編集,YouTube Shorts編集,動画編集チーム,投稿代行,動画編集 安い,ショート動画 外注">
