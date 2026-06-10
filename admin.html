@@ -507,6 +507,10 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
         👤 クライアント管理
       </button>
+      <button id="tab-invoices-btn" onclick="switchAdminTab('invoices');loadInvoiceList()"
+        style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
+        📄 請求書
+      </button>
     </div>
 
     <!-- ── 問い合わせタブ ── -->
@@ -1565,6 +1569,35 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         </table>
       </div>
     </div><!-- /tab-client-master -->
+
+    <!-- ── 請求書タブ ── -->
+    <div id="tab-invoices" style="display:none;max-width:900px;margin:0 auto;padding:28px 0;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+        <h2 style="font-size:1.1rem;font-weight:800;margin:0;">📄 請求書一覧</h2>
+        <button onclick="loadInvoiceList()" style="padding:7px 14px;background:var(--bg2);color:var(--sub);border:1px solid var(--border);border-radius:8px;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;">🔄 更新</button>
+      </div>
+      <!-- 統計 -->
+      <div id="inv-stats" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;"></div>
+      <!-- 一覧テーブル -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;">
+        <table style="width:100%;border-collapse:collapse;font-size:0.82rem;">
+          <thead>
+            <tr style="background:var(--bg2);color:var(--sub);">
+              <th style="padding:10px 14px;text-align:left;font-weight:700;">請求書番号</th>
+              <th style="padding:10px 14px;text-align:left;font-weight:700;">クライアント</th>
+              <th style="padding:10px 14px;text-align:right;font-weight:700;">金額</th>
+              <th style="padding:10px 14px;text-align:center;font-weight:700;">発行日</th>
+              <th style="padding:10px 14px;text-align:center;font-weight:700;">支払期日</th>
+              <th style="padding:10px 14px;text-align:center;font-weight:700;">ステータス</th>
+              <th style="padding:10px 14px;text-align:center;font-weight:700;">操作</th>
+            </tr>
+          </thead>
+          <tbody id="invoice-list-body">
+            <tr><td colspan="7" style="padding:32px;text-align:center;color:var(--sub);">読み込み中...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div><!-- /tab-invoices -->
 
   </main>
 </div>
@@ -5585,40 +5618,127 @@ async function sendInvoiceMail() {
   var totalEl   = document.getElementById('inv-total');
   var total     = totalEl ? totalEl.textContent : '¥0';
 
+  if (!invNum) { showToast('⚠ 請求書番号を入力してください', true); return; }
+  if (!client) { showToast('⚠ クライアント名を入力してください', true); return; }
+
   // メールアドレスを振込依頼モーダルから取得
-  var emailEl   = document.getElementById('pm-email');
-  var email     = (emailEl ? emailEl.textContent : '') || '';
-  if (!email || email === '—') { showToast('⚠ メールアドレスが取得できません', true); return; }
+  var emailEl = document.getElementById('pm-email');
+  var email   = (emailEl ? emailEl.textContent : '') || '';
+  if (!email || email === '—') {
+    email = prompt('送付先メールアドレスを入力してください');
+    if (!email) { showToast('⚠ メールアドレスが必要です', true); return; }
+  }
 
   var invHtml = _buildInvoiceHtml();
 
-  // GAS経由でメール送信
+  // GAS経由でメール送信・シート保存・Drive保存
   try {
+    showToast('📤 送信中...');
     const res  = await gasFetch(GAS_URL, {
       method: 'POST',
       body: JSON.stringify({
-        action:    'send_invoice',
-        key:       getAdminPw(),
-        to:        email,
-        client:    client,
-        inv_num:   invNum,
+        action:     'send_invoice',
+        key:        getAdminPw(),
+        to:         email,
+        client:     client,
+        inv_num:    invNum,
         issue_date: issueDate,
-        due:       due,
-        total:     total,
-        note:      note,
-        html_body: invHtml
+        due:        due,
+        total:      total,
+        note:       note,
+        html_body:  invHtml
       })
     });
     const json = await res.json();
     if (json.success) {
-      showToast('📧 請求書メールを送信しました');
+      var msg = '📧 請求書を送信しました';
+      if (json.drive_url) msg += ' ／ 📁 Driveに保存済み';
+      showToast(msg);
       closeInvoiceModal();
     } else {
       showToast('送信失敗: ' + (json.error || 'エラー'), true);
     }
   } catch(e) {
-    showToast('送信エラー。GASを確認してください。', true);
+    showToast('送信エラー: ' + e.message, true);
   }
+}
+
+// ── 請求書一覧ロード ────────────────────────────────────────────
+async function loadInvoiceList() {
+  var tbody = document.getElementById('invoice-list-body');
+  var stats = document.getElementById('inv-stats');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="7" style="padding:32px;text-align:center;color:var(--sub);">読み込み中...</td></tr>';
+
+  try {
+    const res  = await gasFetch(GAS_URL + '?action=list_invoices&key=' + encodeURIComponent(getAdminPw()));
+    const json = await res.json();
+    var invs = json.invoices || [];
+
+    // 統計
+    var totalUnpaid = 0, totalPaid = 0, countUnpaid = 0, countPaid = 0;
+    invs.forEach(function(inv) {
+      var amt = parseInt((inv.total || '0').replace(/[^0-9-]/g, '')) || 0;
+      if (inv.status === '支払済') { totalPaid += amt; countPaid++; }
+      else { totalUnpaid += amt; countUnpaid++; }
+    });
+    if (stats) stats.innerHTML = [
+      _invStatCard('未払い', countUnpaid + '件', '¥' + totalUnpaid.toLocaleString(), '#f59e0b'),
+      _invStatCard('支払済', countPaid + '件', '¥' + totalPaid.toLocaleString(), '#10b981'),
+    ].join('');
+
+    if (!invs.length) {
+      tbody.innerHTML = '<tr><td colspan="7" style="padding:40px;text-align:center;color:var(--sub);">請求書がありません</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = invs.map(function(inv) {
+      var statusColor = inv.status === '支払済' ? '#10b981' : (inv.status === '未払い' ? '#f59e0b' : '#6b7280');
+      var statusBg    = inv.status === '支払済' ? 'rgba(16,185,129,0.1)' : (inv.status === '未払い' ? 'rgba(245,158,11,0.1)' : 'rgba(107,114,128,0.1)');
+      var driveBtn = inv.drive_url
+        ? '<a href="' + inv.drive_url + '" target="_blank" style="padding:4px 8px;background:rgba(96,165,250,0.12);color:#60a5fa;border:1px solid rgba(96,165,250,0.3);border-radius:5px;font-size:0.72rem;font-weight:700;text-decoration:none;white-space:nowrap;">📁 Drive</a>'
+        : '';
+      var toggleBtn = inv.status !== '支払済'
+        ? '<button onclick="markInvoicePaid(\'' + esc(inv.inv_num) + '\')" style="padding:4px 8px;background:rgba(16,185,129,0.12);color:#10b981;border:1px solid rgba(16,185,129,0.3);border-radius:5px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">✅ 支払済</button>'
+        : '<button onclick="markInvoiceUnpaid(\'' + esc(inv.inv_num) + '\')" style="padding:4px 8px;background:rgba(107,114,128,0.1);color:var(--sub);border:1px solid var(--border);border-radius:5px;font-size:0.72rem;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;">↩ 未払いに戻す</button>';
+      return '<tr style="border-top:1px solid var(--border);">'
+        + '<td style="padding:12px 14px;font-weight:700;color:var(--text);">' + esc(inv.inv_num) + '</td>'
+        + '<td style="padding:12px 14px;color:var(--text);">' + esc(inv.client) + '</td>'
+        + '<td style="padding:12px 14px;text-align:right;font-weight:700;color:var(--text);">' + esc(inv.total) + '</td>'
+        + '<td style="padding:12px 14px;text-align:center;color:var(--sub);font-size:0.78rem;">' + esc(inv.issue_date) + '</td>'
+        + '<td style="padding:12px 14px;text-align:center;color:var(--sub);font-size:0.78rem;">' + esc(inv.due) + '</td>'
+        + '<td style="padding:12px 14px;text-align:center;"><span style="padding:3px 10px;border-radius:99px;font-size:0.75rem;font-weight:700;background:' + statusBg + ';color:' + statusColor + ';">' + esc(inv.status) + '</span></td>'
+        + '<td style="padding:12px 14px;text-align:center;display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">' + driveBtn + toggleBtn + '</td>'
+        + '</tr>';
+    }).join('');
+  } catch(e) {
+    tbody.innerHTML = '<tr><td colspan="7" style="padding:32px;text-align:center;color:#ef4444;">読み込み失敗: ' + e.message + '</td></tr>';
+  }
+}
+
+function _invStatCard(label, count, amount, color) {
+  return '<div style="flex:1;min-width:140px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 18px;">'
+    + '<div style="font-size:0.72rem;color:var(--sub);margin-bottom:4px;">' + label + ' ' + count + '</div>'
+    + '<div style="font-size:1.2rem;font-weight:800;color:' + color + ';">' + amount + '</div>'
+    + '</div>';
+}
+
+async function markInvoicePaid(invNum) {
+  try {
+    const res  = await gasFetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'update_invoice_status', key: getAdminPw(), inv_num: invNum, status: '支払済' }) });
+    const json = await res.json();
+    if (json.success) { showToast('✅ 支払済にしました'); loadInvoiceList(); }
+    else showToast('更新失敗', true);
+  } catch(e) { showToast('エラー: ' + e.message, true); }
+}
+
+async function markInvoiceUnpaid(invNum) {
+  try {
+    const res  = await gasFetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'update_invoice_status', key: getAdminPw(), inv_num: invNum, status: '未払い' }) });
+    const json = await res.json();
+    if (json.success) { showToast('↩ 未払いに戻しました'); loadInvoiceList(); }
+    else showToast('更新失敗', true);
+  } catch(e) { showToast('エラー: ' + e.message, true); }
 }
 
 // ══════════════════════════════════════════════════════════════

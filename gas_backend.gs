@@ -278,6 +278,18 @@ function doPost(e) {
       return notifyPayment(data);
     }
 
+    // 請求書送付（メール + シート保存 + Drive保存）
+    if (data.action === 'send_invoice') {
+      if (data.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+      return sendInvoice(data);
+    }
+
+    // 請求書ステータス更新
+    if (data.action === 'update_invoice_status') {
+      if (data.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+      return updateInvoiceStatus(data.inv_num || '', data.status || '未払い');
+    }
+
     // クライアントマスタ 保存（追加・更新）
     if (data.action === 'client_master_save') {
       if (data.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
@@ -460,6 +472,16 @@ function doGet(e) {
   // ── 以降は管理者キー必須 ──────────────────────────────────────
   if (key !== ADMIN_KEY) {
     return jsonResponse({ error: 'unauthorized' });
+  }
+
+  // 署名完了メール再送テスト
+  if (action === 'test_contract_email') {
+    return testContractEmail(e.parameter.token || '');
+  }
+
+  // 請求書一覧
+  if (action === 'list_invoices') {
+    return listInvoices();
   }
 
   if (action === 'list') {
@@ -824,7 +846,7 @@ function doGet(e) {
         'Chatworkで下記IDを検索し、ダイレクトメッセージから',
         '「営業スタッフとして採用いただきました〇〇です」とご連絡ください。',
         '',
-        '💬 Chatwork ID：nakamura-kouta（mono.create 中村航汰）',
+        '💬 Chatwork ID：wl0b2t4akjur（mono.create 中村航汰）',
         '',
         '━━━━━━━━━━━━━━━━━━━━',
         '不明点があればこのメールへ返信ください。',
@@ -835,6 +857,37 @@ function doGet(e) {
     );
     return jsonResponse({ success: true, to: toEmail, contract_url: contractUrl });
   }
+
+  if (action === 'test_editor_adoption_email') {
+    var toEmail = e.parameter.to || OWNER_EMAIL;
+    var toName  = e.parameter.name || '中村航汰（テスト）';
+    var contractUrl = issueContractUrl('editor', toName, toEmail);
+    sendAutoReply(toEmail, toName,
+      '【mono.create】動画編集者採用のご連絡',
+      [
+        'この度はmono.createへのご応募ありがとうございます。',
+        '選考の結果、ぜひ一緒にお仕事をさせていただきたいと思います。',
+        '',
+        '━━━━━━━━━━━━━━━━━━━━',
+        '▼ ① 業務委託契約書のご確認・ご署名（必須）',
+        '━━━━━━━━━━━━━━━━━━━━',
+        '案件開始前に業務委託契約書への電子署名をお願いしております。',
+        '下記の専用リンクから内容をご確認のうえ、',
+        'ページ下部の署名フォームより電子署名してください。',
+        '',
+        '✍️ 業務委託契約書（' + toName + ' 様 専用・電子署名）',
+        contractUrl,
+        '',
+        '━━━━━━━━━━━━━━━━━━━━',
+        '不明点があればこのメールへ返信ください。',
+        'よろしくお願いいたします。',
+        '',
+        '担当：mono.create 運営 中村航汰',
+      ]
+    );
+    return jsonResponse({ success: true, to: toEmail, contract_url: contractUrl });
+  }
+
 
   // Drive ファイルの共有設定（GAS経由）
   if (action === 'share_drive_file') {
@@ -1821,7 +1874,7 @@ function updateSalesAppStatus(row, status) {
           'Chatworkで下記IDを検索し、ダイレクトメッセージから',
           '「営業スタッフとして採用いただきました〇〇です」とご連絡ください。',
           '',
-          '💬 Chatwork ID：nakamura-kouta（mono.create 中村航汰）',
+          '💬 Chatwork ID：wl0b2t4akjur（mono.create 中村航汰）',
           '',
           '━━━━━━━━━━━━━━━━━━━━',
           '不明点があればこのメールへ返信ください。',
@@ -4099,15 +4152,20 @@ function sendEditorContractMail(d) {
     + '代表：中村 航汰\n'
     + 'E-mail: mono.create.group@gmail.com\n';
 
-  GmailApp.sendEmail(email, '【mono.create】業務委託契約書のご送付', body, {
-    from: 'mono.create.group@gmail.com',
+  MailApp.sendEmail({
+    to: email,
+    subject: '【mono.create】業務委託契約書のご送付',
+    body: body,
     name: 'mono.create（中村 航汰）'
   });
 
   // 管理者にも通知
-  GmailApp.sendEmail('mono.create.group@gmail.com',
-    '【送付完了】' + name + ' 様へ契約書を送付しました',
-    name + '（' + email + '）様へ契約書を送付しました。\n契約書: ' + contractUrl, {});
+  MailApp.sendEmail({
+    to: OWNER_EMAIL,
+    subject: '【送付完了】' + name + ' 様へ契約書を送付しました',
+    body: name + '（' + email + '）様へ契約書を送付しました。\n契約書: ' + contractUrl,
+    name: 'mono.create LP'
+  });
 
   return jsonResponse({ success: true });
 }
@@ -4200,9 +4258,15 @@ function signContract(token, signedName, userAgent) {
       sh.getRange(i + 1, 10).setValue(userAgent || '');
 
       // 確認メール送信（両者）
-      sendContractSignedEmails(type, name, email, signedName, now);
+      var emailError = '';
+      try {
+        sendContractSignedEmails(type, name, email, signedName, now);
+      } catch(e) {
+        emailError = e.toString();
+        Logger.log('sendContractSignedEmails error: ' + emailError);
+      }
 
-      return jsonResponse({ success: true });
+      return jsonResponse({ success: true, email_error: emailError });
     }
   }
   return jsonResponse({ error: 'not_found' });
@@ -4233,21 +4297,50 @@ function sendContractSignedEmails(type, name, email, signedName, signedAt) {
     '担当：mono.create 運営 中村航汰',
   ].join('\n');
 
-  GmailApp.sendEmail(email, '【mono.create】業務委託契約書の署名完了のご確認', bodyToApplicant, {
-    from: 'mono.create.group@gmail.com',
+  MailApp.sendEmail({
+    to: email,
+    subject: '【mono.create】業務委託契約書の署名完了のご確認',
+    body: bodyToApplicant,
     name: 'mono.create（中村 航汰）'
   });
 
   // 管理者へ
-  GmailApp.sendEmail('mono.create.group@gmail.com',
-    '【署名完了】' + name + ' 様が契約書に署名しました',
-    [
+  MailApp.sendEmail({
+    to: OWNER_EMAIL,
+    subject: '【署名完了】' + name + ' 様が契約書に署名しました',
+    body: [
       '署名完了通知',
       '',
       '契約種別: ' + typeLabel,
       '署名者  : ' + name + ' (' + email + ')',
       '署名日時: ' + dateStr,
-    ].join('\n'), {});
+    ].join('\n'),
+    name: 'mono.create 電子契約システム'
+  });
+}
+
+// ── 署名メールテスト（GETアクション test_contract_email）────────
+// GET: ?action=test_contract_email&key=ADMIN_KEY&token=TOKEN
+// 指定トークンの署名完了メールを再送する（テスト用）
+function testContractEmail(token) {
+  var sh   = getContractSigSheet();
+  var data = sh.getDataRange().getValues();
+  for (var i = 1; i < data.length; i++) {
+    if (data[i][0] === token) {
+      var type      = data[i][1];
+      var name      = data[i][2];
+      var email     = data[i][3];
+      var signedName = data[i][8] || name;
+      var now       = data[i][7] ? new Date(data[i][7]) : new Date();
+      try {
+        sendContractSignedEmails(type, name, email, signedName, now);
+        return jsonResponse({ success: true, sent_to: email });
+      } catch(e) {
+        return jsonResponse({ error: e.toString() });
+      }
+    }
+  }
+  return jsonResponse({ error: 'not_found' });
 }
 
 // ── 採用決定フック（既存の採用フローから呼ぶ） ─────────────────
@@ -4261,4 +4354,118 @@ function issueContractUrl(type, name, email) {
     Logger.log('issueContractUrl error: ' + e);
     return LP_BASE_URL + 'contract.html';
   }
+}
+
+// ================================================================
+// ██████████████████████████████████████████████████████████████
+//  請求書システム
+// ██████████████████████████████████████████████████████████████
+// ================================================================
+
+var INVOICE_SHEET      = 'invoices';
+var INVOICE_FOLDER_NAME = 'mono.create 請求書';
+
+// ── invoicesシート取得/初期化 ──────────────────────────────────
+function getInvoiceSheet() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName(INVOICE_SHEET);
+  if (!sh) {
+    sh = ss.insertSheet(INVOICE_SHEET);
+    sh.appendRow(['請求書番号','クライアント名','金額','発行日','支払期日','ステータス','送付先メール','作成日時','Drive URL','備考']);
+    sh.setFrozenRows(1);
+    sh.getRange(1, 1, 1, 10).setFontWeight('bold').setBackground('#1e40af').setFontColor('#ffffff');
+  }
+  return sh;
+}
+
+// ── Drive 請求書フォルダ取得/作成 ─────────────────────────────
+function getInvoiceFolder() {
+  var folders = DriveApp.getFoldersByName(INVOICE_FOLDER_NAME);
+  return folders.hasNext() ? folders.next() : DriveApp.createFolder(INVOICE_FOLDER_NAME);
+}
+
+// ── 請求書送付（メール送信 + シート保存 + Drive保存） ─────────
+function sendInvoice(data) {
+  var invNum    = data.inv_num    || '';
+  var client    = data.client     || '';
+  var total     = data.total      || '¥0';
+  var issueDate = data.issue_date || '';
+  var due       = data.due        || '';
+  var note      = data.note       || '';
+  var htmlBody  = data.html_body  || '';
+  var to        = data.to         || '';
+
+  if (!to) return jsonResponse({ error: 'email_required' });
+  if (!invNum) return jsonResponse({ error: 'inv_num_required' });
+
+  // 1. Drive に HTML として保存（ブラウザから印刷→PDFが可能）
+  var driveUrl = '';
+  try {
+    var folder   = getInvoiceFolder();
+    var filename = '請求書_' + invNum + '_' + client + '.html';
+    var blob     = Utilities.newBlob(htmlBody, 'text/html', filename);
+    var file     = folder.createFile(blob);
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    driveUrl = file.getUrl();
+  } catch(e) {
+    Logger.log('Invoice Drive save error: ' + e);
+  }
+
+  // 2. シートに記録
+  try {
+    var sh  = getInvoiceSheet();
+    var now = new Date();
+    sh.appendRow([invNum, client, total, issueDate, due, '未払い', to, now.toISOString(), driveUrl, note]);
+  } catch(e) {
+    Logger.log('Invoice sheet save error: ' + e);
+  }
+
+  // 3. メール送信
+  MailApp.sendEmail({
+    to:       to,
+    subject:  '【mono.create】請求書のご送付（' + invNum + '）',
+    body:     client + ' 御中\n\nお世話になっております。mono.create 中村航汰です。\n\n請求書をお送りいたします。\nご確認のほど、よろしくお願いいたします。\n\n━━━━━━━━━━━━━━━━━━━━\n請求書番号: ' + invNum + '\n請求金額　: ' + total + '\n支払期限　: ' + due + '\n━━━━━━━━━━━━━━━━━━━━\n\nmono.create 中村航汰\nmono.create.group@gmail.com',
+    htmlBody: htmlBody,
+    name:     'mono.create（中村 航汰）'
+  });
+
+  return jsonResponse({ success: true, drive_url: driveUrl });
+}
+
+// ── 請求書一覧取得 ────────────────────────────────────────────
+function listInvoices() {
+  var sh   = getInvoiceSheet();
+  var data = sh.getDataRange().getValues();
+  var rows = [];
+  for (var i = 1; i < data.length; i++) {
+    if (!data[i][0]) continue; // 空行スキップ
+    rows.push({
+      inv_num:    data[i][0],
+      client:     data[i][1],
+      total:      data[i][2],
+      issue_date: data[i][3],
+      due:        data[i][4],
+      status:     data[i][5],
+      email:      data[i][6],
+      created_at: data[i][7],
+      drive_url:  data[i][8],
+      note:       data[i][9],
+      row_index:  i + 1
+    });
+  }
+  rows.reverse(); // 新しい順
+  return jsonResponse({ invoices: rows });
+}
+
+// ── 請求書ステータス更新 ──────────────────────────────────────
+function updateInvoiceStatus(invNum, status) {
+  var sh   = getInvoiceSheet();
+  var data = sh.getDataRange().getValues();
+  for (var i = 1; i < data.length; i++) {
+    if (String(data[i][0]) === String(invNum)) {
+      sh.getRange(i + 1, 6).setValue(status);
+      return jsonResponse({ success: true });
+    }
+  }
+  return jsonResponse({ error: 'not_found' });
 }
