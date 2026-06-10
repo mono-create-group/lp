@@ -59,8 +59,10 @@ var CONTRACT_PDF_SUBFOLDER_NAME = '_契約書PDF';
 //    ※ Shared Driveではなく My Drive配下に置くことでsetSharingが正常動作する
 var CONTRACT_DOC_SUBFOLDER_NAME = '業務委託契約書';
 var CONTRACT_DOC_FOLDER_URL = 'https://drive.google.com/drive/folders/' + MATERIAL_PARENT_FOLDER_ID;
-// ② 署名済みPDF提出先フォルダ（編集者・営業スタッフ共用）
+// ② 署名済みPDF提出先フォルダ（編集者向け）
 var CONTRACT_PDF_FOLDER_URL = 'https://drive.google.com/drive/folders/1cKPzB0xdMRTyCjYv_OIyNK-hm5ssiQPh';
+// ③ 署名済みPDF提出先フォルダ（営業スタッフ向け）
+var SALES_CONTRACT_PDF_FOLDER_URL = 'https://drive.google.com/drive/folders/1dhw0bqA-6n89Sy6oaDlLVH2XSb7oCDsi';
 
 // 編集者向け業務委託契約書テンプレート（Google Docs ID）
 var EDITOR_CONTRACT_TEMPLATE_ID = '108LpKal-QeMve2pcsvMUs6OkyUbxQyunHsHQUaYj428';
@@ -256,6 +258,11 @@ function doPost(e) {
       return editorSelfRegister(data);
     }
 
+    // 電子契約署名（認証不要・トークン認証）
+    if (data.action === 'sign_contract') {
+      return signContract(data.token || '', data.signed_name || '', data.user_agent || '');
+    }
+
     // 営業スタッフ 公開応募フォーム（認証不要）
     if (data.action === 'sales_apply') {
       return applySales(data);
@@ -443,6 +450,13 @@ function doGet(e) {
     return recordPrivateLinkView(e.parameter.t || '');
   }
 
+  // 電子契約書取得（トークン認証・公開）
+  if (action === 'get_contract') {
+    var t = e.parameter.t || '';
+    if (!t) return jsonResponse({ error: 'token_required' });
+    return getContractByToken(t);
+  }
+
   // ── 以降は管理者キー必須 ──────────────────────────────────────
   if (key !== ADMIN_KEY) {
     return jsonResponse({ error: 'unauthorized' });
@@ -585,8 +599,8 @@ function doGet(e) {
       var caseType    = rowData[5] || '';
       var now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
 
-      // ── 個別契約書を自動作成（編集者、メール渡しでaddViewer権限付与）──
-      var editorContractUrl = createIndividualEditorContract(editorName, editorEmail);
+      // ── 個別契約書署名URL発行（電子契約システム）──
+      var editorContractUrl = issueContractUrl('editor', editorName, editorEmail);
 
       // 応募者へ合格通知メール（Chatwork招待リンク付き）
       if (editorEmail && editorEmail.indexOf('@') !== -1) {
@@ -622,11 +636,11 @@ function doGet(e) {
           '━━━━━━━━━━━━━━━━━━━━',
           '▼ ③ 業務委託契約書のご確認・ご署名（必須）',
           '━━━━━━━━━━━━━━━━━━━━',
-          '案件開始前に業務委託契約書へのご署名をお願いしております。',
-          '下記のGoogle Docsをご確認いただき、署名済みPDFを',
-          '提出先フォルダへアップロードしてください。',
+          '案件開始前に業務委託契約書への電子署名をお願いしております。',
+          '下記の専用リンクから内容をご確認のうえ、',
+          'ページ下部の署名フォームより電子署名してください。',
           '',
-          '📄 業務委託契約書（' + editorName + ' 様 専用）',
+          '✍️ 業務委託契約書（' + editorName + ' 様 専用・電子署名）',
           editorContractUrl,
           '',
           '📂 署名済みPDF提出先フォルダ',
@@ -743,29 +757,31 @@ function doGet(e) {
     return deleteEditor(row);
   }
 
-  // 個別契約書作成デバッグ（DriveApp.makeCopy方式）
+  // テンプレートファイル情報確認
+  if (action === 'debug_template_info') {
+    try {
+      var tmpl = DriveApp.getFileById(SALES_CONTRACT_TEMPLATE_ID);
+      var blob = tmpl.getBlob();
+      return jsonResponse({ id: SALES_CONTRACT_TEMPLATE_ID, name: tmpl.getName(), mimeType: tmpl.getMimeType(), blobMime: blob.getContentType(), size: blob.getBytes().length });
+    } catch(te) { return jsonResponse({ error: te.toString() }); }
+  }
+
+  // 個別契約書作成デバッグ（copyAsGoogleDoc方式）
   if (action === 'debug_contract') {
     var testName = e.parameter.name || 'テスト太郎';
     var step = 'init';
     try {
-      step = 'getTemplate';
-      var tmpl2 = DriveApp.getFileById(SALES_CONTRACT_TEMPLATE_ID);
-      var tmplName = tmpl2.getName();
       step = 'getFolder';
-      var folder2 = getOrCreateContractDocFolder();
+      var folder2   = getOrCreateContractDocFolder();
       var folderName = folder2.getName();
-      step = 'makeCopy';
+      step = 'copyAsGoogleDoc';
       var dateStr2  = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyyMMdd');
       var docTitle2 = '【テスト契約書】' + testName + '_' + dateStr2;
-      var newFile2  = tmpl2.makeCopy(docTitle2, folder2);
-      step = 'setSharing';
-      var sharingNote = '';
-      try { newFile2.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch(se) {
-        sharingNote = 'setSharing skipped: ' + se.toString();
-      }
-      return jsonResponse({ success: true, file_id: newFile2.getId(), url: newFile2.getUrl(), tmplName: tmplName, folderName: folderName, sharingNote: sharingNote });
+      var newFile2  = copyAsGoogleDoc(SALES_CONTRACT_TEMPLATE_ID, docTitle2, folder2.getId());
+      var docUrl = 'https://drive.google.com/uc?export=download&id=' + newFile2.getId();
+      return jsonResponse({ success: true, file_id: newFile2.getId(), url: docUrl, folderName: folderName });
     } catch(dbgErr) {
-      return jsonResponse({ success: false, step: step, templateId: SALES_CONTRACT_TEMPLATE_ID, folderName: CONTRACT_DOC_SUBFOLDER_NAME, error: dbgErr.toString(), stack: dbgErr.stack || '' });
+      return jsonResponse({ success: false, step: step, error: dbgErr.toString(), stack: dbgErr.stack || '' });
     }
   }
 
@@ -773,7 +789,7 @@ function doGet(e) {
   if (action === 'test_sales_adoption_email') {
     var toEmail = e.parameter.to || OWNER_EMAIL;
     var toName  = e.parameter.name || '中村航汰（テスト）';
-    var contractUrl = createIndividualSalesContract(toName);
+    var contractUrl = issueContractUrl('sales', toName, toEmail);
     sendAutoReply(toEmail, toName,
       '【mono.create】営業スタッフ採用のご連絡',
       [
@@ -783,15 +799,12 @@ function doGet(e) {
         '━━━━━━━━━━━━━━━━━━━━',
         '▼ ① 業務委託契約書のご確認・ご署名（必須）',
         '━━━━━━━━━━━━━━━━━━━━',
-        '案件開始前に業務委託契約書へのご署名をお願いしております。',
-        '下記のリンクから契約書をご確認のうえ、',
-        'プリントアウト・署名後にPDFで提出先フォルダへアップロードしてください。',
+        '案件開始前に業務委託契約書への電子署名をお願いしております。',
+        '下記の専用リンクから内容をご確認のうえ、',
+        'ページ下部の署名フォームより電子署名してください。',
         '',
-        '📄 業務委託契約書（' + toName + ' 様 専用）',
+        '✍️ 業務委託契約書（' + toName + ' 様 専用・電子署名）',
         contractUrl,
-        '',
-        '📂 署名済みPDF提出先フォルダ',
-        CONTRACT_PDF_FOLDER_URL,
         '',
         '━━━━━━━━━━━━━━━━━━━━',
         '▼ ② Chatworkグループへの参加',
@@ -946,6 +959,20 @@ function doGet(e) {
   if (action === 'private_link_view') {
     // 閲覧カウントインクリメント（認証不要）
     return recordPrivateLinkView(e.parameter.t || '');
+  }
+
+  // ── Driveファイル削除（テストデータ掃除用） ──────────────────
+  if (action === 'delete_drive_file') {
+    if (e.parameter.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+    var fileId = e.parameter.file_id || '';
+    if (!fileId) return jsonResponse({ error: 'file_id required' });
+    try {
+      var file = DriveApp.getFileById(fileId);
+      file.setTrashed(true);
+      return jsonResponse({ success: true, title: file.getName() });
+    } catch(err) {
+      return jsonResponse({ error: err.message });
+    }
   }
 
   return jsonResponse({ error: 'unknown action' });
@@ -1756,8 +1783,8 @@ function updateSalesAppStatus(row, status) {
     var salesEmail = rowData[4] || '';
     var now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
 
-    // ── 個別契約書を自動作成（メール渡しでaddViewer権限付与）──
-    var individualContractUrl = createIndividualSalesContract(salesName, salesEmail);
+    // ── 個別契約書署名URL発行（電子契約システム）──
+    var individualContractUrl = issueContractUrl('sales', salesName, salesEmail);
 
     if (salesEmail && salesEmail.indexOf('@') !== -1) {
       sendAutoReply(salesEmail, salesName,
@@ -1769,15 +1796,12 @@ function updateSalesAppStatus(row, status) {
           '━━━━━━━━━━━━━━━━━━━━',
           '▼ ① 業務委託契約書のご確認・ご署名（必須）',
           '━━━━━━━━━━━━━━━━━━━━',
-          '案件開始前に業務委託契約書へのご署名をお願いしております。',
-          '下記のリンクから契約書をご確認のうえ、',
-          'プリントアウト・署名後にPDFで提出先フォルダへアップロードしてください。',
+          '案件開始前に業務委託契約書への電子署名をお願いしております。',
+          '下記の専用リンクから契約書の内容をご確認のうえ、',
+          'ページ下部の署名フォームより電子署名してください。',
           '',
-          '📄 業務委託契約書（' + salesName + ' 様 専用）',
+          '✍️ 業務委託契約書（' + salesName + ' 様 専用・電子署名）',
           individualContractUrl,
-          '',
-          '📂 署名済みPDF提出先フォルダ',
-          CONTRACT_PDF_FOLDER_URL,
           '',
           '━━━━━━━━━━━━━━━━━━━━',
           '▼ ② Chatworkグループへの参加',
@@ -2007,12 +2031,9 @@ function updateScheduleStatus(row, status) {
 
 // ================================================================
 // 契約書ドキュメント保管フォルダを取得（なければ作成）
-// MATERIAL_PARENT_FOLDER_ID 配下の「業務委託契約書」フォルダを使用
-// → My Drive配下のため setSharing が正常動作する
+// My Drive ルート直下に「業務委託契約書」フォルダを使用
 // ================================================================
 function getOrCreateContractDocFolder() {
-  // My Drive ルート直下に「業務委託契約書」フォルダを作成・取得
-  // getRootFolder() = mono.create.group@gmail.com のマイドライブルート
   var root = DriveApp.getRootFolder();
   var folders = root.getFoldersByName(CONTRACT_DOC_SUBFOLDER_NAME);
   if (folders.hasNext()) return folders.next();
@@ -2020,29 +2041,33 @@ function getOrCreateContractDocFolder() {
 }
 
 // ================================================================
-// 営業スタッフ 個別契約書を自動作成（DriveApp.makeCopy方式）
-// documents スコープ不要・drive スコープのみで動作
+// .docx を Google Doc 形式に変換してコピー（Drive v3 API 使用）
+// makeCopy() は .docx のままになるため、この関数で変換する
+// ================================================================
+function copyAsGoogleDoc(sourceFileId, title, folderId) {
+  // テンプレートが .docx の場合: makeCopy してダウンロードURLを返す方式
+  // （Drive API の変換コピーは当該ファイルでは非対応のため）
+  var template = DriveApp.getFileById(sourceFileId);
+  var folder   = DriveApp.getFolderById(folderId);
+  var newFile  = template.makeCopy(title, folder);
+  newFile.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+  return newFile;
+}
+
+// ================================================================
+// 営業スタッフ 個別契約書を自動作成
+// .docx テンプレートを Google Doc 形式に変換してコピー → 誰でも開けるURL
 // 戻り値: 個別契約書のURL（string）
 // ================================================================
 function createIndividualSalesContract(salesName, recipientEmail) {
   try {
     var dateStr  = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyyMMdd');
     var docTitle = '【営業契約書】' + salesName + '_' + dateStr;
-    var template = DriveApp.getFileById(SALES_CONTRACT_TEMPLATE_ID);
     var folder   = getOrCreateContractDocFolder();
-    var newFile  = template.makeCopy(docTitle, folder);
-    // 受信者のメールに直接閲覧権限を付与（Shared Drive制約でも動作）
-    if (recipientEmail && recipientEmail.indexOf('@') !== -1) {
-      try { newFile.addViewer(recipientEmail); } catch(ve) {
-        Logger.log('addViewer failed: ' + ve);
-      }
-    }
-    // setSharing はShared Driveでは失敗するため任意実行
-    try { newFile.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch(se) {
-      Logger.log('setSharing skipped: ' + se);
-    }
-    // Drive表示URL（.docxでも確実に開ける）
-    return 'https://drive.google.com/file/d/' + newFile.getId() + '/view?usp=sharing';
+    // テンプレートコピー（setSharing済み）
+    var newFile  = copyAsGoogleDoc(SALES_CONTRACT_TEMPLATE_ID, docTitle, folder.getId());
+    // ダウンロードURL（.docx をブラウザで開こうとしないため確実に機能）
+    return 'https://drive.google.com/uc?export=download&id=' + newFile.getId();
   } catch(e) {
     Logger.log('createIndividualSalesContract error: ' + e);
     return CONTRACT_DOC_FOLDER_URL;
@@ -2167,25 +2192,16 @@ function _createIndividualSalesContractDocApp_UNUSED(salesName) {
 
 // ================================================================
 // 個別編集者契約書を生成（テンプレートコピー方式）
+// EDITOR_CONTRACT_TEMPLATE_ID は Google Doc のため makeCopy で Google Doc になる
 // ================================================================
 function createIndividualEditorContract(editorName, recipientEmail) {
   try {
     var dateStr  = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyyMMdd');
     var docTitle = '【編集者契約書】' + editorName + '_' + dateStr;
-    var template = DriveApp.getFileById(EDITOR_CONTRACT_TEMPLATE_ID);
     var folder   = getOrCreateContractDocFolder();
-    var newFile  = template.makeCopy(docTitle, folder);
-    // 受信者のメールに直接閲覧権限を付与
-    if (recipientEmail && recipientEmail.indexOf('@') !== -1) {
-      try { newFile.addViewer(recipientEmail); } catch(ve) {
-        Logger.log('addViewer failed: ' + ve);
-      }
-    }
-    try { newFile.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch(se) {
-      Logger.log('setSharing skipped: ' + se);
-    }
-    // Google Doc → Drive表示URLで確実に開ける
-    return 'https://drive.google.com/file/d/' + newFile.getId() + '/view?usp=sharing';
+    // 編集者テンプレートは Google Doc → makeCopy → Google Doc のままブラウザで開ける
+    var newFile  = copyAsGoogleDoc(EDITOR_CONTRACT_TEMPLATE_ID, docTitle, folder.getId());
+    return 'https://docs.google.com/document/d/' + newFile.getId() + '/edit?usp=sharing';
   } catch(e) {
     Logger.log('createIndividualEditorContract error: ' + e);
     return CONTRACT_DOC_FOLDER_URL;
@@ -4094,4 +4110,155 @@ function sendEditorContractMail(d) {
     name + '（' + email + '）様へ契約書を送付しました。\n契約書: ' + contractUrl, {});
 
   return jsonResponse({ success: true });
+}
+
+
+// ================================================================
+// ██████████████████████████████████████████████████████████████
+//  電子契約システム（クラウドサイン方式）
+// ██████████████████████████████████████████████████████████████
+// ================================================================
+
+var CONTRACT_SIG_SHEET = 'contract_signatures';
+
+// ── シート取得 / 初期化 ────────────────────────────────────────
+function getContractSigSheet() {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sh = ss.getSheetByName(CONTRACT_SIG_SHEET);
+  if (!sh) {
+    sh = ss.insertSheet(CONTRACT_SIG_SHEET);
+    sh.getRange(1, 1, 1, 10).setValues([[
+      'token', 'type', 'name', 'email',
+      'created_at', 'expires_at', 'status',
+      'signed_at', 'signed_name', 'user_agent'
+    ]]);
+    sh.getRange(1, 1, 1, 10).setFontWeight('bold').setBackground('#1E40AF').setFontColor('#ffffff');
+    sh.setFrozenRows(1);
+  }
+  return sh;
+}
+
+// ── トークン生成（採用決定時に呼ぶ） ──────────────────────────
+function createContractToken(type, name, email) {
+  var token   = Utilities.getUuid();
+  var now     = new Date();
+  var expires = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000); // 30日間有効
+  var sh = getContractSigSheet();
+  sh.appendRow([
+    token, type, name, email,
+    now.toISOString(), expires.toISOString(),
+    'pending', '', '', ''
+  ]);
+  var url = LP_BASE_URL + 'contract.html?t=' + token;
+  return { token: token, url: url };
+}
+
+// ── トークンから契約書データ取得 ──────────────────────────────
+function getContractByToken(token) {
+  var sh   = getContractSigSheet();
+  var data = sh.getDataRange().getValues();
+  for (var i = 1; i < data.length; i++) {
+    if (data[i][0] === token) {
+      var status  = data[i][6];
+      var expires = new Date(data[i][5]);
+      if (status !== 'signed' && new Date() > expires) {
+        return jsonResponse({ error: 'expired' });
+      }
+      return jsonResponse({
+        token:      data[i][0],
+        type:       data[i][1],
+        name:       data[i][2],
+        email:      data[i][3],
+        created_at: data[i][4],
+        status:     status,
+        signed_at:  data[i][7]
+      });
+    }
+  }
+  return jsonResponse({ error: 'not_found' });
+}
+
+// ── 署名記録 ──────────────────────────────────────────────────
+function signContract(token, signedName, userAgent) {
+  if (!token || !signedName) return jsonResponse({ error: 'missing_params' });
+
+  var sh   = getContractSigSheet();
+  var data = sh.getDataRange().getValues();
+  for (var i = 1; i < data.length; i++) {
+    if (data[i][0] === token) {
+      if (data[i][6] === 'signed') return jsonResponse({ error: 'already_signed' });
+
+      var now  = new Date();
+      var type = data[i][1];
+      var name = data[i][2];
+      var email = data[i][3];
+
+      // シート更新
+      sh.getRange(i + 1, 7).setValue('signed');
+      sh.getRange(i + 1, 8).setValue(now.toISOString());
+      sh.getRange(i + 1, 9).setValue(signedName);
+      sh.getRange(i + 1, 10).setValue(userAgent || '');
+
+      // 確認メール送信（両者）
+      sendContractSignedEmails(type, name, email, signedName, now);
+
+      return jsonResponse({ success: true });
+    }
+  }
+  return jsonResponse({ error: 'not_found' });
+}
+
+// ── 署名完了メール送信 ─────────────────────────────────────────
+function sendContractSignedEmails(type, name, email, signedName, signedAt) {
+  var typeLabel = type === 'sales' ? '営業スタッフ' : '動画編集者';
+  var dateStr   = Utilities.formatDate(signedAt, 'Asia/Tokyo', 'yyyy年MM月dd日 HH:mm');
+
+  // 応募者へ
+  var bodyToApplicant = [
+    name + ' 様',
+    '',
+    'この度はmono.createの業務委託契約書にご署名いただきありがとうございます。',
+    '電子署名が正式に記録されました。',
+    '',
+    '━━━━━━━━━━━━━━━━━━━━',
+    '【署名記録】',
+    '━━━━━━━━━━━━━━━━━━━━',
+    '契約種別  ：' + typeLabel + ' 業務委託契約書',
+    '署名者    ：' + signedName + ' 様',
+    '署名日時  ：' + dateStr,
+    '━━━━━━━━━━━━━━━━━━━━',
+    '',
+    '引き続きよろしくお願いいたします。',
+    '',
+    '担当：mono.create 運営 中村航汰',
+  ].join('\n');
+
+  GmailApp.sendEmail(email, '【mono.create】業務委託契約書の署名完了のご確認', bodyToApplicant, {
+    from: 'mono.create.group@gmail.com',
+    name: 'mono.create（中村 航汰）'
+  });
+
+  // 管理者へ
+  GmailApp.sendEmail('mono.create.group@gmail.com',
+    '【署名完了】' + name + ' 様が契約書に署名しました',
+    [
+      '署名完了通知',
+      '',
+      '契約種別: ' + typeLabel,
+      '署名者  : ' + name + ' (' + email + ')',
+      '署名日時: ' + dateStr,
+    ].join('\n'), {});
+}
+
+// ── 採用決定フック（既存の採用フローから呼ぶ） ─────────────────
+// type: 'sales' or 'editor'
+// return: 契約書署名URL (string)
+function issueContractUrl(type, name, email) {
+  try {
+    var result = createContractToken(type, name, email);
+    return result.url;
+  } catch(e) {
+    Logger.log('issueContractUrl error: ' + e);
+    return LP_BASE_URL + 'contract.html';
+  }
 }

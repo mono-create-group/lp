@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>業務委託契約書 | mono.create</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Noto Sans JP',Arial,sans-serif;background:#F0F4F8;color:#1E293B;min-height:100vh}
+
+    /* ── ヘッダー ── */
+    .header{background:#1E40AF;padding:14px 24px;display:flex;align-items:center;gap:12px}
+    .header-logo{color:#fff;font-size:18px;font-weight:700;letter-spacing:.5px}
+    .header-sub{color:#93C5FD;font-size:12px}
+
+    /* ── ステップバー ── */
+    .steps{background:#fff;border-bottom:1px solid #E2E8F0;padding:12px 24px;display:flex;gap:0;max-width:800px;margin:0 auto}
+    .step{display:flex;align-items:center;gap:6px;font-size:12px;color:#94A3B8;flex:1}
+    .step.active{color:#1E40AF}
+    .step.done{color:#10B981}
+    .step-num{width:22px;height:22px;border-radius:50%;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+    .step.done .step-num{background:#10B981;border-color:#10B981;color:#fff}
+    .step.active .step-num{background:#1E40AF;border-color:#1E40AF;color:#fff}
+    .step-arrow{color:#CBD5E1;margin:0 4px;font-size:14px}
+
+    /* ── メイン ── */
+    .main{max-width:800px;margin:0 auto;padding:24px 16px 60px}
+
+    /* ── カード ── */
+    .card{background:#fff;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:16px;overflow:hidden}
+    .card-header{padding:16px 20px;border-bottom:1px solid #F1F5F9;display:flex;align-items:center;gap:10px}
+    .card-header h2{font-size:15px;font-weight:600;color:#1E293B}
+    .card-body{padding:20px}
+
+    /* ── メタ情報 ── */
+    .meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .meta-item{background:#F8FAFC;border-radius:8px;padding:12px 14px}
+    .meta-label{font-size:11px;color:#64748B;margin-bottom:4px}
+    .meta-value{font-size:14px;font-weight:600;color:#1E293B}
+    .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600}
+    .badge-sales{background:#FEF3C7;color:#92400E}
+    .badge-editor{background:#DBEAFE;color:#1E40AF}
+
+    /* ── 契約書本文 ── */
+    .contract-scroll{height:420px;overflow-y:auto;border:1px solid #E2E8F0;border-radius:8px;background:#FAFAFA}
+    .contract-text{padding:28px 32px;font-size:13.5px;line-height:1.9;color:#1E293B}
+    .contract-text h1{font-size:17px;text-align:center;margin-bottom:20px;font-weight:700}
+    .contract-text .parties{text-align:center;margin-bottom:18px;font-size:13px;color:#475569;line-height:2}
+    .contract-text .preamble{margin-bottom:20px;font-size:13px;color:#475569;text-align:center}
+    .contract-text .article{margin-bottom:18px}
+    .contract-text .article-title{font-weight:700;font-size:13.5px;color:#1E293B;margin-bottom:6px}
+    .contract-text .article-body{font-size:13px;color:#374151;line-height:1.85;white-space:pre-wrap}
+    .contract-text .table-row{display:flex;gap:16px;padding:4px 0;font-size:13px;border-bottom:1px solid #F1F5F9}
+    .contract-text .table-row:last-child{border-bottom:none}
+    .contract-text .table-key{color:#64748B;flex:0 0 180px}
+    .contract-text .table-val{color:#1E293B;font-weight:500}
+    .contract-text .closing{margin-top:24px;font-size:13px;line-height:2}
+    .contract-text .sig-block{margin-top:20px;border-top:1px solid #E2E8F0;padding-top:20px;font-size:13px;line-height:2.2}
+    .scroll-hint{text-align:center;font-size:12px;color:#94A3B8;padding:8px;display:flex;align-items:center;justify-content:center;gap:4px}
+
+    /* ── 署名セクション ── */
+    .sign-section{padding:24px 20px}
+    .agree-box{background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:14px 16px;margin-bottom:20px;display:flex;align-items:flex-start;gap:10px;cursor:pointer}
+    .agree-box input[type=checkbox]{width:18px;height:18px;margin-top:2px;flex-shrink:0;cursor:pointer}
+    .agree-label{font-size:13.5px;color:#166534;line-height:1.6;cursor:pointer}
+    .field-group{margin-bottom:20px}
+    .field-label{font-size:13px;font-weight:600;color:#374151;margin-bottom:6px}
+    .field-sub{font-size:11px;color:#94A3B8;margin-bottom:8px}
+    .sign-input{width:100%;padding:12px 16px;border:1.5px solid #CBD5E1;border-radius:8px;font-size:15px;font-family:inherit;transition:border .15s}
+    .sign-input:focus{outline:none;border-color:#1E40AF;box-shadow:0 0 0 3px rgba(30,64,175,.1)}
+    .sign-input.error{border-color:#EF4444}
+    .field-error{font-size:12px;color:#EF4444;margin-top:4px;display:none}
+    .timestamp-note{font-size:12px;color:#94A3B8;background:#F8FAFC;border-radius:6px;padding:10px 14px;margin-bottom:20px;line-height:1.6}
+    .btn-sign{width:100%;padding:15px;background:#1E40AF;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+    .btn-sign:hover:not(:disabled){background:#1E3A8A}
+    .btn-sign:disabled{background:#CBD5E1;cursor:not-allowed}
+    .btn-sign .icon{font-size:18px}
+
+    /* ── 完了画面 ── */
+    #done-view{display:none}
+    .done-card{background:#fff;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.08);padding:48px 32px;text-align:center}
+    .done-icon{font-size:56px;margin-bottom:16px}
+    .done-title{font-size:20px;font-weight:700;color:#1E293B;margin-bottom:8px}
+    .done-sub{font-size:14px;color:#64748B;line-height:1.7}
+    .done-detail{margin-top:24px;background:#F0FDF4;border-radius:8px;padding:16px;text-align:left;font-size:13px;color:#166534;line-height:2}
+
+    /* ── エラー・ローディング ── */
+    #error-view{display:none}
+    #loading-view{text-align:center;padding:80px 20px}
+    .spinner{width:40px;height:40px;border:3px solid #E2E8F0;border-top-color:#1E40AF;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .error-card{background:#fff;border-radius:12px;padding:48px 32px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+    .error-icon{font-size:48px;margin-bottom:16px}
+    .error-title{font-size:18px;font-weight:700;color:#1E293B;margin-bottom:8px}
+    .error-sub{font-size:14px;color:#64748B;line-height:1.7}
+
+    /* ── 既署名 ── */
+    #already-view{display:none}
+    .already-card{background:#fff;border-radius:12px;padding:48px 32px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+
+    /* ── フッター ── */
+    .footer{text-align:center;padding:20px;font-size:12px;color:#94A3B8}
+
+    @media(max-width:600px){
+      .meta-grid{grid-template-columns:1fr}
+      .contract-scroll{height:320px}
+      .contract-text{padding:20px 16px}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ヘッダー -->
+<div class="header">
+  <div>
+    <div class="header-logo">mono.create</div>
+    <div class="header-sub">電子契約システム</div>
+  </div>
+</div>
+
+<!-- メイン -->
+<div class="main">
+
+  <!-- ローディング -->
+  <div id="loading-view">
+    <div class="spinner"></div>
+    <p style="color:#64748B;font-size:14px">契約書を読み込んでいます...</p>
+  </div>
+
+  <!-- エラー -->
+  <div id="error-view">
+    <div class="error-card">
+      <div class="error-icon">⚠️</div>
+      <div class="error-title" id="error-title">リンクが無効です</div>
+      <div class="error-sub" id="error-sub">このURLは有効期限切れか、存在しないリンクです。<br>mono.createまでお問い合わせください。</div>
+    </div>
+  </div>
+
+  <!-- 既署名 -->
+  <div id="already-view">
+    <div class="already-card">
+      <div class="error-icon">✅</div>
+      <div class="error-title">署名済みです</div>
+      <div class="error-sub">この契約書はすでに電子署名が完了しています。<br>ご不明な点は mono.create までご連絡ください。</div>
+    </div>
+  </div>
+
+  <!-- 契約書ビュー -->
+  <div id="contract-view" style="display:none">
+
+    <!-- ステップ -->
+    <div class="steps" style="margin-bottom:16px;border-radius:10px">
+      <div class="step done" id="step1"><div class="step-num">✓</div><span>内容確認</span></div>
+      <div class="step-arrow">›</div>
+      <div class="step active" id="step2"><div class="step-num">2</div><span>署名</span></div>
+      <div class="step-arrow">›</div>
+      <div class="step" id="step3"><div class="step-num">3</div><span>完了</span></div>
+    </div>
+
+    <!-- 契約メタ情報 -->
+    <div class="card">
+      <div class="card-header">
+        <span style="font-size:20px">📄</span>
+        <h2>業務委託契約書</h2>
+      </div>
+      <div class="card-body">
+        <div class="meta-grid">
+          <div class="meta-item">
+            <div class="meta-label">契約種別</div>
+            <div class="meta-value"><span id="badge-type" class="badge"></span></div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">契約締結者（乙）</div>
+            <div class="meta-value" id="meta-name">—</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">発注者（甲）</div>
+            <div class="meta-value">mono.create 中村航汰</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">発行日</div>
+            <div class="meta-value" id="meta-date">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 契約書本文 -->
+    <div class="card">
+      <div class="card-header">
+        <span style="font-size:20px">📋</span>
+        <h2>契約内容</h2>
+      </div>
+      <div class="card-body" style="padding:12px 20px">
+        <div class="contract-scroll" id="contract-scroll">
+          <div class="contract-text" id="contract-text">読み込み中...</div>
+        </div>
+        <div class="scroll-hint" id="scroll-hint">
+          <span>↓</span> 下までスクロールして内容を確認してください
+        </div>
+      </div>
+    </div>
+
+    <!-- 署名セクション -->
+    <div class="card">
+      <div class="card-header">
+        <span style="font-size:20px">✍️</span>
+        <h2>電子署名</h2>
+      </div>
+      <div class="sign-section">
+
+        <label class="agree-box" for="agree-check">
+          <input type="checkbox" id="agree-check" onchange="checkReady()">
+          <span class="agree-label">上記の業務委託契約書の全内容を確認し、同意します</span>
+        </label>
+
+        <div class="field-group">
+          <div class="field-label">氏名（署名）</div>
+          <div class="field-sub">契約者ご本人のお名前をご入力ください（確認用）</div>
+          <input type="text" class="sign-input" id="sign-name" placeholder="例：山田 太郎" oninput="checkReady()">
+          <div class="field-error" id="name-error">氏名を入力してください</div>
+        </div>
+
+        <div class="timestamp-note">
+          🔒 署名すると、署名日時・お名前・アクセス情報が記録されます。<br>
+          署名完了後、双方へ確認メールが送信されます。
+        </div>
+
+        <button class="btn-sign" id="sign-btn" disabled onclick="submitSign()">
+          <span class="icon">✍️</span> 同意して電子署名する
+        </button>
+      </div>
+    </div>
+
+  </div><!-- /contract-view -->
+
+  <!-- 完了画面 -->
+  <div id="done-view">
+    <div class="done-card">
+      <div class="done-icon">🎉</div>
+      <div class="done-title">電子署名が完了しました</div>
+      <div class="done-sub">
+        契約書への署名が正式に記録されました。<br>
+        確認メールをお送りしましたのでご確認ください。
+      </div>
+      <div class="done-detail">
+        <div>📅 署名日時：<strong id="done-datetime">—</strong></div>
+        <div>✍️ 署名者：<strong id="done-name">—</strong></div>
+        <div>📄 契約種別：<strong id="done-type">—</strong></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<div class="footer">© mono.create | <a href="https://mono-create-group.github.io/lp/" style="color:#94A3B8">mono-create-group.github.io/lp</a></div>
+
+<script>
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
+
+let contractData = null;
+const token = new URLSearchParams(location.search).get('t') || '';
+
+/* ── 起動 ── */
+window.addEventListener('DOMContentLoaded', function() {
+  if (!token) { showError('リンクが無効です', 'URLにトークンが含まれていません。採用メールのリンクをご確認ください。'); return; }
+  loadContract();
+});
+
+/* ── 契約書取得 ── */
+async function loadContract() {
+  show('loading-view');
+  try {
+    const res = await fetch(GAS_URL + '?action=get_contract&t=' + encodeURIComponent(token));
+    const json = await res.json();
+    if (json.error === 'not_found')   { showError('リンクが無効です', 'このURLは存在しないか、すでに削除されています。'); return; }
+    if (json.error === 'expired')     { showError('リンクの有効期限切れ', 'このリンクは有効期限が切れています。ご不明な点はmono.createまでご連絡ください。'); return; }
+    if (json.status === 'signed')     { show('already-view'); return; }
+    contractData = json;
+    renderContract(json);
+    show('contract-view');
+  } catch(e) {
+    showError('読み込みエラー', 'ネットワークエラーが発生しました。しばらく経ってから再度お試しください。');
+  }
+}
+
+/* ── 契約書レンダリング ── */
+function renderContract(d) {
+  document.getElementById('meta-name').textContent = d.name + ' 様';
+  document.getElementById('meta-date').textContent = formatDate(d.created_at);
+
+  const badge = document.getElementById('badge-type');
+  if (d.type === 'sales') {
+    badge.textContent = '営業スタッフ';
+    badge.className = 'badge badge-sales';
+  } else {
+    badge.textContent = '動画編集者';
+    badge.className = 'badge badge-editor';
+  }
+
+  const today = formatDate(new Date().toISOString());
+  document.getElementById('contract-text').innerHTML =
+    d.type === 'sales' ? buildSalesContract(d.name, today) : buildEditorContract(d.name, today);
+
+  /* スクロール監視 */
+  const sc = document.getElementById('contract-scroll');
+  sc.addEventListener('scroll', function() {
+    if (sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 10) {
+      document.getElementById('scroll-hint').innerHTML = '✅ 内容を確認しました';
+      document.getElementById('scroll-hint').style.color = '#10B981';
+    }
+  });
+}
+
+/* ── 署名ボタン活性チェック ── */
+function checkReady() {
+  const ok = document.getElementById('agree-check').checked &&
+              document.getElementById('sign-name').value.trim().length > 0;
+  document.getElementById('sign-btn').disabled = !ok;
+}
+
+/* ── 署名送信 ── */
+async function submitSign() {
+  const btn = document.getElementById('sign-btn');
+  const signedName = document.getElementById('sign-name').value.trim();
+  if (!signedName) { document.getElementById('name-error').style.display = 'block'; return; }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="icon">⏳</span> 送信中...';
+
+  try {
+    const payload = { action: 'sign_contract', token, signed_name: signedName, user_agent: navigator.userAgent };
+    const res = await fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) });
+    const json = await res.json();
+
+    if (json.success) {
+      const now = new Date();
+      document.getElementById('done-datetime').textContent = now.toLocaleDateString('ja-JP', { year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit' });
+      document.getElementById('done-name').textContent = signedName;
+      document.getElementById('done-type').textContent = contractData.type === 'sales' ? '営業スタッフ 業務委託契約書' : '動画編集者 業務委託契約書';
+      show('done-view');
+    } else if (json.error === 'already_signed') {
+      show('already-view');
+    } else {
+      btn.disabled = false;
+      btn.innerHTML = '<span class="icon">✍️</span> 同意して電子署名する';
+      alert('エラーが発生しました。しばらく経ってから再度お試しください。');
+    }
+  } catch(e) {
+    btn.disabled = false;
+    btn.innerHTML = '<span class="icon">✍️</span> 同意して電子署名する';
+    alert('通信エラーが発生しました。');
+  }
+}
+
+/* ── ユーティリティ ── */
+function show(id) {
+  ['loading-view','error-view','contract-view','done-view','already-view'].forEach(function(v) {
+    document.getElementById(v).style.display = v === id ? 'block' : 'none';
+  });
+}
+function showError(title, sub) {
+  document.getElementById('error-title').textContent = title;
+  document.getElementById('error-sub').textContent = sub;
+  show('error-view');
+}
+function formatDate(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return d.toLocaleDateString('ja-JP', { year:'numeric', month:'long', day:'numeric' });
+}
+
+/* ════════════════════════════════════════
+   契約書HTML生成
+════════════════════════════════════════ */
+
+/* ── 営業スタッフ用 ── */
+function buildSalesContract(name, today) {
+  return `
+<h1>業務委託契約書（営業スタッフ）</h1>
+<div class="parties">
+  甲：mono.create 代表　中村航汰（以下「甲」）<br>
+  乙：${esc(name)}（以下「乙」）
+</div>
+<div class="preamble">甲および乙は、以下の条件にて業務委託契約を締結する。</div>
+
+<div class="article">
+  <div class="article-title">第1条（目的）</div>
+  <div class="article-body">本契約は、甲が運営する動画編集・SNS運用代行サービス「mono.create」の営業・紹介活動を乙に委託することを目的とする。</div>
+</div>
+<div class="article">
+  <div class="article-title">第2条（委託業務の内容）</div>
+  <div class="article-body">乙は以下の業務を行うものとする。
+１．mono.createのサービス（動画編集代行・SNS運用代行等）の営業・紹介活動
+２．見込みクライアントへのサービス説明および甲への取次ぎ
+３．甲が提供するマニュアル・資料に基づいた営業活動
+４．成約後のフォローアップ（甲の指示に基づく範囲内）</div>
+</div>
+<div class="article">
+  <div class="article-title">第3条（成果報酬）</div>
+  <div class="article-body">１　乙の紹介により成約（甲への初回入金確認）した場合、以下の報酬を支払う。</div>
+  <div style="margin:10px 0 10px 8px;border:1px solid #E2E8F0;border-radius:6px;overflow:hidden">
+    <div class="table-row" style="background:#F8FAFC;font-weight:600"><span class="table-key">サービス種別</span><span class="table-val">成約報酬</span></div>
+    <div class="table-row"><span class="table-key">ショート動画編集（単品）</span><span class="table-val">¥1,000 / 件</span></div>
+    <div class="table-row"><span class="table-key">長尺動画編集（単品）</span><span class="table-val">¥2,000 / 件</span></div>
+    <div class="table-row"><span class="table-key">まとめて編集プラン（月額）</span><span class="table-val">¥3,000 / 件</span></div>
+    <div class="table-row"><span class="table-key">投稿丸投げ・運用代行プラン</span><span class="table-val">¥5,000 / 件</span></div>
+    <div class="table-row"><span class="table-key">継続ボーナス（3ヶ月継続〜）</span><span class="table-val">+¥1,000 / 件</span></div>
+  </div>
+  <div class="article-body">２　報酬の発生条件は、乙が紹介したクライアントの初回入金が甲にて確認された時点とする。
+３　支払いは月末締め翌月末払いとし、甲が指定する口座への振込にて行う。
+４　振込手数料は乙の負担とする。
+５　報酬が1,000円未満の場合、翌月以降に繰り越す。</div>
+</div>
+<div class="article">
+  <div class="article-title">第4条（契約期間）</div>
+  <div class="article-body">１　本契約の有効期間は、契約締結日から1年間とする。
+２　期間満了の1ヶ月前までに書面による解約申し出がない場合、同一条件にて自動更新する。</div>
+</div>
+<div class="article">
+  <div class="article-title">第5条（業務の独立性）</div>
+  <div class="article-body">１　乙は独立した事業者として業務を遂行し、甲との間に雇用関係は一切生じない。
+２　乙の業務に関連して発生した費用は、別途合意がない限り乙の負担とする。</div>
+</div>
+<div class="article">
+  <div class="article-title">第6条（守秘義務）</div>
+  <div class="article-body">１　乙は、本契約の履行を通じて知り得た甲の秘密情報（顧客情報・料金体系・ノウハウ等）を第三者に開示・漏洩してはならない。
+２　本条の義務は、本契約終了後も3年間継続する。</div>
+</div>
+<div class="article">
+  <div class="article-title">第7条（禁止事項）</div>
+  <div class="article-body">乙は以下の行為を行ってはならない。
+１．甲の許可なく、甲の名称・ロゴ・資料を使用した営業活動
+２．虚偽・誇大な説明によるクライアントの誘引
+３．甲が競合と判断するサービスへの同時在籍・紹介活動
+４．本契約で委託された業務を第三者へ再委託すること
+５．甲のクライアント・見込みクライアントへの直接契約の誘引</div>
+</div>
+<div class="article">
+  <div class="article-title">第8条（契約の解除）</div>
+  <div class="article-body">甲または乙は、相手方が本契約に違反した場合、即時に本契約を解除できる。</div>
+</div>
+<div class="article">
+  <div class="article-title">第9条（損害賠償）</div>
+  <div class="article-body">乙が本契約に違反し、甲に損害を与えた場合、乙は甲に対して損害の賠償を行うものとする。</div>
+</div>
+<div class="article">
+  <div class="article-title">第10条（反社会的勢力の排除）</div>
+  <div class="article-body">甲および乙は、現在および将来にわたって、反社会的勢力に該当しないことを相互に表明・保証する。</div>
+</div>
+<div class="article">
+  <div class="article-title">第11条（合意管轄）</div>
+  <div class="article-body">本契約に関する紛争については、甲の所在地を管轄する裁判所を第一審の専属的合意管轄裁判所とする。</div>
+</div>
+<div class="article">
+  <div class="article-title">第12条（協議事項）</div>
+  <div class="article-body">本契約に定めのない事項および疑義が生じた場合は、甲乙誠意をもって協議の上解決するものとする。</div>
+</div>
+
+<div class="closing">以上の内容を証するため、本契約を締結する。</div>
+<div class="sig-block">
+  締結日：${today}<br><br>
+  甲（発注者）：mono.create 代表　中村航汰<br>
+  住所：北海道旭川市<br><br>
+  乙（受注者）：${esc(name)}<br>
+  ※ 下欄の署名フォームにて電子署名をお願いします。
+</div>`;
+}
+
+/* ── 編集者用 ── */
+function buildEditorContract(name, today) {
+  return `
+<h1>業務委託契約書（動画編集業務）</h1>
+<div class="parties">
+  発注者（以下「甲」）：mono.create 代表　中村航汰<br>
+  受注者（以下「乙」）：${esc(name)}
+</div>
+<div class="preamble">甲は、乙が受注する動画編集業務の委託に関し、次の通り契約を締結する。</div>
+
+<div class="article">
+  <div class="article-title">第1条（目的）</div>
+  <div class="article-body">甲は、乙に対し、動画編集等の本業務を委託し、乙はこれを受託する。</div>
+</div>
+<div class="article">
+  <div class="article-title">第2条（個別契約の成立）</div>
+  <div class="article-body">本業務の具体的な内容、納期、報酬額等の詳細については、案件ごとに甲乙間で別途合意する内容（以下「個別契約」という）によるものとする。個別契約は、甲からの発注に対して乙が承諾した時点で成立する。</div>
+</div>
+<div class="article">
+  <div class="article-title">第3条（報酬・費用）</div>
+  <div class="article-body">１．本業務の報酬は、案件の難易度や規模に応じて個別契約ごとに変動するものとする。ただし、1案件あたりの最低報酬額は2,000円（消費税込み）とする。
+２．振込手数料その他報酬の支払に要する費用は、乙の負担とする。</div>
+</div>
+<div class="article">
+  <div class="article-title">第4条（初稿および納期の遵守）</div>
+  <div class="article-body">１．乙は、素材提供日から発注時に通達した納期までに初稿を提出しなければならない。
+２．乙は、初稿提出後、甲の修正指示に速やかに対応し、初稿提出から1日以内に最終的な納品を完了させなければならない。</div>
+</div>
+<div class="article">
+  <div class="article-title">第5条（検収・修正）</div>
+  <div class="article-body">１．甲は、乙から納品された成果物を検収し、不備がある場合は修正を求めることができる。
+２．乙は、甲から修正依頼があった場合、甲の指定する期限内に2回まで無償で修正を行わなければならない。乙が要因の修正に関しては、無償で最後まで修正を行わなければならない。</div>
+</div>
+<div class="article">
+  <div class="article-title">第6条（権利の帰属・知的財産権）</div>
+  <div class="article-body">１．乙が本業務において作成した成果物に関する著作権その他一切の知的財産権は、甲に成果物が引き渡された時点で、乙から甲へ移転するものとする。
+２．乙は、成果物に関し、甲および甲が指定する第三者に対して著作者人格権を行使しないものとする。</div>
+</div>
+<div class="article">
+  <div class="article-title">第7条（秘密保持）</div>
+  <div class="article-body">乙は、本業務の履行にあたり甲から開示された一切の情報（データ、素材、ノウハウ、アカウント情報、制作中の動画内容等を含む）を秘密として扱い、甲の事前の書面による承諾なしに第三者に開示・漏洩してはならない。本契約終了後も同様とする。</div>
+</div>
+<div class="article">
+  <div class="article-title">第8条（禁止事項）</div>
+  <div class="article-body">乙は、以下の行為を行ってはならない。
+・甲の許可なく、成果物や制作実績を自身のポートフォリオやSNS等で公開する行為。
+・甲から提供された素材や情報を、本業務以外の目的で使用する行為。
+・甲の競合他社に対して、甲の不利益となる情報を共有する行為。</div>
+</div>
+<div class="article">
+  <div class="article-title">第9条（契約解除・損害賠償）</div>
+  <div class="article-body">１．甲または乙は、相手方が本契約に違反した場合、相当の期間を定めて催告し、なお是正されないときは本契約を解除することができる。
+２．乙が甲への事前連絡なく業務を放棄した場合、または連絡を絶った場合、甲は催告なく直ちに本契約を解除することができる。
+３．前項の場合、乙は報酬を請求することができず、甲に損害が生じた場合は賠償責任を負う。</div>
+</div>
+<div class="article">
+  <div class="article-title">第10条（反社会的勢力の排除）</div>
+  <div class="article-body">甲および乙は、自らが反社会的勢力ではないこと、および反社会的勢力と一切の関係を持たないことを表明し、保証する。</div>
+</div>
+<div class="article">
+  <div class="article-title">第11条（管轄裁判所）</div>
+  <div class="article-body">本契約に関する紛争については、甲の所在地を管轄する地方裁判所または簡易裁判所を第一審の専属的合意管轄裁判所とする。</div>
+</div>
+
+<div class="closing">以上の合意を証するため、本契約を締結する。</div>
+<div class="sig-block">
+  締結日：${today}<br><br>
+  甲（発注者）：mono.create 代表　中村航汰<br>
+  住所：北海道旭川市<br><br>
+  乙（受注者）：${esc(name)}<br>
+  ※ 下欄の署名フォームにて電子署名をお願いします。
+</div>`;
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
