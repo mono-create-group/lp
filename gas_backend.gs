@@ -636,6 +636,37 @@ function doGet(e) {
       }
     }
 
+    // ── 採用見送り → 不採用通知メールを自動送信（初回のみ・重複防止）──
+    if (status === '採用見送り' && prevStatus !== '採用見送り') {
+      var rowDataR = sh.getRange(row, 1, 1, 13).getValues()[0];
+      var editorNameR  = rowDataR[1] || '';
+      var editorEmailR = rowDataR[4] || '';
+
+      if (editorEmailR && editorEmailR.indexOf('@') !== -1) {
+        sendAutoReply(editorEmailR, editorNameR,
+          '【mono.create】編集者ご応募の選考結果について',
+          [
+            'この度はmono.createへのご応募いただきまして、',
+            '誠にありがとうございます。',
+            '',
+            '慎重に選考を行いました結果、',
+            '誠に残念ながら今回は採用を見送らせていただく',
+            'こととなりました。',
+            '',
+            'ご応募いただいたご期待に添えず大変恐縮ですが、',
+            '何卒ご了承くださいますようお願い申し上げます。',
+            '',
+            '今後の益々のご活躍をお祈り申し上げます。',
+            '',
+            '──────────────────────────',
+            '※ 選考結果に関するご質問へのご回答は',
+            '  いたしかねますのでご了承ください。',
+            '──────────────────────────',
+          ]
+        );
+      }
+    }
+
     return jsonResponse({ success: true });
   }
 
