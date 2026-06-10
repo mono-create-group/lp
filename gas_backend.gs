@@ -51,23 +51,30 @@ var MATERIAL_PARENT_FOLDER_ID = '1YdwuPGNqYQZiHeseuMtyXF2GKkyqmSvo';
   } catch(e) { Logger.log('ScriptProperties load error: ' + e); }
 })();
 
-// 契約書PDF保管用：親フォルダ配下に「_契約書PDF」サブフォルダを作成・使用
-// 絶対に削除されないよう、専用フォルダで永久保管する
+// 契約書PDF保管用サブフォルダ名（クライアント向け契約書PDF用）
 var CONTRACT_PDF_SUBFOLDER_NAME = '_契約書PDF';
 
-// 編集者向け業務委託契約書（Google Docs）
-var EDITOR_CONTRACT_URL = 'https://docs.google.com/document/d/108LpKal-QeMve2pcsvMUs6OkyUbxQyunHsHQUaYj428/edit?usp=sharing';
-// 署名済みPDF提出先フォルダ
-var EDITOR_CONTRACT_FOLDER_URL = 'https://drive.google.com/drive/folders/1cKPzB0xdMRTyCjYv_OIyNK-hm5ssiQPh';
+// ── 業務委託契約書フォルダ ───────────────────────────────────────────
+// ① 生成した契約書ドキュメントの保管フォルダ（編集者・営業スタッフ共用）
+var CONTRACT_DOC_FOLDER_ID  = '1dhw0bqA-6n89Sy6oaDlLVH2XSb7oCDsi';
+var CONTRACT_DOC_FOLDER_URL = 'https://drive.google.com/drive/folders/1dhw0bqA-6n89Sy6oaDlLVH2XSb7oCDsi';
+// ② 署名済みPDF提出先フォルダ（編集者・営業スタッフ共用）
+var CONTRACT_PDF_FOLDER_URL = 'https://drive.google.com/drive/folders/1cKPzB0xdMRTyCjYv_OIyNK-hm5ssiQPh';
 
-// 営業スタッフ向け業務委託契約書（Google Docs）※作成後にURLを更新してください
-var SALES_CONTRACT_URL = 'https://docs.google.com/document/d/SALES_CONTRACT_DOC_ID/edit?usp=sharing';
-// 署名済みPDF提出先フォルダ（編集者と共用 or 別途作成）
-var SALES_CONTRACT_FOLDER_URL = 'https://drive.google.com/drive/folders/1cKPzB0xdMRTyCjYv_OIyNK-hm5ssiQPh';
+// 編集者向け業務委託契約書テンプレート（Google Docs ID）
+var EDITOR_CONTRACT_TEMPLATE_ID = '108LpKal-QeMve2pcsvMUs6OkyUbxQyunHsHQUaYj428';
+// 営業スタッフ向け業務委託契約書テンプレート（Google Drive docx）
+var SALES_CONTRACT_TEMPLATE_ID = '1NpiCVl7kputu1NmTkyhU6yYkfezq-SqK';  // 雛形ファイルID
 // 営業スタッフ用Chatworkグループ
 var SALES_CHATWORK_INVITE = 'https://www.chatwork.com/g/750rzjj9wmz5gl';
 // 営業スタッフ用マニュアルChatwork（グループ内に記載）
 var SALES_MANUAL_CW = 'https://www.chatwork.com/g/750rzjj9wmz5gl';
+
+// ─── 営業チーム Chatworkルーム ────────────────────────────────────
+var SALES_ROOM_GENERAL    = '439255719';  // 営業スタッフ_全体連絡
+var SALES_ROOM_REPORT     = '439256739';  // 【営業チーム】成約報告
+var SALES_ROOM_KNOWLEDGE  = '439256742';  // 【営業チーム】ノウハウ・テンプレ共有
+var SALES_ROOM_SUPPORT    = '439256745';  // 【営業チーム】質問・サポート
 
 // ─── 振込先口座情報 ───────────────────────────────────────────────
 var BANK_INFO = [
@@ -577,9 +584,12 @@ function doGet(e) {
       var caseType    = rowData[5] || '';
       var now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
 
+      // ── 個別契約書を自動作成（編集者、メール渡しでaddViewer権限付与）──
+      var editorContractUrl = createIndividualEditorContract(editorName, editorEmail);
+
       // 応募者へ合格通知メール（Chatwork招待リンク付き）
       if (editorEmail && editorEmail.indexOf('@') !== -1) {
-        var subject = '【mono.create】編集者採用のご連絡 — Chatworkグループにご参加ください';
+        var subject = '【mono.create】編集者採用のご連絡 — 面談のご予約・Chatworkグループへご参加ください';
         var body = [
           editorName + ' 様',
           '',
@@ -587,10 +597,9 @@ function doGet(e) {
           '選考の結果、ぜひ一緒にお仕事をさせていただきたいと思います。',
           '',
           '━━━━━━━━━━━━━━━━━━━━',
-          '▼ 次のステップ：Chatworkグループへの参加',
+          '▼ ① Chatworkグループへの参加',
           '━━━━━━━━━━━━━━━━━━━━',
           '下記のリンクからmono.create編集者グループにご参加ください。',
-          '参加後、担当者より案件のご案内をお送りします。',
           '',
           '🔗 Chatworkグループ招待リンク',
           'https://www.chatwork.com/g/ig45bwg3tqzkxg',
@@ -599,28 +608,31 @@ function doGet(e) {
           '  上記リンクから無料登録後にグループへご参加ください。',
           '',
           '━━━━━━━━━━━━━━━━━━━━',
-          '▼ ご参加後の流れ',
+          '▼ ② オンライン面談のご予約（必須）',
           '━━━━━━━━━━━━━━━━━━━━',
-          '1️⃣ Chatworkグループに参加',
-          '2️⃣ プロフィールをご登録いただく（下記リンク）',
-          '3️⃣ 担当者からご挨拶・案件のご案内',
-          '4️⃣ テスト編集（1本）→ 本格稼働',
+          '業務開始前に担当者（中村）とGoogle Meetにてオンライン面談を行います。',
+          '下記のURLから、ご都合のよい日時をお選びください。',
+          '',
+          '📅 面談予約リンク（TimeRex）',
+          'https://timerex.net/s/mono.create.group_1f8e/22c29f19',
+          '',
+          '面談後、問題がなければそのまま業務開始となります。',
           '',
           '━━━━━━━━━━━━━━━━━━━━',
-          '▼ ② 業務委託契約書のご確認・ご署名（必須）',
+          '▼ ③ 業務委託契約書のご確認・ご署名（必須）',
           '━━━━━━━━━━━━━━━━━━━━',
           '案件開始前に業務委託契約書へのご署名をお願いしております。',
           '下記のGoogle Docsをご確認いただき、署名済みPDFを',
           '提出先フォルダへアップロードしてください。',
           '',
-          '📄 業務委託契約書',
-          EDITOR_CONTRACT_URL,
+          '📄 業務委託契約書（' + editorName + ' 様 専用）',
+          editorContractUrl,
           '',
           '📂 署名済みPDF提出先フォルダ',
-          EDITOR_CONTRACT_FOLDER_URL,
+          CONTRACT_PDF_FOLDER_URL,
           '',
           '━━━━━━━━━━━━━━━━━━━━',
-          '▼ ③ プロフィール登録（LP掲載・必須）',
+          '▼ ④ プロフィール登録（LP掲載・必須）',
           '━━━━━━━━━━━━━━━━━━━━',
           'LP（サービスページ）の「編集者紹介」欄に掲載するため、',
           '下記フォームにプロフィール情報をご入力ください。',
@@ -633,7 +645,7 @@ function doGet(e) {
           '不明点があればこのメールへ返信ください。',
           'よろしくお願いいたします。',
           '',
-          '担当：mono.create 運営',
+          '担当：mono.create 運営 中村航汰',
         ].join('\n');
 
         MailApp.sendEmail({
@@ -728,6 +740,100 @@ function doGet(e) {
   if (action === 'editor_delete') {
     var row = parseInt(e.parameter.row, 10);
     return deleteEditor(row);
+  }
+
+  // 個別契約書作成デバッグ（DriveApp.makeCopy方式）
+  if (action === 'debug_contract') {
+    var testName = e.parameter.name || 'テスト太郎';
+    var step = 'init';
+    try {
+      step = 'getTemplate';
+      var tmpl2 = DriveApp.getFileById(SALES_CONTRACT_TEMPLATE_ID);
+      var tmplName = tmpl2.getName();
+      step = 'getFolder';
+      var folder2 = DriveApp.getFolderById(CONTRACT_DOC_FOLDER_ID);
+      var folderName = folder2.getName();
+      step = 'makeCopy';
+      var dateStr2  = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyyMMdd');
+      var docTitle2 = '【テスト契約書】' + testName + '_' + dateStr2;
+      var newFile2  = tmpl2.makeCopy(docTitle2, folder2);
+      step = 'setSharing';
+      var sharingNote = '';
+      try { newFile2.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch(se) {
+        sharingNote = 'setSharing skipped: ' + se.toString();
+      }
+      return jsonResponse({ success: true, file_id: newFile2.getId(), url: newFile2.getUrl(), tmplName: tmplName, folderName: folderName, sharingNote: sharingNote });
+    } catch(dbgErr) {
+      return jsonResponse({ success: false, step: step, templateId: SALES_CONTRACT_TEMPLATE_ID, folderId: CONTRACT_DOC_FOLDER_ID, error: dbgErr.toString(), stack: dbgErr.stack || '' });
+    }
+  }
+
+  // 営業スタッフ採用メール テスト送信（指定メールへ送る）
+  if (action === 'test_sales_adoption_email') {
+    var toEmail = e.parameter.to || OWNER_EMAIL;
+    var toName  = e.parameter.name || '中村航汰（テスト）';
+    var contractUrl = createIndividualSalesContract(toName);
+    sendAutoReply(toEmail, toName,
+      '【mono.create】営業スタッフ採用のご連絡',
+      [
+        'この度はmono.createへのご応募ありがとうございます。',
+        '選考の結果、ぜひ一緒にお仕事をさせていただきたいと思います。',
+        '',
+        '━━━━━━━━━━━━━━━━━━━━',
+        '▼ ① 業務委託契約書のご確認・ご署名（必須）',
+        '━━━━━━━━━━━━━━━━━━━━',
+        '案件開始前に業務委託契約書へのご署名をお願いしております。',
+        '下記のリンクから契約書をご確認のうえ、',
+        'プリントアウト・署名後にPDFで提出先フォルダへアップロードしてください。',
+        '',
+        '📄 業務委託契約書（' + toName + ' 様 専用）',
+        contractUrl,
+        '',
+        '📂 署名済みPDF提出先フォルダ',
+        CONTRACT_PDF_FOLDER_URL,
+        '',
+        '━━━━━━━━━━━━━━━━━━━━',
+        '▼ ② Chatworkグループへの参加',
+        '━━━━━━━━━━━━━━━━━━━━',
+        '下記のリンクからmono.create営業スタッフグループにご参加ください。',
+        'グループ内にマニュアルも記載されていますので、必ずご確認ください。',
+        '',
+        '🔗 Chatworkグループ招待リンク（＆マニュアル）',
+        SALES_CHATWORK_INVITE,
+        '',
+        '※ Chatworkのアカウントをお持ちでない場合は、',
+        '  上記リンクから無料登録後にグループへご参加ください。',
+        '',
+        '━━━━━━━━━━━━━━━━━━━━',
+        '▼ ③ 中村のDMへの追加',
+        '━━━━━━━━━━━━━━━━━━━━',
+        'Chatworkで下記IDを検索し、ダイレクトメッセージから',
+        '「営業スタッフとして採用いただきました〇〇です」とご連絡ください。',
+        '',
+        '💬 Chatwork ID：nakamura-kouta（mono.create 中村航汰）',
+        '',
+        '━━━━━━━━━━━━━━━━━━━━',
+        '不明点があればこのメールへ返信ください。',
+        'よろしくお願いいたします。',
+        '',
+        '担当：mono.create 運営 中村航汰',
+      ]
+    );
+    return jsonResponse({ success: true, to: toEmail, contract_url: contractUrl });
+  }
+
+  // Drive ファイルの共有設定（GAS経由）
+  if (action === 'share_drive_file') {
+    var fileId = e.parameter.file_id;
+    if (!fileId) return jsonResponse({ success: false, error: 'file_id required' });
+    try {
+      var file = DriveApp.getFileById(fileId);
+      file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+      var url = 'https://docs.google.com/document/d/' + fileId + '/edit?usp=sharing';
+      return jsonResponse({ success: true, url: url, name: file.getName() });
+    } catch(e2) {
+      return jsonResponse({ success: false, error: e2.toString() });
+    }
   }
 
   if (action === 'create_trial_folder') {
@@ -1642,12 +1748,15 @@ function updateSalesAppStatus(row, status) {
   var prevStatus = sh.getRange(row, 13).getValue();
   sh.getRange(row, 13).setValue(status);
 
-  // ── 採用決定 → 採用通知メールを自動送信（初回のみ）──
+  // ── 採用決定 → 個別契約書作成 + 採用通知メールを自動送信（初回のみ）──
   if (status === '採用決定' && prevStatus !== '採用決定') {
     var rowData    = sh.getRange(row, 1, 1, 13).getValues()[0];
     var salesName  = rowData[1] || '';
     var salesEmail = rowData[4] || '';
     var now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
+
+    // ── 個別契約書を自動作成（メール渡しでaddViewer権限付与）──
+    var individualContractUrl = createIndividualSalesContract(salesName, salesEmail);
 
     if (salesEmail && salesEmail.indexOf('@') !== -1) {
       sendAutoReply(salesEmail, salesName,
@@ -1660,14 +1769,14 @@ function updateSalesAppStatus(row, status) {
           '▼ ① 業務委託契約書のご確認・ご署名（必須）',
           '━━━━━━━━━━━━━━━━━━━━',
           '案件開始前に業務委託契約書へのご署名をお願いしております。',
-          '下記のGoogle Docsをご確認いただき、署名済みPDFを',
-          '提出先フォルダへアップロードしてください。',
+          '下記のリンクから契約書をご確認のうえ、',
+          'プリントアウト・署名後にPDFで提出先フォルダへアップロードしてください。',
           '',
-          '📄 業務委託契約書',
-          SALES_CONTRACT_URL,
+          '📄 業務委託契約書（' + salesName + ' 様 専用）',
+          individualContractUrl,
           '',
           '📂 署名済みPDF提出先フォルダ',
-          SALES_CONTRACT_FOLDER_URL,
+          CONTRACT_PDF_FOLDER_URL,
           '',
           '━━━━━━━━━━━━━━━━━━━━',
           '▼ ② Chatworkグループへの参加',
@@ -1698,9 +1807,9 @@ function updateSalesAppStatus(row, status) {
       );
     }
 
-    // オーナーへ通知
-    var roomId = EDITOR_ROOM_ID || CHATWORK_ROOM_ID;
-    if (roomId) {
+    // オーナーへ通知（営業スタッフ_全体連絡ルームへ）
+    var salesNotifyRoom = SALES_ROOM_GENERAL || EDITOR_ROOM_ID || CHATWORK_ROOM_ID;
+    if (salesNotifyRoom) {
       var cwMsg = '[To:' + CHATWORK_MENTION + '] 中村航汰\n\n' +
         '━━━━━━━━━━━━━━━━━━━━\n' +
         '✅ 営業スタッフ採用決定 — 招待メール自動送信済み\n' +
@@ -1711,7 +1820,7 @@ function updateSalesAppStatus(row, status) {
         '━━━━━━━━━━━━━━━━━━━━\n' +
         '▶ 管理画面: ' + LP_BASE_URL + 'admin.html';
       try {
-        UrlFetchApp.fetch('https://api.chatwork.com/v2/rooms/' + roomId + '/messages', {
+        UrlFetchApp.fetch('https://api.chatwork.com/v2/rooms/' + salesNotifyRoom + '/messages', {
           method: 'POST',
           headers: { 'X-ChatWorkToken': CHATWORK_TOKEN },
           payload: 'body=' + encodeURIComponent(cwMsg)
@@ -1893,6 +2002,179 @@ function updateScheduleStatus(row, status) {
   var vals = sheet.getRange(row, 1, 1, 8).getValues()[0];
   sheet.getRange(row, 7).setValue(status);
   return jsonResponse({ success:true });
+}
+
+// ================================================================
+// 営業スタッフ 個別契約書を自動作成（DriveApp.makeCopy方式）
+// documents スコープ不要・drive スコープのみで動作
+// 戻り値: 個別契約書のURL（string）
+// ================================================================
+function createIndividualSalesContract(salesName, recipientEmail) {
+  try {
+    var dateStr  = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyyMMdd');
+    var docTitle = '【営業契約書】' + salesName + '_' + dateStr;
+    var template = DriveApp.getFileById(SALES_CONTRACT_TEMPLATE_ID);
+    var folder   = DriveApp.getFolderById(CONTRACT_DOC_FOLDER_ID);
+    var newFile  = template.makeCopy(docTitle, folder);
+    // 受信者のメールに直接閲覧権限を付与（Shared Drive制約でも動作）
+    if (recipientEmail && recipientEmail.indexOf('@') !== -1) {
+      try { newFile.addViewer(recipientEmail); } catch(ve) {
+        Logger.log('addViewer failed: ' + ve);
+      }
+    }
+    // setSharing はShared Driveでは失敗するため任意実行
+    try { newFile.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch(se) {
+      Logger.log('setSharing skipped: ' + se);
+    }
+    // Drive表示URL（.docxでも確実に開ける）
+    return 'https://drive.google.com/file/d/' + newFile.getId() + '/view?usp=sharing';
+  } catch(e) {
+    Logger.log('createIndividualSalesContract error: ' + e);
+    return CONTRACT_DOC_FOLDER_URL;
+  }
+}
+
+// ================================================================
+// ※ 旧DocumentApp版（参考用・使用しない）
+// ================================================================
+function _createIndividualSalesContractDocApp_UNUSED(salesName) {
+  try {
+    var today     = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy年MM月dd日');
+    var dateStr   = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyyMMdd');
+    var docTitle  = '【営業契約書】' + salesName + '_' + dateStr;
+
+    // DocumentApp で新規 Google Doc を作成（documents スコープ必要）
+    var doc  = DocumentApp.create(docTitle);
+    var body = doc.getBody();
+    body.setMarginTop(50).setMarginBottom(50).setMarginLeft(50).setMarginRight(50);
+
+    // ── タイトル ──
+    body.appendParagraph('業務委託契約書（営業スタッフ）')
+        .setHeading(DocumentApp.ParagraphHeading.HEADING1)
+        .setAlignment(DocumentApp.HorizontalAlignment.CENTER);
+    body.appendParagraph(' ');
+
+    // ── 甲乙 ──
+    body.appendParagraph('甲：mono.create 代表　中村航汰（以下「甲」）');
+    body.appendParagraph('乙：' + salesName + '　　　　　　　（以下「乙」）');
+    body.appendParagraph(' ');
+    body.appendParagraph('甲および乙は、以下の条件にて業務委託契約を締結する。');
+    body.appendParagraph(' ');
+
+    var articles = [
+      ['第1条（目的）',
+       '本契約は、甲が運営する動画編集・SNS運用代行サービス「mono.create」の営業・紹介活動を乙に委託することを目的とする。'],
+      ['第2条（委託業務の内容）',
+       '乙は以下の業務を行うものとする。\n' +
+       '1.　mono.createのサービス（動画編集代行・SNS運用代行等）の営業・紹介活動\n' +
+       '2.　見込みクライアントへのサービス説明および甲への取次ぎ\n' +
+       '3.　甲が提供するマニュアル・資料に基づいた営業活動\n' +
+       '4.　成約後のフォローアップ（甲の指示に基づく範囲内）'],
+      ['第3条（成果報酬）',
+       '１　乙の紹介により成約（甲への初回入金確認）した場合、以下の報酬を支払う。\n\n' +
+       '　サービス種別　　　　　　　　　成約報酬\n' +
+       '　ショート動画編集（単品）　　　¥1,000／件\n' +
+       '　長尺動画編集（単品）　　　　　¥2,000／件\n' +
+       '　まとめて編集プラン（月額）　　¥3,000／件\n' +
+       '　投稿丸投げ・運用代行プラン　　¥5,000／件\n' +
+       '　継続ボーナス（3ヶ月継続〜）　+¥1,000／件\n\n' +
+       '２　報酬の発生条件は、乙が紹介したクライアントの初回入金が甲にて確認された時点とする。\n' +
+       '３　支払いは月末締め翌月末払いとし、甲が指定する口座への振込にて行う。\n' +
+       '４　振込手数料は乙の負担とする。\n' +
+       '５　報酬が1,000円未満の場合、翌月以降に繰り越す。'],
+      ['第4条（契約期間）',
+       '１　本契約の有効期間は、契約締結日から1年間とする。\n' +
+       '２　期間満了の1ヶ月前までに書面による解約申し出がない場合、同一条件にて自動更新する。'],
+      ['第5条（業務の独立性）',
+       '１　乙は独立した事業者として業務を遂行し、甲との間に雇用関係は一切生じない。\n' +
+       '２　乙の業務に関連して発生した費用は、別途合意がない限り乙の負担とする。'],
+      ['第6条（守秘義務）',
+       '１　乙は、本契約の履行を通じて知り得た甲の秘密情報（顧客情報・料金体系・ノウハウ等）を第三者に開示・漏洩してはならない。\n' +
+       '２　本条の義務は、本契約終了後も3年間継続する。'],
+      ['第7条（禁止事項）',
+       '乙は以下の行為を行ってはならない。\n' +
+       '1.　甲の許可なく、甲の名称・ロゴ・資料を使用した営業活動\n' +
+       '2.　虚偽・誇大な説明によるクライアントの誘引\n' +
+       '3.　甲が競合と判断するサービスへの同時在籍・紹介活動\n' +
+       '4.　本契約で委託された業務を第三者へ再委託すること\n' +
+       '5.　甲のクライアント・見込みクライアントへの直接契約の誘引'],
+      ['第8条（契約の解除）',
+       '甲または乙は、相手方が本契約に違反した場合、即時に本契約を解除できる。'],
+      ['第9条（損害賠償）',
+       '乙が本契約に違反し、甲に損害を与えた場合、乙は甲に対して損害の賠償を行うものとする。'],
+      ['第10条（反社会的勢力の排除）',
+       '甲および乙は、現在および将来にわたって、反社会的勢力に該当しないことを相互に表明・保証する。'],
+      ['第11条（合意管轄）',
+       '本契約に関する紛争については、甲の所在地を管轄する裁判所を第一審の専属的合意管轄裁判所とする。'],
+      ['第12条（協議事項）',
+       '本契約に定めのない事項および疑義が生じた場合は、甲乙誠意をもって協議の上解決するものとする。'],
+    ];
+
+    articles.forEach(function(a) {
+      var title = body.appendParagraph(a[0]);
+      title.editAsText().setBold(true);
+      title.setSpacingBefore(12);
+      body.appendParagraph(a[1]).setSpacingAfter(6);
+    });
+
+    // ── 締結文 ──
+    body.appendParagraph(' ');
+    body.appendParagraph('以上の内容を証するため、本契約書を2通作成し、各自1通を保有する。');
+    body.appendParagraph(' ');
+    body.appendParagraph('締結日：　　　　年　　月　　日')
+        .setAlignment(DocumentApp.HorizontalAlignment.RIGHT);
+    body.appendParagraph(' ');
+    body.appendParagraph('甲：mono.create 代表　中村航汰　　　　㊞');
+    body.appendParagraph(' ');
+    body.appendParagraph('乙：' + salesName + '　　　　　　　　　㊞');
+    body.appendParagraph('　住所：');
+    body.appendParagraph('　生年月日：');
+
+    doc.saveAndClose();
+
+    // 共有設定
+    var docFile = DriveApp.getFileById(doc.getId());
+    docFile.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+
+    // 保管フォルダへ移動（可能な場合）
+    try {
+      var folder = DriveApp.getFolderById(CONTRACT_DOC_FOLDER_ID);
+      folder.addFile(docFile);
+      DriveApp.getRootFolder().removeFile(docFile);
+    } catch(fe) { /* マイドライブのままでも問題なし */ }
+
+    return 'https://docs.google.com/document/d/' + doc.getId() + '/edit?usp=sharing';
+  } catch(e) {
+    Logger.log('createIndividualSalesContract error: ' + e);
+    return CONTRACT_DOC_FOLDER_URL;
+  }
+}
+
+// ================================================================
+// 個別編集者契約書を生成（テンプレートコピー方式）
+// ================================================================
+function createIndividualEditorContract(editorName, recipientEmail) {
+  try {
+    var dateStr  = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyyMMdd');
+    var docTitle = '【編集者契約書】' + editorName + '_' + dateStr;
+    var template = DriveApp.getFileById(EDITOR_CONTRACT_TEMPLATE_ID);
+    var folder   = DriveApp.getFolderById(CONTRACT_DOC_FOLDER_ID);
+    var newFile  = template.makeCopy(docTitle, folder);
+    // 受信者のメールに直接閲覧権限を付与
+    if (recipientEmail && recipientEmail.indexOf('@') !== -1) {
+      try { newFile.addViewer(recipientEmail); } catch(ve) {
+        Logger.log('addViewer failed: ' + ve);
+      }
+    }
+    try { newFile.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch(se) {
+      Logger.log('setSharing skipped: ' + se);
+    }
+    // Google Doc → Drive表示URLで確実に開ける
+    return 'https://drive.google.com/file/d/' + newFile.getId() + '/view?usp=sharing';
+  } catch(e) {
+    Logger.log('createIndividualEditorContract error: ' + e);
+    return CONTRACT_DOC_FOLDER_URL;
+  }
 }
 
 // ================================================================
