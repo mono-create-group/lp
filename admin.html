@@ -5678,7 +5678,7 @@ async function loadInvoiceList() {
     // 統計
     var totalUnpaid = 0, totalPaid = 0, countUnpaid = 0, countPaid = 0;
     invs.forEach(function(inv) {
-      var amt = parseInt((inv.total || '0').replace(/[^0-9-]/g, '')) || 0;
+      var amt = parseInt(String(inv.total || '0').replace(/[^0-9-]/g, '')) || 0;
       if (inv.status === '支払済') { totalPaid += amt; countPaid++; }
       else { totalUnpaid += amt; countUnpaid++; }
     });
