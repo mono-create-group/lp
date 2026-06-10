@@ -636,8 +636,8 @@ function doGet(e) {
       }
     }
 
-    // ── 採用見送り → 不採用通知メールを自動送信（初回のみ・重複防止）──
-    if (status === '採用見送り' && prevStatus !== '採用見送り') {
+    // ── 見送り → 不採用通知メールを自動送信（初回のみ・重複防止）──
+    if (status === '見送り' && prevStatus !== '見送り') {
       var rowDataR = sh.getRange(row, 1, 1, 13).getValues()[0];
       var editorNameR  = rowDataR[1] || '';
       var editorEmailR = rowDataR[4] || '';
