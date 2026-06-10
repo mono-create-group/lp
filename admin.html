@@ -1729,7 +1729,8 @@ async function loadPrivateLinks() {
   if (el) el.innerHTML = '<p style="font-size:0.82rem;color:var(--sub);">読み込み中...</p>';
   try {
     var res = await gasFetch(GAS_URL + '?action=private_link_list&key=' + encodeURIComponent(getAdminPw()));
-    renderPrivateLinks(res.data || []);
+    var pjson = await res.json();
+    renderPrivateLinks(pjson.data || []);
   } catch(e) {
     if (el) el.innerHTML = '<p style="font-size:0.82rem;color:var(--red);">読み込みに失敗しました</p>';
   }
@@ -1830,7 +1831,8 @@ async function loadClientMaster() {
   if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="padding:24px;text-align:center;color:var(--sub);">読み込み中...</td></tr>';
   try {
     var res = await gasFetch(GAS_URL + '?action=client_master_list&key=' + encodeURIComponent(getAdminPw()));
-    _clientMasterData = res.data || [];
+    var json = await res.json();
+    _clientMasterData = json.data || [];
     renderClientMaster(_clientMasterData);
     populateClientDatalist();
   } catch(e) {
