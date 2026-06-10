@@ -55,9 +55,10 @@ var MATERIAL_PARENT_FOLDER_ID = '1YdwuPGNqYQZiHeseuMtyXF2GKkyqmSvo';
 var CONTRACT_PDF_SUBFOLDER_NAME = '_契約書PDF';
 
 // ── 業務委託契約書フォルダ ───────────────────────────────────────────
-// ① 生成した契約書ドキュメントの保管フォルダ（編集者・営業スタッフ共用）
-var CONTRACT_DOC_FOLDER_ID  = '1dhw0bqA-6n89Sy6oaDlLVH2XSb7oCDsi';
-var CONTRACT_DOC_FOLDER_URL = 'https://drive.google.com/drive/folders/1dhw0bqA-6n89Sy6oaDlLVH2XSb7oCDsi';
+// ① 生成した契約書ドキュメントの保管フォルダ名（MATERIAL_PARENT_FOLDER_ID配下に自動作成）
+//    ※ Shared Driveではなく My Drive配下に置くことでsetSharingが正常動作する
+var CONTRACT_DOC_SUBFOLDER_NAME = '業務委託契約書';
+var CONTRACT_DOC_FOLDER_URL = 'https://drive.google.com/drive/folders/' + MATERIAL_PARENT_FOLDER_ID;
 // ② 署名済みPDF提出先フォルダ（編集者・営業スタッフ共用）
 var CONTRACT_PDF_FOLDER_URL = 'https://drive.google.com/drive/folders/1cKPzB0xdMRTyCjYv_OIyNK-hm5ssiQPh';
 
@@ -751,7 +752,7 @@ function doGet(e) {
       var tmpl2 = DriveApp.getFileById(SALES_CONTRACT_TEMPLATE_ID);
       var tmplName = tmpl2.getName();
       step = 'getFolder';
-      var folder2 = DriveApp.getFolderById(CONTRACT_DOC_FOLDER_ID);
+      var folder2 = getOrCreateContractDocFolder();
       var folderName = folder2.getName();
       step = 'makeCopy';
       var dateStr2  = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyyMMdd');
@@ -764,7 +765,7 @@ function doGet(e) {
       }
       return jsonResponse({ success: true, file_id: newFile2.getId(), url: newFile2.getUrl(), tmplName: tmplName, folderName: folderName, sharingNote: sharingNote });
     } catch(dbgErr) {
-      return jsonResponse({ success: false, step: step, templateId: SALES_CONTRACT_TEMPLATE_ID, folderId: CONTRACT_DOC_FOLDER_ID, error: dbgErr.toString(), stack: dbgErr.stack || '' });
+      return jsonResponse({ success: false, step: step, templateId: SALES_CONTRACT_TEMPLATE_ID, folderName: CONTRACT_DOC_SUBFOLDER_NAME, error: dbgErr.toString(), stack: dbgErr.stack || '' });
     }
   }
 
@@ -2005,6 +2006,20 @@ function updateScheduleStatus(row, status) {
 }
 
 // ================================================================
+// 契約書ドキュメント保管フォルダを取得（なければ作成）
+// MATERIAL_PARENT_FOLDER_ID 配下の「業務委託契約書」フォルダを使用
+// → My Drive配下のため setSharing が正常動作する
+// ================================================================
+function getOrCreateContractDocFolder() {
+  // My Drive ルート直下に「業務委託契約書」フォルダを作成・取得
+  // getRootFolder() = mono.create.group@gmail.com のマイドライブルート
+  var root = DriveApp.getRootFolder();
+  var folders = root.getFoldersByName(CONTRACT_DOC_SUBFOLDER_NAME);
+  if (folders.hasNext()) return folders.next();
+  return root.createFolder(CONTRACT_DOC_SUBFOLDER_NAME);
+}
+
+// ================================================================
 // 営業スタッフ 個別契約書を自動作成（DriveApp.makeCopy方式）
 // documents スコープ不要・drive スコープのみで動作
 // 戻り値: 個別契約書のURL（string）
@@ -2014,7 +2029,7 @@ function createIndividualSalesContract(salesName, recipientEmail) {
     var dateStr  = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyyMMdd');
     var docTitle = '【営業契約書】' + salesName + '_' + dateStr;
     var template = DriveApp.getFileById(SALES_CONTRACT_TEMPLATE_ID);
-    var folder   = DriveApp.getFolderById(CONTRACT_DOC_FOLDER_ID);
+    var folder   = getOrCreateContractDocFolder();
     var newFile  = template.makeCopy(docTitle, folder);
     // 受信者のメールに直接閲覧権限を付与（Shared Drive制約でも動作）
     if (recipientEmail && recipientEmail.indexOf('@') !== -1) {
@@ -2138,7 +2153,7 @@ function _createIndividualSalesContractDocApp_UNUSED(salesName) {
 
     // 保管フォルダへ移動（可能な場合）
     try {
-      var folder = DriveApp.getFolderById(CONTRACT_DOC_FOLDER_ID);
+      var folder = getOrCreateContractDocFolder();
       folder.addFile(docFile);
       DriveApp.getRootFolder().removeFile(docFile);
     } catch(fe) { /* マイドライブのままでも問題なし */ }
@@ -2158,7 +2173,7 @@ function createIndividualEditorContract(editorName, recipientEmail) {
     var dateStr  = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyyMMdd');
     var docTitle = '【編集者契約書】' + editorName + '_' + dateStr;
     var template = DriveApp.getFileById(EDITOR_CONTRACT_TEMPLATE_ID);
-    var folder   = DriveApp.getFolderById(CONTRACT_DOC_FOLDER_ID);
+    var folder   = getOrCreateContractDocFolder();
     var newFile  = template.makeCopy(docTitle, folder);
     // 受信者のメールに直接閲覧権限を付与
     if (recipientEmail && recipientEmail.indexOf('@') !== -1) {
