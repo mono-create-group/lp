@@ -41,7 +41,7 @@
 })();
 </script>
 <title>動画編集代行【¥4,000〜・最短当日納品】ショート・YouTube・SNS運用 | mono.create</title>
-<meta name="description" content="動画編集代行・SNS運用代行のプロチーム「mono.create」。ショート動画¥4,000〜/本、YouTube長尺¥15,000〜/本、月10本まとめて¥45,000〜。最短当日納品・修正3回無料。TikTok・Instagram・YouTube Shorts対応。無料相談受付中。">
+<meta name="description" content="動画編集代行・SNS運用代行のプロチーム「mono.create」。ショート動画¥4,000〜/本、YouTube長尺¥20,000〜/本、月10本まとめて¥45,000〜。最短当日納品・修正3回無料。TikTok・Instagram・YouTube Shorts対応。無料相談受付中。">
 <meta name="keywords" content="動画編集代行,ショート動画編集代行,YouTube動画編集代行,SNS運用代行,動画編集外注,TikTok編集,Instagramリール編集,YouTube Shorts編集,動画編集チーム,投稿代行,動画編集 安い,ショート動画 外注">
 <link rel="canonical" href="https://mono-create-group.github.io/lp/">
 <!-- OGP -->
@@ -2980,14 +2980,14 @@ section { contain: layout style; }
             <p class="pricing-row-desc">納品7〜8日。動画の長さによって料金が変わります。<span class="longform-toggle-hint">▼ 詳細を見る</span><br><span style="font-size:0.75rem;color:#60A5FA;">🎁 トライアル：まず30秒を無償編集 → 問題なければ1本納品・1本分の料金</span></p>
             <div class="longform-detail">
               <table class="longform-table">
-                <tr><td>〜10分</td><td class="longform-price" data-ck="price_long_10min">¥15,000</td></tr>
-                <tr><td>〜15分</td><td class="longform-price" data-ck="price_long_15min">¥20,000</td></tr>
-                <tr><td>〜20分</td><td class="longform-price" data-ck="price_long_20min">¥25,000</td></tr>
-                <tr><td>20分01秒〜</td><td class="longform-price" data-ck="price_long_over">+¥1,000/分</td></tr>
+                <tr><td>〜10分</td><td class="longform-price" data-ck="price_long_10min">¥20,000</td></tr>
+                <tr><td>〜15分</td><td class="longform-price" data-ck="price_long_15min">¥25,000</td></tr>
+                <tr><td>〜20分</td><td class="longform-price" data-ck="price_long_20min">¥30,000</td></tr>
+                <tr><td>20分01秒〜</td><td class="longform-price" data-ck="price_long_over">+¥1,200/分</td></tr>
               </table>
             </div>
           </div>
-          <p class="pricing-price" style="white-space:nowrap;" data-ck="price_edit_long">¥15,000〜</p>
+          <p class="pricing-price" style="white-space:nowrap;" data-ck="price_edit_long">¥20,000〜</p>
         </div>
         <div id="svc-consulting" class="pricing-row fade-up">
           <div>
@@ -3663,18 +3663,18 @@ section { contain: layout style; }
               <!-- 個別プランがURLパラメータで渡された場合、JSで先頭に追加されます -->
               <optgroup label="── 単品">
                 <option>ショート動画編集（単品 ¥4,000〜）</option>
-                <option>長尺動画編集（単品 ¥15,000〜）</option>
+                <option data-svc="edit_long">長尺動画編集（単品 ¥20,000〜）</option>
               </optgroup>
               <optgroup label="── まとめて編集プラン（編集のみ）">
                 <option>まとめて編集プラン ショート（10本〜）</option>
-                <option>まとめて編集プラン 長尺（4本〜）</option>
+                <option data-svc="edit_long">まとめて編集プラン 長尺（4本〜）</option>
               </optgroup>
               <optgroup label="── 投稿丸投げプラン（編集＋投稿代行）">
                 <option>投稿丸投げプラン ショート 8本（¥69,800/月）</option>
                 <option>投稿丸投げプラン ショート 10本（¥45,000/月）</option>
                 <option>投稿丸投げプラン ショート 15本（¥75,000/月）</option>
                 <option>投稿丸投げプラン ショート 30本（¥150,000/月）</option>
-                <option>長尺動画 投稿丸投げプラン（後払い・4本〜）</option>
+                <option data-svc="post_long">長尺動画 投稿丸投げプラン（後払い・4本〜）</option>
               </optgroup>
               <optgroup label="── 運用丸投げパック">
                 <option>運用丸投げパック スタンダード（¥150,000/月）</option>
@@ -3879,6 +3879,16 @@ var SVC_MAP = {
             b.textContent = '受付停止中';
           });
         });
+
+        // お問い合わせフォームの対応選択肢も無効化
+        var planSelect = document.querySelector('select[name="plan"]');
+        if (planSelect) {
+          planSelect.querySelectorAll('option[data-svc="' + key + '"]').forEach(function(opt) {
+            opt.disabled = true;
+            opt.textContent = opt.textContent + '（受付停止中）';
+            opt.style.color = '#9ca3af';
+          });
+        }
       });
     })
     .catch(function(){});
