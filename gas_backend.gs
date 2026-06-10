@@ -60,6 +60,15 @@ var EDITOR_CONTRACT_URL = 'https://docs.google.com/document/d/108LpKal-QeMve2pcs
 // 署名済みPDF提出先フォルダ
 var EDITOR_CONTRACT_FOLDER_URL = 'https://drive.google.com/drive/folders/1cKPzB0xdMRTyCjYv_OIyNK-hm5ssiQPh';
 
+// 営業スタッフ向け業務委託契約書（Google Docs）※作成後にURLを更新してください
+var SALES_CONTRACT_URL = 'https://docs.google.com/document/d/SALES_CONTRACT_DOC_ID/edit?usp=sharing';
+// 署名済みPDF提出先フォルダ（編集者と共用 or 別途作成）
+var SALES_CONTRACT_FOLDER_URL = 'https://drive.google.com/drive/folders/1cKPzB0xdMRTyCjYv_OIyNK-hm5ssiQPh';
+// 営業スタッフ用Chatworkグループ
+var SALES_CHATWORK_INVITE = 'https://www.chatwork.com/g/750rzjj9wmz5gl';
+// 営業スタッフ用マニュアルChatwork（グループ内に記載）
+var SALES_MANUAL_CW = 'https://www.chatwork.com/g/750rzjj9wmz5gl';
+
 // ─── 振込先口座情報 ───────────────────────────────────────────────
 var BANK_INFO = [
   '【振込先口座】',
@@ -237,6 +246,11 @@ function doPost(e) {
     // 採用編集者 自己プロフィール登録（認証不要・採用メールリンク経由）
     if (data.action === 'editor_self_register') {
       return editorSelfRegister(data);
+    }
+
+    // 営業スタッフ 公開応募フォーム（認証不要）
+    if (data.action === 'sales_apply') {
+      return applySales(data);
     }
 
     // パートナー登録フォーム（認証不要）
@@ -481,6 +495,25 @@ function doGet(e) {
 
   if (action === 'editor_applications') {
     return listEditorApplications();
+  }
+
+  if (action === 'sales_applications') {
+    return listSalesApplications();
+  }
+
+  if (action === 'sales_app_status') {
+    var row    = parseInt(e.parameter.row, 10);
+    var status = e.parameter.status || '';
+    return updateSalesAppStatus(row, status);
+  }
+
+  if (action === 'sales_app_delete') {
+    var row = parseInt(e.parameter.row, 10);
+    if (!row || row < 2) return jsonResponse({ error: 'invalid row' });
+    var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    var sh = ss.getSheetByName('sales_applications');
+    if (sh) sh.deleteRow(row);
+    return jsonResponse({ success: true });
   }
 
   if (action === 'partner_applications') {
@@ -1462,6 +1495,263 @@ function listEditorApplications() {
   }
   data.sort(function(a,b){ return b.date > a.date ? 1 : -1; });
   return jsonResponse({ data: data });
+}
+
+// ================================================================
+// 営業スタッフ管理
+// sales_applications シート列構成:
+// 1:受信日時 2:名前 3:年齢 4:性別 5:メール
+// 6:職業 7:営業経験 8:週稼働時間 9:SNS URL 10:知識レベル
+// 11:長期契約 12:メッセージ 13:ステータス
+// ================================================================
+
+// 営業スタッフ 公開応募
+function applySales(data) {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName('sales_applications');
+  if (!sheet) {
+    sheet = ss.insertSheet('sales_applications');
+    sheet.appendRow([
+      '受信日時','名前','年齢','性別','メール',
+      '職業','営業経験','週稼働時間','SNS URL','知識レベル',
+      '長期契約','メッセージ','ステータス'
+    ]);
+    sheet.setFrozenRows(1);
+  }
+  var now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
+  sheet.appendRow([
+    now,
+    data.name        || '',
+    data.age         || '',
+    data.gender      || '',
+    data.email       || '',
+    data.occupation  || '',
+    data.sales_exp   || '',
+    data.weekly_hours|| '',
+    data.sns_url     || '',
+    data.knowledge   || '',
+    data.long_term   || '',
+    data.message     || '',
+    '未対応'
+  ]);
+
+  // Chatwork通知
+  var roomId = EDITOR_ROOM_ID || CHATWORK_ROOM_ID;
+  if (roomId) {
+    var msg = '[To:' + CHATWORK_MENTION + '] 中村航汰\n\n' +
+      '━━━━━━━━━━━━━━━━━━━━\n' +
+      '💼 新規 営業スタッフ応募 — mono.create\n' +
+      '━━━━━━━━━━━━━━━━━━━━\n' +
+      '受信日時  : ' + now + '\n' +
+      '名前      : ' + (data.name || '') + '（' + (data.age || '') + ' / ' + (data.gender || '') + '）\n' +
+      'メール    : ' + (data.email || '') + '\n' +
+      '職業      : ' + (data.occupation || '') + '\n' +
+      '営業経験  : ' + (data.sales_exp || '') + '\n' +
+      '週稼働    : ' + (data.weekly_hours || '') + '\n' +
+      '知識レベル: ' + (data.knowledge || '') + '\n' +
+      '長期契約  : ' + (data.long_term || '') + '\n' +
+      '━━━━━━━━━━━━━━━━━━━━\n' +
+      (data.message ? '【志望動機・PR】\n' + data.message + '\n━━━━━━━━━━━━━━━━━━━━\n' : '') +
+      '▶ 管理画面: ' + LP_BASE_URL + 'admin.html';
+    try {
+      UrlFetchApp.fetch('https://api.chatwork.com/v2/rooms/' + roomId + '/messages', {
+        method: 'POST',
+        headers: { 'X-ChatWorkToken': CHATWORK_TOKEN },
+        payload: 'body=' + encodeURIComponent(msg)
+      });
+    } catch(e) {}
+  }
+
+  // 応募者への自動返信
+  if (data.email && data.email.indexOf('@') !== -1) {
+    sendAutoReply(data.email, data.name,
+      '【mono.create】営業スタッフご応募を受け付けました',
+      [
+        'この度はmono.createへのご応募ありがとうございます。',
+        '内容を確認のうえ、2〜3営業日以内にご連絡いたします。',
+        '',
+        '▼ ご応募内容',
+        '職業      : ' + (data.occupation  || ''),
+        '営業経験  : ' + (data.sales_exp   || ''),
+        '週稼働時間: ' + (data.weekly_hours || ''),
+        '長期契約  : ' + (data.long_term   || ''),
+        '',
+        '案件の状況によってはご連絡までお時間をいただく場合がございます。',
+        'いましばらくお待ちください。',
+      ]
+    );
+  }
+
+  notifyOwnerEmail(
+    '【営業スタッフ応募】' + (data.name || '名前なし'),
+    [
+      '受信日時  : ' + now,
+      '名前/年齢 : ' + (data.name || '') + '（' + (data.age || '') + ' / ' + (data.gender || '') + '）',
+      'メール    : ' + (data.email || '未入力'),
+      '職業      : ' + (data.occupation || ''),
+      '営業経験  : ' + (data.sales_exp || ''),
+      '週稼働    : ' + (data.weekly_hours || ''),
+      'SNS URL   : ' + (data.sns_url || 'なし'),
+      '知識レベル: ' + (data.knowledge || ''),
+      '長期契約  : ' + (data.long_term || ''),
+      '',
+      data.message ? '【志望動機・PR】\n' + data.message : '',
+      '',
+      '▶ 管理画面: ' + LP_BASE_URL + 'admin.html',
+    ]
+  );
+
+  return jsonResponse({ success: true });
+}
+
+// 営業スタッフ 一覧取得（管理者用）
+function listSalesApplications() {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName('sales_applications');
+  if (!sheet) return jsonResponse({ data: [] });
+  var values = sheet.getDataRange().getValues();
+  var data = [];
+  for (var i = 1; i < values.length; i++) {
+    var r = values[i];
+    data.push({
+      row:          i + 1,
+      date:         r[0]  || '',
+      name:         r[1]  || '',
+      age:          r[2]  || '',
+      gender:       r[3]  || '',
+      email:        r[4]  || '',
+      occupation:   r[5]  || '',
+      sales_exp:    r[6]  || '',
+      weekly_hours: r[7]  || '',
+      sns_url:      r[8]  || '',
+      knowledge:    r[9]  || '',
+      long_term:    r[10] || '',
+      message:      r[11] || '',
+      status:       r[12] || '未対応'
+    });
+  }
+  data.sort(function(a,b){ return b.date > a.date ? 1 : -1; });
+  return jsonResponse({ data: data });
+}
+
+// 営業スタッフ ステータス更新
+function updateSalesAppStatus(row, status) {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sh = ss.getSheetByName('sales_applications');
+  if (!sh) return jsonResponse({ success: true });
+  var prevStatus = sh.getRange(row, 13).getValue();
+  sh.getRange(row, 13).setValue(status);
+
+  // ── 採用決定 → 採用通知メールを自動送信（初回のみ）──
+  if (status === '採用決定' && prevStatus !== '採用決定') {
+    var rowData    = sh.getRange(row, 1, 1, 13).getValues()[0];
+    var salesName  = rowData[1] || '';
+    var salesEmail = rowData[4] || '';
+    var now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
+
+    if (salesEmail && salesEmail.indexOf('@') !== -1) {
+      sendAutoReply(salesEmail, salesName,
+        '【mono.create】営業スタッフ採用のご連絡',
+        [
+          'この度はmono.createへのご応募ありがとうございます。',
+          '選考の結果、ぜひ一緒にお仕事をさせていただきたいと思います。',
+          '',
+          '━━━━━━━━━━━━━━━━━━━━',
+          '▼ ① 業務委託契約書のご確認・ご署名（必須）',
+          '━━━━━━━━━━━━━━━━━━━━',
+          '案件開始前に業務委託契約書へのご署名をお願いしております。',
+          '下記のGoogle Docsをご確認いただき、署名済みPDFを',
+          '提出先フォルダへアップロードしてください。',
+          '',
+          '📄 業務委託契約書',
+          SALES_CONTRACT_URL,
+          '',
+          '📂 署名済みPDF提出先フォルダ',
+          SALES_CONTRACT_FOLDER_URL,
+          '',
+          '━━━━━━━━━━━━━━━━━━━━',
+          '▼ ② Chatworkグループへの参加',
+          '━━━━━━━━━━━━━━━━━━━━',
+          '下記のリンクからmono.create営業スタッフグループにご参加ください。',
+          'グループ内にマニュアルも記載されていますので、必ずご確認ください。',
+          '',
+          '🔗 Chatworkグループ招待リンク（＆マニュアル）',
+          SALES_CHATWORK_INVITE,
+          '',
+          '※ Chatworkのアカウントをお持ちでない場合は、',
+          '  上記リンクから無料登録後にグループへご参加ください。',
+          '',
+          '━━━━━━━━━━━━━━━━━━━━',
+          '▼ ③ 中村のDMへの追加',
+          '━━━━━━━━━━━━━━━━━━━━',
+          'Chatworkで下記IDを検索し、ダイレクトメッセージから',
+          '「営業スタッフとして採用いただきました〇〇です」とご連絡ください。',
+          '',
+          '💬 Chatwork ID：nakamura-kouta（mono.create 中村航汰）',
+          '',
+          '━━━━━━━━━━━━━━━━━━━━',
+          '不明点があればこのメールへ返信ください。',
+          'よろしくお願いいたします。',
+          '',
+          '担当：mono.create 運営 中村航汰',
+        ]
+      );
+    }
+
+    // オーナーへ通知
+    var roomId = EDITOR_ROOM_ID || CHATWORK_ROOM_ID;
+    if (roomId) {
+      var cwMsg = '[To:' + CHATWORK_MENTION + '] 中村航汰\n\n' +
+        '━━━━━━━━━━━━━━━━━━━━\n' +
+        '✅ 営業スタッフ採用決定 — 招待メール自動送信済み\n' +
+        '━━━━━━━━━━━━━━━━━━━━\n' +
+        '日時    : ' + now + '\n' +
+        '名前    : ' + salesName + '\n' +
+        'メール  : ' + salesEmail + '\n' +
+        '━━━━━━━━━━━━━━━━━━━━\n' +
+        '▶ 管理画面: ' + LP_BASE_URL + 'admin.html';
+      try {
+        UrlFetchApp.fetch('https://api.chatwork.com/v2/rooms/' + roomId + '/messages', {
+          method: 'POST',
+          headers: { 'X-ChatWorkToken': CHATWORK_TOKEN },
+          payload: 'body=' + encodeURIComponent(cwMsg)
+        });
+      } catch(e) {}
+    }
+  }
+
+  // ── 見送り → 不採用通知メール（初回のみ）──
+  if (status === '見送り' && prevStatus !== '見送り') {
+    var rowDataR    = sh.getRange(row, 1, 1, 13).getValues()[0];
+    var salesNameR  = rowDataR[1] || '';
+    var salesEmailR = rowDataR[4] || '';
+
+    if (salesEmailR && salesEmailR.indexOf('@') !== -1) {
+      sendAutoReply(salesEmailR, salesNameR,
+        '【mono.create】営業スタッフご応募の選考結果について',
+        [
+          'この度はmono.createへのご応募いただきまして、',
+          '誠にありがとうございます。',
+          '',
+          '慎重に選考を行いました結果、',
+          '誠に残念ながら今回は採用を見送らせていただく',
+          'こととなりました。',
+          '',
+          'ご応募いただいたご期待に添えず大変恐縮ですが、',
+          '何卒ご了承くださいますようお願い申し上げます。',
+          '',
+          '今後の益々のご活躍をお祈り申し上げます。',
+          '',
+          '──────────────────────────',
+          '※ 選考結果に関するご質問へのご回答は',
+          '  いたしかねますのでご了承ください。',
+          '──────────────────────────',
+        ]
+      );
+    }
+  }
+
+  return jsonResponse({ success: true });
 }
 
 // ヘッダー行（1行目）を残してデータ行を全削除

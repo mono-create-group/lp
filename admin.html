@@ -491,6 +491,10 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
         📝 編集者応募
       </button>
+      <button id="tab-sales-apps-btn" onclick="switchAdminTab('sales-apps')"
+        style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
+        💼 営業スタッフ
+      </button>
       <button id="tab-partner-apps-btn" onclick="switchAdminTab('partner-apps')"
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
         🤝 パートナー
@@ -1232,6 +1236,60 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         </table>
       </div>
     </div><!-- /tab-editor-apps -->
+
+    <!-- ── 営業スタッフ応募タブ ── -->
+    <div id="tab-sales-apps" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
+        <h2 style="font-size:1rem;font-weight:700;">💼 営業スタッフ応募管理</h2>
+        <div style="display:flex;gap:10px;">
+          <button class="refresh-btn" onclick="loadSalesApps()">更新</button>
+        </div>
+      </div>
+
+      <!-- 集計バー -->
+      <div class="stats-bar" id="sales-apps-stats" style="margin-bottom:24px;">
+        <div class="stat-card"><p class="stat-label">総件数</p><p class="stat-val blue" id="sa-total">—</p></div>
+        <div class="stat-card"><p class="stat-label">未対応</p><p class="stat-val red" id="sa-new">—</p></div>
+        <div class="stat-card"><p class="stat-label">採用検討中</p><p class="stat-val yellow" id="sa-review">—</p></div>
+        <div class="stat-card"><p class="stat-label">採用決定</p><p class="stat-val green" id="sa-hired">—</p></div>
+      </div>
+
+      <!-- フィルター -->
+      <div class="toolbar" style="margin-bottom:20px;">
+        <input type="text" class="search-input" id="sa-search" placeholder="名前・メール・職業で検索..." oninput="renderSalesApps()">
+        <select class="filter-select" id="sa-status-filter" onchange="renderSalesApps()">
+          <option value="">すべてのステータス</option>
+          <option value="未対応">未対応</option>
+          <option value="採用検討中">採用検討中</option>
+          <option value="採用決定">採用決定</option>
+          <option value="見送り">見送り</option>
+        </select>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>受信日時</th>
+              <th>名前</th>
+              <th>年齢・性別</th>
+              <th>メール</th>
+              <th>職業</th>
+              <th>営業経験</th>
+              <th>週稼働</th>
+              <th>知識</th>
+              <th>長期</th>
+              <th>SNS</th>
+              <th>ステータス</th>
+              <th>アクション</th>
+            </tr>
+          </thead>
+          <tbody id="sa-body">
+            <tr><td colspan="12" class="table-empty"><span class="spinner"></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div><!-- /tab-sales-apps -->
 
     <!-- ── パートナー申請タブ ── -->
     <div id="tab-partner-apps" style="display:none;">
@@ -2821,7 +2879,7 @@ function exportCSV() {
 }
 
 // ── Tab switch ──
-const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps','partner-apps','private-link','client-master'];
+const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps','sales-apps','partner-apps','private-link','client-master'];
 function switchAdminTab(tab) {
   ADMIN_TABS.forEach(t => {
     document.getElementById('tab-' + t).style.display = t === tab ? '' : 'none';
@@ -2840,6 +2898,7 @@ function switchAdminTab(tab) {
   if (tab === 'pf')          loadPFAdmin();
   if (tab === 'content')     loadLpContent();
   if (tab === 'editor-apps')  loadEditorApps();
+  if (tab === 'sales-apps')   loadSalesApps();
   if (tab === 'partner-apps') { loadPartnerRewards(); loadPartnerApps(); }
   if (tab === 'private-link') loadPrivateLinks();
   if (tab === 'client-master') loadClientMaster();
@@ -4618,6 +4677,172 @@ async function deletePFItem(row, name) {
   await gasFetch(`${GAS_URL}?action=pf_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
   showToast('🗑 削除しました');
   await loadPFAdmin();
+}
+
+// ── 営業スタッフ応募管理 ───────────────────────────────────────────
+let salesApps = [];
+
+async function loadSalesApps() {
+  document.getElementById('sa-body').innerHTML =
+    '<tr><td colspan="12" class="table-empty"><span class="spinner"></span></td></tr>';
+  try {
+    const res  = await gasFetch(`${GAS_URL}?action=sales_applications&key=${encodeURIComponent(getAdminPw())}`);
+    const json = await res.json();
+    salesApps = json.data || [];
+    updateSalesAppsStats();
+    renderSalesApps();
+  } catch(e) {
+    document.getElementById('sa-body').innerHTML =
+      '<tr><td colspan="12" class="table-empty">読み込みに失敗しました。</td></tr>';
+  }
+}
+
+function updateSalesAppsStats() {
+  document.getElementById('sa-total').textContent  = salesApps.length;
+  document.getElementById('sa-new').textContent    = salesApps.filter(a => a.status === '未対応').length;
+  document.getElementById('sa-review').textContent = salesApps.filter(a => a.status === '採用検討中').length;
+  document.getElementById('sa-hired').textContent  = salesApps.filter(a => a.status === '採用決定').length;
+}
+
+function renderSalesApps() {
+  const q        = (document.getElementById('sa-search').value || '').toLowerCase();
+  const stFilter = document.getElementById('sa-status-filter').value;
+
+  const filtered = salesApps.filter(a => {
+    const matchQ = !q || [a.name, a.email, a.occupation, a.sales_exp].some(v => v && v.toLowerCase().includes(q));
+    const matchS = !stFilter || a.status === stFilter;
+    return matchQ && matchS;
+  });
+
+  const tbody = document.getElementById('sa-body');
+  if (!filtered.length) {
+    tbody.innerHTML = '<tr><td colspan="12" class="table-empty">該当する応募はありません。</td></tr>';
+    return;
+  }
+
+  const statusColor = {
+    '未対応': 'var(--red)', '採用検討中': 'var(--yellow)',
+    '採用決定': 'var(--green)', '見送り': 'var(--sub)'
+  };
+
+  tbody.innerHTML = filtered.map(a => {
+    const sc = statusColor[a.status] || 'var(--sub)';
+    const ltBadge = a.long_term
+      ? `<span style="font-size:0.72rem;color:${a.long_term==='可能'?'#4ade80':a.long_term==='要相談'?'#fbbf24':'var(--sub)'};">${esc(a.long_term)}</span>`
+      : '—';
+    const snsLink = a.sns_url
+      ? `<a href="${esc(a.sns_url)}" target="_blank" rel="noopener" style="color:#60a5fa;font-size:0.78rem;">🔗</a>`
+      : '<span style="color:var(--sub);font-size:0.75rem;">—</span>';
+    return `
+      <tr>
+        <td class="td-date">${esc(a.date)}</td>
+        <td class="td-name">${esc(a.name)}</td>
+        <td style="font-size:0.72rem;color:var(--sub);">${esc((a.age||'')+(a.gender?' / '+a.gender:''))}</td>
+        <td class="td-email" style="font-size:0.75rem;">${esc(a.email)}</td>
+        <td style="font-size:0.78rem;">${esc(a.occupation||'—')}</td>
+        <td style="font-size:0.75rem;max-width:110px;">${esc(a.sales_exp||'—')}</td>
+        <td style="font-size:0.78rem;white-space:nowrap;">${esc(a.weekly_hours||'—')}</td>
+        <td style="font-size:0.75rem;max-width:100px;">${esc(a.knowledge||'—')}</td>
+        <td>${ltBadge}</td>
+        <td>${snsLink}</td>
+        <td>
+          <select onchange="updateSalesAppStatus(${a.row}, this.value)"
+            style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:${sc};font-size:0.75rem;padding:4px 8px;font-family:inherit;font-weight:700;cursor:pointer;">
+            <option value="未対応"     ${a.status==='未対応'     ?'selected':''}>🔴 未対応</option>
+            <option value="採用検討中" ${a.status==='採用検討中' ?'selected':''}>🟡 採用検討中</option>
+            <option value="採用決定"   ${a.status==='採用決定'   ?'selected':''}>🟢 採用決定</option>
+            <option value="見送り"     ${a.status==='見送り'     ?'selected':''}>⚫ 見送り</option>
+          </select>
+        </td>
+        <td>
+          <div class="td-actions">
+            ${a.status !== '採用決定'
+              ? `<button class="action-btn" style="background:rgba(16,185,129,0.15);color:#10B981;border:1px solid rgba(16,185,129,0.4);font-weight:800;" onclick="hireSales(${a.row},'${esc(a.name).replace(/'/g,"\\'")}')">✅ 採用</button>`
+              : ''}
+            <button class="action-btn btn-mail" onclick="openSalesAppMail('${esc(a.email)}','${esc(a.name)}')">✉ メール</button>
+            <button class="action-btn btn-expand" onclick="openSalesAppDetail(${a.row})">詳細</button>
+            <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="deleteSalesApp(${a.row},'${esc(a.name).replace(/'/g,"\\'")}')">🗑</button>
+          </div>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+async function hireSales(row, name) {
+  if (!confirm(`「${name}」さんを採用決定しますか？\n採用通知・契約書・Chatwork招待リンクを自動でメール送信します。`)) return;
+  await updateSalesAppStatus(row, '採用決定');
+  showToast(`✅ 「${name}」さんを採用決定！採用メールを自動送信しました`);
+}
+
+async function updateSalesAppStatus(row, status) {
+  try {
+    await gasFetch(`${GAS_URL}?action=sales_app_status&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(status)}`);
+    const item = salesApps.find(a => a.row === row);
+    if (item) item.status = status;
+    updateSalesAppsStats();
+    renderSalesApps();
+    showToast(`✅ ステータスを「${status}」に更新`);
+  } catch(e) {
+    showToast('⚠ 更新に失敗しました');
+  }
+}
+
+async function deleteSalesApp(row, name) {
+  if (!confirm(`「${name}」の応募を削除しますか？\n\nこの操作は元に戻せません。`)) return;
+  try {
+    await gasFetch(`${GAS_URL}?action=sales_app_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    salesApps = salesApps.filter(a => a.row !== row);
+    updateSalesAppsStats();
+    renderSalesApps();
+    showToast('削除しました');
+  } catch(e) {
+    alert('削除に失敗しました。');
+  }
+}
+
+function openSalesAppMail(email, name) {
+  const n = name || '';
+  const sig = '\n\n----\nmono.create\nhttps://mono-create-group.github.io/lp/';
+  const subj = '【mono.create】営業スタッフ応募について';
+  const body =
+    (n ? n + ' さん\n\n' : '') +
+    'この度はmono.createへの営業スタッフ応募ありがとうございます。\n\n' +
+    '内容を確認いたしました。\n以下の通りご案内いたします。\n\n' +
+    '▼ ここに追記\n\n' +
+    'ご不明な点がございましたら、お気軽にご返信ください。' +
+    sig;
+  window.open(
+    `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}&su=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`,
+    '_blank'
+  );
+}
+
+function openSalesAppDetail(row) {
+  const a = salesApps.find(x => x.row === row);
+  if (!a) return;
+  const snsLink = a.sns_url
+    ? `<a href="${esc(a.sns_url)}" target="_blank" rel="noopener" style="color:#60a5fa;word-break:break-all;">${esc(a.sns_url)}</a>`
+    : '—';
+  document.getElementById('modal-body').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;padding:16px 20px;background:linear-gradient(135deg,rgba(234,88,12,0.08),rgba(249,115,22,0.05));border:1px solid var(--border);border-radius:10px;margin-bottom:16px;">
+      <div><span style="font-size:0.7rem;color:var(--sub);">受信日時</span><br><span style="font-size:0.85rem;">${esc(a.date)}</span></div>
+      <div><span style="font-size:0.7rem;color:var(--sub);">ステータス</span><br><span style="font-weight:700;color:var(--lt);">${esc(a.status)}</span></div>
+      <div><span style="font-size:0.7rem;color:var(--sub);">名前</span><br><span style="font-size:1rem;font-weight:700;">${esc(a.name)}</span></div>
+      <div><span style="font-size:0.7rem;color:var(--sub);">メール</span><br><a href="mailto:${esc(a.email)}" style="color:#60a5fa;font-size:0.85rem;">${esc(a.email)}</a></div>
+    </div>
+    <div class="modal-row"><p class="modal-label">年齢・性別</p><p class="modal-val">${esc((a.age||'')+(a.gender?' / '+a.gender:''))}</p></div>
+    <div class="modal-row"><p class="modal-label">職業</p><p class="modal-val">${esc(a.occupation||'—')}</p></div>
+    <div class="modal-row"><p class="modal-label">営業経験</p><p class="modal-val">${esc(a.sales_exp||'—')}</p></div>
+    <div class="modal-row"><p class="modal-label">週の稼働時間</p><p class="modal-val">${esc(a.weekly_hours||'—')}</p></div>
+    <div class="modal-row"><p class="modal-label">動画・SNS知識</p><p class="modal-val">${esc(a.knowledge||'—')}</p></div>
+    <div class="modal-row"><p class="modal-label">長期契約</p><p class="modal-val">${esc(a.long_term||'—')}</p></div>
+    <div class="modal-row"><p class="modal-label">SNS URL</p><p class="modal-val">${snsLink}</p></div>
+    ${a.message ? `<div class="modal-row"><p class="modal-label">志望動機・PR</p><p class="modal-val modal-message">${esc(a.message)}</p></div>` : ''}
+    <div class="modal-actions" style="margin-top:16px;">
+      <button class="modal-btn mail" onclick="openSalesAppMail('${esc(a.email)}','${esc(a.name)}')">✉ メール返信</button>
+      <button class="modal-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;margin-left:auto;" onclick="deleteSalesApp(${a.row},'${esc(a.name).replace(/'/g,"\\'")}')" >🗑 削除</button>
+    </div>`;
+  document.getElementById('modal-overlay').style.display = 'flex';
 }
 
 // ── 編集者応募管理 ────────────────────────────────────────────────
