@@ -969,6 +969,17 @@ function doGet(e) {
     );
   }
 
+  // お詫び＋ヒアリングシート再送
+  if (action === 'send_apology_hearing') {
+    if (key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+    return sendApologyHearing(
+      e.parameter.email   || '',
+      e.parameter.name    || '',
+      e.parameter.plan    || '',
+      e.parameter.planKey || ''
+    );
+  }
+
   // お見積もり・振込依頼メールを送信（ヒアリング一覧から）
   if (action === 'send_payment_request') {
     return sendPaymentRequest(
@@ -3150,6 +3161,64 @@ function approvePayment(row) {
     folderUrl: folderUrl,
     folderName: folderName,
   });
+}
+
+// ================================================================
+// お詫び＋ヒアリングシート再送メール
+// ================================================================
+function sendApologyHearing(email, name, plan, planKey) {
+  if (!email || email.indexOf('@') === -1) {
+    return jsonResponse({ error: 'invalid email' });
+  }
+
+  var hearingPath = HEARING_MAP[planKey] || 'hearing/short.html';
+  var hearingUrl  = LP_BASE_URL + hearingPath
+    + '?name='    + encodeURIComponent(name)
+    + '&email='   + encodeURIComponent(email)
+    + '&plan='    + encodeURIComponent(plan || planKey)
+    + '&planKey=' + encodeURIComponent(planKey);
+
+  var displayName = name || 'お客様';
+  var subject = '【お詫び】ヒアリングシートが正常に送信されなかった件について | mono.create';
+  var body = [
+    displayName + ' 様',
+    '',
+    'この度はmono.createをご利用いただき、誠にありがとうございます。',
+    '代表の中村航汰です。',
+    '',
+    '先日ヒアリングシートにご入力いただいた際に、',
+    'システムの不具合により送信が完了されなかった旨を確認いたしました。',
+    '',
+    'ご入力いただいたにもかかわらず、このようなご不便をおかけしてしまい、',
+    '大変申し訳ございませんでした。',
+    '',
+    '以下のURLよりあらためてご記入いただけますと幸いです。',
+    '（前回の入力内容は残っておりませんが、約5分で完了します）',
+    '',
+    '▼ ヒアリングシート（再送）',
+    hearingUrl,
+    '',
+    'ご不明な点がございましたら、このメールへご返信いただくか、',
+    'Chatwork（ID: wl0b2t4akjur）までお気軽にご連絡ください。',
+    '',
+    'この度はご迷惑をおかけし、誠に失礼いたしました。',
+    'どうぞよろしくお願いいたします。',
+    '',
+    '─────────────────────',
+    'mono.create 代表　中村 航汰',
+    'Mail: mono.create.group@gmail.com',
+    'Chatwork: wl0b2t4akjur',
+    '─────────────────────',
+  ].join('\n');
+
+  MailApp.sendEmail({
+    to: email,
+    subject: subject,
+    body: body,
+    name: 'mono.create 中村航汰',
+  });
+
+  return jsonResponse({ success: true, hearingUrl: hearingUrl, sentTo: email });
 }
 
 // ================================================================
