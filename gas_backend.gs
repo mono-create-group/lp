@@ -314,9 +314,8 @@ function doPost(e) {
       return saveContract(data);
     }
 
-    // ヒアリングシート回答（管理者のみ書き込み可）
+    // ヒアリングシート回答（クライアントからの公開フォーム送信 → 認証不要）
     if (data.type === 'hearing') {
-      if (data.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
       return saveHearing(data);
     }
 
@@ -4367,7 +4366,7 @@ var INVOICE_FOLDER_NAME = 'mono.create 請求書';
 
 // ── invoicesシート取得/初期化 ──────────────────────────────────
 function getInvoiceSheet() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   var sh = ss.getSheetByName(INVOICE_SHEET);
   if (!sh) {
     sh = ss.insertSheet(INVOICE_SHEET);
