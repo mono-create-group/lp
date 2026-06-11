@@ -414,7 +414,6 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
   if (!_valid) return;
   const btn = document.getElementById('submit-btn');
   btn.disabled = true; btn.textContent = '送信中...';
-  const form = e.target;
   const fd = new FormData(form);
   const platforms = [...form.querySelectorAll('input[name=sns_platform]:checked')].map(i => i.value);
   const answers = {
@@ -438,7 +437,7 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
     '現在の課題':           fd.get('challenge') || '',
   };
   try {
-    await fetch(GAS_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'},
+    await fetch(GAS_URL, { method:'POST', mode:'no-cors',
       body: JSON.stringify({ type:'hearing', name:fd.get('name'), email:fd.get('email'), plan:paramPlan, answers }) });
   } catch(err) {}
   document.getElementById('hearing-form').style.display = 'none';

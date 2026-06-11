@@ -661,7 +661,6 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
   ]);
   if (!_valid) return;
   const btn = document.getElementById('submit-btn');
-  const form = e.target;
   const fd   = new FormData(form);
 
   // バリデーション
@@ -717,7 +716,6 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
   try {
     await fetch(GAS_URL, {
       method: 'POST', mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         type: 'hearing',
         name:  fd.get('name'),

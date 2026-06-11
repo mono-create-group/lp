@@ -433,7 +433,6 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
   if (!_valid) return;
   const btn = document.getElementById('submit-btn');
   btn.disabled = true; btn.textContent = '送信中...';
-  const form = e.target;
   const fd = new FormData(form);
   const videoTypes  = [...form.querySelectorAll('input[name=video_type]:checked')].map(i => i.value);
   const softwares   = [...form.querySelectorAll('input[name=software]:checked')].map(i => i.value);
@@ -460,7 +459,7 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
     'ご要望・NG事項':       fd.get('note') || '',
   };
   try {
-    await fetch(GAS_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'},
+    await fetch(GAS_URL, { method:'POST', mode:'no-cors',
       body: JSON.stringify({ type:'hearing', name:fd.get('name'), email:fd.get('email'), plan:paramPlan, answers }) });
   } catch(err) {}
   document.getElementById('hearing-form').style.display = 'none';

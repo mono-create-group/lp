@@ -378,7 +378,6 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
   if (!_valid) return;
   const btn = document.getElementById('submit-btn');
   btn.disabled = true; btn.textContent = '送信中...';
-  const form = e.target;
   const fd = new FormData(form);
   const reasons   = [...form.querySelectorAll('input[name=reason]:checked')].map(i => i.value);
   const jobTypes  = [...form.querySelectorAll('input[name=job_type]:checked')].map(i => i.value);
@@ -401,7 +400,7 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
     'その他ご要望':       fd.get('note') || '',
   };
   try {
-    await fetch(GAS_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'},
+    await fetch(GAS_URL, { method:'POST', mode:'no-cors',
       body: JSON.stringify({ type:'hearing', name:fd.get('name'), email:fd.get('email'), plan:paramPlan, answers }) });
   } catch(err) {}
   document.getElementById('hearing-form').style.display = 'none';

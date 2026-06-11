@@ -542,7 +542,6 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
   const btn = document.getElementById('submit-btn');
   btn.disabled = true; btn.textContent = '送信中...';
 
-  const form = e.target;
   const fd = new FormData(form);
 
   // チェックボックス（複数選択）
@@ -571,7 +570,6 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
   try {
     await fetch(GAS_URL, {
       method: 'POST', mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         type: 'hearing',
         name:  fd.get('name'),
