@@ -24,6 +24,12 @@ var SHEET_NAME        = 'inquiries';
 var OWNER_EMAIL       = 'mono.create.group@gmail.com';  // オーナー通知先
 var LP_BASE_URL       = 'https://mono-create-group.github.io/lp/';
 
+// ─── LINE Messaging API ───────────────────────────────────────
+var LINE_CHANNEL_SECRET       = '1322ddbd622dbea420f68cfc2bd957f5';
+var LINE_CHANNEL_ACCESS_TOKEN = 'WoL98l0NE3ZWox6Kd5ntByqB85NlyxtoJ7Jwf/7f0T/TuCbmF9lHu5t90JR0kE7Jyz5sm5/B+pozKep+8s9Esv0Abhu/KbuAAOXRM7tMspiKlEfFme11mk6Fwowo4+pNeVUlUfR07h54CGZYLgxfdQdB04t89/1O/w1cDnyilFU=';
+var LINE_REPLY_API            = 'https://api.line.me/v2/bot/message/reply';
+var LINE_PUSH_API             = 'https://api.line.me/v2/bot/message/push';
+
 // 素材アップロード用：親フォルダID（mono.create.group@gmail.comが所有）
 var MATERIAL_PARENT_FOLDER_ID = '1YdwuPGNqYQZiHeseuMtyXF2GKkyqmSvo';
 
@@ -48,6 +54,8 @@ var MATERIAL_PARENT_FOLDER_ID = '1YdwuPGNqYQZiHeseuMtyXF2GKkyqmSvo';
     if (p.getProperty('PAYMENT_ROOM_ID'))        PAYMENT_ROOM_ID        = p.getProperty('PAYMENT_ROOM_ID');
     if (p.getProperty('EDITOR_ROOM_ID'))         EDITOR_ROOM_ID         = p.getProperty('EDITOR_ROOM_ID');
     if (p.getProperty('MATERIAL_PARENT_FOLDER_ID')) MATERIAL_PARENT_FOLDER_ID = p.getProperty('MATERIAL_PARENT_FOLDER_ID');
+    if (p.getProperty('LINE_CHANNEL_SECRET'))       LINE_CHANNEL_SECRET       = p.getProperty('LINE_CHANNEL_SECRET');
+    if (p.getProperty('LINE_CHANNEL_ACCESS_TOKEN')) LINE_CHANNEL_ACCESS_TOKEN = p.getProperty('LINE_CHANNEL_ACCESS_TOKEN');
   } catch(e) { Logger.log('ScriptProperties load error: ' + e); }
 })();
 
@@ -205,7 +213,20 @@ function isEmail(str) {
 // ── POST: フォーム受信 / ポートフォリオ追加・更新 ───────────────
 function doPost(e) {
   try {
-    var data = JSON.parse(e.postData.contents);
+    var rawBody = (e.postData && e.postData.contents) ? e.postData.contents : '{}';
+
+    // ── LINE Messaging API Webhook ──────────────────────────────
+    // LINE からのリクエストは "events" 配列を含む
+    if (rawBody.indexOf('"replyToken"') >= 0 || rawBody.indexOf('"destination"') >= 0) {
+      try {
+        var linePayload = JSON.parse(rawBody);
+        if (linePayload.events && Array.isArray(linePayload.events)) {
+          return handleLineWebhook(linePayload);
+        }
+      } catch(le) { Logger.log('LINE parse error: ' + le); }
+    }
+
+    var data = JSON.parse(rawBody);
 
     // LP コンテンツ更新
     if (data.action === 'content_update') {
@@ -317,6 +338,16 @@ function doPost(e) {
     // ヒアリングシート回答（クライアントからの公開フォーム送信 → 認証不要）
     if (data.type === 'hearing') {
       return saveHearing(data);
+    }
+
+    // 追加発注（LINE経由・フォーム経由・認証不要）
+    if (data.action === 'additional_order') {
+      return saveAdditionalOrder(data);
+    }
+
+    // FBシート送信（クライアントからの公開フォーム送信 → 認証不要）
+    if (data.action === 'save_feedback') {
+      return saveFeedback(data);
     }
 
     // 売上記録（管理者のみ書き込み可）
@@ -1036,6 +1067,29 @@ function doGet(e) {
     } catch(err) {
       return jsonResponse({ error: err.message });
     }
+  }
+
+  // ── 追加発注一覧 ──────────────────────────────────────────────
+  if (action === 'additional_orders') {
+    return listAdditionalOrders();
+  }
+  if (action === 'additional_order_status') {
+    var row = parseInt(e.parameter.row, 10);
+    var status = e.parameter.status || '';
+    return updateAdditionalOrderStatus(row, status);
+  }
+  if (action === 'additional_order_delete') {
+    var row = parseInt(e.parameter.row, 10);
+    if (!row || row < 2) return jsonResponse({ error: 'invalid row' });
+    var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    var sh = ss.getSheetByName('additional_orders');
+    if (sh) sh.deleteRow(row);
+    return jsonResponse({ success: true });
+  }
+
+  // ── FBフィードバック一覧 ──────────────────────────────────────
+  if (action === 'feedbacks') {
+    return listFeedbacks();
   }
 
   return jsonResponse({ error: 'unknown action' });
@@ -2676,27 +2730,127 @@ function listContracts() {
 // ================================================================
 // ヒアリングシート
 // ================================================================
+// ── 過去記録照合でトライアル自動判定 ─────────────────────────────────
+function checkPastRecords(ss, email, name) {
+  var sources   = [];
+  var hasRecord = false;
+  var emailNorm = (email || '').trim().toLowerCase();
+
+  // 1. inquiriesシート：同メールが2件以上 → 過去に問い合わせあり
+  try {
+    var inqSheet = getOrCreateSheet();
+    if (inqSheet && inqSheet.getLastRow() > 1) {
+      var inqVals = inqSheet.getDataRange().getValues();
+      var inqCount = 0;
+      for (var i = 1; i < inqVals.length; i++) {
+        var ie = (inqVals[i][3] || '').trim().toLowerCase(); // col4=メール
+        if (emailNorm && ie === emailNorm) inqCount++;
+      }
+      if (inqCount > 1) {
+        hasRecord = true;
+        sources.push('過去の問い合わせ ' + (inqCount - 1) + '件');
+      }
+    }
+  } catch(e) { Logger.log('checkPastRecords/inquiries: ' + e); }
+
+  // 2. hearingsシート：同メールが既存 → 過去にヒアリング提出あり
+  try {
+    var hrSheet = ss.getSheetByName('hearings');
+    if (hrSheet && hrSheet.getLastRow() > 1) {
+      var hrVals = hrSheet.getDataRange().getValues();
+      var hrCount = 0;
+      for (var j = 1; j < hrVals.length; j++) {
+        var he = (hrVals[j][2] || '').trim().toLowerCase(); // col3=メール
+        if (emailNorm && he === emailNorm) hrCount++;
+      }
+      if (hrCount > 0) {
+        hasRecord = true;
+        sources.push('過去のヒアリング ' + hrCount + '件');
+      }
+    }
+  } catch(e) { Logger.log('checkPastRecords/hearings: ' + e); }
+
+  // 3. salesシート：同メール or 名前で売上記録あり
+  try {
+    var salesSheet = ss.getSheetByName('sales');
+    if (salesSheet && salesSheet.getLastRow() > 1) {
+      var sVals = salesSheet.getDataRange().getValues();
+      for (var k = 1; k < sVals.length; k++) {
+        var rowStr = sVals[k].join(' ').toLowerCase();
+        if (emailNorm && rowStr.indexOf(emailNorm) >= 0) {
+          hasRecord = true;
+          sources.push('売上記録あり');
+          break;
+        }
+      }
+    }
+  } catch(e) { Logger.log('checkPastRecords/sales: ' + e); }
+
+  return { hasRecord: hasRecord, sources: sources };
+}
+
+// ── 問い合わせシートのトライアルフラグを自動更新 ─────────────────────────
+function autoSetInquiryTrial(ss, emailNorm, trialValue) {
+  try {
+    var inqSheet = getOrCreateSheet();
+    if (!inqSheet || inqSheet.getLastRow() < 2) return;
+    var inqVals = inqSheet.getDataRange().getValues();
+    // 末尾から検索して最新の同メール行を更新
+    for (var i = inqVals.length - 1; i >= 1; i--) {
+      var ie = (inqVals[i][3] || '').trim().toLowerCase();
+      if (emailNorm && ie === emailNorm) {
+        inqSheet.getRange(i + 1, 9).setValue(trialValue); // col9=trial
+        break;
+      }
+    }
+  } catch(e) { Logger.log('autoSetInquiryTrial: ' + e); }
+}
+
 function saveHearing(data) {
   var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
   var sheet = ss.getSheetByName('hearings');
   if (!sheet) {
     sheet = ss.insertSheet('hearings');
-    sheet.appendRow(['受信日時','お名前','メール','プラン','回答JSON','ステータス']);
+    sheet.appendRow(['受信日時','お名前','メール','プラン','回答JSON','ステータス','トライアル','初回申告','信頼度']);
     sheet.setFrozenRows(1);
-    sheet.getRange(1, 1, 1, 6).setFontWeight('bold');
+    sheet.getRange(1, 1, 1, 9).setFontWeight('bold');
   }
   var now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
+
+  // ── トライアル自動判定 ─────────────────────────────────────────────
+  var emailNorm   = (data.email || '').trim().toLowerCase();
+  var isFirstTime = (data.isFirstTime === 'yes');
+  var pastCheck   = checkPastRecords(ss, emailNorm, data.name || '');
+
+  var trialValue, confidence;
+  if (isFirstTime && !pastCheck.hasRecord) {
+    trialValue = 'トライアル'; confidence = '高';          // 初回申告＋記録なし → 確定トライアル
+  } else if (isFirstTime && pastCheck.hasRecord) {
+    trialValue = 'トライアル'; confidence = '要確認';      // 初回申告だが記録あり → 要確認
+  } else {
+    trialValue = '';           confidence = '高';          // リピーター申告 → 通常
+  }
+
   sheet.appendRow([
     now,
     data.name  || '',
     data.email || '',
     data.plan  || '',
     JSON.stringify(data.answers || {}),
-    '未対応'
+    '未対応',
+    trialValue,                          // col7: トライアル自動設定
+    isFirstTime ? 'はい' : 'いいえ',    // col8: 初回自己申告
+    confidence                           // col9: 信頼度
   ]);
+
+  // 問い合わせシートのトライアルバッジも自動更新
+  autoSetInquiryTrial(ss, emailNorm, trialValue);
 
   // Chatwork通知
   if (CHATWORK_ROOM_ID) {
+    var trialLabel = trialValue
+      ? ('🎁 トライアル（信頼度：' + confidence + (pastCheck.sources.length ? ' / ' + pastCheck.sources.join('、') : '') + '）')
+      : '💰 通常（リピーター申告）';
     var lines = ['[To:' + CHATWORK_MENTION + '] 中村航汰', '',
       '━━━━━━━━━━━━━━━━━━━━',
       '📋 ヒアリングシート回答 — mono.create LP',
@@ -2705,8 +2859,10 @@ function saveHearing(data) {
       'お名前  ：' + (data.name  || ''),
       'メール  ：' + (data.email || ''),
       'プラン  ：' + (data.plan  || ''),
+      '判定    ：' + trialLabel,
+      confidence === '要確認' ? '⚠️ 初回申告だが過去記録あり → 要確認' : '',
       '━━━━━━━━━━━━━━━━━━━━'
-    ];
+    ].filter(function(l){ return l !== ''; });
     var ans = data.answers || {};
     Object.keys(ans).forEach(function(k){ lines.push(k + '：' + ans[k]); });
     lines.push('━━━━━━━━━━━━━━━━━━━━');
@@ -2760,7 +2916,7 @@ function listHearings() {
     var row = values[i];
     var answers = {};
     try { answers = JSON.parse(row[4]); } catch(e) {}
-    data.push({ row:i+1, date:row[0]||'', name:row[1]||'', email:row[2]||'', plan:row[3]||'', answers:answers, status:row[5]||'未対応', trial:row[6]||'' });
+    data.push({ row:i+1, date:row[0]||'', name:row[1]||'', email:row[2]||'', plan:row[3]||'', answers:answers, status:row[5]||'未対応', trial:row[6]||'', isFirstTime:row[7]||'', confidence:row[8]||'' });
   }
   data.sort(function(a,b){ return b.date > a.date ? 1 : -1; });
   return jsonResponse({ data: data });
@@ -3974,6 +4130,392 @@ function authorizeGmail() {
     name:    'mono.create GAS'
   });
   Logger.log('MailApp認証・テストメール送信完了: ' + OWNER_EMAIL);
+}
+
+// ================================================================
+// ██████████████████████████████████████████████████████████████
+//  LINE Messaging API Webhook ハンドラー
+// ██████████████████████████████████████████████████████████████
+// ================================================================
+
+/**
+ * LINE からの Webhook イベントを処理する
+ * @param {Object} payload - LINE の Webhook ペイロード（events 配列あり）
+ */
+function handleLineWebhook(payload) {
+  var events = payload.events || [];
+  for (var i = 0; i < events.length; i++) {
+    var event = events[i];
+    try {
+      if (event.type === 'message' && event.message && event.message.type === 'text') {
+        handleLineTextMessage(event);
+      } else if (event.type === 'postback') {
+        handleLinePostback(event);
+      } else if (event.type === 'follow') {
+        handleLineFollow(event);
+      }
+    } catch(e) {
+      Logger.log('LINE event error: ' + e + ' / event: ' + JSON.stringify(event));
+    }
+  }
+  // LINE には 200 OK を返すだけでよい
+  return ContentService.createTextOutput('OK').setMimeType(ContentService.MimeType.TEXT);
+}
+
+/**
+ * テキストメッセージを処理
+ */
+function handleLineTextMessage(event) {
+  var text       = (event.message.text || '').trim();
+  var replyToken = event.replyToken || '';
+  var userId     = (event.source && event.source.userId) || '';
+  var lowerText  = text.toLowerCase();
+
+  // 追加発注キーワード
+  if (lowerText.indexOf('追加発注') >= 0 || lowerText.indexOf('追加注文') >= 0 ||
+      lowerText.indexOf('依頼') >= 0    || lowerText.indexOf('発注') >= 0) {
+    var orderUrl = LP_BASE_URL + 'additional-order.html?uid=' + encodeURIComponent(userId);
+    replyToLine(replyToken, [
+      {
+        type: 'text',
+        text: '追加のご依頼ありがとうございます！\n\n以下のフォームから内容をご記入ください👇\n\n' + orderUrl + '\n\n（本数・素材URL・希望納期をご入力いただくだけで完了です）'
+      }
+    ]);
+    return;
+  }
+
+  // FBキーワード
+  if (lowerText.indexOf('フィードバック') >= 0 || lowerText.indexOf('fb') >= 0 ||
+      lowerText.indexOf('修正') >= 0) {
+    replyToLine(replyToken, [
+      {
+        type: 'text',
+        text: '修正・フィードバックは、納品メールに記載のFBページURLからご記入ください。\n\nお急ぎの場合はこのトークにそのままご入力いただいても大丈夫です！'
+      }
+    ]);
+    return;
+  }
+
+  // メニュー表示
+  if (text === 'メニュー' || text === 'menu' || text === 'help' || text === 'ヘルプ') {
+    replyToLine(replyToken, [
+      {
+        type: 'text',
+        text: '【mono.create メニュー】\n\n📦 追加のご依頼\n「追加発注」と送信してください\n\n✏️ 修正・フィードバック\n「修正」と送信してください\n\n📩 お問い合わせ\nメールにてお問い合わせください\nmono.create.group@gmail.com'
+      }
+    ]);
+    return;
+  }
+
+  // その他
+  replyToLine(replyToken, [
+    {
+      type: 'text',
+      text: 'メッセージありがとうございます。\n\n追加のご依頼は「追加発注」とお送りください。\n修正・FBは「修正」とお送りください。\n\nご不明な点はメールにてご連絡ください👇\nmono.create.group@gmail.com'
+    }
+  ]);
+}
+
+/**
+ * ポストバック（リッチメニューボタン）を処理
+ */
+function handleLinePostback(event) {
+  var data       = (event.postback && event.postback.data) || '';
+  var replyToken = event.replyToken || '';
+  var userId     = (event.source && event.source.userId) || '';
+
+  if (data === 'action=additional_order') {
+    var orderUrl = LP_BASE_URL + 'additional-order.html?uid=' + encodeURIComponent(userId);
+    replyToLine(replyToken, [
+      {
+        type: 'text',
+        text: '追加発注フォームはこちらです👇\n\n' + orderUrl
+      }
+    ]);
+  }
+}
+
+/**
+ * 友だち追加イベント
+ */
+function handleLineFollow(event) {
+  var replyToken = event.replyToken || '';
+  replyToLine(replyToken, [
+    {
+      type: 'text',
+      text: '友だち追加ありがとうございます！\nmono.create です。\n\n追加のご依頼は「追加発注」とお送りください。\n修正・FBは「修正」とお送りください。\n\n何かあればいつでもご連絡ください😊'
+    }
+  ]);
+}
+
+/**
+ * LINE Reply API を呼び出す
+ */
+function replyToLine(replyToken, messages) {
+  if (!replyToken || !LINE_CHANNEL_ACCESS_TOKEN) return;
+  try {
+    UrlFetchApp.fetch(LINE_REPLY_API, {
+      method:  'post',
+      headers: {
+        'Content-Type':  'application/json',
+        'Authorization': 'Bearer ' + LINE_CHANNEL_ACCESS_TOKEN
+      },
+      payload: JSON.stringify({
+        replyToken: replyToken,
+        messages:   messages
+      }),
+      muteHttpExceptions: true
+    });
+  } catch(e) {
+    Logger.log('LINE reply error: ' + e);
+  }
+}
+
+/**
+ * LINE Push API（任意のユーザーへプッシュ送信）
+ */
+function pushToLine(userId, messages) {
+  if (!userId || !LINE_CHANNEL_ACCESS_TOKEN) return;
+  try {
+    UrlFetchApp.fetch(LINE_PUSH_API, {
+      method:  'post',
+      headers: {
+        'Content-Type':  'application/json',
+        'Authorization': 'Bearer ' + LINE_CHANNEL_ACCESS_TOKEN
+      },
+      payload: JSON.stringify({
+        to:       userId,
+        messages: messages
+      }),
+      muteHttpExceptions: true
+    });
+  } catch(e) {
+    Logger.log('LINE push error: ' + e);
+  }
+}
+
+// ================================================================
+// 追加発注フォーム（additional-order.html から POST される）
+// ================================================================
+// シート: additional_orders
+// 列: 受信日時|LINE UserID|名前|メール|本数|素材URL|希望納期|プラン|メモ|ステータス
+function saveAdditionalOrder(data) {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName('additional_orders');
+  if (!sheet) {
+    sheet = ss.insertSheet('additional_orders');
+    sheet.appendRow([
+      '受信日時','LINE UserID','名前','メール','本数','素材URL','希望納期','プラン','メモ','ステータス'
+    ]);
+    sheet.setFrozenRows(1);
+    sheet.getRange(1, 1, 1, 10).setFontWeight('bold');
+  }
+  var now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
+  sheet.appendRow([
+    now,
+    data.line_uid   || '',
+    data.name       || '',
+    data.email      || '',
+    data.count      || '',
+    data.material_url || '',
+    data.due_date   || '',
+    data.plan       || '',
+    data.note       || '',
+    '未対応'
+  ]);
+
+  // Chatwork 通知
+  if (CHATWORK_ROOM_ID) {
+    var msg = '[To:' + CHATWORK_MENTION + '] 中村航汰\n\n' +
+      '━━━━━━━━━━━━━━━━━━━━\n' +
+      '📦 追加発注 — LINE経由 mono.create\n' +
+      '━━━━━━━━━━━━━━━━━━━━\n' +
+      '受信日時  : ' + now + '\n' +
+      '名前      : ' + (data.name || '') + '\n' +
+      'メール    : ' + (data.email || '') + '\n' +
+      'プラン    : ' + (data.plan || '') + '\n' +
+      '本数      : ' + (data.count || '') + '\n' +
+      '素材URL   : ' + (data.material_url || '') + '\n' +
+      '希望納期  : ' + (data.due_date || '') + '\n' +
+      (data.note ? 'メモ      : ' + data.note + '\n' : '') +
+      '━━━━━━━━━━━━━━━━━━━━\n' +
+      '▶ 管理画面: ' + LP_BASE_URL + 'admin.html';
+    try {
+      UrlFetchApp.fetch(
+        'https://api.chatwork.com/v2/rooms/' + CHATWORK_ROOM_ID + '/messages',
+        { method: 'post', headers: { 'X-ChatWorkToken': CHATWORK_TOKEN }, payload: { body: msg } }
+      );
+    } catch(e) {}
+  }
+
+  // LINE プッシュ通知（注文確認）
+  if (data.line_uid) {
+    pushToLine(data.line_uid, [{
+      type: 'text',
+      text: '追加発注を受け付けました！\n\n' +
+        '📦 内容確認\n' +
+        'プラン : ' + (data.plan  || '') + '\n' +
+        '本数   : ' + (data.count || '') + '\n' +
+        '希望納期: ' + (data.due_date || '') + '\n\n' +
+        '内容を確認の上、1〜2営業日以内にご連絡いたします。\nよろしくお願いいたします！'
+    }]);
+  }
+
+  // お客様へ自動返信メール
+  if (data.email && data.email.indexOf('@') !== -1) {
+    sendAutoReply(data.email, data.name,
+      '【mono.create】追加発注を受け付けました',
+      [
+        '追加のご依頼ありがとうございます！',
+        '内容を確認の上、1〜2営業日以内にご連絡いたします。',
+        '',
+        '━━━━━━━━━━━━━━━━━━━━',
+        '▼ ご注文内容',
+        '━━━━━━━━━━━━━━━━━━━━',
+        'プラン  : ' + (data.plan  || ''),
+        '本数    : ' + (data.count || ''),
+        '素材URL : ' + (data.material_url || ''),
+        '希望納期: ' + (data.due_date || ''),
+        data.note ? 'メモ    : ' + data.note : '',
+        '',
+        'ご不明な点はこのメールへご返信ください。',
+        '担当：mono.create 中村航汰',
+      ]
+    );
+  }
+
+  return jsonResponse({ success: true });
+}
+
+function listAdditionalOrders() {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName('additional_orders');
+  if (!sheet) return jsonResponse({ data: [] });
+  var values = sheet.getDataRange().getValues();
+  var data = [];
+  for (var i = 1; i < values.length; i++) {
+    var r = values[i];
+    data.push({
+      row:          i + 1,
+      date:         r[0] || '',
+      line_uid:     r[1] || '',
+      name:         r[2] || '',
+      email:        r[3] || '',
+      count:        r[4] || '',
+      material_url: r[5] || '',
+      due_date:     r[6] || '',
+      plan:         r[7] || '',
+      note:         r[8] || '',
+      status:       r[9] || '未対応'
+    });
+  }
+  data.sort(function(a,b){ return b.date > a.date ? 1 : -1; });
+  return jsonResponse({ data: data });
+}
+
+function updateAdditionalOrderStatus(row, status) {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sh = ss.getSheetByName('additional_orders');
+  if (!sh) return jsonResponse({ error: 'sheet not found' });
+  sh.getRange(row, 10).setValue(status);
+  return jsonResponse({ success: true });
+}
+
+// ================================================================
+// FBページ（専用フィードバックフォーム）
+// ================================================================
+// シート: feedbacks
+// 列: 受信日時|クライアント名|メール|納品URL|フィードバックJSON|ラウンド|ステータス
+function saveFeedback(data) {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName('feedbacks');
+  if (!sheet) {
+    sheet = ss.insertSheet('feedbacks');
+    sheet.appendRow([
+      '受信日時','クライアント名','メール','納品URL','フィードバックJSON','ラウンド','ステータス'
+    ]);
+    sheet.setFrozenRows(1);
+    sheet.getRange(1, 1, 1, 7).setFontWeight('bold');
+  }
+  var now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
+  sheet.appendRow([
+    now,
+    data.client_name  || '',
+    data.email        || '',
+    data.delivery_url || '',
+    JSON.stringify(data.items || []),
+    data.round        || '1',
+    '未対応'
+  ]);
+
+  // Chatwork 通知
+  if (CHATWORK_ROOM_ID) {
+    var items = data.items || [];
+    var itemLines = items.map(function(it, idx) {
+      return '  修正' + (idx+1) + ': ' + (it.time || '') + ' / ' + (it.type || '') + '\n    ' + (it.comment || '');
+    }).join('\n');
+    var msg = '[To:' + CHATWORK_MENTION + '] 中村航汰\n\n' +
+      '━━━━━━━━━━━━━━━━━━━━\n' +
+      '✏️ FBシート受信 — mono.create (' + (data.round || '1') + 'ラウンド目)\n' +
+      '━━━━━━━━━━━━━━━━━━━━\n' +
+      '受信日時    : ' + now + '\n' +
+      'クライアント: ' + (data.client_name || '') + '\n' +
+      '納品URL     : ' + (data.delivery_url || '') + '\n' +
+      '修正件数    : ' + items.length + '件\n' +
+      '━━━━━━━━━━━━━━━━━━━━\n' +
+      itemLines + '\n' +
+      '━━━━━━━━━━━━━━━━━━━━\n' +
+      '▶ 管理画面: ' + LP_BASE_URL + 'admin.html';
+    try {
+      UrlFetchApp.fetch(
+        'https://api.chatwork.com/v2/rooms/' + CHATWORK_ROOM_ID + '/messages',
+        { method: 'post', headers: { 'X-ChatWorkToken': CHATWORK_TOKEN }, payload: { body: msg } }
+      );
+    } catch(e) {}
+  }
+
+  // クライアントへ自動返信
+  if (data.email && data.email.indexOf('@') !== -1) {
+    sendAutoReply(data.email, data.client_name,
+      '【mono.create】フィードバックを受け付けました',
+      [
+        'フィードバックをご記入いただきありがとうございます。',
+        '内容を確認の上、修正版を納品いたします。',
+        '',
+        '修正件数: ' + (data.items || []).length + '件',
+        '',
+        'ご不明な点はこのメールへご返信ください。',
+        '担当：mono.create 中村航汰',
+      ]
+    );
+  }
+
+  return jsonResponse({ success: true });
+}
+
+function listFeedbacks() {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName('feedbacks');
+  if (!sheet) return jsonResponse({ data: [] });
+  var values = sheet.getDataRange().getValues();
+  var data = [];
+  for (var i = 1; i < values.length; i++) {
+    var r = values[i];
+    var items = [];
+    try { items = JSON.parse(r[4]); } catch(e) {}
+    data.push({
+      row:          i + 1,
+      date:         r[0] || '',
+      client_name:  r[1] || '',
+      email:        r[2] || '',
+      delivery_url: r[3] || '',
+      items:        items,
+      round:        r[5] || '1',
+      status:       r[6] || '未対応'
+    });
+  }
+  data.sort(function(a,b){ return b.date > a.date ? 1 : -1; });
+  return jsonResponse({ data: data });
 }
 
 // ================================================================
