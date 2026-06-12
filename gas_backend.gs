@@ -4384,6 +4384,23 @@ function saveAdditionalOrder(data) {
     );
   }
 
+  // オーナーへメール通知
+  notifyOwnerEmail(
+    '【追加発注】' + (data.name || '名前なし') + ' — ' + (data.plan || '') + ' ' + (data.count || ''),
+    [
+      '受信日時  : ' + now,
+      '名前      : ' + (data.name || ''),
+      'メール    : ' + (data.email || '未入力'),
+      'プラン    : ' + (data.plan || ''),
+      '本数      : ' + (data.count || ''),
+      '素材URL   : ' + (data.material_url || ''),
+      '希望納期  : ' + (data.due_date || ''),
+      (data.note ? 'メモ      : ' + data.note : ''),
+      '',
+      '▶ 管理画面: ' + LP_BASE_URL + 'admin.html',
+    ]
+  );
+
   return jsonResponse({ success: true });
 }
 
