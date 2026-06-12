@@ -370,11 +370,7 @@
   <div class="icon">✅</div>
   <h2>フィードバックを送信しました！</h2>
   <p>内容を確認の上、修正版を制作いたします。<br>通常1〜2営業日以内に修正版をお届けします。</p>
-  <div class="share-box" id="share-box" style="display:none">
-    <h4>📤 編集者にこのFBを共有する</h4>
-    <div class="share-url-area" id="share-url-display"></div>
-    <button class="btn-copy" id="btn-copy-url" onclick="copyShareUrl()">📋 URLをコピーして編集者に送る</button>
-  </div>
+  <!-- 編集者共有URLはオーナーへのメール通知に含まれます -->
 </div>
 
 <script>
@@ -727,7 +723,7 @@ function submitFB() {
   .then(function() {
     document.getElementById('main-layout').style.display  = 'none';
     document.getElementById('success-view').style.display = 'block';
-    buildShareBox();
+    // 共有URLはオーナーへのメール通知に含める（クライアントには表示しない）
   })
   .catch(function() {
     if (btn) { btn.disabled = false; btn.textContent = '📤 フィードバックを送信する'; }

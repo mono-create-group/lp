@@ -4469,11 +4469,26 @@ function saveFeedback(data) {
     '未対応'
   ]);
 
-  // オーナーへメール通知（個別チャットでFBを行うためChatwork通知は不要）
+  // オーナーへメール通知（編集者共有URLも含む）
   var fbItems = data.items || [];
   var fbItemLines = fbItems.map(function(it, idx) {
-    return '修正' + (idx+1) + ': ' + (it.time || '—') + ' [' + (it.type || '—') + ']\n' + (it.comment || '');
+    return '修正' + (idx+1) + ': ' + (it.time || '—') + '\n' + (it.comment || '');
   }).join('\n\n');
+
+  // 編集者共有URL生成（?review=1 形式）
+  var reviewUrl = '';
+  try {
+    var itemsJson = JSON.stringify(fbItems);
+    var itemsB64  = Utilities.base64Encode(itemsJson, Utilities.Charset.UTF_8);
+    reviewUrl = LP_BASE_URL + 'feedback.html' +
+      '?review=1' +
+      '&video=' + encodeURIComponent(data.delivery_url || '') +
+      '&items=' + encodeURIComponent(itemsB64) +
+      '&name='  + encodeURIComponent(data.client_name || '') +
+      '&round=' + encodeURIComponent(data.round || '1') +
+      '&type='  + (data.video_type || 'short');
+  } catch(e) { Logger.log('reviewUrl build error: ' + e); }
+
   notifyOwnerEmail(
     '【FBシート受信】' + (data.client_name || '') + ' / ' + (data.round || '1') + 'ラウンド目',
     [
@@ -4488,6 +4503,9 @@ function saveFeedback(data) {
       '',
       '━━━━━━━━━━━━━━━━',
       '▶ 管理画面: ' + LP_BASE_URL + 'admin.html',
+      '',
+      '📤 編集者共有URL（このリンクを編集者に転送してください）:',
+      reviewUrl,
     ]
   );
 
