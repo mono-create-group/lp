@@ -130,6 +130,9 @@ function sendAutoReply(toEmail, name, subject, bodyLines) {
     'mono.create',
     'メール: ' + OWNER_EMAIL,
     'HP: ' + LP_BASE_URL,
+    '',
+    '💬 LINEでもご連絡いただけます（追加発注・修正依頼もLINEで完結）',
+    '友だち追加: https://line.me/ti/p/@229dbicf',
     '─────────────────────────'
   ];
   var plainBody = greetingTxt + bodyLines.join('\n') + footerLines.join('\n');

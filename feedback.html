@@ -129,6 +129,26 @@
     .auto-badge.on { display: block; background: rgba(34,197,94,.9); color: #fff; }
     .auto-badge.manual { display: block; background: rgba(100,116,139,.85); color: #fff; }
 
+    /* TC Record Button (shown when paused) */
+    .tc-record-btn {
+      position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+      z-index: 25; white-space: nowrap;
+      background: rgba(30,41,59,.85); border: 2px solid #475569;
+      color: #64748b; border-radius: 14px; padding: 10px 22px;
+      font-size: 0.9rem; font-weight: 700; cursor: default;
+      transition: all .25s; opacity: .35; pointer-events: none;
+      display: none;
+    }
+    .tc-record-btn.paused {
+      opacity: 1; pointer-events: auto; cursor: pointer;
+      background: rgba(22,163,74,.92); border-color: #22c55e; color: #fff;
+      animation: pulse-tc .9s ease-in-out infinite;
+    }
+    @keyframes pulse-tc {
+      0%,100% { transform: translateX(-50%) scale(1); box-shadow: 0 0 0 0 rgba(34,197,94,.5); }
+      50%      { transform: translateX(-50%) scale(1.04); box-shadow: 0 0 0 8px rgba(34,197,94,0); }
+    }
+
     /* Drive open link */
     .drive-open-btn {
       display: flex; align-items: center; justify-content: center; gap: 6px;
@@ -462,6 +482,7 @@ function buildLayout(meta) {
           '<div class="loading-text">動画を読み込み中…<br><small>初回は数秒かかる場合があります</small></div>' +
         '</div>' +
         '<span class="auto-badge" id="auto-badge"></span>' +
+        '<button class="tc-record-btn" id="tc-record-btn" onclick="captureCurrentTime()">⏱ タイムコードを記録する</button>' +
         '<div id="video-slot"></div>' +
         '<div class="video-fallback" id="video-fallback">' +
           '表示されない場合 → <a href="' + directUrl + '" target="_blank" rel="noopener">Driveで直接開く</a>' +
@@ -494,11 +515,12 @@ function loadVideo() {
     if (done) return; done = true;
     nativeVideo = true;
     loading.classList.add('hidden');
-    autoBadge.textContent = '⚡ 自動TC記録中';
+    autoBadge.textContent = '⏸ 一時停止 → ボタンでTC記録';
     autoBadge.classList.add('on');
     document.getElementById('hdr-autobadge').style.display = '';
-    videoEl.addEventListener('pause', onVideoPause);
-    showToast('⚡ 一時停止でタイムコードを自動記録します');
+    var btn = document.getElementById('tc-record-btn');
+    if (btn) btn.style.display = '';
+    showToast('⏸ 一時停止後に「タイムコードを記録する」ボタンを押してください');
   }
   function onNativeFail() {
     if (done) return; done = true;
@@ -509,6 +531,15 @@ function loadVideo() {
   videoEl.addEventListener('loadeddata', onNativeOk);
   videoEl.addEventListener('canplay',    onNativeOk);
   videoEl.addEventListener('error',      onNativeFail);
+  // pause → ボタン有効化 / play → ボタン無効化
+  videoEl.addEventListener('pause', function() {
+    var btn = document.getElementById('tc-record-btn');
+    if (btn) { btn.style.display = ''; btn.classList.add('paused'); }
+  });
+  videoEl.addEventListener('play', function() {
+    var btn = document.getElementById('tc-record-btn');
+    if (btn) { btn.classList.remove('paused'); }
+  });
   setTimeout(function() { if (!done) onNativeFail(); }, 9000);
 
   slot.appendChild(videoEl);
@@ -538,9 +569,9 @@ function loadIframeFallback() {
   }, 15000);
 }
 
-/* ── Auto-capture on pause ── */
-function onVideoPause() {
-  if (!videoEl || videoEl.ended || videoEl.currentTime < 0.05) return;
+/* ── TC record button click ── */
+function captureCurrentTime() {
+  if (!videoEl || !nativeVideo) return;
   var timeStr = formatTime(videoEl.currentTime);
 
   // Find last slot with empty time field
@@ -564,7 +595,15 @@ function onVideoPause() {
     setTimeout(function() { slotEl.classList.remove('captured'); }, 1200);
     slotEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
-  showToast('⏸ ' + timeStr + ' を記録しました');
+  // ボタンを一時的に無効化（連打防止）
+  var btn = document.getElementById('tc-record-btn');
+  if (btn) {
+    btn.classList.remove('paused');
+    setTimeout(function() {
+      if (videoEl && videoEl.paused) btn.classList.add('paused');
+    }, 800);
+  }
+  showToast('⏱ ' + timeStr + ' を記録しました');
 }
 
 /* ── Seek on click ── */
@@ -624,25 +663,12 @@ function addSlot() {
       '<span class="num" id="num-' + id + '">' + slotCount + '</span>' +
       (slotCount > 1 ? '<button class="slot-remove" onclick="removeSlot(\'' + id + '\')" title="削除">✕</button>' : '') +
     '</div>' +
-    '<div class="slot-row">' +
-      '<div class="slot-field"><label>タイムコード（一時停止で自動入力）</label>' +
-        '<div class="time-wrap">' +
-          '<input type="text" name="time" placeholder="0:00.00" id="ti-' + id + '">' +
-          '<button class="time-auto-btn" onclick="captureNow(\'' + id + '\')" title="現在位置を記録">⏱ 今の位置</button>' +
-        '</div>' +
-      '</div>' +
-      '<div class="slot-field"><label>修正の種類</label>' +
-        '<select name="type">' +
-          '<option value="">選択</option>' +
-          '<option>カット編集</option><option>テロップ修正</option><option>テロップ追加</option>' +
-          '<option>BGM変更</option><option>SE追加/変更</option><option>速度調整</option>' +
-          '<option>色調整</option><option>エフェクト追加</option><option>画面切替</option>' +
-          '<option>ナレーション修正</option><option>その他</option>' +
-        '</select>' +
-      '</div>' +
+    '<div class="form-group" style="margin-bottom:8px">' +
+      '<label style="font-size:.73rem;color:#94a3b8;display:block;margin-bottom:3px">タイムコード</label>' +
+      '<input type="text" name="time" placeholder="0:00.00" id="ti-' + id + '" style="font-family:\'Courier New\',monospace;letter-spacing:.03em;">' +
     '</div>' +
-    '<div class="slot-comment"><label>修正内容の詳細</label>' +
-      '<textarea name="comment" placeholder="例：0:23.10 のテロップ「お客様」→「お客さま」に修正してください"></textarea>' +
+    '<div class="slot-comment"><label style="font-size:.73rem;color:#94a3b8;display:block;margin-bottom:3px">修正内容</label>' +
+      '<textarea name="comment" placeholder="例：0:23.10 のテロップ「お客様」→「お客さま」に修正してください" style="font-size:.83rem;min-height:58px;padding:8px 10px;"></textarea>' +
     '</div>';
   document.getElementById('slots').appendChild(div);
   updateCount();
@@ -678,9 +704,8 @@ function submitFB() {
   var items = [];
   document.querySelectorAll('#slots .fb-slot').forEach(function(slot) {
     var time    = (slot.querySelector('[name=time]')    || {}).value || '';
-    var type    = (slot.querySelector('[name=type]')    || {}).value || '';
     var comment = (slot.querySelector('[name=comment]') || {}).value || '';
-    if (time || comment) items.push({ time: time, type: type, comment: comment });
+    if (time || comment) items.push({ time: time, comment: comment });
   });
   if (!items.length) { alert('修正箇所を少なくとも1つ入力してください。'); return; }
 
