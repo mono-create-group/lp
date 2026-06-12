@@ -29,6 +29,7 @@ var LINE_CHANNEL_SECRET       = '1322ddbd622dbea420f68cfc2bd957f5';
 var LINE_CHANNEL_ACCESS_TOKEN = 'WoL98l0NE3ZWox6Kd5ntByqB85NlyxtoJ7Jwf/7f0T/TuCbmF9lHu5t90JR0kE7Jyz5sm5/B+pozKep+8s9Esv0Abhu/KbuAAOXRM7tMspiKlEfFme11mk6Fwowo4+pNeVUlUfR07h54CGZYLgxfdQdB04t89/1O/w1cDnyilFU=';
 var LINE_REPLY_API            = 'https://api.line.me/v2/bot/message/reply';
 var LINE_PUSH_API             = 'https://api.line.me/v2/bot/message/push';
+var OWNER_LINE_UID            = ''; // オーナーのLINE UID（Script Properties: OWNER_LINE_UID）
 
 // 素材アップロード用：親フォルダID（mono.create.group@gmail.comが所有）
 var MATERIAL_PARENT_FOLDER_ID = '1YdwuPGNqYQZiHeseuMtyXF2GKkyqmSvo';
@@ -56,6 +57,7 @@ var MATERIAL_PARENT_FOLDER_ID = '1YdwuPGNqYQZiHeseuMtyXF2GKkyqmSvo';
     if (p.getProperty('MATERIAL_PARENT_FOLDER_ID')) MATERIAL_PARENT_FOLDER_ID = p.getProperty('MATERIAL_PARENT_FOLDER_ID');
     if (p.getProperty('LINE_CHANNEL_SECRET'))       LINE_CHANNEL_SECRET       = p.getProperty('LINE_CHANNEL_SECRET');
     if (p.getProperty('LINE_CHANNEL_ACCESS_TOKEN')) LINE_CHANNEL_ACCESS_TOKEN = p.getProperty('LINE_CHANNEL_ACCESS_TOKEN');
+    if (p.getProperty('OWNER_LINE_UID'))            OWNER_LINE_UID            = p.getProperty('OWNER_LINE_UID');
   } catch(e) { Logger.log('ScriptProperties load error: ' + e); }
 })();
 
@@ -201,10 +203,32 @@ function sendAutoReply(toEmail, name, subject, bodyLines) {
   });
 }
 
-// オーナーへのGmail通知（Chatworkが届かない場合のバックアップ）
+// オーナーへ通知（LINE優先 → LINE未設定時のみメール）
 function notifyOwnerEmail(subject, lines) {
   var body = lines.join('\n');
-  MailApp.sendEmail({ to: OWNER_EMAIL, subject: subject, body: body, name: 'mono.create LP' });
+  if (OWNER_LINE_UID) {
+    // LINE を主チャネルとして送信
+    var text = subject + '\n\n' + lines.filter(function(l){ return !!l; }).join('\n');
+    if (text.length > 2000) text = text.substring(0, 1997) + '…';
+    pushToLine(OWNER_LINE_UID, [{ type: 'text', text: text }]);
+  } else {
+    // LINE UID 未設定時はメールをフォールバック
+    MailApp.sendEmail({ to: OWNER_EMAIL, subject: subject, body: body, name: 'mono.create LP' });
+  }
+}
+
+// クライアントへ通知（LINE優先 → LINE未設定時のみメール）
+// lineUid がある場合は LINE push、ない場合は email（どちらかのみ送信）
+function notifyClientLineOrEmail(lineUid, toEmail, name, lineText, emailSubject, emailBodyLines) {
+  if (lineUid) {
+    // LINE push（メールは送らない）
+    var text = lineText;
+    if (text.length > 2000) text = text.substring(0, 1997) + '…';
+    pushToLine(lineUid, [{ type: 'text', text: text }]);
+  } else if (toEmail && toEmail.indexOf('@') !== -1) {
+    // LINE UID なし → メールフォールバック
+    sendAutoReply(toEmail, name, emailSubject, emailBodyLines);
+  }
 }
 
 // 文字列がメールアドレスか判定
@@ -348,6 +372,12 @@ function doPost(e) {
       return saveAdditionalOrder(data);
     }
 
+    // LINE管理者プッシュ（管理者のみ・テンプレ送信）
+    if (data.action === 'admin_line_push') {
+      if (data.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+      return adminLinePush(data);
+    }
+
     // FBシート送信（クライアントからの公開フォーム送信 → 認証不要）
     if (data.action === 'save_feedback') {
       return saveFeedback(data);
@@ -363,6 +393,18 @@ function doPost(e) {
     if (data.type === 'expense') {
       if (data.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
       return saveExpense(data);
+    }
+
+    // スクリプトプロパティ設定（管理者のみ）
+    if (data.action === 'set_script_property') {
+      if (data.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+      var propKey = data.prop_key || '';
+      var propVal = data.prop_val || '';
+      if (!propKey) return jsonResponse({ error: 'prop_key required' });
+      PropertiesService.getScriptProperties().setProperty(propKey, propVal);
+      // 即時適用
+      if (propKey === 'OWNER_LINE_UID') OWNER_LINE_UID = propVal;
+      return jsonResponse({ success: true, prop_key: propKey });
     }
 
     // 管理者パスワード（ADMIN_KEY）変更
@@ -413,15 +455,20 @@ function doPost(e) {
         data.referral_code ? '紹介コード: ' + data.referral_code + '（割引が適用されます）' : '',
         '',
         '────────────────────────────',
+        '💬 LINEでの連絡を推奨しています（ご登録お願いします）',
+        '────────────────────────────',
+        '今後の連絡・修正依頼・追加発注など全てLINEで完結できます。',
+        '下記から友だち追加をしていただくとスムーズです👇',
+        'https://line.me/ti/p/@229dbicf',
+        '',
+        '────────────────────────────',
         '📅 オンライン面談をご希望の方へ',
         '────────────────────────────',
-        'ご希望の方は、下記リンクから面談可能な日程をお選びください。',
+        'ご希望の方は、下記リンクから日程をお選びください。',
         'https://timerex.net/s/sutchiokapi_1fa4/2bc09803',
         '',
-        '※ 予約フォームには、必ずこのお問い合わせに記載いただいたお名前をご入力ください。',
+        '※ 予約フォームには、このお問い合わせに記載のお名前をご入力ください。',
         '────────────────────────────',
-        '',
-        'お急ぎの場合は、このメールへご返信ください。',
       ]
     );
 
@@ -505,6 +552,11 @@ function doGet(e) {
   // ── 以降は管理者キー必須 ──────────────────────────────────────
   if (key !== ADMIN_KEY) {
     return jsonResponse({ error: 'unauthorized' });
+  }
+
+  // LINE テンプレート一覧
+  if (action === 'line_templates') {
+    return jsonResponse({ templates: LINE_TEMPLATES });
   }
 
   // 署名完了メール再送テスト
@@ -4145,6 +4197,100 @@ function authorizeGmail() {
  * LINE からの Webhook イベントを処理する
  * @param {Object} payload - LINE の Webhook ペイロード（events 配列あり）
  */
+// ================================================================
+// LINE テンプレート定義（管理画面から送信可能）
+// {{name}} {{url}} などのプレースホルダーが使えます
+// ================================================================
+var LINE_TEMPLATES = [
+  {
+    id: 'inquiry_received',
+    category: '📩 問い合わせ',
+    name: 'お問い合わせ受付',
+    text: '{{name}}様\n\nmono.createへのお問い合わせありがとうございます！\n\n内容を確認し、1〜2営業日以内にご連絡いたします😊\n\n今後はこのLINEにてやり取りいたしますので、よろしくお願いいたします！\n\n追加のご質問などあればいつでもどうぞ🙌'
+  },
+  {
+    id: 'trial_start',
+    category: '🎬 トライアル',
+    name: 'トライアル開始のご案内',
+    text: '{{name}}様\n\nお問い合わせいただきありがとうございます！\n\nまずはトライアルとして1本制作させていただきます。\n\n以下のヒアリングシートにご記入いただけますでしょうか📝\n\n{{url}}\n\n（3〜5分で完了します）よろしくお願いいたします！'
+  },
+  {
+    id: 'trial_delivered',
+    category: '🎬 トライアル',
+    name: 'トライアル納品',
+    text: '{{name}}様\n\nトライアル動画を納品いたしました🎉\n\n{{url}}\n\nご確認いただき、ご感想やご意見をこのLINEにてお聞かせください！\n修正がある場合は「修正」とお送りいただくとフォームURLをお送りします😊'
+  },
+  {
+    id: 'delivered',
+    category: '📦 納品',
+    name: '通常納品',
+    text: '{{name}}様\n\n納品いたしました！\n\n{{url}}\n\nご確認をお願いいたします🙏\n修正がある場合は「修正」とお送りください。\n（1週間以内にご連絡いただけると助かります）'
+  },
+  {
+    id: 'fix_done',
+    category: '✅ 修正',
+    name: '修正完了',
+    text: '{{name}}様\n\nご指摘いただいた修正が完了しました！\n\n{{url}}\n\nご確認をお願いいたします🙏\nご不明な点があればお気軽にご連絡ください！'
+  },
+  {
+    id: 'hearing_request',
+    category: '📋 ヒアリング',
+    name: 'ヒアリング依頼',
+    text: '{{name}}様\n\nご依頼ありがとうございます！\n\n制作に進む前に、以下のヒアリングシートへのご記入をお願いいたします📝\n\n{{url}}\n\n（5分ほどで完了します）\nご不明な点はこのLINEにてお聞きください😊'
+  },
+  {
+    id: 'invoice_request',
+    category: '💳 請求',
+    name: '振込依頼',
+    text: '{{name}}様\n\nお見積もりをご確認いただきありがとうございます。\n\n以下の口座へお振込みをお願いいたします💳\n\n【振込先】\nPayPay銀行 うぐいす支店 008\n普通 4220331\nナカムラ コウタ\n\nご入金確認後、制作を開始いたします。\nよろしくお願いいたします！'
+  },
+  {
+    id: 'contract_request',
+    category: '📝 契約',
+    name: '契約書署名依頼',
+    text: '{{name}}様\n\n業務委託契約書をお送りいたします。\n\n{{url}}\n\n内容をご確認いただき、ご署名をお願いいたします。\nご不明な点があればこのLINEにてお気軽にお申し付けください😊'
+  },
+  {
+    id: 'production_start',
+    category: '🚀 制作',
+    name: '制作開始のご連絡',
+    text: '{{name}}様\n\nご入金を確認いたしました！ありがとうございます🙏\n\n制作を開始いたします。\n納期：{{url}}\n\nご不明な点はこのLINEにてお気軽にご連絡ください！'
+  },
+  {
+    id: 'next_order',
+    category: '🔄 継続',
+    name: '次回発注のご案内',
+    text: '{{name}}様\n\nいつもご利用いただきありがとうございます！\n\n次回のご依頼はこちらから承ります👇\n{{url}}\n\nリピーター割引（10%）が自動適用されます🎁\nよろしくお願いいたします！'
+  },
+  {
+    id: 'partner_invite',
+    category: '🤝 パートナー',
+    name: 'パートナー紹介のご案内',
+    text: '{{name}}様\n\nmono.createのパートナープログラムのご案内です💡\n\n動画制作が必要なクライアント様をご紹介いただくと、成約ごとに報酬（10〜15%）をお支払いしております。\n\n詳細はこちら👇\n{{url}}\n\nご興味があればぜひお気軽にご連絡ください！'
+  },
+  {
+    id: 'free_text',
+    category: '✏️ 自由入力',
+    name: '自由入力',
+    text: ''
+  }
+];
+
+// LINE管理者プッシュ（管理画面から任意のUID宛に送信）
+function adminLinePush(data) {
+  var uid  = data.line_uid || '';
+  var text = data.text     || '';
+  if (!uid)  return jsonResponse({ error: 'line_uid が必要です' });
+  if (!text) return jsonResponse({ error: 'text が必要です' });
+  if (text.length > 5000) return jsonResponse({ error: 'テキストが長すぎます（5000文字以内）' });
+  var result = pushToLine(uid, [{ type: 'text', text: text }]);
+  if (result && !result.ok) {
+    return jsonResponse({ success: false, line_status: result.status, line_error: result.body });
+  }
+  return jsonResponse({ success: true });
+}
+
+// ================================================================
 function handleLineWebhook(payload) {
   var events = payload.events || [];
   for (var i = 0; i < events.length; i++) {
@@ -4173,6 +4319,12 @@ function handleLineTextMessage(event) {
   var replyToken = event.replyToken || '';
   var userId     = (event.source && event.source.userId) || '';
   var lowerText  = text.toLowerCase();
+
+  // 自分のLINE UIDを確認（オーナー設定用）
+  if (lowerText === 'myid' || lowerText === 'my id' || lowerText === '自分のid') {
+    replyToLine(replyToken, [{ type: 'text', text: 'あなたのLINE UID:\n' + userId }]);
+    return;
+  }
 
   // 追加発注キーワード
   if (lowerText.indexOf('追加発注') >= 0 || lowerText.indexOf('追加注文') >= 0 ||
@@ -4205,17 +4357,17 @@ function handleLineTextMessage(event) {
     replyToLine(replyToken, [
       {
         type: 'text',
-        text: '【mono.create メニュー】\n\n📦 追加のご依頼\n「追加発注」と送信してください\n\n✏️ 修正・フィードバック\n「修正」と送信 → FBフォームのURLをお送りします\n\n📩 お問い合わせ\nメールにてお問い合わせください\nmono.create.group@gmail.com'
+        text: '【mono.create メニュー】\n\n📦 追加のご依頼\n→「追加発注」と送信\n\n✏️ 修正・フィードバック\n→「修正」と送信\n\n💬 何でもご相談\n→ このLINEにそのままメッセージをどうぞ！\n\n全てこのLINEで完結します😊'
       }
     ]);
     return;
   }
 
-  // その他
+  // その他（LINEで完結させる）
   replyToLine(replyToken, [
     {
       type: 'text',
-      text: 'メッセージありがとうございます。\n\n追加のご依頼は「追加発注」とお送りください。\n修正・FBは「修正」とお送りください。\n\nご不明な点はメールにてご連絡ください👇\nmono.create.group@gmail.com'
+      text: 'メッセージありがとうございます😊\n\n追加のご依頼 → 「追加発注」\n修正・FB → 「修正」\n\nその他のご相談はそのままこのトークにメッセージをお送りください！'
     }
   ]);
 }
@@ -4247,7 +4399,7 @@ function handleLineFollow(event) {
   replyToLine(replyToken, [
     {
       type: 'text',
-      text: '友だち追加ありがとうございます！\nmono.create です。\n\n追加のご依頼は「追加発注」とお送りください。\n修正・FBは「修正」とお送りください。\n\n何かあればいつでもご連絡ください😊'
+      text: '友だち追加ありがとうございます！\nmono.create です😊\n\n追加のご依頼 → 「追加発注」\n修正・フィードバック → 「修正」\nその他ご相談 → そのままメッセージをどうぞ！\n\n全てこのLINEで完結しますので、お気軽にご連絡ください🙌'
     }
   ]);
 }
@@ -4279,9 +4431,9 @@ function replyToLine(replyToken, messages) {
  * LINE Push API（任意のユーザーへプッシュ送信）
  */
 function pushToLine(userId, messages) {
-  if (!userId || !LINE_CHANNEL_ACCESS_TOKEN) return;
+  if (!userId || !LINE_CHANNEL_ACCESS_TOKEN) return { ok: false, status: 0, body: 'no token' };
   try {
-    UrlFetchApp.fetch(LINE_PUSH_API, {
+    var res = UrlFetchApp.fetch(LINE_PUSH_API, {
       method:  'post',
       headers: {
         'Content-Type':  'application/json',
@@ -4293,8 +4445,13 @@ function pushToLine(userId, messages) {
       }),
       muteHttpExceptions: true
     });
+    var code = res.getResponseCode();
+    var body = res.getContentText();
+    Logger.log('LINE push status:' + code + ' body:' + body);
+    return { ok: code === 200, status: code, body: body };
   } catch(e) {
     Logger.log('LINE push error: ' + e);
+    return { ok: false, status: 0, body: String(e) };
   }
 }
 
@@ -4352,41 +4509,32 @@ function saveAdditionalOrder(data) {
     } catch(e) {}
   }
 
-  // LINE プッシュ通知（注文確認）
-  if (data.line_uid) {
-    pushToLine(data.line_uid, [{
-      type: 'text',
-      text: '追加発注を受け付けました！\n\n' +
-        '📦 内容確認\n' +
-        'プラン : ' + (data.plan  || '') + '\n' +
-        '本数   : ' + (data.count || '') + '\n' +
-        '希望納期: ' + (data.due_date || '') + '\n\n' +
-        '内容を確認の上、1〜2営業日以内にご連絡いたします。\nよろしくお願いいたします！'
-    }]);
-  }
-
-  // お客様へ自動返信メール
-  if (data.email && data.email.indexOf('@') !== -1) {
-    sendAutoReply(data.email, data.name,
-      '【mono.create】追加発注を受け付けました',
-      [
-        '追加のご依頼ありがとうございます！',
-        '内容を確認の上、1〜2営業日以内にご連絡いたします。',
-        '',
-        '━━━━━━━━━━━━━━━━━━━━',
-        '▼ ご注文内容',
-        '━━━━━━━━━━━━━━━━━━━━',
-        'プラン  : ' + (data.plan  || ''),
-        '本数    : ' + (data.count || ''),
-        '素材URL : ' + (data.material_url || ''),
-        '希望納期: ' + (data.due_date || ''),
-        data.note ? 'メモ    : ' + data.note : '',
-        '',
-        'ご不明な点はこのメールへご返信ください。',
-        '担当：mono.create 中村航汰',
-      ]
-    );
-  }
+  // クライアントへ返信（LINE優先、メールフォールバック）
+  notifyClientLineOrEmail(
+    data.line_uid || '',
+    data.email || '',
+    data.name || '',
+    '追加発注を受け付けました！\n\n' +
+      '📦 内容確認\n' +
+      'プラン   : ' + (data.plan  || '') + '\n' +
+      '本数     : ' + (data.count || '') + '\n' +
+      '希望納期 : ' + (data.due_date || '') + '\n\n' +
+      '内容を確認の上、1〜2営業日以内にご連絡いたします。\nよろしくお願いいたします！',
+    '【mono.create】追加発注を受け付けました',
+    [
+      '追加のご依頼ありがとうございます！',
+      '内容を確認の上、1〜2営業日以内にご連絡いたします。',
+      '',
+      '▼ ご注文内容',
+      'プラン  : ' + (data.plan  || ''),
+      '本数    : ' + (data.count || ''),
+      '素材URL : ' + (data.material_url || ''),
+      '希望納期: ' + (data.due_date || ''),
+      data.note ? 'メモ    : ' + data.note : '',
+      '',
+      '担当：mono.create 中村航汰',
+    ]
+  );
 
   // オーナーへメール通知
   notifyOwnerEmail(
@@ -4509,21 +4657,24 @@ function saveFeedback(data) {
     ]
   );
 
-  // クライアントへ自動返信
-  if (data.email && data.email.indexOf('@') !== -1) {
-    sendAutoReply(data.email, data.client_name,
-      '【mono.create】フィードバックを受け付けました',
-      [
-        'フィードバックをご記入いただきありがとうございます。',
-        '内容を確認の上、修正版を納品いたします。',
-        '',
-        '修正件数: ' + (data.items || []).length + '件',
-        '',
-        'ご不明な点はこのメールへご返信ください。',
-        '担当：mono.create 中村航汰',
-      ]
-    );
-  }
+  // クライアントへ返信（LINE優先、メールフォールバック）
+  notifyClientLineOrEmail(
+    data.line_uid || '',
+    data.email || '',
+    data.client_name || '',
+    'フィードバックを受け付けました！\n\n' +
+      '修正件数: ' + (data.items || []).length + '件\n\n' +
+      '内容を確認の上、修正版を納品いたします。\nよろしくお願いいたします！',
+    '【mono.create】フィードバックを受け付けました',
+    [
+      'フィードバックをご記入いただきありがとうございます。',
+      '内容を確認の上、修正版を納品いたします。',
+      '',
+      '修正件数: ' + (data.items || []).length + '件',
+      '',
+      '担当：mono.create 中村航汰',
+    ]
+  );
 
   return jsonResponse({ success: true });
 }
