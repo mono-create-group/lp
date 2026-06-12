@@ -3061,7 +3061,7 @@ function exportCSV() {
 }
 
 // ── Tab switch ──
-const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps','sales-apps','partner-apps','private-link','client-master'];
+const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps','sales-apps','partner-apps','private-link','client-master','invoices','line'];
 function switchAdminTab(tab) {
   ADMIN_TABS.forEach(t => {
     document.getElementById('tab-' + t).style.display = t === tab ? '' : 'none';
