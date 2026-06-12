@@ -4448,31 +4448,29 @@ function saveFeedback(data) {
     '未対応'
   ]);
 
-  // Chatwork 通知
-  if (CHATWORK_ROOM_ID) {
-    var items = data.items || [];
-    var itemLines = items.map(function(it, idx) {
-      return '  修正' + (idx+1) + ': ' + (it.time || '') + ' / ' + (it.type || '') + '\n    ' + (it.comment || '');
-    }).join('\n');
-    var msg = '[To:' + CHATWORK_MENTION + '] 中村航汰\n\n' +
-      '━━━━━━━━━━━━━━━━━━━━\n' +
-      '✏️ FBシート受信 — mono.create (' + (data.round || '1') + 'ラウンド目)\n' +
-      '━━━━━━━━━━━━━━━━━━━━\n' +
+  // オーナーへメール通知（個別チャットでFBを行うためChatwork通知は不要）
+  try {
+    var fbItems = data.items || [];
+    var fbItemLines = fbItems.map(function(it, idx) {
+      return '修正' + (idx+1) + ': ' + (it.time || '—') + ' [' + (it.type || '—') + ']\n' + (it.comment || '');
+    }).join('\n\n');
+    GmailApp.sendEmail(
+      'nakamurakouta512@gmail.com',
+      '【FBシート受信】' + (data.client_name || '') + ' / ' + (data.round || '1') + 'ラウンド目',
+      '━━━━━━━━━━━━━━━━\n' +
+      '✏️ FBシート受信\n' +
+      '━━━━━━━━━━━━━━━━\n' +
       '受信日時    : ' + now + '\n' +
       'クライアント: ' + (data.client_name || '') + '\n' +
+      'ラウンド    : ' + (data.round || '1') + 'ラウンド目\n' +
+      '修正件数    : ' + fbItems.length + '件\n' +
       '納品URL     : ' + (data.delivery_url || '') + '\n' +
-      '修正件数    : ' + items.length + '件\n' +
-      '━━━━━━━━━━━━━━━━━━━━\n' +
-      itemLines + '\n' +
-      '━━━━━━━━━━━━━━━━━━━━\n' +
-      '▶ 管理画面: ' + LP_BASE_URL + 'admin.html';
-    try {
-      UrlFetchApp.fetch(
-        'https://api.chatwork.com/v2/rooms/' + CHATWORK_ROOM_ID + '/messages',
-        { method: 'post', headers: { 'X-ChatWorkToken': CHATWORK_TOKEN }, payload: { body: msg } }
-      );
-    } catch(e) {}
-  }
+      '━━━━━━━━━━━━━━━━\n\n' +
+      fbItemLines + '\n\n' +
+      '━━━━━━━━━━━━━━━━\n' +
+      '▶ 管理画面: ' + LP_BASE_URL + 'admin.html'
+    );
+  } catch(e) { Logger.log('FB owner mail error: ' + e); }
 
   // クライアントへ自動返信
   if (data.email && data.email.indexOf('@') !== -1) {
