@@ -511,6 +511,10 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
         📄 請求書
       </button>
+      <button id="tab-line-btn" onclick="switchAdminTab('line');loadLineTemplates()"
+        style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;background:rgba(0,185,100,0.08);border-radius:8px 8px 0 0;">
+        💬 LINE送信
+      </button>
     </div>
 
     <!-- ── 問い合わせタブ ── -->
@@ -1243,6 +1247,20 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
 
     <!-- ── 営業スタッフ応募タブ ── -->
     <div id="tab-sales-apps" style="display:none;">
+
+      <!-- 営業DM テンプレ生成ツール -->
+      <div style="background:linear-gradient(135deg,#0f1f35,#1a2d45);border:1px solid #1d4ed8;border-radius:14px;padding:22px 24px;margin-bottom:28px;">
+        <p style="font-size:0.95rem;font-weight:700;color:#93c5fd;margin-bottom:14px;">✉️ 営業DM テンプレ生成</p>
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px;">
+          <input type="text" id="dm-staff-name" placeholder="担当者名を入力（例: 中村）" style="flex:1;padding:9px 12px;background:#0d1b2e;border:1px solid #2563eb;border-radius:8px;color:#e2e8f0;font-size:0.88rem;font-family:inherit;outline:none;">
+          <button onclick="generateSalesDM()" style="padding:9px 18px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:0.85rem;font-weight:700;cursor:pointer;white-space:nowrap;">生成</button>
+        </div>
+        <div style="position:relative;">
+          <textarea id="dm-template-output" rows="28" readonly style="width:100%;padding:14px;background:#0a1525;border:1px solid #1e3a5f;border-radius:8px;color:#cbd5e1;font-size:0.8rem;font-family:inherit;line-height:1.8;resize:vertical;"></textarea>
+          <button onclick="copySalesDM()" id="dm-copy-btn" style="position:absolute;top:10px;right:10px;padding:6px 14px;background:#1d4ed8;color:#fff;border:none;border-radius:6px;font-size:0.78rem;font-weight:700;cursor:pointer;">📋 コピー</button>
+        </div>
+      </div>
+
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
         <h2 style="font-size:1rem;font-weight:700;">💼 営業スタッフ応募管理</h2>
         <div style="display:flex;gap:10px;">
@@ -1598,6 +1616,134 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         </table>
       </div>
     </div><!-- /tab-invoices -->
+
+    <!-- ── LINE 送信タブ ── -->
+    <div id="tab-line" style="display:none;max-width:760px;margin:0 auto;padding:28px 0;">
+      <h2 style="font-size:1.1rem;font-weight:800;margin-bottom:4px;">💬 LINE メッセージ送信</h2>
+      <p style="font-size:0.82rem;color:var(--sub);margin-bottom:24px;">テンプレートを選んでクライアントのLINE UIDに直接送信できます</p>
+
+      <!-- LINE管理画面リンク -->
+      <div style="background:#00b900;border-radius:12px;padding:14px 20px;margin-bottom:24px;display:flex;align-items:center;gap:14px;">
+        <span style="font-size:1.5rem;">💚</span>
+        <div>
+          <p style="font-size:0.9rem;font-weight:700;color:#fff;margin-bottom:2px;">LINE Official Account Manager</p>
+          <a href="https://manager.line.biz/" target="_blank"
+            style="color:#d4ffdf;font-size:0.82rem;word-break:break-all;">https://manager.line.biz/</a>
+        </div>
+        <a href="https://manager.line.biz/" target="_blank"
+          style="margin-left:auto;background:#fff;color:#00b900;padding:7px 16px;border-radius:8px;font-size:0.82rem;font-weight:700;text-decoration:none;white-space:nowrap;">
+          管理画面を開く →
+        </a>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+
+        <!-- 左: 送信フォーム -->
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;">
+          <h3 style="font-size:0.9rem;font-weight:700;margin-bottom:16px;color:var(--lt);">📤 メッセージ送信</h3>
+
+          <div style="margin-bottom:14px;">
+            <label style="font-size:0.78rem;color:var(--sub);display:block;margin-bottom:5px;">送信先 LINE UID <span style="color:#f87171;">*</span></label>
+            <div style="display:flex;gap:8px;">
+              <input type="text" id="line-push-uid" placeholder="Uxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--lt);font-size:0.85rem;font-family:inherit;">
+              <button onclick="openLineLookup()"
+                style="padding:9px 12px;background:var(--accent-dim);color:var(--lt);border:1px solid var(--border);border-radius:8px;font-size:0.78rem;cursor:pointer;font-family:inherit;white-space:nowrap;">
+                履歴から選ぶ
+              </button>
+            </div>
+            <p style="font-size:0.74rem;color:var(--sub);margin-top:4px;">※ 相手に「myid」と送ってもらうと確認できます</p>
+          </div>
+
+          <div style="margin-bottom:14px;">
+            <label style="font-size:0.78rem;color:var(--sub);display:block;margin-bottom:5px;">テンプレート</label>
+            <select id="line-template-select" onchange="applyLineTemplate()"
+              style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--lt);font-size:0.85rem;font-family:inherit;">
+              <option value="">テンプレートを選択（または自由入力）</option>
+            </select>
+          </div>
+
+          <div style="margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;">
+            <label style="font-size:0.78rem;color:var(--sub);">メッセージ本文 <span style="color:#f87171;">*</span></label>
+            <span id="line-char-count" style="font-size:0.74rem;color:var(--sub);">0 / 2000</span>
+          </div>
+
+          <div style="margin-bottom:8px;display:flex;gap:6px;flex-wrap:wrap;">
+            <span style="font-size:0.74rem;color:var(--sub);">プレースホルダ：</span>
+            <button onclick="insertLinePlaceholder('{{name}}')"
+              style="padding:3px 8px;background:var(--accent-dim);border:none;border-radius:5px;color:var(--lt);font-size:0.73rem;cursor:pointer;">{{name}}</button>
+            <button onclick="insertLinePlaceholder('{{url}}')"
+              style="padding:3px 8px;background:var(--accent-dim);border:none;border-radius:5px;color:var(--lt);font-size:0.73rem;cursor:pointer;">{{url}}</button>
+          </div>
+
+          <textarea id="line-push-text" rows="10" maxlength="2000"
+            placeholder="送信するメッセージを入力してください..."
+            oninput="updateLineCharCount()"
+            style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--lt);font-size:0.85rem;font-family:inherit;resize:vertical;line-height:1.7;"></textarea>
+
+          <div style="margin-top:12px;display:flex;gap:10px;align-items:center;">
+            <button onclick="sendLinePush()" id="line-push-btn"
+              style="flex:1;padding:12px;background:#00b900;color:#fff;border:none;border-radius:10px;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;">
+              💬 LINEで送信
+            </button>
+            <button onclick="previewLinePush()"
+              style="padding:12px 16px;background:var(--card);color:var(--lt);border:1px solid var(--border);border-radius:10px;font-size:0.82rem;font-weight:600;cursor:pointer;font-family:inherit;">
+              プレビュー
+            </button>
+          </div>
+          <div id="line-push-result" style="margin-top:10px;font-size:0.82rem;display:none;"></div>
+        </div>
+
+        <!-- 右: テンプレート一覧 -->
+        <div>
+          <h3 style="font-size:0.9rem;font-weight:700;margin-bottom:12px;color:var(--lt);">📋 テンプレート一覧</h3>
+          <div id="line-template-list" style="display:flex;flex-direction:column;gap:8px;">
+            <p style="color:var(--sub);font-size:0.82rem;">読み込み中...</p>
+          </div>
+        </div>
+
+      </div><!-- /grid -->
+
+      <!-- LINE UID 履歴モーダル -->
+      <div id="line-lookup-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center;">
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;width:min(500px,90vw);max-height:80vh;overflow-y:auto;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <h3 style="font-size:1rem;font-weight:700;">🔍 LINE UID を選ぶ</h3>
+            <button onclick="closeLineLookup()" style="background:none;border:none;color:var(--sub);font-size:1.3rem;cursor:pointer;">✕</button>
+          </div>
+          <p style="font-size:0.8rem;color:var(--sub);margin-bottom:14px;">追加発注・FBフォームから取得されたUID一覧です</p>
+          <div id="line-uid-history" style="display:flex;flex-direction:column;gap:8px;">
+            <p style="color:var(--sub);font-size:0.82rem;">読み込み中...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- プレビューモーダル -->
+      <div id="line-preview-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center;">
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;width:min(420px,90vw);">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <h3 style="font-size:1rem;font-weight:700;">💬 送信プレビュー</h3>
+            <button onclick="closeLinePreview()" style="background:none;border:none;color:var(--sub);font-size:1.3rem;cursor:pointer;">✕</button>
+          </div>
+          <!-- LINEバブル風 -->
+          <div style="background:#00b900;border-radius:12px;padding:14px 16px;max-width:320px;margin:0 auto 16px auto;">
+            <p id="line-preview-text" style="color:#fff;font-size:0.88rem;line-height:1.75;white-space:pre-wrap;word-break:break-word;margin:0;"></p>
+          </div>
+          <p id="line-preview-uid" style="font-size:0.78rem;color:var(--sub);text-align:center;margin-bottom:16px;"></p>
+          <div style="display:flex;gap:10px;">
+            <button onclick="closeLinePreview()"
+              style="flex:1;padding:11px;background:var(--card);color:var(--lt);border:1px solid var(--border);border-radius:8px;font-size:0.85rem;cursor:pointer;font-family:inherit;">
+              キャンセル
+            </button>
+            <button onclick="confirmLinePush()"
+              style="flex:1;padding:11px;background:#00b900;color:#fff;border:none;border-radius:8px;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;">
+              この内容で送信
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /tab-line -->
 
   </main>
 </div>
@@ -2718,6 +2864,7 @@ async function openTrialMail(row) {
     '以下のドライブにアップロードをお願いいたします。\n\n' +
     (folderUrl || '（※ ドライブURLをここに貼り付けてください）') +
     '\n\n②納期の設定\n\n' +
+    '初回は素材共有日から（16:00以降のご依頼は素材共有翌日からカウント）4日いただいております。\n\n' +
     step3 + '\n\n' +
     '④クオリティに問題がないかを確認していただく\n\n' +
     '⑤契約判断\n\n' +
@@ -3576,6 +3723,8 @@ function renderHearings() {
       <td class="td-plan" style="font-size:0.78rem;">
         ${esc(h.plan)}
         ${trialBadge(h, 'hearings')}
+        ${h.confidence === '要確認' ? '<span style="display:inline-block;margin-left:4px;font-size:0.7rem;padding:2px 7px;background:#7c1d1d;color:#fca5a5;border-radius:8px;font-weight:700;" title="初回申告だが過去記録あり — 要確認">⚠️ 要確認</span>' : ''}
+        ${h.confidence === '高' && h.trial ? '<span style="display:inline-block;margin-left:4px;font-size:0.7rem;padding:2px 7px;background:#14532d;color:#86efac;border-radius:8px;" title="記録照合で初回確認済み">✅ 確定</span>' : ''}
       </td>
       <td><span class="status-badge status-${esc(h.status)}" style="cursor:pointer;" onclick="cycleHearingStatus(${h.row})" title="クリックでステータス変更">${statusDot(h.status)} ${esc(h.status)}</span></td>
       <td>
@@ -4712,6 +4861,74 @@ async function deletePFItem(row, name) {
   await gasFetch(`${GAS_URL}?action=pf_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
   showToast('🗑 削除しました');
   await loadPFAdmin();
+}
+
+// ── 営業DM テンプレ生成 ─────────────────────────────────────────────
+function generateSalesDM() {
+  const name = (document.getElementById('dm-staff-name').value || '').trim();
+  const n = name || '〇〇';
+  const tmpl = [
+    'はじめまして！',
+    '動画編集チームmono.createの' + n + 'と申します。',
+    '',
+    'もし、編集者を必要としていましたら、',
+    'ご一読いただけると幸いです。',
+    '',
+    '▼ 実績',
+    '・ショート動画編集 累計1,000本超',
+    '・長尺編集 300本以上',
+    '・編集アドバイザーとして売上前月比120%アップを達成',
+    '',
+    '▼ 稼働環境',
+    '・稼働時間帯：9:00〜19:00',
+    '・週間稼働可能時間：30時間程度',
+    '・稼働曜日：日曜日以外',
+    '・月間対応可能本数：最大30本程度（それ以上の納品が可能な場合もございます）',
+    '',
+    '▼ ポートフォリオ',
+    'Vlog系',
+    'https://drive.google.com/file/d/1BhHny9QWrXOdp6NxCfQTaG-5KHkg_wJw/view?usp=drive_link',
+    '',
+    'ドキュメンタリー系',
+    'https://drive.google.com/file/d/12x6VlbtLNdEVlHHNr8Z4llG0tk1VhX6T/view?usp=drive_link',
+    '',
+    'スポーツ解説',
+    'https://drive.google.com/file/d/1aNTjF29YbYKnnrV-VwWOvjxb41lBi855/view?usp=drive_link',
+    '',
+    '解説系',
+    'https://drive.google.com/file/d/13-6gXAg1LaTAL4ZyLgqol7-BZeM7kMQJ/view?usp=drive_link',
+    '',
+    '企画系',
+    'https://drive.google.com/file/d/1KrWQpPubLpOJpYf75eW01blwCYtLfOO1/view?usp=drive_link',
+    '',
+    '初回1本は無料トライアルで対応可能です。',
+    '',
+    '▼ お問い合わせ',
+    'https://mono-create-group.github.io/lp/index.html',
+    '',
+    '上記に単価感や対応業務・ポートフォリオの記載がございます。',
+    'お問い合わせはサイト内からよろしくお願いいたします！',
+    '',
+    'ぜひご検討くださいませ。',
+    '',
+    'mono.create ' + n,
+  ].join('\n');
+  document.getElementById('dm-template-output').value = tmpl;
+  document.getElementById('dm-copy-btn').textContent = '📋 コピー';
+}
+
+async function copySalesDM() {
+  const txt = document.getElementById('dm-template-output').value;
+  if (!txt) { showToast('⚠ 先に「生成」を押してください'); return; }
+  try {
+    await navigator.clipboard.writeText(txt);
+    const btn = document.getElementById('dm-copy-btn');
+    btn.textContent = '✅ コピー済み';
+    setTimeout(() => { btn.textContent = '📋 コピー'; }, 2000);
+    showToast('✅ クリップボードにコピーしました');
+  } catch(e) {
+    showToast('⚠ コピーに失敗しました');
+  }
 }
 
 // ── 営業スタッフ応募管理 ───────────────────────────────────────────
@@ -5972,6 +6189,201 @@ async function sendEditorContract() {
   } finally {
     btn.disabled = false; btn.textContent = '📧 契約書メールを送信';
   }
+}
+
+/* ================================================================
+   LINE 送信タブ
+================================================================ */
+var _lineTemplates = [];
+
+async function loadLineTemplates() {
+  try {
+    const res = await gasFetch(`${GAS_URL}?action=line_templates&key=${encodeURIComponent(getAdminPw())}`);
+    if (!res.templates) return;
+    _lineTemplates = res.templates;
+    renderLineTemplateSelect();
+    renderLineTemplateList();
+  } catch(e) { console.error('LINE templates load error:', e); }
+}
+
+function renderLineTemplateSelect() {
+  const sel = document.getElementById('line-template-select');
+  if (!sel) return;
+  // カテゴリごとにoptgroupで整理
+  const cats = {};
+  _lineTemplates.forEach(t => {
+    if (!cats[t.category]) cats[t.category] = [];
+    cats[t.category].push(t);
+  });
+  sel.innerHTML = '<option value="">テンプレートを選択（または自由入力）</option>';
+  Object.entries(cats).forEach(([cat, items]) => {
+    const og = document.createElement('optgroup');
+    og.label = cat;
+    items.forEach(t => {
+      const opt = document.createElement('option');
+      opt.value = t.id;
+      opt.textContent = t.name;
+      og.appendChild(opt);
+    });
+    sel.appendChild(og);
+  });
+}
+
+function renderLineTemplateList() {
+  const el = document.getElementById('line-template-list');
+  if (!el) return;
+  if (!_lineTemplates.length) { el.innerHTML = '<p style="color:var(--sub);font-size:0.82rem;">テンプレートなし</p>'; return; }
+  // カテゴリごとにグループ
+  const cats = {};
+  _lineTemplates.forEach(t => {
+    if (!cats[t.category]) cats[t.category] = [];
+    cats[t.category].push(t);
+  });
+  el.innerHTML = '';
+  Object.entries(cats).forEach(([cat, items]) => {
+    const catEl = document.createElement('div');
+    catEl.innerHTML = `<p style="font-size:0.74rem;font-weight:700;color:var(--sub);margin:10px 0 5px;">${cat}</p>`;
+    items.forEach(t => {
+      const card = document.createElement('div');
+      card.style.cssText = 'background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;cursor:pointer;transition:border-color .15s;';
+      card.onmouseenter = () => card.style.borderColor = '#00b900';
+      card.onmouseleave = () => card.style.borderColor = 'var(--border)';
+      card.innerHTML = `
+        <p style="font-size:0.82rem;font-weight:600;color:var(--lt);margin-bottom:5px;">${t.name}</p>
+        <p style="font-size:0.75rem;color:var(--sub);white-space:pre-line;max-height:60px;overflow:hidden;line-height:1.5;">${t.text ? t.text.substring(0,80)+'…' : '（自由入力）'}</p>
+      `;
+      card.onclick = () => {
+        document.getElementById('line-template-select').value = t.id;
+        applyLineTemplate();
+      };
+      catEl.appendChild(card);
+    });
+    el.appendChild(catEl);
+  });
+}
+
+function applyLineTemplate() {
+  const id = document.getElementById('line-template-select').value;
+  const tpl = _lineTemplates.find(t => t.id === id);
+  const ta = document.getElementById('line-push-text');
+  if (!tpl || !ta) return;
+  if (id === 'free_text') { ta.value = ''; }
+  else { ta.value = tpl.text; }
+  updateLineCharCount();
+}
+
+function updateLineCharCount() {
+  const ta = document.getElementById('line-push-text');
+  const el = document.getElementById('line-char-count');
+  if (!ta || !el) return;
+  el.textContent = `${ta.value.length} / 2000`;
+  el.style.color = ta.value.length > 1800 ? '#f87171' : 'var(--sub)';
+}
+
+function insertLinePlaceholder(ph) {
+  const ta = document.getElementById('line-push-text');
+  if (!ta) return;
+  const start = ta.selectionStart, end = ta.selectionEnd;
+  ta.value = ta.value.substring(0, start) + ph + ta.value.substring(end);
+  ta.selectionStart = ta.selectionEnd = start + ph.length;
+  ta.focus();
+  updateLineCharCount();
+}
+
+function previewLinePush() {
+  const uid  = (document.getElementById('line-push-uid')  || {}).value || '';
+  const text = (document.getElementById('line-push-text') || {}).value || '';
+  if (!uid.trim())  { showToast('送信先 LINE UID を入力してください', true); return; }
+  if (!text.trim()) { showToast('メッセージ本文を入力してください', true); return; }
+  document.getElementById('line-preview-text').textContent = text;
+  document.getElementById('line-preview-uid').textContent  = 'UID: ' + uid;
+  const m = document.getElementById('line-preview-modal');
+  m.style.display = 'flex';
+}
+function closeLinePreview() {
+  document.getElementById('line-preview-modal').style.display = 'none';
+}
+async function confirmLinePush() {
+  closeLinePreview();
+  await sendLinePush();
+}
+
+async function sendLinePush() {
+  const uid  = (document.getElementById('line-push-uid')  || {}).value?.trim() || '';
+  const text = (document.getElementById('line-push-text') || {}).value?.trim() || '';
+  const res_el = document.getElementById('line-push-result');
+  const btn = document.getElementById('line-push-btn');
+
+  if (!uid)  { showToast('送信先 LINE UID を入力してください', true); return; }
+  if (!text) { showToast('メッセージ本文を入力してください', true); return; }
+
+  btn.disabled = true; btn.textContent = '送信中…';
+  res_el.style.display = 'none';
+
+  try {
+    const res = await gasFetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'admin_line_push', key: getAdminPw(), line_uid: uid, text: text })
+    });
+    if (res.success) {
+      res_el.style.cssText = 'display:block;color:#34d399;';
+      res_el.textContent   = '✅ 送信しました！';
+      showToast('✅ LINEメッセージを送信しました');
+    } else {
+      res_el.style.cssText = 'display:block;color:#f87171;';
+      res_el.textContent   = '❌ エラー: ' + (res.error || '不明');
+    }
+  } catch(e) {
+    res_el.style.cssText = 'display:block;color:#f87171;';
+    res_el.textContent   = '❌ 通信エラー';
+  } finally {
+    btn.disabled = false; btn.textContent = '💬 LINEで送信';
+  }
+}
+
+/* LINE UID 履歴（追加発注・FB等から収集） */
+async function openLineLookup() {
+  document.getElementById('line-lookup-modal').style.display = 'flex';
+  const el = document.getElementById('line-uid-history');
+  el.innerHTML = '<p style="color:var(--sub);font-size:0.82rem;">読み込み中...</p>';
+  try {
+    // 追加発注データからUID収集
+    const res = await gasFetch(`${GAS_URL}?action=additional_orders&key=${encodeURIComponent(getAdminPw())}`);
+    const uids = {};
+    (res.data || []).forEach(r => {
+      if (r.line_uid && r.line_uid.startsWith('U')) {
+        if (!uids[r.line_uid]) uids[r.line_uid] = { name: r.name, date: r.date, source: '追加発注' };
+      }
+    });
+    if (!Object.keys(uids).length) {
+      el.innerHTML = '<p style="color:var(--sub);font-size:0.82rem;">LINEで送信されたフォームの履歴がありません。<br>クライアントに「myid」と送ってもらうとUIDが確認できます。</p>';
+      return;
+    }
+    el.innerHTML = '';
+    Object.entries(uids).forEach(([uid, info]) => {
+      const card = document.createElement('div');
+      card.style.cssText = 'background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;';
+      card.onmouseenter = () => card.style.borderColor = '#00b900';
+      card.onmouseleave = () => card.style.borderColor = 'var(--border)';
+      card.innerHTML = `
+        <div style="flex:1;">
+          <p style="font-size:0.85rem;font-weight:600;color:var(--lt);">${info.name || '（名前なし）'}</p>
+          <p style="font-size:0.74rem;color:var(--sub);">${uid} · ${info.source} · ${info.date || ''}</p>
+        </div>
+        <span style="font-size:0.78rem;color:#00b900;font-weight:700;">選択 →</span>
+      `;
+      card.onclick = () => {
+        document.getElementById('line-push-uid').value = uid;
+        closeLineLookup();
+      };
+      el.appendChild(card);
+    });
+  } catch(e) {
+    el.innerHTML = '<p style="color:#f87171;font-size:0.82rem;">読み込みエラー</p>';
+  }
+}
+function closeLineLookup() {
+  document.getElementById('line-lookup-modal').style.display = 'none';
 }
 </script>
 

@@ -389,9 +389,11 @@ var _submittedItems = [];
 var _submittedMeta  = {};
 
 /* ── URL params ── */
+var lineUidParam = '';
 (function() {
   var p = new URLSearchParams(location.search);
   reviewMode = p.get('review') === '1';
+  lineUidParam = p.get('uid') || '';
   if (reviewMode) {
     document.getElementById('setup-screen').style.display = 'none';
     loadReviewMode(p);
@@ -715,6 +717,7 @@ function submitFB() {
     method: 'POST',
     body: JSON.stringify({
       action: 'save_feedback', client_name: name, email: email,
+      line_uid: lineUidParam,
       delivery_url: buildDirectUrl(driveFileId), round: round,
       video_type: videoType, items: items
     }),
