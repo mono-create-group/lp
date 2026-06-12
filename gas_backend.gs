@@ -4187,10 +4187,11 @@ function handleLineTextMessage(event) {
   // FBキーワード
   if (lowerText.indexOf('フィードバック') >= 0 || lowerText.indexOf('fb') >= 0 ||
       lowerText.indexOf('修正') >= 0) {
+    var fbUrl = LP_BASE_URL + 'feedback.html?uid=' + encodeURIComponent(userId);
     replyToLine(replyToken, [
       {
         type: 'text',
-        text: '修正・フィードバックは、納品メールに記載のFBページURLからご記入ください。\n\nお急ぎの場合はこのトークにそのままご入力いただいても大丈夫です！'
+        text: '修正・フィードバックはこちらのフォームからご記入ください👇\n\n' + fbUrl + '\n\n動画を見ながら修正箇所を記入できます。\n納品URLと動画の種類（ショート/長尺）を選んで開始してください！'
       }
     ]);
     return;
@@ -4201,7 +4202,7 @@ function handleLineTextMessage(event) {
     replyToLine(replyToken, [
       {
         type: 'text',
-        text: '【mono.create メニュー】\n\n📦 追加のご依頼\n「追加発注」と送信してください\n\n✏️ 修正・フィードバック\n「修正」と送信してください\n\n📩 お問い合わせ\nメールにてお問い合わせください\nmono.create.group@gmail.com'
+        text: '【mono.create メニュー】\n\n📦 追加のご依頼\n「追加発注」と送信してください\n\n✏️ 修正・フィードバック\n「修正」と送信 → FBフォームのURLをお送りします\n\n📩 お問い合わせ\nメールにてお問い合わせください\nmono.create.group@gmail.com'
       }
     ]);
     return;
