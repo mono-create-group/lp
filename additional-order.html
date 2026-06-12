@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>追加発注フォーム | mono.create</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', sans-serif;
+      background: #0f172a; color: #f1f5f9; min-height: 100vh;
+    }
+    .header {
+      background: linear-gradient(135deg, #1e40af, #7c3aed);
+      padding: 24px 20px; text-align: center;
+    }
+    .header h1 { font-size: 1.4rem; font-weight: 700; color: #fff; }
+    .header p  { font-size: 0.85rem; color: #bfdbfe; margin-top: 6px; }
+    .container { max-width: 600px; margin: 0 auto; padding: 24px 16px 60px; }
+    .card {
+      background: #1e293b; border: 1px solid #334155;
+      border-radius: 12px; padding: 24px; margin-bottom: 16px;
+    }
+    .card h2 { font-size: 1rem; font-weight: 700; color: #e2e8f0; margin-bottom: 16px; }
+    .form-group { margin-bottom: 18px; }
+    label { display: block; font-size: 0.82rem; color: #94a3b8; margin-bottom: 6px; }
+    label span.req { color: #f87171; margin-left: 3px; }
+    input, select, textarea {
+      width: 100%; background: #0f172a; border: 1px solid #475569;
+      border-radius: 8px; padding: 10px 12px; color: #f1f5f9;
+      font-size: 0.9rem; font-family: inherit; transition: border-color .2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none; border-color: #3b82f6;
+    }
+    textarea { resize: vertical; min-height: 80px; }
+    select option { background: #1e293b; }
+    .plan-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    }
+    .plan-card {
+      background: #0f172a; border: 2px solid #334155;
+      border-radius: 8px; padding: 12px 10px; cursor: pointer;
+      transition: border-color .2s, background .2s; user-select: none;
+    }
+    .plan-card.selected { border-color: #3b82f6; background: #1e3a5f; }
+    .plan-card input[type=radio] { display: none; }
+    .plan-card .plan-name { font-size: 0.88rem; font-weight: 600; color: #e2e8f0; }
+    .plan-card .plan-price { font-size: 0.75rem; color: #60a5fa; margin-top: 3px; }
+    .btn-submit {
+      width: 100%; padding: 14px; background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: #fff; border: none; border-radius: 10px; font-size: 1rem;
+      font-weight: 700; cursor: pointer; transition: opacity .2s;
+    }
+    .btn-submit:hover { opacity: .9; }
+    .btn-submit:disabled { opacity: .5; cursor: not-allowed; }
+    .success-view {
+      display: none; text-align: center; padding: 40px 20px;
+    }
+    .success-view .icon { font-size: 3rem; margin-bottom: 12px; }
+    .success-view h2 { font-size: 1.2rem; color: #34d399; margin-bottom: 8px; }
+    .success-view p { font-size: 0.88rem; color: #94a3b8; line-height: 1.6; }
+    .error-msg { color: #f87171; font-size: 0.8rem; margin-top: 4px; display: none; }
+    .info-banner {
+      background: #1e3a5f; border: 1px solid #2563eb;
+      border-radius: 8px; padding: 12px 16px;
+      font-size: 0.82rem; color: #93c5fd; line-height: 1.6; margin-bottom: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>📦 追加発注フォーム</h1>
+    <p>本数・素材URL・希望納期をご記入ください</p>
+  </div>
+
+  <div class="container">
+    <div class="info-banner">
+      ✅ このフォームはLINEまたはメールに記載のURLからアクセスしています。<br>
+      内容送信後、担当より1〜2営業日以内にご連絡いたします。
+    </div>
+
+    <form id="order-form">
+      <div class="card">
+        <h2>① お客様情報</h2>
+        <div class="form-group">
+          <label>お名前 <span class="req">*</span></label>
+          <input type="text" id="name" name="name" placeholder="山田 太郎" required>
+          <div class="error-msg" id="err-name">お名前を入力してください</div>
+        </div>
+        <div class="form-group">
+          <label>メールアドレス</label>
+          <input type="email" id="email" name="email" placeholder="example@email.com">
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>② プラン選択 <span class="req">*</span></h2>
+        <div class="plan-grid" id="plan-grid">
+          <label class="plan-card" onclick="selectPlan(this,'ショート動画編集（1本）')">
+            <input type="radio" name="plan" value="ショート動画編集（1本）">
+            <div class="plan-name">📱 ショート動画編集</div>
+            <div class="plan-price">単品 / 1本〜</div>
+          </label>
+          <label class="plan-card" onclick="selectPlan(this,'長尺動画編集（1本）')">
+            <input type="radio" name="plan" value="長尺動画編集（1本）">
+            <div class="plan-name">🎬 長尺動画編集</div>
+            <div class="plan-price">単品 / 1本〜</div>
+          </label>
+          <label class="plan-card" onclick="selectPlan(this,'まとめて編集（ショート）')">
+            <input type="radio" name="plan" value="まとめて編集（ショート）">
+            <div class="plan-name">📦 まとめて編集</div>
+            <div class="plan-price">ショート / 複数本</div>
+          </label>
+          <label class="plan-card" onclick="selectPlan(this,'その他')">
+            <input type="radio" name="plan" value="その他">
+            <div class="plan-name">💬 その他</div>
+            <div class="plan-price">詳細はメモ欄へ</div>
+          </label>
+        </div>
+        <div class="error-msg" id="err-plan">プランを選択してください</div>
+      </div>
+
+      <div class="card">
+        <h2>③ 発注内容</h2>
+        <div class="form-group">
+          <label>本数 <span class="req">*</span></label>
+          <select id="count" name="count" required>
+            <option value="">選択してください</option>
+            <option value="1本">1本</option>
+            <option value="2本">2本</option>
+            <option value="3本">3本</option>
+            <option value="4本">4本</option>
+            <option value="5本">5本</option>
+            <option value="6〜10本">6〜10本</option>
+            <option value="11本以上">11本以上</option>
+          </select>
+          <div class="error-msg" id="err-count">本数を選択してください</div>
+        </div>
+        <div class="form-group">
+          <label>素材URL（Google Drive / ギガファイル便など）<span class="req">*</span></label>
+          <input type="url" id="material_url" name="material_url"
+            placeholder="https://drive.google.com/..." required>
+          <div class="error-msg" id="err-material">素材URLを入力してください</div>
+        </div>
+        <div class="form-group">
+          <label>希望納期</label>
+          <input type="date" id="due_date" name="due_date">
+        </div>
+        <div class="form-group">
+          <label>連絡事項・メモ（任意）</label>
+          <textarea id="note" name="note"
+            placeholder="テロップ有無・BGM指定・参考動画URLなど"></textarea>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit" id="submit-btn">
+        📤 追加発注を送信する
+      </button>
+    </form>
+
+    <div class="success-view" id="success-view">
+      <div class="icon">✅</div>
+      <h2>発注を受け付けました！</h2>
+      <p>
+        内容を確認の上、1〜2営業日以内にご連絡いたします。<br><br>
+        メールアドレスをご記入いただいた場合は<br>
+        受付確認メールをお送りしています。<br><br>
+        LINEトークでもご連絡いたします。
+      </p>
+    </div>
+  </div>
+
+  <script>
+    var GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
+
+    // URL から LINE userID を取得
+    var params = new URLSearchParams(location.search);
+    var lineUid = params.get('uid') || '';
+
+    function selectPlan(card, value) {
+      document.querySelectorAll('.plan-card').forEach(function(c) {
+        c.classList.remove('selected');
+      });
+      card.classList.add('selected');
+      card.querySelector('input[type=radio]').checked = true;
+    }
+
+    document.getElementById('order-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      // バリデーション
+      var ok = true;
+      var name = document.getElementById('name').value.trim();
+      var planEl = document.querySelector('[name=plan]:checked');
+      var count  = document.getElementById('count').value;
+      var matUrl = document.getElementById('material_url').value.trim();
+
+      document.querySelectorAll('.error-msg').forEach(function(el){ el.style.display='none'; });
+
+      if (!name) { document.getElementById('err-name').style.display='block'; ok=false; }
+      if (!planEl){ document.getElementById('err-plan').style.display='block'; ok=false; }
+      if (!count) { document.getElementById('err-count').style.display='block'; ok=false; }
+      if (!matUrl){ document.getElementById('err-material').style.display='block'; ok=false; }
+      if (!ok) return;
+
+      var btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.textContent = '送信中…';
+
+      var payload = {
+        action:       'additional_order',
+        line_uid:     lineUid,
+        name:         name,
+        email:        document.getElementById('email').value.trim(),
+        plan:         planEl ? planEl.value : '',
+        count:        count,
+        material_url: matUrl,
+        due_date:     document.getElementById('due_date').value,
+        note:         document.getElementById('note').value.trim(),
+      };
+
+      try {
+        await fetch(GAS_URL, {
+          method: 'POST',
+          body: JSON.stringify(payload),
+          redirect: 'follow'
+        });
+        document.getElementById('order-form').style.display = 'none';
+        document.getElementById('success-view').style.display = 'block';
+      } catch(err) {
+        btn.disabled = false;
+        btn.textContent = '📤 追加発注を送信する';
+        alert('送信に失敗しました。もう一度お試しください。');
+      }
+    });
+  </script>
+</body>
+</html>

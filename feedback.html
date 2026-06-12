@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>フィードバックシート | mono.create</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', sans-serif;
+      background: #0f172a; color: #f1f5f9;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: linear-gradient(135deg, #1e40af, #7c3aed);
+      padding: 16px 20px; display: flex; align-items: center; gap: 12px;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .header h1 { font-size: 1.1rem; font-weight: 700; color: #fff; }
+    .header .round-badge {
+      background: rgba(255,255,255,.15); color: #bfdbfe;
+      font-size: 0.75rem; padding: 3px 10px; border-radius: 20px;
+    }
+    .header .video-type-badge {
+      margin-left: auto; background: rgba(255,255,255,.15);
+      color: #a5f3fc; font-size: 0.75rem; padding: 3px 10px; border-radius: 20px;
+    }
+
+    /* ── Layout Modes ── */
+    /* Short: side-by-side (video left, form right) */
+    .layout-short {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      height: calc(100vh - 60px);
+      overflow: hidden;
+    }
+    .layout-short .video-pane {
+      background: #000; display: flex; align-items: center; justify-content: center;
+      height: 100%; overflow: hidden;
+    }
+    .layout-short .form-pane {
+      overflow-y: auto; height: 100%; padding: 20px;
+    }
+
+    /* Long: stacked (video top, form bottom) */
+    .layout-long {
+      display: flex; flex-direction: column;
+    }
+    .layout-long .video-pane {
+      background: #000; display: flex; align-items: center; justify-content: center;
+      position: sticky; top: 60px; z-index: 50;
+      height: 40vh; min-height: 220px; max-height: 360px;
+    }
+    .layout-long .form-pane {
+      padding: 20px;
+    }
+
+    /* Video iframe */
+    .video-pane iframe {
+      width: 100%; height: 100%; border: none;
+    }
+    .video-placeholder {
+      color: #475569; text-align: center; font-size: 0.85rem; line-height: 1.8;
+    }
+    .video-placeholder .icon { font-size: 2rem; display: block; margin-bottom: 6px; }
+
+    /* ── Setup screen ── */
+    .setup-screen {
+      max-width: 600px; margin: 40px auto; padding: 0 16px;
+    }
+    .setup-screen .card {
+      background: #1e293b; border: 1px solid #334155;
+      border-radius: 12px; padding: 24px;
+    }
+    .setup-screen h2 { font-size: 1.1rem; font-weight: 700; color: #e2e8f0; margin-bottom: 16px; }
+    .form-group { margin-bottom: 16px; }
+    label.field-label {
+      display: block; font-size: 0.82rem; color: #94a3b8; margin-bottom: 6px;
+    }
+    label.field-label span.req { color: #f87171; margin-left: 3px; }
+    input[type=text], input[type=url], input[type=email],
+    input[type=number], select, textarea {
+      width: 100%; background: #0f172a; border: 1px solid #475569;
+      border-radius: 8px; padding: 10px 12px; color: #f1f5f9;
+      font-size: 0.9rem; font-family: inherit; transition: border-color .2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none; border-color: #3b82f6;
+    }
+    textarea { resize: vertical; }
+    select option { background: #1e293b; }
+
+    .type-btns { display: flex; gap: 10px; }
+    .type-btn {
+      flex: 1; padding: 12px; background: #0f172a; border: 2px solid #334155;
+      border-radius: 8px; color: #94a3b8; font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; transition: all .2s; text-align: center;
+    }
+    .type-btn.active { border-color: #3b82f6; background: #1e3a5f; color: #60a5fa; }
+
+    .btn-primary {
+      width: 100%; padding: 13px; background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: #fff; border: none; border-radius: 10px; font-size: 1rem;
+      font-weight: 700; cursor: pointer; transition: opacity .2s; margin-top: 4px;
+    }
+    .btn-primary:hover { opacity: .9; }
+    .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+
+    /* ── FB Form (inside form-pane) ── */
+    .fb-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .fb-header h3 { font-size: 0.95rem; font-weight: 700; color: #e2e8f0; }
+    .fb-count { font-size: 0.8rem; color: #94a3b8; }
+
+    .fb-slot {
+      background: #1e293b; border: 1px solid #334155;
+      border-radius: 10px; padding: 16px; margin-bottom: 12px;
+      position: relative;
+    }
+    .fb-slot .slot-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 22px; height: 22px; background: #3b82f6; border-radius: 50%;
+      font-size: 0.7rem; font-weight: 700; color: #fff;
+      margin-bottom: 12px;
+    }
+    .fb-slot .slot-remove {
+      position: absolute; top: 10px; right: 10px;
+      background: none; border: none; color: #ef4444; font-size: 1rem;
+      cursor: pointer; padding: 4px;
+    }
+    .slot-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+    @media (max-width: 500px) {
+      .slot-fields { grid-template-columns: 1fr; }
+    }
+    .slot-field label { font-size: 0.75rem; color: #94a3b8; display: block; margin-bottom: 4px; }
+    .slot-field input, .slot-field select { font-size: 0.85rem; }
+    .slot-comment { margin-top: 6px; }
+    .slot-comment label { font-size: 0.75rem; color: #94a3b8; display: block; margin-bottom: 4px; }
+    .slot-comment textarea {
+      font-size: 0.85rem; min-height: 60px; resize: vertical;
+    }
+
+    .btn-add-slot {
+      width: 100%; padding: 10px; background: none;
+      border: 2px dashed #475569; border-radius: 8px;
+      color: #64748b; font-size: 0.88rem; font-weight: 600;
+      cursor: pointer; transition: all .2s; margin-bottom: 16px;
+    }
+    .btn-add-slot:hover { border-color: #3b82f6; color: #60a5fa; }
+    .btn-add-slot:disabled { opacity: .4; cursor: not-allowed; }
+
+    .client-meta {
+      background: #1e293b; border: 1px solid #334155;
+      border-radius: 10px; padding: 14px; margin-bottom: 14px;
+    }
+    .client-meta h4 { font-size: 0.82rem; font-weight: 700; color: #94a3b8; margin-bottom: 10px; }
+    .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    @media (max-width: 500px) { .meta-grid { grid-template-columns: 1fr; } }
+    .meta-field label { font-size: 0.75rem; color: #94a3b8; display: block; margin-bottom: 4px; }
+
+    .btn-submit-fb {
+      width: 100%; padding: 14px;
+      background: linear-gradient(135deg, #059669, #0d9488);
+      color: #fff; border: none; border-radius: 10px;
+      font-size: 1rem; font-weight: 700; cursor: pointer; transition: opacity .2s;
+      margin-top: 4px;
+    }
+    .btn-submit-fb:hover { opacity: .9; }
+    .btn-submit-fb:disabled { opacity: .5; cursor: not-allowed; }
+
+    /* Success */
+    .success-view {
+      display: none; text-align: center; padding: 60px 20px;
+      max-width: 500px; margin: 0 auto;
+    }
+    .success-view .icon { font-size: 3rem; margin-bottom: 12px; }
+    .success-view h2 { font-size: 1.2rem; color: #34d399; margin-bottom: 8px; }
+    .success-view p { font-size: 0.88rem; color: #94a3b8; line-height: 1.7; }
+
+    /* Misc */
+    .MAX_LABEL { font-size: 0.75rem; color: #f59e0b; margin-bottom: 8px; display: none; }
+    @media (max-width: 768px) {
+      .layout-short {
+        grid-template-columns: 1fr !important;
+        grid-template-rows: auto 1fr !important;
+        height: auto !important; overflow: auto;
+      }
+      .layout-short .video-pane {
+        height: 30vw; min-height: 180px; max-height: 260px;
+        position: sticky; top: 60px; z-index: 50;
+      }
+      .layout-short .form-pane { height: auto; overflow: visible; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── SETUP SCREEN ── -->
+  <div id="setup-screen" class="setup-screen">
+    <div class="card">
+      <h2>✏️ FBシート設定</h2>
+      <div class="form-group">
+        <label class="field-label">納品動画の種類 <span class="req">*</span></label>
+        <div class="type-btns">
+          <div class="type-btn active" id="btn-short" onclick="setType('short')">
+            📱 ショート動画
+          </div>
+          <div class="type-btn" id="btn-long" onclick="setType('long')">
+            🎬 長尺動画
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="field-label">納品動画URL（Google Drive 共有リンク）<span class="req">*</span></label>
+        <input type="url" id="setup-video-url" placeholder="https://drive.google.com/file/d/..." />
+      </div>
+      <div class="form-group">
+        <label class="field-label">お客様のお名前</label>
+        <input type="text" id="setup-client-name" placeholder="山田 太郎" />
+      </div>
+      <div class="form-group">
+        <label class="field-label">メールアドレス（送信確認用）</label>
+        <input type="email" id="setup-email" placeholder="example@email.com" />
+      </div>
+      <div class="form-group">
+        <label class="field-label">修正ラウンド</label>
+        <select id="setup-round">
+          <option value="1">1ラウンド目（初回FB）</option>
+          <option value="2">2ラウンド目</option>
+          <option value="3">3ラウンド目</option>
+        </select>
+      </div>
+      <button class="btn-primary" onclick="startFeedback()">
+        🚀 FBシートを開始する
+      </button>
+    </div>
+  </div>
+
+  <!-- ── MAIN LAYOUT (hidden initially) ── -->
+  <div id="main-layout" style="display:none;">
+    <div class="header">
+      <h1>✏️ FBシート</h1>
+      <span class="round-badge" id="header-round">1ラウンド目</span>
+      <span class="video-type-badge" id="header-type">ショート動画</span>
+    </div>
+
+    <div id="layout-container">
+      <!-- video-pane and form-pane injected by JS -->
+    </div>
+  </div>
+
+  <!-- ── SUCCESS VIEW ── -->
+  <div class="success-view" id="success-view">
+    <div class="icon">✅</div>
+    <h2>フィードバックを送信しました！</h2>
+    <p>
+      内容を確認の上、修正版を制作いたします。<br>
+      通常1〜2営業日以内に修正版をお届けします。<br><br>
+      ご不明な点はメールにてご連絡ください。<br>
+      mono.create.group@gmail.com
+    </p>
+  </div>
+
+  <script>
+    var GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
+    var MAX_SLOTS = 30;
+    var slotCount = 0;
+    var videoType = 'short'; // 'short' or 'long'
+    var state = {};
+
+    /* URL パラメータを事前設定 */
+    (function() {
+      var p = new URLSearchParams(location.search);
+      if (p.get('url'))   document.getElementById('setup-video-url').value   = p.get('url');
+      if (p.get('name'))  document.getElementById('setup-client-name').value = p.get('name');
+      if (p.get('email')) document.getElementById('setup-email').value       = p.get('email');
+      if (p.get('round')) document.getElementById('setup-round').value       = p.get('round');
+      if (p.get('type'))  setType(p.get('type'));
+      // auto-startできる条件が揃っていれば自動起動
+      if (p.get('url') && p.get('autostart') === '1') {
+        startFeedback();
+      }
+    })();
+
+    function setType(type) {
+      videoType = type;
+      document.getElementById('btn-short').classList.toggle('active', type === 'short');
+      document.getElementById('btn-long').classList.toggle('active', type  === 'long');
+    }
+
+    function embedUrl(driveUrl) {
+      // Google Drive → embed
+      var m = driveUrl.match(/\/file\/d\/([^/?#]+)/);
+      if (m) return 'https://drive.google.com/file/d/' + m[1] + '/preview';
+      return driveUrl;
+    }
+
+    function startFeedback() {
+      var videoUrl   = document.getElementById('setup-video-url').value.trim();
+      var clientName = document.getElementById('setup-client-name').value.trim();
+      var email      = document.getElementById('setup-email').value.trim();
+      var round      = document.getElementById('setup-round').value;
+
+      if (!videoUrl) {
+        alert('納品動画URLを入力してください。');
+        return;
+      }
+
+      state = { videoUrl: videoUrl, clientName: clientName, email: email, round: round };
+
+      // Hide setup, show main
+      document.getElementById('setup-screen').style.display  = 'none';
+      document.getElementById('main-layout').style.display   = 'block';
+      document.getElementById('header-round').textContent    = round + 'ラウンド目';
+      document.getElementById('header-type').textContent     = videoType === 'short' ? 'ショート動画' : '長尺動画';
+
+      buildLayout(videoUrl);
+    }
+
+    function buildLayout(videoUrl) {
+      var container = document.getElementById('layout-container');
+      container.innerHTML = '';
+
+      var layoutDiv = document.createElement('div');
+      layoutDiv.className = videoType === 'short' ? 'layout-short' : 'layout-long';
+
+      // Video pane
+      var videoPaneHtml = '<div class="video-pane">';
+      if (videoUrl) {
+        videoPaneHtml += '<iframe src="' + embedUrl(videoUrl) + '" allowfullscreen allow="autoplay"></iframe>';
+      } else {
+        videoPaneHtml += '<div class="video-placeholder"><span class="icon">🎬</span>動画が表示されます</div>';
+      }
+      videoPaneHtml += '</div>';
+
+      // Form pane
+      var formPaneHtml = '<div class="form-pane" id="form-pane">' +
+        buildFormPaneHtml() + '</div>';
+
+      layoutDiv.innerHTML = videoPaneHtml + formPaneHtml;
+      container.appendChild(layoutDiv);
+
+      // Add first slot
+      addSlot();
+    }
+
+    function buildFormPaneHtml() {
+      return '<div class="client-meta">' +
+        '<h4>📋 お客様情報</h4>' +
+        '<div class="meta-grid">' +
+          '<div class="meta-field">' +
+            '<label>お名前</label>' +
+            '<input type="text" id="fb-name" placeholder="山田 太郎" value="' + escAttr(state.clientName) + '">' +
+          '</div>' +
+          '<div class="meta-field">' +
+            '<label>メールアドレス</label>' +
+            '<input type="email" id="fb-email" placeholder="example@email.com" value="' + escAttr(state.email) + '">' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="fb-header">' +
+        '<h3>📝 修正箇所の記入</h3>' +
+        '<span class="fb-count" id="fb-count">0 / ' + MAX_SLOTS + '件</span>' +
+      '</div>' +
+      '<div class="MAX_LABEL" id="max-label">⚠️ 修正は最大' + MAX_SLOTS + '箇所まで入力できます</div>' +
+      '<div id="slots-container"></div>' +
+      '<button class="btn-add-slot" id="btn-add-slot" onclick="addSlot()">＋ 修正箇所を追加</button>' +
+      '<button class="btn-submit-fb" id="btn-submit-fb" onclick="submitFeedback()">📤 フィードバックを送信する</button>';
+    }
+
+    function escAttr(s) {
+      return (s || '').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+    }
+
+    var slotId = 0;
+    function addSlot() {
+      if (slotCount >= MAX_SLOTS) return;
+      slotCount++;
+      slotId++;
+      updateCount();
+
+      var container = document.getElementById('slots-container');
+      if (!container) return;
+      var div = document.createElement('div');
+      div.className = 'fb-slot';
+      div.id = 'slot-' + slotId;
+      div.innerHTML =
+        '<span class="slot-num">' + slotCount + '</span>' +
+        (slotCount > 1
+          ? '<button class="slot-remove" onclick="removeSlot(\'slot-' + slotId + '\')" title="削除">✕</button>'
+          : '') +
+        '<div class="slot-fields">' +
+          '<div class="slot-field">' +
+            '<label>タイムコード（例: 0:23）</label>' +
+            '<input type="text" name="time" placeholder="0:00">' +
+          '</div>' +
+          '<div class="slot-field">' +
+            '<label>修正種類</label>' +
+            '<select name="type">' +
+              '<option value="">選択</option>' +
+              '<option>カット編集</option>' +
+              '<option>テロップ修正</option>' +
+              '<option>BGM変更</option>' +
+              '<option>SE追加/変更</option>' +
+              '<option>速度調整</option>' +
+              '<option>色調整</option>' +
+              '<option>エフェクト追加</option>' +
+              '<option>画面切替</option>' +
+              '<option>ナレーション修正</option>' +
+              '<option>その他</option>' +
+            '</select>' +
+          '</div>' +
+        '</div>' +
+        '<div class="slot-comment">' +
+          '<label>修正内容の詳細</label>' +
+          '<textarea name="comment" placeholder="例：0:23 あたりのテロップが「お客様」になっていますが「お客さま」に修正お願いします"></textarea>' +
+        '</div>';
+      container.appendChild(div);
+
+      if (slotCount >= MAX_SLOTS) {
+        document.getElementById('btn-add-slot').disabled = true;
+        document.getElementById('max-label').style.display = 'block';
+      }
+    }
+
+    function removeSlot(id) {
+      var el = document.getElementById(id);
+      if (el) { el.remove(); slotCount--; updateCount(); }
+      document.getElementById('btn-add-slot').disabled = false;
+      document.getElementById('max-label').style.display = 'none';
+      // 番号振り直し
+      var slots = document.querySelectorAll('.fb-slot .slot-num');
+      slots.forEach(function(s, i) { s.textContent = i + 1; });
+    }
+
+    function updateCount() {
+      var el = document.getElementById('fb-count');
+      if (el) el.textContent = slotCount + ' / ' + MAX_SLOTS + '件';
+    }
+
+    function submitFeedback() {
+      var name  = (document.getElementById('fb-name')  || {}).value || state.clientName || '';
+      var email = (document.getElementById('fb-email') || {}).value || state.email || '';
+
+      // Collect slots
+      var slots = document.querySelectorAll('.fb-slot');
+      var items = [];
+      slots.forEach(function(slot) {
+        var time    = (slot.querySelector('[name=time]')    || {}).value || '';
+        var type    = (slot.querySelector('[name=type]')    || {}).value || '';
+        var comment = (slot.querySelector('[name=comment]') || {}).value || '';
+        if (time || comment) {
+          items.push({ time: time, type: type, comment: comment });
+        }
+      });
+
+      if (items.length === 0) {
+        alert('修正箇所を少なくとも1つ入力してください。');
+        return;
+      }
+
+      var btn = document.getElementById('btn-submit-fb');
+      if (btn) { btn.disabled = true; btn.textContent = '送信中…'; }
+
+      var payload = {
+        action:       'save_feedback',
+        client_name:  name,
+        email:        email,
+        delivery_url: state.videoUrl,
+        round:        state.round,
+        items:        items,
+        video_type:   videoType
+      };
+
+      fetch(GAS_URL, {
+        method: 'POST',
+        body:   JSON.stringify(payload),
+        redirect: 'follow'
+      })
+      .then(function() {
+        document.getElementById('main-layout').style.display  = 'none';
+        document.getElementById('success-view').style.display = 'block';
+      })
+      .catch(function() {
+        if (btn) { btn.disabled = false; btn.textContent = '📤 フィードバックを送信する'; }
+        alert('送信に失敗しました。もう一度お試しください。');
+      });
+    }
+  </script>
+</body>
+</html>
