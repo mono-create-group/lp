@@ -12,17 +12,28 @@
       background: #0f172a; color: #f1f5f9; min-height: 100vh;
     }
 
-    /* ── Sticky Header ── */
+    /* ── Toast ── */
+    .toast {
+      position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%);
+      background: #22c55e; color: #fff; padding: 8px 20px;
+      border-radius: 20px; font-size: 0.82rem; font-weight: 700;
+      z-index: 9999; opacity: 0; transition: opacity .3s; pointer-events: none; white-space: nowrap;
+    }
+    .toast.show { opacity: 1; }
+
+    /* ── Header ── */
     .header {
       background: linear-gradient(135deg, #1e40af, #7c3aed);
-      padding: 12px 20px; display: flex; align-items: center; gap: 10px;
+      padding: 12px 20px; display: flex; align-items: center; gap: 8px;
       position: sticky; top: 0; z-index: 200; box-shadow: 0 2px 12px rgba(0,0,0,.4);
+      flex-wrap: wrap;
     }
     .header h1 { font-size: 1rem; font-weight: 700; color: #fff; }
     .badge {
       font-size: 0.7rem; padding: 2px 8px; border-radius: 20px;
       background: rgba(255,255,255,.18); color: #c7d2fe;
     }
+    .badge.green { background: rgba(34,197,94,.3); color: #86efac; }
     .header-link {
       margin-left: auto; font-size: 0.75rem; color: #bfdbfe;
       text-decoration: none; white-space: nowrap;
@@ -30,18 +41,13 @@
     .header-link:hover { text-decoration: underline; }
 
     /* ── Setup Screen ── */
-    #setup-screen {
-      max-width: 580px; margin: 32px auto; padding: 0 16px 60px;
-    }
+    #setup-screen { max-width: 580px; margin: 32px auto; padding: 0 16px 60px; }
     .setup-card {
-      background: #1e293b; border: 1px solid #334155;
-      border-radius: 14px; padding: 28px;
+      background: #1e293b; border: 1px solid #334155; border-radius: 14px; padding: 28px;
     }
-    .setup-card h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; color: #e2e8f0; }
+    .setup-card h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; }
     .form-group { margin-bottom: 18px; }
-    .field-label {
-      display: block; font-size: 0.82rem; color: #94a3b8; margin-bottom: 6px;
-    }
+    .field-label { display: block; font-size: 0.82rem; color: #94a3b8; margin-bottom: 6px; }
     .field-label .req { color: #f87171; margin-left: 3px; }
     input[type=text], input[type=url], input[type=email], input[type=number],
     input[type=date], select, textarea {
@@ -57,15 +63,10 @@
     .type-btn {
       flex: 1; padding: 12px 8px; background: #0f172a;
       border: 2px solid #334155; border-radius: 8px; color: #94a3b8;
-      font-size: 0.88rem; font-weight: 600; cursor: pointer;
-      transition: all .2s; text-align: center;
+      font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all .2s; text-align: center;
     }
     .type-btn.active { border-color: #3b82f6; background: #1e3a5f; color: #60a5fa; }
-
-    /* URL ヒント */
-    .url-hint {
-      font-size: 0.75rem; color: #64748b; margin-top: 5px; line-height: 1.5;
-    }
+    .url-hint { font-size: 0.75rem; color: #64748b; margin-top: 5px; line-height: 1.5; }
     .url-hint span { color: #38bdf8; }
 
     .btn-primary {
@@ -79,36 +80,26 @@
 
     /* ── Main Layout ── */
     #main-layout { display: none; }
+    .layout-short { display: grid; grid-template-columns: 1fr 1fr; height: calc(100vh - 52px); }
+    .layout-long  { display: block; }
 
-    /* SHORT: side-by-side */
-    .layout-short {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      height: calc(100vh - 52px);
-    }
-    /* LONG: stacked */
-    .layout-long { display: block; }
-
-    /* Video Pane */
-    .video-pane {
-      background: #000; position: relative; overflow: hidden;
-    }
-    .layout-short .video-pane {
-      height: 100%;
-    }
-    .layout-long .video-pane {
+    /* ── Video Pane ── */
+    .video-pane { background: #000; position: relative; overflow: hidden; }
+    .layout-short .video-pane { height: 100%; }
+    .layout-long  .video-pane {
       height: 42vh; min-height: 200px; max-height: 380px;
       position: sticky; top: 52px; z-index: 100;
     }
 
-    /* iframe */
-    .video-pane iframe {
+    /* Native video + iframe share same slot, minus drive-btn height */
+    #video-slot { position: absolute; inset: 0 0 32px 0; }
+    #video-slot video, #video-slot iframe {
       width: 100%; height: 100%; border: none; display: block;
+      object-fit: contain; background: #000;
     }
 
-    /* Loading overlay */
     .video-loading {
-      position: absolute; inset: 0; background: #000;
+      position: absolute; inset: 0 0 32px 0; background: #000;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       z-index: 10; transition: opacity .4s;
     }
@@ -121,32 +112,36 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     .loading-text { font-size: 0.82rem; color: #64748b; text-align: center; line-height: 1.6; }
 
-    /* Fallback bar (shown after timeout) */
     .video-fallback {
-      display: none;
-      position: absolute; bottom: 0; left: 0; right: 0;
-      background: rgba(0,0,0,.85); padding: 10px 14px;
-      font-size: 0.78rem; color: #94a3b8; text-align: center; z-index: 11;
+      display: none; position: absolute; bottom: 32px; left: 0; right: 0;
+      background: rgba(0,0,0,.85); padding: 8px 14px;
+      font-size: 0.75rem; color: #94a3b8; text-align: center; z-index: 11;
     }
     .video-fallback a { color: #60a5fa; text-decoration: underline; }
     .video-fallback.show { display: block; }
 
-    /* Drive 開く ボタン (always visible) */
+    /* Auto-capture badge */
+    .auto-badge {
+      position: absolute; top: 8px; left: 8px; z-index: 20;
+      padding: 3px 10px; border-radius: 12px; font-size: 0.7rem; font-weight: 700;
+      display: none;
+    }
+    .auto-badge.on { display: block; background: rgba(34,197,94,.9); color: #fff; }
+    .auto-badge.manual { display: block; background: rgba(100,116,139,.85); color: #fff; }
+
+    /* Drive open link */
     .drive-open-btn {
-      display: block; background: rgba(255,255,255,.07);
-      border-top: 1px solid #1e293b; padding: 7px 14px;
-      font-size: 0.75rem; color: #94a3b8; text-align: center; text-decoration: none;
-      transition: background .2s;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      position: absolute; bottom: 0; left: 0; right: 0; height: 32px;
+      background: rgba(255,255,255,.06); border-top: 1px solid #1e293b;
+      font-size: 0.73rem; color: #94a3b8; text-decoration: none; transition: background .2s;
     }
     .drive-open-btn:hover { background: rgba(255,255,255,.12); color: #e2e8f0; }
-    .layout-short .drive-open-btn { position: absolute; bottom: 0; left: 0; right: 0; }
-    .layout-long  .drive-open-btn { position: absolute; bottom: 0; left: 0; right: 0; }
 
-    /* Form Pane */
-    .form-pane { padding: 18px 16px 60px; }
+    /* ── Form Pane ── */
+    .form-pane { padding: 18px 16px 80px; }
     .layout-short .form-pane { overflow-y: auto; height: 100%; }
 
-    /* Client meta */
     .meta-card {
       background: #1e293b; border: 1px solid #334155;
       border-radius: 10px; padding: 14px; margin-bottom: 14px;
@@ -156,45 +151,66 @@
     .meta-field label { font-size: 0.75rem; color: #94a3b8; display: block; margin-bottom: 4px; }
     .meta-field input { font-size: 0.85rem; }
 
-    /* FB header */
-    .fb-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 10px;
-    }
-    .fb-header h3 { font-size: 0.95rem; font-weight: 700; color: #e2e8f0; }
+    .fb-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .fb-header h3 { font-size: 0.95rem; font-weight: 700; }
     .fb-counter { font-size: 0.78rem; color: #64748b; }
 
-    /* Slot */
+    /* ── FB Slot ── */
     .fb-slot {
       background: #1e293b; border: 1px solid #334155;
       border-radius: 10px; padding: 14px; margin-bottom: 10px; position: relative;
+      transition: border-color .2s;
     }
-    .fb-slot .num {
+    .fb-slot.captured { border-color: #22c55e; }
+    .slot-top { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .num {
       display: inline-flex; align-items: center; justify-content: center;
       width: 22px; height: 22px; background: #2563eb; border-radius: 50%;
-      font-size: 0.7rem; font-weight: 700; color: #fff; margin-bottom: 10px;
+      font-size: 0.7rem; font-weight: 700; color: #fff; flex-shrink: 0;
     }
     .slot-remove {
-      position: absolute; top: 10px; right: 10px;
-      background: none; border: none; color: #64748b; font-size: 1rem;
-      cursor: pointer; padding: 2px 6px; transition: color .2s;
+      margin-left: auto; background: none; border: none; color: #64748b;
+      font-size: 1rem; cursor: pointer; padding: 2px 6px; transition: color .2s;
     }
     .slot-remove:hover { color: #ef4444; }
+
+    /* Time field */
+    .time-wrap { position: relative; }
+    .time-wrap input {
+      padding-right: 80px; font-family: 'Courier New', monospace; font-size: 0.9rem;
+      letter-spacing: .03em;
+    }
+    .time-auto-btn {
+      position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+      background: #1e3a5f; border: 1px solid #3b82f6; border-radius: 6px;
+      color: #60a5fa; font-size: 0.62rem; font-weight: 700; padding: 3px 6px;
+      cursor: pointer; white-space: nowrap; transition: background .2s; line-height: 1.4;
+    }
+    .time-auto-btn:hover { background: #2563eb; color: #fff; }
+
+    /* Clickable time badge (review mode) */
+    .time-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: #1e3a5f; color: #60a5fa; border: none;
+      padding: 4px 12px; border-radius: 20px;
+      font-size: 0.82rem; font-weight: 700; font-family: 'Courier New', monospace;
+      cursor: pointer; transition: all .2s; user-select: none;
+    }
+    .time-badge:hover { background: #2563eb; color: #fff; transform: scale(1.05); }
+    .time-badge.no-seek { cursor: default; opacity: .55; pointer-events: none; }
+
     .slot-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
-    .slot-field label { font-size: 0.73rem; color: #94a3b8; display: block; margin-bottom: 3px; }
+    .slot-field label, .slot-comment label { font-size: 0.73rem; color: #94a3b8; display: block; margin-bottom: 3px; }
     .slot-field input, .slot-field select { font-size: 0.83rem; padding: 8px 10px; }
-    .slot-comment label { font-size: 0.73rem; color: #94a3b8; display: block; margin-bottom: 3px; }
     .slot-comment textarea { font-size: 0.83rem; min-height: 58px; padding: 8px 10px; }
 
     .btn-add {
       width: 100%; padding: 10px; background: none;
       border: 2px dashed #334155; border-radius: 8px; color: #475569;
-      font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all .2s;
-      margin-bottom: 12px;
+      font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all .2s; margin-bottom: 12px;
     }
     .btn-add:hover:not(:disabled) { border-color: #3b82f6; color: #60a5fa; }
     .btn-add:disabled { opacity: .35; cursor: not-allowed; }
-
     .max-warn {
       display: none; font-size: 0.75rem; color: #f59e0b;
       margin-bottom: 8px; padding: 6px 10px; background: #1c1400; border-radius: 6px;
@@ -209,28 +225,54 @@
     .btn-submit:hover { opacity: .9; }
     .btn-submit:disabled { opacity: .5; cursor: not-allowed; }
 
-    /* Success */
+    /* ── Review Mode Items ── */
+    .review-item {
+      background: #1e293b; border: 1px solid #334155;
+      border-radius: 10px; padding: 14px; margin-bottom: 10px;
+    }
+    .review-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+    .review-num { font-size: 0.72rem; color: #64748b; }
+    .review-type {
+      font-size: 0.72rem; padding: 2px 8px; background: #1e3a5f; color: #93c5fd; border-radius: 12px;
+    }
+    .review-comment {
+      font-size: 0.85rem; color: #cbd5e1; line-height: 1.6;
+      padding: 8px 10px; background: #0f172a; border-radius: 6px; margin-top: 6px;
+    }
+
+    /* ── Success ── */
     #success-view {
-      display: none; max-width: 480px; margin: 60px auto; padding: 0 20px;
-      text-align: center;
+      display: none; max-width: 480px; margin: 60px auto; padding: 0 20px; text-align: center;
     }
     #success-view .icon { font-size: 3rem; margin-bottom: 14px; }
     #success-view h2 { font-size: 1.2rem; color: #34d399; margin-bottom: 10px; }
     #success-view p { font-size: 0.88rem; color: #94a3b8; line-height: 1.7; }
 
-    /* Mobile overrides */
+    .share-box {
+      background: #1e293b; border: 1px solid #334155; border-radius: 10px;
+      padding: 16px; margin-top: 20px; text-align: left;
+    }
+    .share-box h4 { font-size: 0.82rem; color: #94a3b8; margin-bottom: 10px; }
+    .share-url-area {
+      background: #0f172a; border: 1px solid #475569; border-radius: 6px;
+      padding: 8px 10px; font-size: 0.7rem; color: #60a5fa;
+      word-break: break-all; margin-bottom: 8px; line-height: 1.5; max-height: 80px; overflow: auto;
+    }
+    .btn-copy {
+      width: 100%; padding: 9px; background: #1e3a5f;
+      border: 1px solid #3b82f6; border-radius: 6px;
+      color: #60a5fa; font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: all .2s;
+    }
+    .btn-copy:hover { background: #2563eb; color: #fff; }
+
+    /* Mobile */
     @media (max-width: 720px) {
-      .layout-short {
-        grid-template-columns: 1fr !important;
-        height: auto !important;
-      }
+      .layout-short { grid-template-columns: 1fr !important; height: auto !important; }
       .layout-short .video-pane {
         height: 35vw; min-height: 180px; max-height: 260px;
         position: sticky; top: 52px; z-index: 100;
       }
-      .layout-short .form-pane {
-        height: auto; overflow: visible;
-      }
+      .layout-short .form-pane { height: auto; overflow: visible; }
       .meta-grid { grid-template-columns: 1fr; }
       .slot-row { grid-template-columns: 1fr; }
     }
@@ -238,67 +280,67 @@
 </head>
 <body>
 
+<div class="toast" id="toast"></div>
+
 <!-- ── Setup Screen ── -->
 <div id="setup-screen">
-  <div class="setup-card">
-    <h2>✏️ FBシートを開始する</h2>
+  <div style="max-width:580px;margin:32px auto;padding:0 16px 60px">
+    <div class="setup-card">
+      <h2>✏️ FBシートを開始する</h2>
 
-    <div class="form-group">
-      <label class="field-label">動画の種類 <span class="req">*</span></label>
-      <div class="type-btns">
-        <div class="type-btn active" id="btn-short" onclick="setType('short')">
-          📱 ショート動画<br><small style="font-weight:400;font-size:.75rem;color:#64748b">左右並び</small>
-        </div>
-        <div class="type-btn" id="btn-long" onclick="setType('long')">
-          🎬 長尺動画<br><small style="font-weight:400;font-size:.75rem;color:#64748b">上下並び</small>
+      <div class="form-group">
+        <label class="field-label">動画の種類 <span class="req">*</span></label>
+        <div class="type-btns">
+          <div class="type-btn active" id="btn-short" onclick="setType('short')">
+            📱 ショート動画<br><small style="font-weight:400;font-size:.75rem;color:#64748b">左右並び</small>
+          </div>
+          <div class="type-btn" id="btn-long" onclick="setType('long')">
+            🎬 長尺動画<br><small style="font-weight:400;font-size:.75rem;color:#64748b">上下並び</small>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="form-group">
-      <label class="field-label">納品動画のGoogle Drive URL <span class="req">*</span></label>
-      <input type="url" id="setup-url"
-        placeholder="https://drive.google.com/file/d/〇〇/view?usp=sharing">
-      <div class="url-hint">
-        ※ Google Drive の共有リンク（<span>「リンクを知っている全員が閲覧可」</span>に設定必須）<br>
-        ※ drive.google.com/file/d/... の形式ならすべて対応
+      <div class="form-group">
+        <label class="field-label">納品動画のGoogle Drive URL <span class="req">*</span></label>
+        <input type="url" id="setup-url" placeholder="https://drive.google.com/file/d/〇〇/view?usp=sharing">
+        <div class="url-hint">
+          ※ Google Drive 共有リンク（<span>「リンクを知っている全員が閲覧可」</span>に設定必須）<br>
+          ※ 一時停止すると<span>タイムコードが自動入力</span>されます（ネイティブ再生時）
+        </div>
       </div>
-    </div>
 
-    <div class="form-group">
-      <label class="field-label">お客様のお名前</label>
-      <input type="text" id="setup-name" placeholder="山田 太郎">
-    </div>
+      <div class="form-group">
+        <label class="field-label">お客様のお名前</label>
+        <input type="text" id="setup-name" placeholder="山田 太郎">
+      </div>
+      <div class="form-group">
+        <label class="field-label">メールアドレス（送信確認用）</label>
+        <input type="email" id="setup-email" placeholder="example@email.com">
+      </div>
+      <div class="form-group">
+        <label class="field-label">修正ラウンド</label>
+        <select id="setup-round">
+          <option value="1">1ラウンド目（初回FB）</option>
+          <option value="2">2ラウンド目</option>
+          <option value="3">3ラウンド目</option>
+          <option value="4">4ラウンド目以降</option>
+        </select>
+      </div>
 
-    <div class="form-group">
-      <label class="field-label">メールアドレス（送信確認用）</label>
-      <input type="email" id="setup-email" placeholder="example@email.com">
+      <div id="setup-err" style="display:none;color:#f87171;font-size:.8rem;margin-bottom:12px;padding:8px 12px;background:#1c0000;border-radius:6px;"></div>
+      <button class="btn-primary" onclick="startFeedback()">🚀 開始する</button>
     </div>
-
-    <div class="form-group">
-      <label class="field-label">修正ラウンド</label>
-      <select id="setup-round">
-        <option value="1">1ラウンド目（初回FB）</option>
-        <option value="2">2ラウンド目</option>
-        <option value="3">3ラウンド目</option>
-        <option value="4">4ラウンド目以降</option>
-      </select>
-    </div>
-
-    <div id="setup-err" style="display:none;color:#f87171;font-size:.8rem;margin-bottom:12px;padding:8px 12px;background:#1c0000;border-radius:6px;"></div>
-    <button class="btn-primary" onclick="startFeedback()">🚀 開始する</button>
   </div>
 </div>
 
 <!-- ── Main Layout ── -->
 <div id="main-layout">
   <div class="header">
-    <h1>✏️ FBシート</h1>
+    <h1 id="hdr-title">✏️ FBシート</h1>
     <span class="badge" id="hdr-round">1R</span>
     <span class="badge" id="hdr-type" style="color:#a5f3fc">ショート</span>
-    <a class="header-link" id="hdr-drive-link" href="#" target="_blank" rel="noopener">
-      🔗 Driveで動画を開く
-    </a>
+    <span class="badge green" id="hdr-autobadge" style="display:none">⚡ 自動TC</span>
+    <a class="header-link" id="hdr-drive-link" href="#" target="_blank" rel="noopener">↗ Driveで開く</a>
   </div>
   <div id="layout-wrap"></div>
 </div>
@@ -307,62 +349,81 @@
 <div id="success-view">
   <div class="icon">✅</div>
   <h2>フィードバックを送信しました！</h2>
-  <p>
-    内容を確認の上、修正版を制作いたします。<br>
-    通常1〜2営業日以内に修正版をお届けします。<br><br>
-    ご不明な点はメールにてご連絡ください。<br>
-    mono.create.group@gmail.com
-  </p>
+  <p>内容を確認の上、修正版を制作いたします。<br>通常1〜2営業日以内に修正版をお届けします。</p>
+  <div class="share-box" id="share-box" style="display:none">
+    <h4>📤 編集者にこのFBを共有する</h4>
+    <div class="share-url-area" id="share-url-display"></div>
+    <button class="btn-copy" id="btn-copy-url" onclick="copyShareUrl()">📋 URLをコピーして編集者に送る</button>
+  </div>
 </div>
 
 <script>
 'use strict';
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
+var GAS_URL  = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
 var MAX_SLOTS = 30;
 var videoType = 'short';
 var driveFileId = '';
 var driveOrigUrl = '';
 var slotCount = 0;
 var slotIdSeed = 0;
+var videoEl = null;
+var nativeVideo = false;
+var reviewMode = false;
+var _submittedItems = [];
+var _submittedMeta  = {};
 
 /* ── URL params ── */
 (function() {
   var p = new URLSearchParams(location.search);
-  if (p.get('url'))    { document.getElementById('setup-url').value   = p.get('url'); }
-  if (p.get('name'))   { document.getElementById('setup-name').value  = p.get('name'); }
-  if (p.get('email'))  { document.getElementById('setup-email').value = p.get('email'); }
-  if (p.get('round'))  { document.getElementById('setup-round').value = p.get('round'); }
-  if (p.get('type'))   { setType(p.get('type')); }
+  reviewMode = p.get('review') === '1';
+  if (reviewMode) {
+    document.getElementById('setup-screen').style.display = 'none';
+    loadReviewMode(p);
+    return;
+  }
+  if (p.get('url'))   { document.getElementById('setup-url').value   = p.get('url');   }
+  if (p.get('name'))  { document.getElementById('setup-name').value  = p.get('name');  }
+  if (p.get('email')) { document.getElementById('setup-email').value = p.get('email'); }
+  if (p.get('round')) { document.getElementById('setup-round').value = p.get('round'); }
+  if (p.get('type'))  { setType(p.get('type')); }
   if (p.get('url') && p.get('go') === '1') startFeedback();
 })();
 
+/* ── Type toggle ── */
 function setType(t) {
   videoType = t === 'long' ? 'long' : 'short';
   document.getElementById('btn-short').classList.toggle('active', videoType === 'short');
   document.getElementById('btn-long').classList.toggle('active',  videoType === 'long');
 }
 
-/* ── Drive URL → fileId ── */
+/* ── Drive URL parsing ── */
 function parseDriveId(url) {
   if (!url) return '';
-  // /file/d/FILE_ID
-  var m1 = url.match(/\/file\/d\/([a-zA-Z0-9_\-]{10,})/);
-  if (m1) return m1[1];
-  // ?id=FILE_ID or &id=FILE_ID
-  var m2 = url.match(/[?&]id=([a-zA-Z0-9_\-]{10,})/);
-  if (m2) return m2[1];
-  // /d/FILE_ID (Google Docs pattern)
-  var m3 = url.match(/\/d\/([a-zA-Z0-9_\-]{10,})/);
-  if (m3) return m3[1];
+  var m1 = url.match(/\/file\/d\/([a-zA-Z0-9_\-]{10,})/); if (m1) return m1[1];
+  var m2 = url.match(/[?&]id=([a-zA-Z0-9_\-]{10,})/);     if (m2) return m2[1];
+  var m3 = url.match(/\/d\/([a-zA-Z0-9_\-]{10,})/);        if (m3) return m3[1];
   return '';
 }
-
-function buildPreviewUrl(fileId) {
-  return 'https://drive.google.com/file/d/' + fileId + '/preview';
+function buildPreviewUrl(id) { return 'https://drive.google.com/file/d/' + id + '/preview'; }
+function buildDirectUrl(id)  { return 'https://drive.google.com/file/d/' + id + '/view'; }
+function buildStreamUrl(id)  {
+  return 'https://drive.usercontent.google.com/download?id=' + id + '&export=download&confirm=1';
 }
 
-function buildDirectUrl(fileId) {
-  return 'https://drive.google.com/file/d/' + fileId + '/view';
+/* ── Time helpers ── */
+function formatTime(sec) {
+  var m  = Math.floor(sec / 60);
+  var s  = Math.floor(sec % 60);
+  var cs = Math.floor((sec - Math.floor(sec)) * 100);
+  return m + ':' + String(s).padStart(2,'0') + '.' + String(cs).padStart(2,'0');
+}
+function parseTime(str) {
+  if (!str) return null;
+  var m = str.match(/^(\d+):(\d{1,2})(?:[.,](\d+))?$/);
+  if (!m) return null;
+  var total = parseInt(m[1]) * 60 + parseInt(m[2]);
+  if (m[3]) total += parseFloat('0.' + m[3]);
+  return total;
 }
 
 /* ── Start ── */
@@ -370,91 +431,166 @@ function startFeedback() {
   var url   = (document.getElementById('setup-url').value   || '').trim();
   var name  = (document.getElementById('setup-name').value  || '').trim();
   var email = (document.getElementById('setup-email').value || '').trim();
-  var round = document.getElementById('setup-round').value  || '1';
-
-  var err = document.getElementById('setup-err');
+  var round = document.getElementById('setup-round').value || '1';
+  var err   = document.getElementById('setup-err');
   err.style.display = 'none';
-
-  if (!url) {
-    err.textContent = '納品動画のGoogle Drive URLを入力してください。';
-    err.style.display = 'block';
-    return;
-  }
-
+  if (!url) { err.textContent = '納品動画のGoogle Drive URLを入力してください。'; err.style.display = 'block'; return; }
   driveFileId = parseDriveId(url);
-  if (!driveFileId) {
-    err.textContent = 'Drive URLの形式を確認してください。\n例: https://drive.google.com/file/d/xxxxxxxx/view?usp=sharing';
-    err.style.display = 'block';
-    return;
-  }
-
+  if (!driveFileId) { err.textContent = 'Drive URLの形式を確認してください。'; err.style.display = 'block'; return; }
   driveOrigUrl = url;
 
   document.getElementById('setup-screen').style.display = 'none';
   document.getElementById('main-layout').style.display  = 'block';
-
   document.getElementById('hdr-round').textContent = round + 'R';
   document.getElementById('hdr-type').textContent  = videoType === 'short' ? 'ショート' : '長尺';
-  var dl = document.getElementById('hdr-drive-link');
-  dl.href = buildDirectUrl(driveFileId);
+  document.getElementById('hdr-drive-link').href   = buildDirectUrl(driveFileId);
 
   buildLayout({ name: name, email: email, round: round });
 }
 
-/* ── Build Layout ── */
+/* ── Build layout ── */
 function buildLayout(meta) {
-  var wrap = document.getElementById('layout-wrap');
-  var previewUrl = buildPreviewUrl(driveFileId);
-  var directUrl  = buildDirectUrl(driveFileId);
-
-  var outerCls = videoType === 'short' ? 'layout-short' : 'layout-long';
+  var wrap      = document.getElementById('layout-wrap');
+  var outerCls  = videoType === 'short' ? 'layout-short' : 'layout-long';
+  var directUrl = buildDirectUrl(driveFileId);
 
   wrap.innerHTML =
     '<div class="' + outerCls + '" id="main-grid">' +
-      // --- Video pane ---
       '<div class="video-pane" id="video-pane">' +
         '<div class="video-loading" id="video-loading">' +
           '<div class="spinner"></div>' +
-          '<div class="loading-text">動画を読み込み中…<br><small>初回は数秒かかることがあります</small></div>' +
+          '<div class="loading-text">動画を読み込み中…<br><small>初回は数秒かかる場合があります</small></div>' +
         '</div>' +
-        '<iframe id="video-iframe"' +
-          ' src="' + previewUrl + '"' +
-          ' allow="autoplay; encrypted-media; fullscreen"' +
-          ' allowfullscreen' +
-          ' onload="onIframeLoad()"' +
-        '></iframe>' +
+        '<span class="auto-badge" id="auto-badge"></span>' +
+        '<div id="video-slot"></div>' +
         '<div class="video-fallback" id="video-fallback">' +
-          '動画が表示されない場合 → ' +
-          '<a href="' + directUrl + '" target="_blank" rel="noopener">Driveで動画を開く</a>' +
-          '（同じブラウザでGoogleにログインしてから再表示してください）' +
+          '表示されない場合 → <a href="' + directUrl + '" target="_blank" rel="noopener">Driveで直接開く</a>' +
         '</div>' +
-        '<a class="drive-open-btn" href="' + directUrl + '" target="_blank" rel="noopener">' +
-          '↗ Driveで動画を開く' +
-        '</a>' +
+        '<a class="drive-open-btn" href="' + directUrl + '" target="_blank" rel="noopener">↗ Driveで動画を開く</a>' +
       '</div>' +
-      // --- Form pane ---
-      '<div class="form-pane" id="form-pane">' +
-        buildFormHtml(meta) +
-      '</div>' +
+      '<div class="form-pane" id="form-pane">' + buildFormHtml(meta) + '</div>' +
     '</div>';
 
-  // 1スロット追加
   addSlot();
+  loadVideo();
+}
 
-  // 15秒後もローディングなら fallback 表示
+/* ── Video: native first → iframe fallback ── */
+function loadVideo() {
+  var loading   = document.getElementById('video-loading');
+  var fallback  = document.getElementById('video-fallback');
+  var autoBadge = document.getElementById('auto-badge');
+  var slot      = document.getElementById('video-slot');
+
+  videoEl = document.createElement('video');
+  videoEl.controls = true;
+  videoEl.playsInline = true;
+  videoEl.preload = 'auto';
+  videoEl.style.cssText = 'width:100%;height:100%;object-fit:contain;background:#000;';
+  videoEl.src = buildStreamUrl(driveFileId);
+
+  var done = false;
+  function onNativeOk() {
+    if (done) return; done = true;
+    nativeVideo = true;
+    loading.classList.add('hidden');
+    autoBadge.textContent = '⚡ 自動TC記録中';
+    autoBadge.classList.add('on');
+    document.getElementById('hdr-autobadge').style.display = '';
+    videoEl.addEventListener('pause', onVideoPause);
+    showToast('⚡ 一時停止でタイムコードを自動記録します');
+  }
+  function onNativeFail() {
+    if (done) return; done = true;
+    videoEl.remove(); videoEl = null;
+    loadIframeFallback();
+  }
+
+  videoEl.addEventListener('loadeddata', onNativeOk);
+  videoEl.addEventListener('canplay',    onNativeOk);
+  videoEl.addEventListener('error',      onNativeFail);
+  setTimeout(function() { if (!done) onNativeFail(); }, 9000);
+
+  slot.appendChild(videoEl);
+}
+
+function loadIframeFallback() {
+  var slot      = document.getElementById('video-slot');
+  var loading   = document.getElementById('video-loading');
+  var autoBadge = document.getElementById('auto-badge');
+
+  var iframe = document.createElement('iframe');
+  iframe.src = buildPreviewUrl(driveFileId);
+  iframe.allow = 'autoplay; encrypted-media; fullscreen';
+  iframe.allowFullscreen = true;
+  iframe.style.cssText = 'width:100%;height:100%;border:none;display:block;background:#000;';
+  iframe.addEventListener('load', function() { loading.classList.add('hidden'); });
+
+  autoBadge.textContent = '📝 手動でTCを入力（⏱ボタンは非対応）';
+  autoBadge.classList.add('manual');
+
+  slot.appendChild(iframe);
+
   setTimeout(function() {
-    var ld = document.getElementById('video-loading');
-    if (ld && !ld.classList.contains('hidden')) {
+    if (!document.getElementById('video-loading').classList.contains('hidden')) {
       document.getElementById('video-fallback').classList.add('show');
     }
   }, 15000);
 }
 
-function onIframeLoad() {
-  var ld = document.getElementById('video-loading');
-  if (ld) ld.classList.add('hidden');
+/* ── Auto-capture on pause ── */
+function onVideoPause() {
+  if (!videoEl || videoEl.ended || videoEl.currentTime < 0.05) return;
+  var timeStr = formatTime(videoEl.currentTime);
+
+  // Find last slot with empty time field
+  var slots = document.querySelectorAll('#slots .fb-slot');
+  var target = null;
+  for (var i = slots.length - 1; i >= 0; i--) {
+    var ti = slots[i].querySelector('[name=time]');
+    if (ti && !ti.value.trim()) { target = ti; break; }
+  }
+  if (!target && slotCount < MAX_SLOTS) {
+    addSlot();
+    var newSlots = document.querySelectorAll('#slots .fb-slot');
+    target = newSlots[newSlots.length - 1].querySelector('[name=time]');
+  }
+  if (!target) return;
+
+  target.value = timeStr;
+  var slotEl = target.closest('.fb-slot');
+  if (slotEl) {
+    slotEl.classList.add('captured');
+    setTimeout(function() { slotEl.classList.remove('captured'); }, 1200);
+    slotEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  showToast('⏸ ' + timeStr + ' を記録しました');
 }
 
+/* ── Seek on click ── */
+function seekTo(timeStr) {
+  var sec = parseTime(timeStr);
+  if (sec === null || !videoEl) { showToast('⚠ シークには直接再生が必要です'); return; }
+  videoEl.currentTime = sec;
+  videoEl.play().catch(function(){});
+  showToast('▶ ' + timeStr + ' に移動');
+}
+
+/* ── Manual capture button ── */
+function captureNow(slotId) {
+  if (!videoEl || !nativeVideo) { showToast('⚠ 直接再生時のみ使用できます'); return; }
+  var slot = document.getElementById(slotId);
+  if (!slot) return;
+  var ti = slot.querySelector('[name=time]');
+  if (ti) {
+    ti.value = formatTime(videoEl.currentTime);
+    ti.style.borderColor = '#22c55e';
+    setTimeout(function() { if (ti) ti.style.borderColor = ''; }, 1200);
+    showToast('⏱ ' + ti.value + ' を記録');
+  }
+}
+
+/* ── Form HTML ── */
 function buildFormHtml(meta) {
   return '<div class="meta-card">' +
       '<h4>📋 お客様情報</h4>' +
@@ -474,76 +610,61 @@ function buildFormHtml(meta) {
     '<button class="btn-add" id="btn-add" onclick="addSlot()">＋ 修正箇所を追加</button>' +
     '<button class="btn-submit" id="btn-submit" onclick="submitFB()">📤 フィードバックを送信する</button>';
 }
-
-function esc(s) {
-  return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
-}
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
 
 /* ── Slots ── */
 function addSlot() {
   if (slotCount >= MAX_SLOTS) return;
-  slotCount++;
-  slotIdSeed++;
+  slotCount++; slotIdSeed++;
   var id = 'slot-' + slotIdSeed;
-
-  var container = document.getElementById('slots');
   var div = document.createElement('div');
-  div.className = 'fb-slot';
-  div.id = id;
+  div.className = 'fb-slot'; div.id = id;
   div.innerHTML =
-    '<span class="num" id="num-' + id + '">' + slotCount + '</span>' +
-    (slotCount > 1 ? '<button class="slot-remove" onclick="removeSlot(\'' + id + '\')" title="このスロットを削除">✕</button>' : '') +
+    '<div class="slot-top">' +
+      '<span class="num" id="num-' + id + '">' + slotCount + '</span>' +
+      (slotCount > 1 ? '<button class="slot-remove" onclick="removeSlot(\'' + id + '\')" title="削除">✕</button>' : '') +
+    '</div>' +
     '<div class="slot-row">' +
-      '<div class="slot-field">' +
-        '<label>タイムコード（例: 0:23）</label>' +
-        '<input type="text" name="time" placeholder="0:00">' +
+      '<div class="slot-field"><label>タイムコード（一時停止で自動入力）</label>' +
+        '<div class="time-wrap">' +
+          '<input type="text" name="time" placeholder="0:00.00" id="ti-' + id + '">' +
+          '<button class="time-auto-btn" onclick="captureNow(\'' + id + '\')" title="現在位置を記録">⏱ 今の位置</button>' +
+        '</div>' +
       '</div>' +
-      '<div class="slot-field">' +
-        '<label>修正の種類</label>' +
+      '<div class="slot-field"><label>修正の種類</label>' +
         '<select name="type">' +
           '<option value="">選択</option>' +
-          '<option>カット編集</option>' +
-          '<option>テロップ修正</option>' +
-          '<option>テロップ追加</option>' +
-          '<option>BGM変更</option>' +
-          '<option>SE追加/変更</option>' +
-          '<option>速度調整</option>' +
-          '<option>色調整</option>' +
-          '<option>エフェクト追加</option>' +
-          '<option>画面切替</option>' +
-          '<option>ナレーション修正</option>' +
-          '<option>その他</option>' +
+          '<option>カット編集</option><option>テロップ修正</option><option>テロップ追加</option>' +
+          '<option>BGM変更</option><option>SE追加/変更</option><option>速度調整</option>' +
+          '<option>色調整</option><option>エフェクト追加</option><option>画面切替</option>' +
+          '<option>ナレーション修正</option><option>その他</option>' +
         '</select>' +
       '</div>' +
     '</div>' +
-    '<div class="slot-comment">' +
-      '<label>修正内容の詳細</label>' +
-      '<textarea name="comment" placeholder="例：0:23 のテロップが「お客様」→「お客さま」に修正お願いします"></textarea>' +
+    '<div class="slot-comment"><label>修正内容の詳細</label>' +
+      '<textarea name="comment" placeholder="例：0:23.10 のテロップ「お客様」→「お客さま」に修正してください"></textarea>' +
     '</div>';
-
-  container.appendChild(div);
+  document.getElementById('slots').appendChild(div);
   updateCount();
-
   if (slotCount >= MAX_SLOTS) {
     document.getElementById('btn-add').disabled = true;
     document.getElementById('max-warn').style.display = 'block';
   }
+  div.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function removeSlot(id) {
   var el = document.getElementById(id);
   if (el) { el.remove(); slotCount--; }
-  var addBtn = document.getElementById('btn-add');
-  if (addBtn) addBtn.disabled = false;
-  document.getElementById('max-warn').style.display = 'none';
-  // 番号振り直し
+  var ab = document.getElementById('btn-add');
+  if (ab) ab.disabled = false;
+  var mw = document.getElementById('max-warn');
+  if (mw) mw.style.display = 'none';
   document.querySelectorAll('#slots .fb-slot').forEach(function(s, i) {
-    var numEl = s.querySelector('.num');
-    if (numEl) numEl.textContent = i + 1;
+    var n = s.querySelector('.num'); if (n) n.textContent = i + 1;
   });
   updateCount();
 }
-
 function updateCount() {
   var el = document.getElementById('fb-count');
   if (el) el.textContent = slotCount + ' / ' + MAX_SLOTS + '件';
@@ -551,10 +672,9 @@ function updateCount() {
 
 /* ── Submit ── */
 function submitFB() {
-  var name  = (document.getElementById('fb-name')  || {}).value  || '';
-  var email = (document.getElementById('fb-email') || {}).value  || '';
+  var name  = (document.getElementById('fb-name')  || {}).value || '';
+  var email = (document.getElementById('fb-email') || {}).value || '';
   var round = document.getElementById('setup-round') ? document.getElementById('setup-round').value : '1';
-
   var items = [];
   document.querySelectorAll('#slots .fb-slot').forEach(function(slot) {
     var time    = (slot.querySelector('[name=time]')    || {}).value || '';
@@ -562,36 +682,140 @@ function submitFB() {
     var comment = (slot.querySelector('[name=comment]') || {}).value || '';
     if (time || comment) items.push({ time: time, type: type, comment: comment });
   });
-
-  if (!items.length) {
-    alert('修正箇所を少なくとも1つ入力してください。');
-    return;
-  }
+  if (!items.length) { alert('修正箇所を少なくとも1つ入力してください。'); return; }
 
   var btn = document.getElementById('btn-submit');
   if (btn) { btn.disabled = true; btn.textContent = '送信中…'; }
 
+  _submittedItems = items;
+  _submittedMeta  = { name: name, email: email, round: round, video: driveOrigUrl, type: videoType };
+
   fetch(GAS_URL, {
     method: 'POST',
     body: JSON.stringify({
-      action:       'save_feedback',
-      client_name:  name,
-      email:        email,
-      delivery_url: buildDirectUrl(driveFileId),
-      round:        round,
-      video_type:   videoType,
-      items:        items
+      action: 'save_feedback', client_name: name, email: email,
+      delivery_url: buildDirectUrl(driveFileId), round: round,
+      video_type: videoType, items: items
     }),
     redirect: 'follow'
   })
   .then(function() {
     document.getElementById('main-layout').style.display  = 'none';
     document.getElementById('success-view').style.display = 'block';
+    buildShareBox();
   })
   .catch(function() {
     if (btn) { btn.disabled = false; btn.textContent = '📤 フィードバックを送信する'; }
     alert('送信に失敗しました。もう一度お試しください。');
   });
+}
+
+/* ── Share URL builder ── */
+function buildShareBox() {
+  var items = _submittedItems;
+  var meta  = _submittedMeta;
+  if (!items.length) return;
+  try {
+    var encoded = btoa(unescape(encodeURIComponent(JSON.stringify(items))));
+    var url = location.origin + location.pathname +
+      '?review=1' +
+      '&video=' + encodeURIComponent(meta.video || '') +
+      '&items=' + encoded +
+      '&name='  + encodeURIComponent(meta.name  || '') +
+      '&round=' + encodeURIComponent(meta.round || '1') +
+      '&type='  + (meta.type || 'short');
+    var box = document.getElementById('share-box');
+    var disp = document.getElementById('share-url-display');
+    box.style.display = 'block';
+    disp.textContent = url;
+    disp.dataset.url  = url;
+  } catch(e) {}
+}
+function copyShareUrl() {
+  var disp = document.getElementById('share-url-display');
+  var url = disp ? (disp.dataset.url || disp.textContent) : '';
+  if (!url) return;
+  navigator.clipboard.writeText(url).then(function() {
+    showToast('📋 URLをコピーしました');
+    var b = document.getElementById('btn-copy-url');
+    if (b) { b.textContent = '✅ コピーしました！'; setTimeout(function(){ b.textContent = '📋 URLをコピーして編集者に送る'; }, 2000); }
+  }).catch(function() { window.prompt('URLをコピーしてください:', url); });
+}
+
+/* ── Review mode ── */
+function loadReviewMode(p) {
+  var videoUrl = p.get('video') || '';
+  var itemsB64 = p.get('items') || '';
+  var name     = p.get('name')  || '';
+  var round    = p.get('round') || '1';
+  var type     = p.get('type')  || 'short';
+
+  var items = [];
+  try { items = JSON.parse(decodeURIComponent(escape(atob(itemsB64)))); } catch(e) {}
+
+  driveFileId  = parseDriveId(videoUrl);
+  videoType    = type;
+  driveOrigUrl = videoUrl;
+
+  document.getElementById('main-layout').style.display = 'block';
+  var directUrl = driveFileId ? buildDirectUrl(driveFileId) : videoUrl;
+  document.getElementById('hdr-title').textContent = '📋 FB確認（編集者用）';
+  document.getElementById('hdr-round').textContent = round + 'R';
+  document.getElementById('hdr-type').textContent  = type === 'short' ? 'ショート' : '長尺';
+  document.getElementById('hdr-drive-link').href   = directUrl;
+
+  var outerCls = type === 'short' ? 'layout-short' : 'layout-long';
+  var wrap = document.getElementById('layout-wrap');
+  wrap.innerHTML =
+    '<div class="' + outerCls + '" id="main-grid">' +
+      '<div class="video-pane" id="video-pane">' +
+        '<div class="video-loading" id="video-loading"><div class="spinner"></div>' +
+          '<div class="loading-text">読み込み中…</div></div>' +
+        '<span class="auto-badge" id="auto-badge"></span>' +
+        '<div id="video-slot"></div>' +
+        '<div class="video-fallback" id="video-fallback">表示されない場合 → <a href="' + directUrl + '" target="_blank" rel="noopener">Driveで開く</a></div>' +
+        '<a class="drive-open-btn" href="' + directUrl + '" target="_blank" rel="noopener">↗ Driveで動画を開く</a>' +
+      '</div>' +
+      '<div class="form-pane" id="form-pane">' + buildReviewHtml(items, name, round) + '</div>' +
+    '</div>';
+
+  loadVideo();
+}
+
+function buildReviewHtml(items, name, round) {
+  var html =
+    '<div class="meta-card">' +
+      '<h4>📋 ' + esc(name) + ' 様 / ' + esc(round) + 'ラウンド目 / ' + items.length + '件</h4>' +
+    '</div>' +
+    '<div class="fb-header"><h3>修正箇所一覧</h3>' +
+      '<span style="font-size:.75rem;color:#64748b">タイムコードをタップ → 動画がその位置に移動</span>' +
+    '</div>';
+
+  items.forEach(function(it, i) {
+    var timeHtml = it.time
+      ? '<button class="time-badge" onclick="seekTo(\'' + esc(it.time) + '\')">⏱ ' + esc(it.time) + '</button>'
+      : '<span class="time-badge no-seek">時間なし</span>';
+    html +=
+      '<div class="review-item">' +
+        '<div class="review-header">' +
+          '<span class="review-num">#' + (i+1) + '</span>' +
+          timeHtml +
+          (it.type ? '<span class="review-type">' + esc(it.type) + '</span>' : '') +
+        '</div>' +
+        (it.comment ? '<div class="review-comment">' + esc(it.comment) + '</div>' : '') +
+      '</div>';
+  });
+  return html;
+}
+
+/* ── Toast ── */
+var _toastTimer = null;
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(function() { t.classList.remove('show'); }, 2200);
 }
 </script>
 </body>
