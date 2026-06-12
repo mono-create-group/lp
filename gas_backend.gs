@@ -4466,28 +4466,26 @@ function saveFeedback(data) {
   ]);
 
   // オーナーへメール通知（個別チャットでFBを行うためChatwork通知は不要）
-  try {
-    var fbItems = data.items || [];
-    var fbItemLines = fbItems.map(function(it, idx) {
-      return '修正' + (idx+1) + ': ' + (it.time || '—') + ' [' + (it.type || '—') + ']\n' + (it.comment || '');
-    }).join('\n\n');
-    GmailApp.sendEmail(
-      'nakamurakouta512@gmail.com',
-      '【FBシート受信】' + (data.client_name || '') + ' / ' + (data.round || '1') + 'ラウンド目',
-      '━━━━━━━━━━━━━━━━\n' +
-      '✏️ FBシート受信\n' +
-      '━━━━━━━━━━━━━━━━\n' +
-      '受信日時    : ' + now + '\n' +
-      'クライアント: ' + (data.client_name || '') + '\n' +
-      'ラウンド    : ' + (data.round || '1') + 'ラウンド目\n' +
-      '修正件数    : ' + fbItems.length + '件\n' +
-      '納品URL     : ' + (data.delivery_url || '') + '\n' +
-      '━━━━━━━━━━━━━━━━\n\n' +
-      fbItemLines + '\n\n' +
-      '━━━━━━━━━━━━━━━━\n' +
-      '▶ 管理画面: ' + LP_BASE_URL + 'admin.html'
-    );
-  } catch(e) { Logger.log('FB owner mail error: ' + e); }
+  var fbItems = data.items || [];
+  var fbItemLines = fbItems.map(function(it, idx) {
+    return '修正' + (idx+1) + ': ' + (it.time || '—') + ' [' + (it.type || '—') + ']\n' + (it.comment || '');
+  }).join('\n\n');
+  notifyOwnerEmail(
+    '【FBシート受信】' + (data.client_name || '') + ' / ' + (data.round || '1') + 'ラウンド目',
+    [
+      '受信日時    : ' + now,
+      'クライアント: ' + (data.client_name || ''),
+      'ラウンド    : ' + (data.round || '1') + 'ラウンド目',
+      '修正件数    : ' + fbItems.length + '件',
+      '納品URL     : ' + (data.delivery_url || ''),
+      '━━━━━━━━━━━━━━━━',
+      '',
+      fbItemLines,
+      '',
+      '━━━━━━━━━━━━━━━━',
+      '▶ 管理画面: ' + LP_BASE_URL + 'admin.html',
+    ]
+  );
 
   // クライアントへ自動返信
   if (data.email && data.email.indexOf('@') !== -1) {
