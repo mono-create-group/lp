@@ -321,11 +321,19 @@
       </div>
 
       <div class="form-group">
-        <label class="field-label">納品動画のGoogle Drive URL <span class="req">*</span></label>
+        <label class="field-label">納品動画のGoogle Drive URL</label>
         <input type="url" id="setup-url" placeholder="https://drive.google.com/file/d/〇〇/view?usp=sharing">
         <div class="url-hint">
-          ※ Google Drive 共有リンク（<span>「リンクを知っている全員が閲覧可」</span>に設定必須）<br>
-          ※ 一時停止すると<span>タイムコードが自動入力</span>されます（ネイティブ再生時）
+          ※ Google Drive 共有リンク（<span>「リンクを知っている全員が閲覧可」</span>に設定必須）
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="field-label">▶ 直接再生用の動画URL（MP4等・任意）</label>
+        <input type="url" id="setup-direct-url" placeholder="https://〇〇.com/video.mp4">
+        <div class="url-hint">
+          ※ <span>こちらを入れると iPhone でもネイティブ再生</span>され、一時停止で<span>タイムコードが自動入力</span>されます（推奨）<br>
+          ※ Drive と どちらか一方でOK。両方ある場合は直接URLを優先します
         </div>
       </div>
 
@@ -380,6 +388,7 @@ var MAX_SLOTS = 30;
 var videoType = 'short';
 var driveFileId = '';
 var driveOrigUrl = '';
+var directVideoUrl = '';   // 直接再生用URL（MP4等）— あればiPhoneでもネイティブ再生→自動TC
 var slotCount = 0;
 var slotIdSeed = 0;
 var videoEl = null;
@@ -400,6 +409,7 @@ var lineUidParam = '';
     return;
   }
   if (p.get('url'))   { document.getElementById('setup-url').value   = p.get('url');   }
+  if (p.get('video')) { document.getElementById('setup-direct-url').value = p.get('video'); }
   if (p.get('name'))  { document.getElementById('setup-name').value  = p.get('name');  }
   if (p.get('email')) { document.getElementById('setup-email').value = p.get('email'); }
   if (p.get('round')) { document.getElementById('setup-round').value = p.get('round'); }
@@ -452,16 +462,21 @@ function startFeedback() {
   var round = document.getElementById('setup-round').value || '1';
   var err   = document.getElementById('setup-err');
   err.style.display = 'none';
-  if (!url) { err.textContent = '納品動画のGoogle Drive URLを入力してください。'; err.style.display = 'block'; return; }
-  driveFileId = parseDriveId(url);
-  if (!driveFileId) { err.textContent = 'Drive URLの形式を確認してください。'; err.style.display = 'block'; return; }
-  driveOrigUrl = url;
+  var directUrl = (document.getElementById('setup-direct-url') ? document.getElementById('setup-direct-url').value : '').trim();
+  if (!url && !directUrl) { err.textContent = 'Google Drive URL か 直接動画URL のどちらかを入力してください。'; err.style.display = 'block'; return; }
+  if (url) {
+    driveFileId = parseDriveId(url);
+    if (!driveFileId) { err.textContent = 'Drive URLの形式を確認してください。'; err.style.display = 'block'; return; }
+    driveOrigUrl = url;
+  }
+  directVideoUrl = directUrl;
 
   document.getElementById('setup-screen').style.display = 'none';
   document.getElementById('main-layout').style.display  = 'block';
   document.getElementById('hdr-round').textContent = round + 'R';
   document.getElementById('hdr-type').textContent  = videoType === 'short' ? 'ショート' : '長尺';
-  document.getElementById('hdr-drive-link').href   = buildDirectUrl(driveFileId);
+  var openUrl = driveFileId ? buildDirectUrl(driveFileId) : directVideoUrl;
+  document.getElementById('hdr-drive-link').href   = openUrl;
 
   buildLayout({ name: name, email: email, round: round });
 }
@@ -470,7 +485,7 @@ function startFeedback() {
 function buildLayout(meta) {
   var wrap      = document.getElementById('layout-wrap');
   var outerCls  = videoType === 'short' ? 'layout-short' : 'layout-long';
-  var directUrl = buildDirectUrl(driveFileId);
+  var directUrl = driveFileId ? buildDirectUrl(driveFileId) : directVideoUrl;
 
   wrap.innerHTML =
     '<div class="' + outerCls + '" id="main-grid">' +
@@ -518,7 +533,10 @@ function loadVideo() {
   videoEl.preload = 'metadata';
   videoEl.style.cssText = 'width:100%;height:100%;object-fit:contain;background:#000;';
 
-  var cands = streamCandidates(driveFileId);
+  // 直接URLがあれば最優先（iPhoneでもネイティブ再生できる）。次にDriveの各候補。
+  var cands = [];
+  if (directVideoUrl) cands.push(directVideoUrl);
+  if (driveFileId)    cands = cands.concat(streamCandidates(driveFileId));
   var idx = 0;
   var settled = false;       // ネイティブ成功 or 全滅で確定
   var candTimer = null;
@@ -557,7 +575,17 @@ function loadVideo() {
     if (settled) return; settled = true;
     clearCandTimer();
     if (videoEl) { videoEl.remove(); videoEl = null; }
-    loadIframeFallback();
+    if (driveFileId) {
+      loadIframeFallback();   // Driveがあれば埋め込みプレーヤーで表示（手動TC）
+    } else {
+      // 直接URLのみで再生不可 → 案内表示
+      var loading = document.getElementById('video-loading');
+      if (loading) loading.classList.add('hidden');
+      var autoBadge = document.getElementById('auto-badge');
+      if (autoBadge) { autoBadge.textContent = '⚠ 動画を再生できません（URLをご確認ください）'; autoBadge.classList.add('manual'); }
+      var fb = document.getElementById('video-fallback');
+      if (fb) fb.classList.add('show');
+    }
   }
 
   videoEl.addEventListener('loadeddata',     onNativeOk);
