@@ -1151,6 +1151,21 @@ function doGet(e) {
     return listFeedbacks();
   }
 
+  // ── リッチメニュー セットアップ（Messaging API） ──
+  if (action === 'setup_richmenu') {
+    if (e.parameter.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+    var imageUrl = e.parameter.img || (LP_BASE_URL + 'richmenu_main.png');
+    return jsonResponse(setupRichMenu(imageUrl));
+  }
+  if (action === 'list_richmenu') {
+    if (e.parameter.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+    return jsonResponse(listRichMenus());
+  }
+  if (action === 'delete_richmenu') {
+    if (e.parameter.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+    return jsonResponse(deleteRichMenu(e.parameter.id || ''));
+  }
+
   return jsonResponse({ error: 'unknown action' });
 }
 
@@ -4475,6 +4490,72 @@ function pushToLine(userId, messages) {
     Logger.log('LINE push error: ' + e);
     return { ok: false, status: 0, body: String(e) };
   }
+}
+
+// ================================================================
+// リッチメニュー（Messaging API で作成・画像アップ・デフォルト設定）
+// ================================================================
+function setupRichMenu(imageUrl) {
+  var token = LINE_CHANNEL_ACCESS_TOKEN;
+  if (!token) return { ok: false, step: 'token', body: 'no token' };
+
+  var menu = {
+    size: { width: 2500, height: 1686 },
+    selected: true,
+    name: 'mono.create メインメニュー',
+    chatBarText: 'メニュー',
+    areas: [
+      { bounds: { x: 0,    y: 0,   width: 1250, height: 843 }, action: { type: 'postback', data: 'action=first_order',  displayText: '初回依頼' } },
+      { bounds: { x: 1250, y: 0,   width: 1250, height: 843 }, action: { type: 'postback', data: 'action=repeat_order', displayText: '継続依頼' } },
+      { bounds: { x: 0,    y: 843, width: 1250, height: 843 }, action: { type: 'postback', data: 'action=revision',     displayText: '修正依頼' } },
+      { bounds: { x: 1250, y: 843, width: 1250, height: 843 }, action: { type: 'postback', data: 'action=other',        displayText: 'その他' } }
+    ]
+  };
+
+  // 1) リッチメニュー作成
+  var res = UrlFetchApp.fetch('https://api.line.me/v2/bot/richmenu', {
+    method: 'post', contentType: 'application/json',
+    headers: { Authorization: 'Bearer ' + token },
+    payload: JSON.stringify(menu), muteHttpExceptions: true
+  });
+  if (res.getResponseCode() !== 200) return { ok: false, step: 'create', code: res.getResponseCode(), body: res.getContentText() };
+  var richMenuId = JSON.parse(res.getContentText()).richMenuId;
+
+  // 2) 画像アップロード（公開URLから取得して送信）
+  var img = UrlFetchApp.fetch(imageUrl, { muteHttpExceptions: true });
+  if (img.getResponseCode() !== 200) return { ok: false, step: 'fetch_image', code: img.getResponseCode(), url: imageUrl };
+  var blob = img.getBlob();
+  var ct = blob.getContentType();
+  if (ct !== 'image/png' && ct !== 'image/jpeg') ct = 'image/png';
+  var up = UrlFetchApp.fetch('https://api-data.line.me/v2/bot/richmenu/' + richMenuId + '/content', {
+    method: 'post', contentType: ct,
+    headers: { Authorization: 'Bearer ' + token },
+    payload: blob.getBytes(), muteHttpExceptions: true
+  });
+  if (up.getResponseCode() !== 200) return { ok: false, step: 'upload', code: up.getResponseCode(), body: up.getContentText(), richMenuId: richMenuId };
+
+  // 3) デフォルト（全ユーザー表示）に設定
+  var def = UrlFetchApp.fetch('https://api.line.me/v2/bot/user/all/richmenu/' + richMenuId, {
+    method: 'post', headers: { Authorization: 'Bearer ' + token }, muteHttpExceptions: true
+  });
+  if (def.getResponseCode() !== 200) return { ok: false, step: 'set_default', code: def.getResponseCode(), body: def.getContentText(), richMenuId: richMenuId };
+
+  return { ok: true, richMenuId: richMenuId };
+}
+
+function listRichMenus() {
+  var res = UrlFetchApp.fetch('https://api.line.me/v2/bot/richmenu/list', {
+    method: 'get', headers: { Authorization: 'Bearer ' + LINE_CHANNEL_ACCESS_TOKEN }, muteHttpExceptions: true
+  });
+  return { code: res.getResponseCode(), body: res.getContentText() };
+}
+
+function deleteRichMenu(id) {
+  if (!id) return { ok: false, body: 'no id' };
+  var res = UrlFetchApp.fetch('https://api.line.me/v2/bot/richmenu/' + id, {
+    method: 'delete', headers: { Authorization: 'Bearer ' + LINE_CHANNEL_ACCESS_TOKEN }, muteHttpExceptions: true
+  });
+  return { ok: res.getResponseCode() === 200, code: res.getResponseCode(), body: res.getContentText() };
 }
 
 // ================================================================
