@@ -2825,7 +2825,7 @@ function renderTable() {
         <div class="td-actions">
           ${i.chatwork_id ? `<button class="action-btn btn-cw" onclick="openCW('${esc(i.chatwork_id)}')">💬 CW</button>` : ''}
           <button class="action-btn btn-mail" onclick="openMail('${esc(i.email)}','${esc(i.name)}','${esc(i.plan)}')">✉ メール</button>
-          ${extractLineUid(i) ? `<button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${i.row},'inquiries')">\ud83d\udcac LINE返信</button>` : ''}
+          ${(extractLineUid(i) || i.email) ? `<button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${i.row},'inquiries')">${extractLineUid(i) ? '💬 LINE返信' : '✉ 返信・納品'}</button>` : ''}
           <button class="action-btn btn-expand" onclick="openModal(${i.row})">詳細</button>
           ${(i.email || extractLineUid(i)) ? `<button class="action-btn" style="background:#1a3a2a;color:#4ade80;border:1px solid #166534;" onclick="openHearingLinkModal(${i.row})">📋 ヒアリング案内</button>` : ''}
           ${(i.email || extractLineUid(i)) ? `<button class="action-btn" style="background:#1a2a3a;color:#60a5fa;border:1px solid #1d4ed8;" onclick="openManualPaymentFromInquiry(${i.row})">💳 振込依頼</button>` : ''}
@@ -3790,7 +3790,7 @@ function renderHearings() {
       <td>
         <div class="td-actions">
           <button class="action-btn btn-expand" onclick="openHearingDetail(${h.row})">詳細</button>
-          ${extractLineUid(h) ? `<button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${h.row},'hearings')">\ud83d\udcac LINE返信</button>` : ''}
+          ${(extractLineUid(h) || h.email) ? `<button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${h.row},'hearings')">${extractLineUid(h) ? '💬 LINE返信' : '✉ 返信・納品'}</button>` : ''}
           ${isTrial(h)
             ? `<button class="action-btn" style="background:#1e3a5f;color:#93c5fd;border:1px solid #3b82f6;font-weight:700;" onclick="openTrialMail(${h.row})">📁 Drive+メール</button>`
             : `<button class="action-btn btn-mail" onclick="openMail('${esc(h.email)}','${esc(h.name)}','${esc(h.plan)}','hearing')">✉ メール</button>`
@@ -6480,7 +6480,8 @@ const LINE_QUICK_REPLIES = [
   { label: '🧾 請求書の送付', text: '{{name}}様\n\n請求書をお送りします👇\n{{url}}\n\nご確認をお願いいたします。' },
   { label: '📑 契約書のご確認', text: '{{name}}様\n\n契約書のご確認をお願いいたします👇\n{{url}}\n\nご同意いただけましたら、お振込へお進みください。' },
   { label: '📁 入金確認＆素材フォルダ', text: '{{name}}様\n\nご入金を確認いたしました、ありがとうございます😊\n素材アップロード用フォルダはこちらです👇\n{{url}}\n\n素材のご共有をお願いいたします。' },
-  { label: '🎬 納品のご連絡', text: '{{name}}様\n\n動画が完成しました🎬\n納品データはこちらです👇\n{{url}}\n\nご確認をお願いいたします。修正がございましたらお気軽にどうぞ。' },
+  { label: '🎁 トライアル納品', text: '{{name}}様\n\n🎉 トライアル動画が完成しました！\n\n▼ 動画はこちら\n{{url}}\n\nまずはご覧ください😊\nもしご継続をご希望でしたら、このままお見積り・お振込のご案内へお進みいただけます。\n（トライアルは無料です。継続されない場合も費用は一切かかりません）\n\n✏️ 修正をご希望の場合はこちらから（動画を見ながらタイムコード付きで記入できます）\n{{fb}}\n\nご感想・ご質問もこのままお気軽にどうぞ！' },
+  { label: '🎬 通常納品（修正リンク付き）', text: '{{name}}様\n\n動画が完成しました🎬\n\n▼ 納品データ\n{{url}}\n\nご確認をお願いいたします🙏\n\n✏️ 修正のご依頼はこちらから（動画を見ながら記入できます）\n{{fb}}\n\n（1週間以内にご連絡いただけると助かります）' },
 ];
 
 // レコードから LINE UID を自動抽出（chatwork_id / message / line_uid いずれでも可）
@@ -6492,21 +6493,29 @@ function extractLineUid(rec) {
   } catch(e) { return ''; }
 }
 
-let _quickLineUid = '', _quickLineName = '';
+let _quickLineUid = '', _quickLineName = '', _quickLineEmail = '', _quickLineRound = '1';
+
+function _fbBaseUrl() {
+  // admin.html と同じディレクトリの feedback.html を絶対URLで
+  return location.origin + location.pathname.replace(/[^/]*$/, '') + 'feedback.html';
+}
 
 function openQuickLine(row, sheet) {
   const _lm = { hearings: hearings, inquiries: inquiries, orders: _adOrders, revisions: _fbList, payments: payments };
   const list = _lm[sheet] || inquiries;
   const rec  = (list || []).find(x => x.row === row);
   const uid  = extractLineUid(rec);
-  if (!uid) { showToast('このレコードにLINE UIDがありません（手動でLINE送信タブからどうぞ）'); return; }
-  _quickLineUid  = uid;
-  _quickLineName = (rec && (rec.name || rec.client_name)) || '';
+  const email = (rec && rec.email) || '';
+  if (!uid && !email) { showToast('このレコードにLINE UIDもメールもありません'); return; }
+  _quickLineUid   = uid;
+  _quickLineEmail = email;
+  _quickLineName  = (rec && (rec.name || rec.client_name)) || '';
+  _quickLineRound = (rec && rec.round) || '1';
   document.getElementById('quick-line-name').textContent = _quickLineName || '（名前なし）';
-  document.getElementById('quick-line-uid').textContent  = uid;
+  document.getElementById('quick-line-uid').textContent  = uid ? ('LINE: ' + uid) : ('✉ メール: ' + email);
   const box = document.getElementById('quick-line-buttons');
   box.innerHTML = LINE_QUICK_REPLIES.map((t, idx) => {
-    const preview = t.text.replace(/\{\{name\}\}/g, _quickLineName || 'お客様').replace(/\{\{url\}\}/g, '（送信時にURLを入力）');
+    const preview = t.text.replace(/\{\{name\}\}/g, _quickLineName || 'お客様').replace(/\{\{url\}\}/g, '（送信時に動画URLを入力）').replace(/\{\{fb\}\}/g, '（修正リンク自動生成）');
     return `<button onclick="sendQuickLine(${idx})"
       style="text-align:left;background:var(--bg);border:1px solid var(--border);border-left:3px solid #00b900;border-radius:9px;padding:11px 13px;cursor:pointer;display:flex;flex-direction:column;gap:5px;font-family:inherit;">
       <span style="font-weight:700;color:var(--lt);font-size:0.85rem;">${esc(t.label)}</span>
@@ -6522,21 +6531,40 @@ function closeQuickLine() {
 
 async function sendQuickLine(idx) {
   const tpl = LINE_QUICK_REPLIES[idx];
-  if (!tpl || !_quickLineUid) return;
+  if (!tpl || (!_quickLineUid && !_quickLineEmail)) return;
   let text = tpl.text.replace(/\{\{name\}\}/g, _quickLineName || 'お客様');
-  if (text.indexOf('{{url}}') !== -1) {
-    const url = prompt('挿入するURLを入力してください（見積もり / 請求書 / 契約書 / 素材フォルダ / 納品 など）');
+
+  // 納品系（{{fb}}を含む）：動画URL＋直リンクMP4(任意)を聞いて、修正リンク(FB)を自動生成
+  if (text.indexOf('{{fb}}') !== -1) {
+    const videoUrl = prompt('🎬 納品動画URL（Google Drive 共有リンクなど）を入力してください');
+    if (videoUrl === null || !videoUrl.trim()) return;
+    const mp4 = prompt('（任意）スマホで自動タイムコードを効かせる直接再生用 MP4 URL。\n無ければ空のままOKです。') || '';
+    let fb = _fbBaseUrl()
+      + '?url=' + encodeURIComponent(videoUrl.trim())
+      + '&name=' + encodeURIComponent(_quickLineName || '')
+      + '&title=' + encodeURIComponent((_quickLineName ? _quickLineName + '様 ' : '') + '納品動画')
+      + '&round=' + encodeURIComponent(_quickLineRound || '1');
+    if (mp4.trim()) fb += '&video=' + encodeURIComponent(mp4.trim());
+    if (_quickLineUid) fb += '&uid=' + encodeURIComponent(_quickLineUid);
+    text = text.replace(/\{\{url\}\}/g, videoUrl.trim()).replace(/\{\{fb\}\}/g, fb);
+  } else if (text.indexOf('{{url}}') !== -1) {
+    const url = prompt('挿入するURLを入力してください（見積もり / 請求書 / 契約書 / 素材フォルダ など）');
     if (url === null || !url.trim()) return;
     text = text.replace(/\{\{url\}\}/g, url.trim());
   }
-  if (!confirm('以下の内容をLINEで送信します：\n\n' + text)) return;
+
+  const via = _quickLineUid ? 'LINE' : 'メール';
+  if (!confirm('以下の内容を【' + via + '】で送信します：\n\n' + text)) return;
   try {
-    const res  = await gasFetch(GAS_URL, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'admin_line_push', key: getAdminPw(), line_uid: _quickLineUid, text: text })
-    });
+    let body;
+    if (_quickLineUid) {
+      body = { action: 'admin_line_push', key: getAdminPw(), line_uid: _quickLineUid, text: text };
+    } else {
+      body = { action: 'send_delivery', key: getAdminPw(), email: _quickLineEmail, name: _quickLineName, subject: '【mono.create】' + tpl.label.replace(/^[^ぁ-ん一-龠a-zA-Z]+/, ''), text: text };
+    }
+    const res  = await gasFetch(GAS_URL, { method: 'POST', body: JSON.stringify(body) });
     const data = await res.json();
-    if (data.success) { showToast('✅ LINEで送信しました'); closeQuickLine(); }
+    if (data.success) { showToast('✅ ' + via + 'で送信しました'); closeQuickLine(); }
     else { showToast('❌ 送信失敗: ' + (data.error || data.line_error || '不明')); }
   } catch(e) { showToast('❌ 通信エラー'); }
 }
@@ -6580,7 +6608,7 @@ function renderOrders() {
       <td style="font-size:0.8rem;color:var(--sub);">${dueCell}</td>
       <td><span class="status-badge status-${esc(o.status)}">${esc(o.status)}</span></td>
       <td><div class="td-actions">
-        ${extractLineUid(o) ? `<button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${o.row},'orders')">💬 LINE返信</button>` : ''}
+        ${(extractLineUid(o) || o.email) ? `<button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${o.row},'orders')">${extractLineUid(o) ? '💬 LINE返信' : '✉ 返信・納品'}</button>` : ''}
         ${matBtns}
         ${o.email ? `<button class="action-btn btn-mail" onclick="openMail('${esc(o.email)}','${esc(o.name)}','${esc(o.plan)}')">✉ メール</button>` : ''}
       </div></td>
@@ -6609,7 +6637,7 @@ function renderRevisions() {
       <td>${f.delivery_url ? `<a href="${esc(f.delivery_url)}" target="_blank" style="color:#60a5fa;font-size:0.78rem;">🎬 開く</a>` : '—'}</td>
       <td><span class="status-badge status-${esc(f.status)}">${esc(f.status)}</span></td>
       <td><div class="td-actions">
-        ${extractLineUid(f) ? `<button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${f.row},'revisions')">💬 LINE返信</button>` : ''}
+        ${(extractLineUid(f) || f.email) ? `<button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${f.row},'revisions')">${extractLineUid(f) ? '💬 LINE返信' : '✉ 返信・納品'}</button>` : ''}
         ${f.email ? `<button class="action-btn btn-mail" onclick="openMail('${esc(f.email)}','${esc(f.client_name)}','修正対応')">✉ メール</button>` : ''}
       </div></td>
     </tr>`).join('');
@@ -6620,7 +6648,7 @@ function renderRevisions() {
 <div class="modal-overlay" id="quick-line-modal" onclick="if(event.target===this)closeQuickLine()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center;">
   <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;width:min(460px,92vw);max-height:85vh;overflow-y:auto;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-      <h3 style="font-size:1rem;font-weight:800;">💬 LINEワンタップ返信</h3>
+      <h3 style="font-size:1rem;font-weight:800;">💬 ワンタップ返信・納品（LINE / メール自動判定）</h3>
       <button onclick="closeQuickLine()" style="background:none;border:none;color:var(--sub);font-size:1.3rem;cursor:pointer;">✕</button>
     </div>
     <p style="font-size:0.8rem;color:var(--sub);margin-bottom:3px;">送信先：<span id="quick-line-name" style="color:var(--lt);font-weight:700;"></span></p>
