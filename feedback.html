@@ -494,41 +494,76 @@ function buildLayout(meta) {
   loadVideo();
 }
 
-/* ── Video: native first → iframe fallback ── */
+/* ── 複数のDriveストリームURL候補（順に試してネイティブ再生を粘る）── */
+function streamCandidates(id) {
+  return [
+    'https://drive.usercontent.google.com/download?id=' + id + '&export=download&confirm=t',
+    'https://drive.google.com/uc?export=download&id=' + id,
+    'https://docs.google.com/uc?export=download&id=' + id,
+    'https://drive.usercontent.google.com/download?id=' + id + '&export=download&confirm=1'
+  ];
+}
+
+/* ── Video: native first（複数URLを順に試す）→ iframe fallback ── */
 function loadVideo() {
   var loading   = document.getElementById('video-loading');
-  var fallback  = document.getElementById('video-fallback');
   var autoBadge = document.getElementById('auto-badge');
   var slot      = document.getElementById('video-slot');
 
   videoEl = document.createElement('video');
   videoEl.controls = true;
   videoEl.playsInline = true;
-  videoEl.preload = 'auto';
+  videoEl.setAttribute('playsinline', '');
+  videoEl.setAttribute('webkit-playsinline', '');
+  videoEl.preload = 'metadata';
   videoEl.style.cssText = 'width:100%;height:100%;object-fit:contain;background:#000;';
-  videoEl.src = buildStreamUrl(driveFileId);
 
-  var done = false;
+  var cands = streamCandidates(driveFileId);
+  var idx = 0;
+  var settled = false;       // ネイティブ成功 or 全滅で確定
+  var candTimer = null;
+
+  function clearCandTimer() { if (candTimer) { clearTimeout(candTimer); candTimer = null; } }
+
+  function tryNext() {
+    clearCandTimer();
+    if (settled) return;
+    if (idx >= cands.length) { onAllFail(); return; }
+    var u = cands[idx++];
+    videoEl.src = u;
+    try { videoEl.load(); } catch(e) {}
+    // この候補が一定時間で再生可能にならなければ次へ
+    candTimer = setTimeout(function() { if (!settled) tryNext(); }, 7000);
+  }
+
   function onNativeOk() {
-    if (done) return; done = true;
+    if (settled) return; settled = true;
+    clearCandTimer();
     nativeVideo = true;
     loading.classList.add('hidden');
     autoBadge.textContent = '⏸ 一時停止 → ボタンでTC記録';
     autoBadge.classList.add('on');
-    document.getElementById('hdr-autobadge').style.display = '';
+    var hb = document.getElementById('hdr-autobadge'); if (hb) hb.style.display = '';
     var btn = document.getElementById('tc-record-btn');
     if (btn) btn.style.display = '';
-    showToast('⏸ 一時停止後に「タイムコードを記録する」ボタンを押してください');
+    showToast('⏸ 再生して止めたい所で一時停止 → 「タイムコードを記録する」を押してください');
   }
-  function onNativeFail() {
-    if (done) return; done = true;
-    videoEl.remove(); videoEl = null;
+  function onCandErr() {
+    if (settled) return;
+    clearCandTimer();
+    tryNext();   // 次の候補URLを試す（即フォールバックしない）
+  }
+  function onAllFail() {
+    if (settled) return; settled = true;
+    clearCandTimer();
+    if (videoEl) { videoEl.remove(); videoEl = null; }
     loadIframeFallback();
   }
 
-  videoEl.addEventListener('loadeddata', onNativeOk);
-  videoEl.addEventListener('canplay',    onNativeOk);
-  videoEl.addEventListener('error',      onNativeFail);
+  videoEl.addEventListener('loadeddata',     onNativeOk);
+  videoEl.addEventListener('canplay',        onNativeOk);
+  videoEl.addEventListener('loadedmetadata', onNativeOk);
+  videoEl.addEventListener('error',          onCandErr);
   // pause → ボタン有効化 / play → ボタン無効化
   videoEl.addEventListener('pause', function() {
     var btn = document.getElementById('tc-record-btn');
@@ -538,9 +573,9 @@ function loadVideo() {
     var btn = document.getElementById('tc-record-btn');
     if (btn) { btn.classList.remove('paused'); }
   });
-  setTimeout(function() { if (!done) onNativeFail(); }, 9000);
 
   slot.appendChild(videoEl);
+  tryNext();
 }
 
 function loadIframeFallback() {
