@@ -6582,6 +6582,7 @@ function openDeliverModal(kind) {
   document.getElementById('dlv-drive').value = '';
   document.getElementById('dlv-mp4').value = '';
   document.getElementById('dlv-proma').value = '';
+  document.getElementById('dlv-stream').value = '';
   const via = _quickLineUid ? 'LINE' : (_quickLineEmail ? ('✉ ' + _quickLineEmail) : '宛先なし');
   document.getElementById('dlv-recipient').textContent = (_quickLineName || '（名前なし）') + '　[' + via + ']';
   updateDeliverPreview();
@@ -6594,9 +6595,10 @@ function buildDeliveryMessage() {
   const isRev = document.getElementById('dlv-kind').value === 'rev';
   const trial = document.getElementById('dlv-trial').checked;
   const incFb = document.getElementById('dlv-fb').checked;
-  const drive = document.getElementById('dlv-drive').value.trim();
-  const mp4   = document.getElementById('dlv-mp4').value.trim();
-  const proma = document.getElementById('dlv-proma').value.trim();
+  const drive  = document.getElementById('dlv-drive').value.trim();
+  const mp4    = document.getElementById('dlv-mp4').value.trim();
+  const proma  = document.getElementById('dlv-proma').value.trim();
+  const stream = document.getElementById('dlv-stream').value.trim();
   const lines = [];
   lines.push(name + '様', '', 'お世話になっております！',
     '下記動画の' + (isRev ? '修正稿' : '初稿') + 'を提出いたします。',
@@ -6607,12 +6609,14 @@ function buildDeliveryMessage() {
   if (mp4)   lines.push('◇MP4ダウンロード' + (isRev ? '（ギガファイル）' : ''), mp4, '');
   if (proma) lines.push('◇プロマネ' + (isRev ? '（ギガファイル）' : '（素材あり）'), proma, '');
   if (incFb) {
+    // 自動TC用のストリーム動画：dlv-stream優先。無ければ .mp4 で終わる直リンクをmp4欄から流用
+    var streamSrc = stream || (/\.mp4($|\?)/i.test(mp4) ? mp4 : '');
     let fb = _fbBaseUrl()
-      + '?url=' + encodeURIComponent(drive || mp4 || '')
+      + '?url=' + encodeURIComponent(drive || streamSrc || mp4 || '')
       + '&name=' + encodeURIComponent(name === 'お客様' ? '' : name)
       + '&title=' + encodeURIComponent((name === 'お客様' ? '' : name + '様 ') + (isRev ? '修正稿' : '初稿'))
       + '&round=' + encodeURIComponent(_quickLineRound || '1');
-    if (mp4) fb += '&video=' + encodeURIComponent(mp4);
+    if (streamSrc) fb += '&video=' + encodeURIComponent(streamSrc);
     if (_quickLineUid) fb += '&uid=' + encodeURIComponent(_quickLineUid);
     lines.push('-----------------------------------------',
       '✏️ 修正のご依頼はこちらから（動画を見ながらタイムコード付きで記入できます）', fb);
@@ -6628,7 +6632,8 @@ async function sendDelivery() {
   const drive = document.getElementById('dlv-drive').value.trim();
   const mp4   = document.getElementById('dlv-mp4').value.trim();
   const proma = document.getElementById('dlv-proma').value.trim();
-  if (!drive && !mp4 && !proma) { showToast('リンクを1つ以上入力してください', true); return; }
+  const stream = document.getElementById('dlv-stream').value.trim();
+  if (!drive && !mp4 && !proma && !stream) { showToast('リンクを1つ以上入力してください', true); return; }
   if (!_quickLineUid && !_quickLineEmail) { showToast('宛先がありません', true); return; }
   const text = buildDeliveryMessage();
   const via  = _quickLineUid ? 'LINE' : 'メール';
@@ -6767,12 +6772,17 @@ function renderRevisions() {
       <input id="dlv-drive" type="url" oninput="updateDeliverPreview()" placeholder="https://drive.google.com/..." style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 11px;color:var(--lt);font-size:0.85rem;font-family:inherit;">
     </div>
     <div style="margin-bottom:10px;">
-      <label style="font-size:0.74rem;color:var(--sub);display:block;margin-bottom:3px;">◇ MP4ダウンロード（ギガファイル等）<span style="color:#4ade80;">※入れるとスマホでも自動TCが効きます</span></label>
-      <input id="dlv-mp4" type="url" oninput="updateDeliverPreview()" placeholder="https://xgf.nu/... または直リンクMP4" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 11px;color:var(--lt);font-size:0.85rem;font-family:inherit;">
+      <label style="font-size:0.74rem;color:var(--sub);display:block;margin-bottom:3px;">◇ MP4ダウンロード（ギガファイル等・クライアント用DL）</label>
+      <input id="dlv-mp4" type="url" oninput="updateDeliverPreview()" placeholder="https://xgf.nu/..." style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 11px;color:var(--lt);font-size:0.85rem;font-family:inherit;">
     </div>
     <div style="margin-bottom:10px;">
       <label style="font-size:0.74rem;color:var(--sub);display:block;margin-bottom:3px;">◇ プロマネ（素材／ギガファイル）</label>
       <input id="dlv-proma" type="url" oninput="updateDeliverPreview()" placeholder="https://..." style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 11px;color:var(--lt);font-size:0.85rem;font-family:inherit;">
+    </div>
+    <div style="margin-bottom:10px;border:1px dashed #00b900;border-radius:8px;padding:9px 11px;background:rgba(0,185,0,0.06);">
+      <label style="font-size:0.74rem;color:#4ade80;display:block;margin-bottom:3px;font-weight:700;">▶ スマホ自動TC用 直リンクMP4（Dropbox等・任意）</label>
+      <input id="dlv-stream" type="url" oninput="updateDeliverPreview()" placeholder="https://....mp4（Dropboxは末尾 ?raw=1）" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 11px;color:var(--lt);font-size:0.85rem;font-family:inherit;">
+      <p style="font-size:0.68rem;color:var(--sub);margin-top:4px;line-height:1.5;">※ ここに<strong>ストリーミング可能な直リンクMP4</strong>を入れると、iPhoneでも修正リンク内で自動再生→タイムコード自動入力が効きます。<br>※ Drive・ギガファイルのDLリンクはストリーム不可のため自動TCになりません（その場合は手動入力）。</p>
     </div>
     <label style="display:flex;align-items:center;gap:6px;font-size:0.8rem;color:var(--lt);margin-bottom:12px;">
       <input type="checkbox" id="dlv-fb" onchange="updateDeliverPreview()" checked> ✏️ 修正リンク（FBフォーム）を自動で末尾に付ける
