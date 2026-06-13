@@ -6603,7 +6603,7 @@ function renderRevisions() {
   el.innerHTML = _fbList.map(f => `
     <tr>
       <td class="td-date">${esc(f.date)}</td>
-      <td class="td-name">${esc(f.client_name)}</td>
+      <td class="td-name">${esc(f.client_name)}${f.title ? `<div style="font-size:0.72rem;color:var(--sub);margin-top:2px;">🎬 ${esc(f.title)}</div>` : ''}</td>
       <td style="text-align:center;">${esc(f.round)}</td>
       <td style="text-align:center;">${(f.items || []).length}件</td>
       <td>${f.delivery_url ? `<a href="${esc(f.delivery_url)}" target="_blank" style="color:#60a5fa;font-size:0.78rem;">🎬 開く</a>` : '—'}</td>

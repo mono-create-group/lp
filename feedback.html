@@ -289,12 +289,26 @@
     @media (max-width: 720px) {
       .layout-short { grid-template-columns: 1fr !important; height: auto !important; }
       .layout-short .video-pane {
-        height: 35vw; min-height: 180px; max-height: 260px;
-        position: sticky; top: 52px; z-index: 100;
+        height: 56vw; min-height: 210px; max-height: 320px;
+        position: sticky; top: 0; z-index: 100;
       }
+      .layout-long .video-pane { top: 0; }
       .layout-short .form-pane { height: auto; overflow: visible; }
+      .form-pane { padding: 16px 12px 90px; }
       .meta-grid { grid-template-columns: 1fr; }
       .slot-row { grid-template-columns: 1fr; }
+
+      /* ヘッダー：横はみ出し防止＋Driveリンクを次行へ折り返し */
+      .header { padding: 10px 14px; gap: 6px 8px; }
+      .header h1 { font-size: .9rem; line-height: 1.3; }
+      .header-link { margin-left: auto; flex-basis: 100%; text-align: right; font-size: .72rem; }
+      .badge { font-size: .66rem; padding: 2px 7px; }
+
+      /* タップしやすいTC記録ボタン・入力 */
+      .tc-record-btn { bottom: 44px; padding: 12px 24px; font-size: .95rem; }
+      .fb-slot { padding: 13px; }
+      .slot-field input, .slot-field select, .slot-comment textarea { font-size: 16px; }
+      .time-wrap input { font-size: 16px; }
     }
   </style>
 </head>
@@ -318,6 +332,12 @@
             🎬 長尺動画<br><small style="font-weight:400;font-size:.75rem;color:#64748b">上下並び</small>
           </div>
         </div>
+      </div>
+
+      <div class="form-group">
+        <label class="field-label">動画タイトル / 案件名 <span class="req">*</span></label>
+        <input type="text" id="setup-title" placeholder="例：〇〇店PR ショート動画 第1弾">
+        <div class="url-hint">※ どの動画への修正かが分かるタイトルをご記入ください</div>
       </div>
 
       <div class="form-group">
@@ -389,6 +409,7 @@ var videoType = 'short';
 var driveFileId = '';
 var driveOrigUrl = '';
 var directVideoUrl = '';   // 直接再生用URL（MP4等）— あればiPhoneでもネイティブ再生→自動TC
+var fbTitle = '';          // 動画タイトル / 案件名
 var slotCount = 0;
 var slotIdSeed = 0;
 var videoEl = null;
@@ -409,6 +430,7 @@ var lineUidParam = '';
     return;
   }
   if (p.get('url'))   { document.getElementById('setup-url').value   = p.get('url');   }
+  if (p.get('title')) { document.getElementById('setup-title').value = p.get('title'); }
   if (p.get('video')) { document.getElementById('setup-direct-url').value = p.get('video'); }
   if (p.get('name'))  { document.getElementById('setup-name').value  = p.get('name');  }
   if (p.get('email')) { document.getElementById('setup-email').value = p.get('email'); }
@@ -462,6 +484,8 @@ function startFeedback() {
   var round = document.getElementById('setup-round').value || '1';
   var err   = document.getElementById('setup-err');
   err.style.display = 'none';
+  fbTitle = (document.getElementById('setup-title') ? document.getElementById('setup-title').value : '').trim();
+  if (!fbTitle) { err.textContent = '動画タイトル / 案件名をご記入ください。'; err.style.display = 'block'; return; }
   var directUrl = (document.getElementById('setup-direct-url') ? document.getElementById('setup-direct-url').value : '').trim();
   if (!url && !directUrl) { err.textContent = 'Google Drive URL か 直接動画URL のどちらかを入力してください。'; err.style.display = 'block'; return; }
   if (url) {
@@ -473,6 +497,7 @@ function startFeedback() {
 
   document.getElementById('setup-screen').style.display = 'none';
   document.getElementById('main-layout').style.display  = 'block';
+  document.getElementById('hdr-title').textContent = fbTitle ? ('✏️ ' + fbTitle) : '✏️ FBシート';
   document.getElementById('hdr-round').textContent = round + 'R';
   document.getElementById('hdr-type').textContent  = videoType === 'short' ? 'ショート' : '長尺';
   var openUrl = driveFileId ? buildDirectUrl(driveFileId) : directVideoUrl;
@@ -780,7 +805,7 @@ function submitFB() {
     method: 'POST',
     body: JSON.stringify({
       action: 'save_feedback', client_name: name, email: email,
-      line_uid: lineUidParam,
+      line_uid: lineUidParam, title: fbTitle,
       delivery_url: buildDirectUrl(driveFileId), round: round,
       video_type: videoType, items: items
     }),
