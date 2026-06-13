@@ -553,6 +553,14 @@ function doGet(e) {
     return getContractByToken(t);
   }
 
+  // ── 一時トークン：リッチメニュー初期設定（実行後に削除予定） ──
+  if (action === 'setup_richmenu' && e.parameter.token === 'mono-setup-once-9f3a') {
+    return jsonResponse(setupRichMenu(e.parameter.img || (LP_BASE_URL + 'richmenu_main.png')));
+  }
+  if (action === 'list_richmenu' && e.parameter.token === 'mono-setup-once-9f3a') {
+    return jsonResponse(listRichMenus());
+  }
+
   // ── 以降は管理者キー必須 ──────────────────────────────────────
   if (key !== ADMIN_KEY) {
     return jsonResponse({ error: 'unauthorized' });
