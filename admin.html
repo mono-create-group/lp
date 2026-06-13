@@ -515,6 +515,14 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;background:rgba(0,185,100,0.08);border-radius:8px 8px 0 0;">
         💬 LINE送信
       </button>
+      <button id="tab-orders-btn" onclick="switchAdminTab('orders')"
+        style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
+        📦 追加発注
+      </button>
+      <button id="tab-revisions-btn" onclick="switchAdminTab('revisions')"
+        style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
+        🛠 修正依頼
+      </button>
     </div>
 
     <!-- ── 問い合わせタブ ── -->
@@ -1761,6 +1769,36 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
 
     </div><!-- /tab-line -->
 
+    <!-- ── 追加発注タブ ── -->
+    <div id="tab-orders" style="display:none;">
+      <div style="display:flex;align-items:center;gap:12px;margin:18px 0 6px;flex-wrap:wrap;">
+        <h2 style="font-size:1.05rem;font-weight:800;">📦 追加発注（継続依頼）</h2>
+        <button class="refresh-btn" onclick="loadOrders()">更新</button>
+      </div>
+      <p style="font-size:0.8rem;color:var(--sub);margin-bottom:14px;">LINE経由の追加発注一覧。各行からワンタップでLINE返信できます。</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>日時</th><th>お名前</th><th>プラン / 本数</th><th>希望時期</th><th>状態</th><th>アクション</th></tr></thead>
+          <tbody id="orders-body"><tr><td colspan="6" class="table-empty"><span class="spinner"></span></td></tr></tbody>
+        </table>
+      </div>
+    </div><!-- /tab-orders -->
+
+    <!-- ── 修正依頼タブ ── -->
+    <div id="tab-revisions" style="display:none;">
+      <div style="display:flex;align-items:center;gap:12px;margin:18px 0 6px;flex-wrap:wrap;">
+        <h2 style="font-size:1.05rem;font-weight:800;">🛠 修正依頼（フィードバック）</h2>
+        <button class="refresh-btn" onclick="loadRevisions()">更新</button>
+      </div>
+      <p style="font-size:0.8rem;color:var(--sub);margin-bottom:14px;">LINE経由のフィードバック一覧。各行からワンタップでLINE返信できます。</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>日時</th><th>クライアント</th><th>R</th><th>修正件数</th><th>納品</th><th>状態</th><th>アクション</th></tr></thead>
+          <tbody id="revisions-body"><tr><td colspan="7" class="table-empty"><span class="spinner"></span></td></tr></tbody>
+        </table>
+      </div>
+    </div><!-- /tab-revisions -->
+
   </main>
 </div>
 
@@ -2765,7 +2803,7 @@ function renderTable() {
     <tr>
       <td class="td-date">${esc(i.date)}</td>
       <td>
-        <p class="td-name">${esc(i.name)}</p>
+        <p class="td-name">${esc(i.name)}${(extractLineUid(i) && /未対応|新規|リード/.test(i.status||'')) ? ' <span style="font-size:0.66rem;padding:1px 6px;background:#7f1d1d;color:#fca5a5;border-radius:8px;font-weight:700;vertical-align:middle;">🔴未返信</span>' : ''}</p>
         <p class="td-company">${esc(i.company || '—')}</p>
       </td>
       <td>
@@ -3078,7 +3116,7 @@ function exportCSV() {
 }
 
 // ── Tab switch ──
-const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps','sales-apps','partner-apps','private-link','client-master','invoices','line'];
+const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps','sales-apps','partner-apps','private-link','client-master','invoices','line','orders','revisions'];
 function switchAdminTab(tab) {
   ADMIN_TABS.forEach(t => {
     document.getElementById('tab-' + t).style.display = t === tab ? '' : 'none';
@@ -3101,6 +3139,8 @@ function switchAdminTab(tab) {
   if (tab === 'partner-apps') { loadPartnerRewards(); loadPartnerApps(); }
   if (tab === 'private-link') loadPrivateLinks();
   if (tab === 'client-master') loadClientMaster();
+  if (tab === 'orders')      loadOrders();
+  if (tab === 'revisions')   loadRevisions();
 }
 
 // ── LP コンテンツ編集 ─────────────────────────────────────────
@@ -6416,6 +6456,11 @@ const LINE_QUICK_REPLIES = [
   { label: '💰 入金を確認',     text: '{{name}}様\n\nご入金を確認いたしました！\nありがとうございます😊\nこのあと制作を進めてまいりますので、よろしくお願いいたします。' },
   { label: '🛠 修正を承りました', text: '{{name}}様\n\n修正のご依頼を承りました🙏\n対応が完了次第、改めてご連絡いたします。' },
   { label: '🎉 ありがとうございました', text: '{{name}}様\n\nこの度はご依頼いただきありがとうございました😊\nまたのご依頼を心よりお待ちしております。' },
+  { label: '📄 見積もり・お振込のご案内', text: '{{name}}様\n\nお見積もりとお振込のご案内です👇\n{{url}}\n\nご確認のほどよろしくお願いいたします。' },
+  { label: '🧾 請求書の送付', text: '{{name}}様\n\n請求書をお送りします👇\n{{url}}\n\nご確認をお願いいたします。' },
+  { label: '📑 契約書のご確認', text: '{{name}}様\n\n契約書のご確認をお願いいたします👇\n{{url}}\n\nご同意いただけましたら、お振込へお進みください。' },
+  { label: '📁 入金確認＆素材フォルダ', text: '{{name}}様\n\nご入金を確認いたしました、ありがとうございます😊\n素材アップロード用フォルダはこちらです👇\n{{url}}\n\n素材のご共有をお願いいたします。' },
+  { label: '🎬 納品のご連絡', text: '{{name}}様\n\n動画が完成しました🎬\n納品データはこちらです👇\n{{url}}\n\nご確認をお願いいたします。修正がございましたらお気軽にどうぞ。' },
 ];
 
 // レコードから LINE UID を自動抽出（chatwork_id / message / line_uid いずれでも可）
@@ -6430,17 +6475,18 @@ function extractLineUid(rec) {
 let _quickLineUid = '', _quickLineName = '';
 
 function openQuickLine(row, sheet) {
-  const list = (sheet === 'hearings') ? hearings : inquiries;
+  const _lm = { hearings: hearings, inquiries: inquiries, orders: _adOrders, revisions: _fbList };
+  const list = _lm[sheet] || inquiries;
   const rec  = (list || []).find(x => x.row === row);
   const uid  = extractLineUid(rec);
   if (!uid) { showToast('このレコードにLINE UIDがありません（手動でLINE送信タブからどうぞ）'); return; }
   _quickLineUid  = uid;
-  _quickLineName = (rec && rec.name) || '';
+  _quickLineName = (rec && (rec.name || rec.client_name)) || '';
   document.getElementById('quick-line-name').textContent = _quickLineName || '（名前なし）';
   document.getElementById('quick-line-uid').textContent  = uid;
   const box = document.getElementById('quick-line-buttons');
   box.innerHTML = LINE_QUICK_REPLIES.map((t, idx) => {
-    const preview = t.text.replace(/\{\{name\}\}/g, _quickLineName || 'お客様');
+    const preview = t.text.replace(/\{\{name\}\}/g, _quickLineName || 'お客様').replace(/\{\{url\}\}/g, '（送信時にURLを入力）');
     return `<button onclick="sendQuickLine(${idx})"
       style="text-align:left;background:var(--bg);border:1px solid var(--border);border-left:3px solid #00b900;border-radius:9px;padding:11px 13px;cursor:pointer;display:flex;flex-direction:column;gap:5px;font-family:inherit;">
       <span style="font-weight:700;color:var(--lt);font-size:0.85rem;">${esc(t.label)}</span>
@@ -6457,7 +6503,12 @@ function closeQuickLine() {
 async function sendQuickLine(idx) {
   const tpl = LINE_QUICK_REPLIES[idx];
   if (!tpl || !_quickLineUid) return;
-  const text = tpl.text.replace(/\{\{name\}\}/g, _quickLineName || 'お客様');
+  let text = tpl.text.replace(/\{\{name\}\}/g, _quickLineName || 'お客様');
+  if (text.indexOf('{{url}}') !== -1) {
+    const url = prompt('挿入するURLを入力してください（見積もり / 請求書 / 契約書 / 素材フォルダ / 納品 など）');
+    if (url === null || !url.trim()) return;
+    text = text.replace(/\{\{url\}\}/g, url.trim());
+  }
   if (!confirm('以下の内容をLINEで送信します：\n\n' + text)) return;
   try {
     const res  = await gasFetch(GAS_URL, {
@@ -6468,6 +6519,61 @@ async function sendQuickLine(idx) {
     if (data.success) { showToast('✅ LINEで送信しました'); closeQuickLine(); }
     else { showToast('❌ 送信失敗: ' + (data.error || data.line_error || '不明')); }
   } catch(e) { showToast('❌ 通信エラー'); }
+}
+
+/* ── 追加発注タブ ── */
+let _adOrders = [], _fbList = [];
+async function loadOrders() {
+  const el = document.getElementById('orders-body');
+  el.innerHTML = '<tr><td colspan="6" class="table-empty"><span class="spinner"></span></td></tr>';
+  try {
+    const res = await gasFetch(`${GAS_URL}?action=additional_orders&key=${encodeURIComponent(getAdminPw())}`);
+    const j = await res.json(); _adOrders = j.data || []; renderOrders();
+  } catch(e) { el.innerHTML = '<tr><td colspan="6" class="table-empty">読み込みエラー</td></tr>'; }
+}
+function renderOrders() {
+  const el = document.getElementById('orders-body');
+  if (!_adOrders.length) { el.innerHTML = '<tr><td colspan="6" class="table-empty">追加発注はまだありません。</td></tr>'; return; }
+  el.innerHTML = _adOrders.map(o => `
+    <tr>
+      <td class="td-date">${esc(o.date)}</td>
+      <td class="td-name">${esc(o.name)}</td>
+      <td style="font-size:0.8rem;">${esc(o.plan)} <span style="color:var(--sub);">/ ${esc(o.count)}</span></td>
+      <td style="font-size:0.8rem;color:var(--sub);">${esc(o.due_date || '—')}</td>
+      <td><span class="status-badge status-${esc(o.status)}">${esc(o.status)}</span></td>
+      <td><div class="td-actions">
+        ${extractLineUid(o) ? `<button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${o.row},'orders')">💬 LINE返信</button>` : ''}
+        ${o.material_url ? `<button class="action-btn" style="background:#1e293b;color:#93c5fd;border:1px solid #334155;" onclick="window.open('${esc(o.material_url)}','_blank')">📁 素材</button>` : ''}
+        ${o.email ? `<button class="action-btn btn-mail" onclick="openMail('${esc(o.email)}','${esc(o.name)}','${esc(o.plan)}')">✉ メール</button>` : ''}
+      </div></td>
+    </tr>`).join('');
+}
+
+/* ── 修正依頼（FB）タブ ── */
+async function loadRevisions() {
+  const el = document.getElementById('revisions-body');
+  el.innerHTML = '<tr><td colspan="7" class="table-empty"><span class="spinner"></span></td></tr>';
+  try {
+    const res = await gasFetch(`${GAS_URL}?action=feedbacks&key=${encodeURIComponent(getAdminPw())}`);
+    const j = await res.json(); _fbList = j.data || []; renderRevisions();
+  } catch(e) { el.innerHTML = '<tr><td colspan="7" class="table-empty">読み込みエラー</td></tr>'; }
+}
+function renderRevisions() {
+  const el = document.getElementById('revisions-body');
+  if (!_fbList.length) { el.innerHTML = '<tr><td colspan="7" class="table-empty">修正依頼はまだありません。</td></tr>'; return; }
+  el.innerHTML = _fbList.map(f => `
+    <tr>
+      <td class="td-date">${esc(f.date)}</td>
+      <td class="td-name">${esc(f.client_name)}</td>
+      <td style="text-align:center;">${esc(f.round)}</td>
+      <td style="text-align:center;">${(f.items || []).length}件</td>
+      <td>${f.delivery_url ? `<a href="${esc(f.delivery_url)}" target="_blank" style="color:#60a5fa;font-size:0.78rem;">🎬 開く</a>` : '—'}</td>
+      <td><span class="status-badge status-${esc(f.status)}">${esc(f.status)}</span></td>
+      <td><div class="td-actions">
+        ${extractLineUid(f) ? `<button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${f.row},'revisions')">💬 LINE返信</button>` : ''}
+        ${f.email ? `<button class="action-btn btn-mail" onclick="openMail('${esc(f.email)}','${esc(f.client_name)}','修正対応')">✉ メール</button>` : ''}
+      </div></td>
+    </tr>`).join('');
 }
 </script>
 
