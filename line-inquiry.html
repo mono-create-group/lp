@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>はじめてのご依頼 | mono.create</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', sans-serif; background: #0f172a; color: #f1f5f9; min-height: 100vh; }
+    .header { background: linear-gradient(135deg, #1e40af, #7c3aed); padding: 24px 20px; text-align: center; }
+    .header h1 { font-size: 1.4rem; font-weight: 700; color: #fff; }
+    .header p  { font-size: 0.85rem; color: #bfdbfe; margin-top: 6px; }
+    .container { max-width: 600px; margin: 0 auto; padding: 24px 16px 60px; }
+    .card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 24px; margin-bottom: 16px; }
+    .card h2 { font-size: 1rem; font-weight: 700; color: #e2e8f0; margin-bottom: 16px; }
+    .form-group { margin-bottom: 18px; }
+    label { display: block; font-size: 0.82rem; color: #94a3b8; margin-bottom: 6px; }
+    label span.req { color: #f87171; margin-left: 3px; }
+    input, select, textarea { width: 100%; background: #0f172a; border: 1px solid #475569; border-radius: 8px; padding: 10px 12px; color: #f1f5f9; font-size: 0.9rem; font-family: inherit; transition: border-color .2s; }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: #3b82f6; }
+    textarea { resize: vertical; min-height: 80px; }
+    select option { background: #1e293b; }
+    .btn-submit { width: 100%; padding: 14px; background: linear-gradient(135deg, #2563eb, #7c3aed); color: #fff; border: none; border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: opacity .2s; }
+    .btn-submit:hover { opacity: .9; }
+    .btn-submit:disabled { opacity: .5; cursor: not-allowed; }
+    .success-view { display: none; text-align: center; padding: 40px 20px; }
+    .success-view .icon { font-size: 3rem; margin-bottom: 12px; }
+    .success-view h2 { font-size: 1.2rem; color: #34d399; margin-bottom: 8px; }
+    .success-view p { font-size: 0.88rem; color: #94a3b8; line-height: 1.6; }
+    .error-msg { color: #f87171; font-size: 0.8rem; margin-top: 4px; display: none; }
+    .info-banner { background: #1e3a5f; border: 1px solid #2563eb; border-radius: 8px; padding: 12px 16px; font-size: 0.82rem; color: #93c5fd; line-height: 1.6; margin-bottom: 16px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🆕 はじめてのご依頼</h1>
+    <p>30秒で完了。送信後、ヒアリングのご案内をLINEでお送りします</p>
+  </div>
+  <div class="container">
+    <div class="info-banner">
+      ✅ このフォームはLINEからアクセスしています。<br>
+      ご記入後、ヒアリングシートのご案内をLINEでお送りします。
+    </div>
+    <form id="inq-form">
+      <div class="card">
+        <h2>① お客様情報</h2>
+        <div class="form-group">
+          <label>お名前 <span class="req">*</span></label>
+          <input type="text" id="name" name="name" placeholder="山田 太郎" required>
+          <div class="error-msg" id="err-name">お名前を入力してください</div>
+        </div>
+        <div class="form-group">
+          <label>メールアドレス <span class="req">*</span></label>
+          <input type="email" id="email" name="email" placeholder="example@email.com" required>
+          <div class="error-msg" id="err-email">メールアドレスを入力してください</div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>② ご希望内容</h2>
+        <div class="form-group">
+          <label>ご希望のサービス <span class="req">*</span></label>
+          <select id="plan" name="plan" required>
+            <option value="">選択してください</option>
+            <option value="ショート動画編集">ショート動画編集</option>
+            <option value="長尺動画編集">長尺動画編集</option>
+            <option value="まとめて編集">まとめて編集（複数本）</option>
+            <option value="SNS運用代行">SNS運用代行</option>
+            <option value="サムネイル制作">サムネイル制作</option>
+            <option value="まだ決めていない／相談したい">まだ決めていない／相談したい</option>
+          </select>
+          <div class="error-msg" id="err-plan">ご希望を選択してください</div>
+        </div>
+        <div class="form-group">
+          <label>ご相談内容（任意）</label>
+          <textarea id="message" name="message" placeholder="制作したい動画のイメージ・本数・ご予算など、何でもお書きください"></textarea>
+        </div>
+      </div>
+      <button type="submit" class="btn-submit" id="submit-btn">📤 送信する</button>
+    </form>
+    <div class="success-view" id="success-view">
+      <div class="icon">✅</div>
+      <h2>送信ありがとうございます！</h2>
+      <p>内容を確認いたしました。<br><br>この後、<strong>ヒアリングシートのご案内をLINE</strong>にてお送りします。<br>少々お待ちください😊<br><br>LINEのトークにお戻りください。</p>
+    </div>
+  </div>
+  <script>
+    var GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
+    var params = new URLSearchParams(location.search);
+    var lineUid = params.get('uid') || '';
+    document.getElementById('inq-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      var ok = true;
+      var name  = document.getElementById('name').value.trim();
+      var email = document.getElementById('email').value.trim();
+      var plan  = document.getElementById('plan').value;
+      document.querySelectorAll('.error-msg').forEach(function(el){ el.style.display='none'; });
+      if (!name)  { document.getElementById('err-name').style.display='block'; ok=false; }
+      if (!email) { document.getElementById('err-email').style.display='block'; ok=false; }
+      if (!plan)  { document.getElementById('err-plan').style.display='block'; ok=false; }
+      if (!ok) return;
+      var btn = document.getElementById('submit-btn');
+      btn.disabled = true; btn.textContent = '送信中…';
+      var payload = { action: 'line_inquiry', line_uid: lineUid, name: name, email: email, plan: plan, message: document.getElementById('message').value.trim() };
+      try {
+        await fetch(GAS_URL, { method:'POST', body: JSON.stringify(payload), redirect:'follow' });
+        document.getElementById('inq-form').style.display = 'none';
+        document.getElementById('success-view').style.display = 'block';
+      } catch(err) {
+        btn.disabled = false; btn.textContent = '📤 送信する';
+        alert('送信に失敗しました。もう一度お試しください。');
+      }
+    });
+  </script>
+</body>
+</html>

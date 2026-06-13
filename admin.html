@@ -1663,17 +1663,33 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
             </select>
           </div>
 
+          <!-- 差し込み値：送信時に {{name}} {{url}} {{fb}} を自動置換 -->
+          <div style="margin-bottom:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div>
+              <label style="font-size:0.78rem;color:var(--sub);display:block;margin-bottom:5px;">お客様名 <span style="color:var(--sub);">（{{name}}に反映）</span></label>
+              <input id="line-push-name" type="text" placeholder="山田 太郎" oninput="updateLineCharCount()"
+                style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--lt);font-size:0.85rem;font-family:inherit;">
+            </div>
+            <div>
+              <label style="font-size:0.78rem;color:var(--sub);display:block;margin-bottom:5px;">🎬 納品動画URL <span style="color:var(--sub);">（{{url}}/{{fb}}に反映）</span></label>
+              <input id="line-push-video" type="url" placeholder="https://drive.google.com/file/d/..." oninput="updateLineCharCount()"
+                style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--lt);font-size:0.85rem;font-family:inherit;">
+            </div>
+          </div>
+
           <div style="margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;">
             <label style="font-size:0.78rem;color:var(--sub);">メッセージ本文 <span style="color:#f87171;">*</span></label>
             <span id="line-char-count" style="font-size:0.74rem;color:var(--sub);">0 / 2000</span>
           </div>
 
-          <div style="margin-bottom:8px;display:flex;gap:6px;flex-wrap:wrap;">
+          <div style="margin-bottom:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
             <span style="font-size:0.74rem;color:var(--sub);">プレースホルダ：</span>
             <button onclick="insertLinePlaceholder('{{name}}')"
               style="padding:3px 8px;background:var(--accent-dim);border:none;border-radius:5px;color:var(--lt);font-size:0.73rem;cursor:pointer;">{{name}}</button>
             <button onclick="insertLinePlaceholder('{{url}}')"
               style="padding:3px 8px;background:var(--accent-dim);border:none;border-radius:5px;color:var(--lt);font-size:0.73rem;cursor:pointer;">{{url}}</button>
+            <button onclick="insertLinePlaceholder('{{fb}}')"
+              style="padding:3px 8px;background:var(--accent-dim);border:none;border-radius:5px;color:var(--lt);font-size:0.73rem;cursor:pointer;">{{fb}}（修正リンク）</button>
           </div>
 
           <textarea id="line-push-text" rows="10" maxlength="2000"
@@ -2771,6 +2787,7 @@ function renderTable() {
         <div class="td-actions">
           ${i.chatwork_id ? `<button class="action-btn btn-cw" onclick="openCW('${esc(i.chatwork_id)}')">💬 CW</button>` : ''}
           <button class="action-btn btn-mail" onclick="openMail('${esc(i.email)}','${esc(i.name)}','${esc(i.plan)}')">✉ メール</button>
+          ${extractLineUid(i) ? `<button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${i.row},'inquiries')">\ud83d\udcac LINE返信</button>` : ''}
           <button class="action-btn btn-expand" onclick="openModal(${i.row})">詳細</button>
           ${i.email ? `<button class="action-btn" style="background:#1a3a2a;color:#4ade80;border:1px solid #166534;" onclick="openHearingLinkModal(${i.row})">📋 ヒアリング案内</button>` : ''}
           ${i.email ? `<button class="action-btn" style="background:#1a2a3a;color:#60a5fa;border:1px solid #1d4ed8;" onclick="openManualPaymentFromInquiry(${i.row})">💳 振込依頼</button>` : ''}
@@ -3730,6 +3747,7 @@ function renderHearings() {
       <td>
         <div class="td-actions">
           <button class="action-btn btn-expand" onclick="openHearingDetail(${h.row})">詳細</button>
+          ${extractLineUid(h) ? `<button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${h.row},'hearings')">\ud83d\udcac LINE返信</button>` : ''}
           ${isTrial(h)
             ? `<button class="action-btn" style="background:#1e3a5f;color:#93c5fd;border:1px solid #3b82f6;font-weight:700;" onclick="openTrialMail(${h.row})">📁 Drive+メール</button>`
             : `<button class="action-btn btn-mail" onclick="openMail('${esc(h.email)}','${esc(h.name)}','${esc(h.plan)}','hearing')">✉ メール</button>`
@@ -6388,7 +6406,84 @@ async function openLineLookup() {
 function closeLineLookup() {
   document.getElementById('line-lookup-modal').style.display = 'none';
 }
+
+/* ══════════════════════════════════════════════════════════════
+   LINE ワンタップ定型文返信（問い合わせ管理 / ヒアリング回答）
+   ══════════════════════════════════════════════════════════════ */
+const LINE_QUICK_REPLIES = [
+  { label: '📨 受付しました',   text: '{{name}}様\n\nご連絡ありがとうございます😊\n担当より順次対応いたしますので、少々お待ちくださいませ。' },
+  { label: '🔎 確認中です',     text: '{{name}}様\n\n内容を確認しております🙏\nもう少々お待ちくださいませ。' },
+  { label: '💰 入金を確認',     text: '{{name}}様\n\nご入金を確認いたしました！\nありがとうございます😊\nこのあと制作を進めてまいりますので、よろしくお願いいたします。' },
+  { label: '🛠 修正を承りました', text: '{{name}}様\n\n修正のご依頼を承りました🙏\n対応が完了次第、改めてご連絡いたします。' },
+  { label: '🎉 ありがとうございました', text: '{{name}}様\n\nこの度はご依頼いただきありがとうございました😊\nまたのご依頼を心よりお待ちしております。' },
+];
+
+// レコードから LINE UID を自動抽出（chatwork_id / message / line_uid いずれでも可）
+function extractLineUid(rec) {
+  if (!rec) return '';
+  try {
+    const m = JSON.stringify(rec).match(/U[0-9a-f]{32}/i);
+    return m ? m[0] : '';
+  } catch(e) { return ''; }
+}
+
+let _quickLineUid = '', _quickLineName = '';
+
+function openQuickLine(row, sheet) {
+  const list = (sheet === 'hearings') ? hearings : inquiries;
+  const rec  = (list || []).find(x => x.row === row);
+  const uid  = extractLineUid(rec);
+  if (!uid) { showToast('このレコードにLINE UIDがありません（手動でLINE送信タブからどうぞ）'); return; }
+  _quickLineUid  = uid;
+  _quickLineName = (rec && rec.name) || '';
+  document.getElementById('quick-line-name').textContent = _quickLineName || '（名前なし）';
+  document.getElementById('quick-line-uid').textContent  = uid;
+  const box = document.getElementById('quick-line-buttons');
+  box.innerHTML = LINE_QUICK_REPLIES.map((t, idx) => {
+    const preview = t.text.replace(/\{\{name\}\}/g, _quickLineName || 'お客様');
+    return `<button onclick="sendQuickLine(${idx})"
+      style="text-align:left;background:var(--bg);border:1px solid var(--border);border-left:3px solid #00b900;border-radius:9px;padding:11px 13px;cursor:pointer;display:flex;flex-direction:column;gap:5px;font-family:inherit;">
+      <span style="font-weight:700;color:var(--lt);font-size:0.85rem;">${esc(t.label)}</span>
+      <span style="font-size:0.74rem;color:var(--sub);white-space:pre-wrap;line-height:1.6;">${esc(preview)}</span>
+    </button>`;
+  }).join('');
+  document.getElementById('quick-line-modal').style.display = 'flex';
+}
+
+function closeQuickLine() {
+  document.getElementById('quick-line-modal').style.display = 'none';
+}
+
+async function sendQuickLine(idx) {
+  const tpl = LINE_QUICK_REPLIES[idx];
+  if (!tpl || !_quickLineUid) return;
+  const text = tpl.text.replace(/\{\{name\}\}/g, _quickLineName || 'お客様');
+  if (!confirm('以下の内容をLINEで送信します：\n\n' + text)) return;
+  try {
+    const res  = await gasFetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'admin_line_push', key: getAdminPw(), line_uid: _quickLineUid, text: text })
+    });
+    const data = await res.json();
+    if (data.success) { showToast('✅ LINEで送信しました'); closeQuickLine(); }
+    else { showToast('❌ 送信失敗: ' + (data.error || data.line_error || '不明')); }
+  } catch(e) { showToast('❌ 通信エラー'); }
+}
 </script>
+
+<!-- ── LINE ワンタップ返信モーダル ── -->
+<div class="modal-overlay" id="quick-line-modal" onclick="if(event.target===this)closeQuickLine()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;width:min(460px,92vw);max-height:85vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+      <h3 style="font-size:1rem;font-weight:800;">💬 LINEワンタップ返信</h3>
+      <button onclick="closeQuickLine()" style="background:none;border:none;color:var(--sub);font-size:1.3rem;cursor:pointer;">✕</button>
+    </div>
+    <p style="font-size:0.8rem;color:var(--sub);margin-bottom:3px;">送信先：<span id="quick-line-name" style="color:var(--lt);font-weight:700;"></span></p>
+    <p style="font-size:0.7rem;color:var(--sub);margin-bottom:14px;word-break:break-all;" id="quick-line-uid"></p>
+    <div id="quick-line-buttons" style="display:flex;flex-direction:column;gap:10px;"></div>
+    <p style="font-size:0.72rem;color:var(--sub);margin-top:14px;line-height:1.6;">※ ボタンを押すと確認後すぐ送信されます。<br>自由文・URL付きの返信は「💬 LINE送信」タブからどうぞ。</p>
+  </div>
+</div>
 
 <!-- ── 編集者契約書送付モーダル ── -->
 <div class="modal-overlay" id="contract-modal" onclick="if(event.target===this)closeContractModal()" style="display:none;">
