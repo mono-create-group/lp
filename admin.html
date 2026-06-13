@@ -6550,6 +6550,7 @@ async function sendQuickLine(idx) {
       + '&round=' + encodeURIComponent(_quickLineRound || '1');
     if (mp4.trim()) fb += '&video=' + encodeURIComponent(mp4.trim());
     if (_quickLineUid) fb += '&uid=' + encodeURIComponent(_quickLineUid);
+    fb += '&_v=' + Date.now();  // キャッシュ回避：毎回ユニークURLに
     text = text.replace(/\{\{url\}\}/g, videoUrl.trim()).replace(/\{\{fb\}\}/g, fb);
   } else if (text.indexOf('{{url}}') !== -1) {
     const url = prompt('挿入するURLを入力してください（見積もり / 請求書 / 契約書 / 素材フォルダ など）');
@@ -6618,6 +6619,7 @@ function buildDeliveryMessage() {
       + '&round=' + encodeURIComponent(_quickLineRound || '1');
     if (streamSrc) fb += '&video=' + encodeURIComponent(streamSrc);
     if (_quickLineUid) fb += '&uid=' + encodeURIComponent(_quickLineUid);
+    fb += '&_v=' + Date.now();  // キャッシュ回避：毎回ユニークURLに
     lines.push('-----------------------------------------',
       '✏️ 修正のご依頼はこちらから（動画を見ながらタイムコード付きで記入できます）', fb);
   }
