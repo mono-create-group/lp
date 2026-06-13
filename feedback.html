@@ -551,9 +551,9 @@ function loadVideo() {
   var autoBadge = document.getElementById('auto-badge');
   var slot      = document.getElementById('video-slot');
 
-  // ストリーム可能な直リンクが無く Drive のみ → ネイティブ再生はiOSで不可（黒画面/長時間スピナー）。
-  // ポートフォリオと同じ「タップで再生」方式へ直行（手動TC）。
-  if (!directVideoUrl && driveFileId) { loadIframeFallback(); return; }
+  // Drive のみ → まず blob 取得（CORS許可済）でネイティブ再生を試す＝iPhoneでも自動TC可能。
+  // 失敗時のみ「タップで再生」(/preview iframe・手動TC) にフォールバック。
+  if (!directVideoUrl && driveFileId) { tryDriveBlob(driveFileId); return; }
   if (!directVideoUrl && !driveFileId) { loading.classList.add('hidden'); return; }
 
   videoEl = document.createElement('video');
@@ -642,6 +642,79 @@ function loadVideo() {
 
   slot.appendChild(videoEl);
   tryNext();
+}
+
+// ── Drive動画を blob で取得 → ネイティブ<video>で再生（iPhoneでも自動TC可能）──
+function _setLoadingText(t) {
+  var el = document.querySelector('#video-loading .loading-text');
+  if (el) el.innerHTML = t;
+}
+function tryDriveBlob(id) {
+  var loading = document.getElementById('video-loading');
+  loading.classList.remove('hidden');
+  _setLoadingText('動画を読み込み中… 0%<br><small>初回はサイズにより数秒〜数十秒かかります</small>');
+  var url = 'https://drive.usercontent.google.com/download?id=' + id + '&export=download&confirm=t';
+  var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+  var timer = setTimeout(function(){ if (ctrl) ctrl.abort(); }, 120000); // 2分でタイムアウト
+
+  fetch(url, ctrl ? { signal: ctrl.signal } : {}).then(function(resp){
+    if (!resp.ok) throw new Error('http ' + resp.status);
+    var ctype = resp.headers.get('content-type') || '';
+    if (ctype.indexOf('text/html') === 0) throw new Error('interstitial-html');
+    var len = parseInt(resp.headers.get('content-length') || '0', 10);
+    if (!resp.body || !resp.body.getReader) return resp.blob();
+    var reader = resp.body.getReader(); var chunks = []; var recv = 0;
+    return new Promise(function(res, rej){
+      (function pump(){
+        reader.read().then(function(r){
+          if (r.done) { res(new Blob(chunks, { type: ctype || 'video/mp4' })); return; }
+          chunks.push(r.value); recv += r.value.length;
+          if (len) _setLoadingText('動画を読み込み中… ' + Math.round(recv/len*100) + '%<br><small>もう少しお待ちください</small>');
+          else _setLoadingText('動画を読み込み中… ' + Math.round(recv/1048576) + 'MB<br><small>もう少しお待ちください</small>');
+          pump();
+        }).catch(rej);
+      })();
+    });
+  }).then(function(blob){
+    clearTimeout(timer);
+    if (blob.type && blob.type.indexOf('text/html') === 0) throw new Error('interstitial');
+    if (blob.size < 50000) throw new Error('too-small');
+    playNativeBlob(URL.createObjectURL(blob));
+  }).catch(function(e){
+    clearTimeout(timer);
+    if (window.console) console.warn('Drive blob 取得失敗 → iframe再生へ:', e && e.message);
+    loadIframeFallback();
+  });
+}
+
+function playNativeBlob(burl) {
+  var loading   = document.getElementById('video-loading');
+  var autoBadge = document.getElementById('auto-badge');
+  var slot      = document.getElementById('video-slot');
+  videoEl = document.createElement('video');
+  videoEl.controls = true; videoEl.playsInline = true;
+  videoEl.setAttribute('playsinline', ''); videoEl.setAttribute('webkit-playsinline', '');
+  videoEl.preload = 'auto';
+  videoEl.style.cssText = 'width:100%;height:100%;object-fit:contain;background:#000;';
+  videoEl.src = burl;
+  function ok() {
+    if (nativeVideo) return; nativeVideo = true;
+    loading.classList.add('hidden');
+    autoBadge.textContent = '⏸ 一時停止 → ボタンでTC記録';
+    autoBadge.classList.add('on');
+    var hb = document.getElementById('hdr-autobadge'); if (hb) hb.style.display = '';
+    var btn = document.getElementById('tc-record-btn'); if (btn) btn.style.display = '';
+    showToast('⏸ 再生して止めたい所で一時停止 → 「タイムコードを記録する」を押してください');
+  }
+  videoEl.addEventListener('loadedmetadata', ok);
+  videoEl.addEventListener('loadeddata', ok);
+  videoEl.addEventListener('canplay', ok);
+  videoEl.addEventListener('error', function(){ if (!nativeVideo) loadIframeFallback(); });
+  videoEl.addEventListener('pause', function(){ var b=document.getElementById('tc-record-btn'); if(b){ b.style.display=''; b.classList.add('paused'); } });
+  videoEl.addEventListener('play',  function(){ var b=document.getElementById('tc-record-btn'); if(b) b.classList.remove('paused'); });
+  slot.innerHTML = '';
+  slot.appendChild(videoEl);
+  try { videoEl.load(); } catch(e) {}
 }
 
 // ポートフォリオと同じ「サムネ＋▶ → タップで/preview iframe注入」方式。
