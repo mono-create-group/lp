@@ -131,7 +131,7 @@
 
     /* TC Record Button (shown when paused) */
     .tc-record-btn {
-      position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+      position: absolute; bottom: 92px; left: 50%; transform: translateX(-50%);
       z-index: 25; white-space: nowrap;
       background: rgba(30,41,59,.85); border: 2px solid #475569;
       color: #64748b; border-radius: 14px; padding: 10px 22px;
@@ -157,6 +157,25 @@
       font-size: 0.73rem; color: #94a3b8; text-decoration: none; transition: background .2s;
     }
     .drive-open-btn:hover { background: rgba(255,255,255,.12); color: #e2e8f0; }
+
+    /* 独自プレーヤーコントロール（iOS標準の被りを回避・映像下部に固定） */
+    .vc-bar {
+      position: absolute; left: 0; right: 0; bottom: 32px; height: 48px; z-index: 16;
+      display: flex; align-items: center; gap: 10px; padding: 0 12px;
+      background: rgba(0,0,0,0.78);
+    }
+    .vc-btn {
+      background: none; border: none; color: #fff; font-size: 1.15rem;
+      cursor: pointer; padding: 0; line-height: 1; flex-shrink: 0;
+      width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
+    }
+    .vc-range {
+      flex: 1; height: 5px; -webkit-appearance: none; appearance: none;
+      background: rgba(255,255,255,0.35); border-radius: 3px; outline: none; cursor: pointer;
+    }
+    .vc-range::-webkit-slider-thumb { -webkit-appearance: none; width: 15px; height: 15px; border-radius: 50%; background: #fff; cursor: pointer; }
+    .vc-range::-moz-range-thumb { width: 15px; height: 15px; border: none; border-radius: 50%; background: #fff; cursor: pointer; }
+    .vc-time { color: #fff; font-size: 0.72rem; font-variant-numeric: tabular-nums; flex-shrink: 0; min-width: 78px; text-align: right; letter-spacing: .02em; }
 
     /* ── Form Pane ── */
     .form-pane { padding: 18px 16px 80px; }
@@ -306,7 +325,7 @@
       .badge { font-size: .66rem; padding: 2px 7px; }
 
       /* タップしやすいTC記録ボタン・入力 */
-      .tc-record-btn { bottom: 44px; padding: 12px 24px; font-size: .95rem; }
+      .tc-record-btn { bottom: 96px; padding: 12px 24px; font-size: .95rem; }
       .fb-slot { padding: 13px; }
       .slot-field input, .slot-field select, .slot-comment textarea { font-size: 16px; }
       .time-wrap input { font-size: 16px; }
@@ -557,7 +576,7 @@ function loadVideo() {
   if (!directVideoUrl && !driveFileId) { loading.classList.add('hidden'); return; }
 
   videoEl = document.createElement('video');
-  videoEl.controls = true;
+  videoEl.controls = false;
   videoEl.playsInline = true;
   videoEl.setAttribute('playsinline', '');
   videoEl.setAttribute('webkit-playsinline', '');
@@ -602,6 +621,7 @@ function loadVideo() {
     var hb = document.getElementById('hdr-autobadge'); if (hb) hb.style.display = '';
     var btn = document.getElementById('tc-record-btn');
     if (btn) btn.style.display = '';
+    attachCustomControls(videoEl);
     showToast('⏸ 再生して止めたい所で一時停止 → 「タイムコードを記録する」を押してください');
   }
   function onCandErr() {
@@ -642,6 +662,37 @@ function loadVideo() {
 
   slot.appendChild(videoEl);
   tryNext();
+}
+
+// ── 独自プレーヤーコントロール（iOS標準コントロールの被りを回避）──
+function attachCustomControls(v) {
+  if (!v) return;
+  v.controls = false;
+  var pane = document.getElementById('video-pane');
+  if (!pane || document.getElementById('vc-bar')) return;
+  var bar = document.createElement('div');
+  bar.id = 'vc-bar'; bar.className = 'vc-bar';
+  bar.innerHTML =
+    '<button class="vc-btn" id="vc-play" aria-label="再生/一時停止">&#9654;</button>' +
+    '<input class="vc-range" id="vc-range" type="range" min="0" max="1000" value="0" aria-label="シーク">' +
+    '<span class="vc-time" id="vc-time">0:00 / 0:00</span>';
+  pane.appendChild(bar);
+  var playBtn = bar.querySelector('#vc-play');
+  var range   = bar.querySelector('#vc-range');
+  var timeEl  = bar.querySelector('#vc-time');
+  var seeking = false;
+  function fmt(s) { s = s || 0; var m = Math.floor(s/60), x = Math.floor(s%60); return m + ':' + String(x).padStart(2,'0'); }
+  function sync() {
+    if (v.duration && !seeking) range.value = Math.round(v.currentTime / v.duration * 1000);
+    timeEl.textContent = fmt(v.currentTime) + ' / ' + fmt(v.duration);
+  }
+  playBtn.addEventListener('click', function() { if (v.paused) v.play(); else v.pause(); });
+  v.addEventListener('play',  function() { playBtn.innerHTML = '&#10074;&#10074;'; });
+  v.addEventListener('pause', function() { playBtn.innerHTML = '&#9654;'; });
+  v.addEventListener('timeupdate', sync);
+  v.addEventListener('loadedmetadata', sync);
+  range.addEventListener('input', function() { seeking = true; if (v.duration) { v.currentTime = range.value/1000 * v.duration; timeEl.textContent = fmt(v.currentTime) + ' / ' + fmt(v.duration); } });
+  range.addEventListener('change', function() { seeking = false; });
 }
 
 // ── Drive動画を blob で取得 → ネイティブ<video>で再生（iPhoneでも自動TC可能）──
@@ -692,7 +743,7 @@ function playNativeBlob(burl) {
   var autoBadge = document.getElementById('auto-badge');
   var slot      = document.getElementById('video-slot');
   videoEl = document.createElement('video');
-  videoEl.controls = true; videoEl.playsInline = true;
+  videoEl.controls = false; videoEl.playsInline = true;
   videoEl.setAttribute('playsinline', ''); videoEl.setAttribute('webkit-playsinline', '');
   videoEl.preload = 'auto';
   videoEl.style.cssText = 'width:100%;height:100%;object-fit:contain;background:#000;';
@@ -704,6 +755,7 @@ function playNativeBlob(burl) {
     autoBadge.classList.add('on');
     var hb = document.getElementById('hdr-autobadge'); if (hb) hb.style.display = '';
     var btn = document.getElementById('tc-record-btn'); if (btn) btn.style.display = '';
+    attachCustomControls(videoEl);
     showToast('⏸ 再生して止めたい所で一時停止 → 「タイムコードを記録する」を押してください');
   }
   videoEl.addEventListener('loadedmetadata', ok);
