@@ -6480,8 +6480,8 @@ const LINE_QUICK_REPLIES = [
   { label: '🧾 請求書の送付', text: '{{name}}様\n\n請求書をお送りします👇\n{{url}}\n\nご確認をお願いいたします。' },
   { label: '📑 契約書のご確認', text: '{{name}}様\n\n契約書のご確認をお願いいたします👇\n{{url}}\n\nご同意いただけましたら、お振込へお進みください。' },
   { label: '📁 入金確認＆素材フォルダ', text: '{{name}}様\n\nご入金を確認いたしました、ありがとうございます😊\n素材アップロード用フォルダはこちらです👇\n{{url}}\n\n素材のご共有をお願いいたします。' },
-  { label: '🎁 トライアル納品', text: '{{name}}様\n\n🎉 トライアル動画が完成しました！\n\n▼ 動画はこちら\n{{url}}\n\nまずはご覧ください😊\nもしご継続をご希望でしたら、このままお見積り・お振込のご案内へお進みいただけます。\n（トライアルは無料です。継続されない場合も費用は一切かかりません）\n\n✏️ 修正をご希望の場合はこちらから（動画を見ながらタイムコード付きで記入できます）\n{{fb}}\n\nご感想・ご質問もこのままお気軽にどうぞ！' },
-  { label: '🎬 通常納品（修正リンク付き）', text: '{{name}}様\n\n動画が完成しました🎬\n\n▼ 納品データ\n{{url}}\n\nご確認をお願いいたします🙏\n\n✏️ 修正のご依頼はこちらから（動画を見ながら記入できます）\n{{fb}}\n\n（1週間以内にご連絡いただけると助かります）' },
+  { label: '📦 初稿を納品（複数リンク入力）', deliver: true, kind: 'first' },
+  { label: '🔧 修正稿を納品（複数リンク入力）', deliver: true, kind: 'rev' },
 ];
 
 // レコードから LINE UID を自動抽出（chatwork_id / message / line_uid いずれでも可）
@@ -6515,7 +6515,9 @@ function openQuickLine(row, sheet) {
   document.getElementById('quick-line-uid').textContent  = uid ? ('LINE: ' + uid) : ('✉ メール: ' + email);
   const box = document.getElementById('quick-line-buttons');
   box.innerHTML = LINE_QUICK_REPLIES.map((t, idx) => {
-    const preview = t.text.replace(/\{\{name\}\}/g, _quickLineName || 'お客様').replace(/\{\{url\}\}/g, '（送信時に動画URLを入力）').replace(/\{\{fb\}\}/g, '（修正リンク自動生成）');
+    const preview = t.deliver
+      ? '◇ドライブ ◇MP4ダウンロード ◇プロマネ を入力して納品します（修正リンクも自動生成）'
+      : t.text.replace(/\{\{name\}\}/g, _quickLineName || 'お客様').replace(/\{\{url\}\}/g, '（送信時に動画URLを入力）').replace(/\{\{fb\}\}/g, '（修正リンク自動生成）');
     return `<button onclick="sendQuickLine(${idx})"
       style="text-align:left;background:var(--bg);border:1px solid var(--border);border-left:3px solid #00b900;border-radius:9px;padding:11px 13px;cursor:pointer;display:flex;flex-direction:column;gap:5px;font-family:inherit;">
       <span style="font-weight:700;color:var(--lt);font-size:0.85rem;">${esc(t.label)}</span>
@@ -6532,6 +6534,8 @@ function closeQuickLine() {
 async function sendQuickLine(idx) {
   const tpl = LINE_QUICK_REPLIES[idx];
   if (!tpl || (!_quickLineUid && !_quickLineEmail)) return;
+  // 納品系は専用モーダル（複数リンク入力）へ
+  if (tpl.deliver) { openDeliverModal(tpl.kind); return; }
   let text = tpl.text.replace(/\{\{name\}\}/g, _quickLineName || 'お客様');
 
   // 納品系（{{fb}}を含む）：動画URL＋直リンクMP4(任意)を聞いて、修正リンク(FB)を自動生成
@@ -6567,6 +6571,85 @@ async function sendQuickLine(idx) {
     if (data.success) { showToast('✅ ' + via + 'で送信しました'); closeQuickLine(); }
     else { showToast('❌ 送信失敗: ' + (data.error || data.line_error || '不明')); }
   } catch(e) { showToast('❌ 通信エラー'); }
+}
+
+/* ── 納品モーダル（複数リンク：ドライブ / MP4 / プロマネ）── */
+function openDeliverModal(kind) {
+  closeQuickLine();
+  document.getElementById('dlv-kind').value = (kind === 'rev') ? 'rev' : 'first';
+  document.getElementById('dlv-trial').checked = false;
+  document.getElementById('dlv-fb').checked = true;
+  document.getElementById('dlv-drive').value = '';
+  document.getElementById('dlv-mp4').value = '';
+  document.getElementById('dlv-proma').value = '';
+  const via = _quickLineUid ? 'LINE' : (_quickLineEmail ? ('✉ ' + _quickLineEmail) : '宛先なし');
+  document.getElementById('dlv-recipient').textContent = (_quickLineName || '（名前なし）') + '　[' + via + ']';
+  updateDeliverPreview();
+  document.getElementById('deliver-modal').style.display = 'flex';
+}
+function closeDeliverModal() { document.getElementById('deliver-modal').style.display = 'none'; }
+
+function buildDeliveryMessage() {
+  const name  = _quickLineName || 'お客様';
+  const isRev = document.getElementById('dlv-kind').value === 'rev';
+  const trial = document.getElementById('dlv-trial').checked;
+  const incFb = document.getElementById('dlv-fb').checked;
+  const drive = document.getElementById('dlv-drive').value.trim();
+  const mp4   = document.getElementById('dlv-mp4').value.trim();
+  const proma = document.getElementById('dlv-proma').value.trim();
+  const lines = [];
+  lines.push(name + '様', '', 'お世話になっております！',
+    '下記動画の' + (isRev ? '修正稿' : '初稿') + 'を提出いたします。',
+    'ご確認のほど、よろしくお願いいたします。',
+    '-----------------------------------------');
+  if (trial) lines.push('【トライアル】', '--------------------------------------------');
+  if (drive) lines.push('◇ドライブリンク', drive, '');
+  if (mp4)   lines.push('◇MP4ダウンロード' + (isRev ? '（ギガファイル）' : ''), mp4, '');
+  if (proma) lines.push('◇プロマネ' + (isRev ? '（ギガファイル）' : '（素材あり）'), proma, '');
+  if (incFb) {
+    let fb = _fbBaseUrl()
+      + '?url=' + encodeURIComponent(drive || mp4 || '')
+      + '&name=' + encodeURIComponent(name === 'お客様' ? '' : name)
+      + '&title=' + encodeURIComponent((name === 'お客様' ? '' : name + '様 ') + (isRev ? '修正稿' : '初稿'))
+      + '&round=' + encodeURIComponent(_quickLineRound || '1');
+    if (mp4) fb += '&video=' + encodeURIComponent(mp4);
+    if (_quickLineUid) fb += '&uid=' + encodeURIComponent(_quickLineUid);
+    lines.push('-----------------------------------------',
+      '✏️ 修正のご依頼はこちらから（動画を見ながらタイムコード付きで記入できます）', fb);
+  }
+  if (trial) lines.push('', '※ トライアルは無料です。ご継続をご希望の場合は、このままお見積り・お振込のご案内へお進みいただけます😊');
+  return lines.join('\n');
+}
+function updateDeliverPreview() {
+  const el = document.getElementById('dlv-preview');
+  if (el) el.textContent = buildDeliveryMessage();
+}
+async function sendDelivery() {
+  const drive = document.getElementById('dlv-drive').value.trim();
+  const mp4   = document.getElementById('dlv-mp4').value.trim();
+  const proma = document.getElementById('dlv-proma').value.trim();
+  if (!drive && !mp4 && !proma) { showToast('リンクを1つ以上入力してください', true); return; }
+  if (!_quickLineUid && !_quickLineEmail) { showToast('宛先がありません', true); return; }
+  const text = buildDeliveryMessage();
+  const via  = _quickLineUid ? 'LINE' : 'メール';
+  const isRev = document.getElementById('dlv-kind').value === 'rev';
+  if (!confirm('【' + via + '】で納品メッセージを送信します。よろしいですか？')) return;
+  const btn = document.getElementById('dlv-send-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '送信中…'; }
+  try {
+    let body;
+    if (_quickLineUid) {
+      body = { action: 'admin_line_push', key: getAdminPw(), line_uid: _quickLineUid, text: text };
+    } else {
+      body = { action: 'send_delivery', key: getAdminPw(), email: _quickLineEmail, name: _quickLineName,
+        subject: '【mono.create】' + (isRev ? '修正稿' : '初稿') + 'のご提出', text: text };
+    }
+    const res  = await gasFetch(GAS_URL, { method: 'POST', body: JSON.stringify(body) });
+    const data = await res.json();
+    if (data.success) { showToast('✅ ' + via + 'で納品しました'); closeDeliverModal(); }
+    else { showToast('❌ 送信失敗: ' + (data.error || data.line_error || '不明'), true); }
+  } catch(e) { showToast('❌ 通信エラー', true); }
+  finally { if (btn) { btn.disabled = false; btn.textContent = '📤 この内容で納品する'; } }
 }
 
 /* ── 追加発注タブ ── */
@@ -6655,6 +6738,50 @@ function renderRevisions() {
     <p style="font-size:0.7rem;color:var(--sub);margin-bottom:14px;word-break:break-all;" id="quick-line-uid"></p>
     <div id="quick-line-buttons" style="display:flex;flex-direction:column;gap:10px;"></div>
     <p style="font-size:0.72rem;color:var(--sub);margin-top:14px;line-height:1.6;">※ ボタンを押すと確認後すぐ送信されます。<br>自由文・URL付きの返信は「💬 LINE送信」タブからどうぞ。</p>
+  </div>
+</div>
+
+<!-- ── 納品モーダル（複数リンク：ドライブ / MP4 / プロマネ）── -->
+<div class="modal-overlay" id="deliver-modal" onclick="if(event.target===this)closeDeliverModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;width:min(560px,94vw);max-height:90vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+      <h3 style="font-size:1rem;font-weight:800;">📦 納品（複数リンク・LINE/メール自動判定）</h3>
+      <button onclick="closeDeliverModal()" style="background:none;border:none;color:var(--sub);font-size:1.3rem;cursor:pointer;">✕</button>
+    </div>
+    <p style="font-size:0.78rem;color:var(--sub);margin-bottom:3px;">送信先：<span id="dlv-recipient" style="color:var(--lt);font-weight:700;"></span></p>
+
+    <div style="display:flex;gap:8px;margin:12px 0;">
+      <label style="flex:1;"><span style="font-size:0.74rem;color:var(--sub);">種別</span>
+        <select id="dlv-kind" onchange="updateDeliverPreview()" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--lt);font-size:0.85rem;font-family:inherit;">
+          <option value="first">初稿提出</option>
+          <option value="rev">修正稿提出</option>
+        </select>
+      </label>
+      <label style="display:flex;align-items:flex-end;gap:6px;font-size:0.82rem;color:var(--lt);padding-bottom:8px;">
+        <input type="checkbox" id="dlv-trial" onchange="updateDeliverPreview()"> 🎁 トライアル
+      </label>
+    </div>
+
+    <div style="margin-bottom:10px;">
+      <label style="font-size:0.74rem;color:var(--sub);display:block;margin-bottom:3px;">◇ ドライブリンク</label>
+      <input id="dlv-drive" type="url" oninput="updateDeliverPreview()" placeholder="https://drive.google.com/..." style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 11px;color:var(--lt);font-size:0.85rem;font-family:inherit;">
+    </div>
+    <div style="margin-bottom:10px;">
+      <label style="font-size:0.74rem;color:var(--sub);display:block;margin-bottom:3px;">◇ MP4ダウンロード（ギガファイル等）<span style="color:#4ade80;">※入れるとスマホでも自動TCが効きます</span></label>
+      <input id="dlv-mp4" type="url" oninput="updateDeliverPreview()" placeholder="https://xgf.nu/... または直リンクMP4" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 11px;color:var(--lt);font-size:0.85rem;font-family:inherit;">
+    </div>
+    <div style="margin-bottom:10px;">
+      <label style="font-size:0.74rem;color:var(--sub);display:block;margin-bottom:3px;">◇ プロマネ（素材／ギガファイル）</label>
+      <input id="dlv-proma" type="url" oninput="updateDeliverPreview()" placeholder="https://..." style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 11px;color:var(--lt);font-size:0.85rem;font-family:inherit;">
+    </div>
+    <label style="display:flex;align-items:center;gap:6px;font-size:0.8rem;color:var(--lt);margin-bottom:12px;">
+      <input type="checkbox" id="dlv-fb" onchange="updateDeliverPreview()" checked> ✏️ 修正リンク（FBフォーム）を自動で末尾に付ける
+    </label>
+
+    <label style="font-size:0.74rem;color:var(--sub);display:block;margin-bottom:4px;">プレビュー</label>
+    <pre id="dlv-preview" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:11px 13px;color:var(--lt);font-size:0.78rem;line-height:1.7;white-space:pre-wrap;word-break:break-all;max-height:200px;overflow:auto;font-family:inherit;margin-bottom:14px;"></pre>
+
+    <button id="dlv-send-btn" onclick="sendDelivery()" style="width:100%;padding:13px;background:#00b900;color:#fff;border:none;border-radius:10px;font-size:0.95rem;font-weight:700;cursor:pointer;font-family:inherit;">📤 この内容で納品する</button>
   </div>
 </div>
 
