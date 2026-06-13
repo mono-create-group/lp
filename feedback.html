@@ -573,10 +573,17 @@ function loadVideo() {
     if (settled) return;
     if (idx >= cands.length) { onAllFail(); return; }
     var u = cands[idx++];
+    var isDirect = (directVideoUrl && u === directVideoUrl);
     videoEl.src = u;
     try { videoEl.load(); } catch(e) {}
-    // この候補が一定時間で再生可能にならなければ次へ
-    candTimer = setTimeout(function() { if (!settled) tryNext(); }, 7000);
+    if (isDirect) {
+      // 直リンクMP4は再生可能とみなす（iOSはタップまでメタ데이타を読まないことがあるため、
+      // タイムアウトで失敗扱いにせず「ネイティブ採用」。実際に再生不可なら error で次へ）
+      candTimer = setTimeout(function() { if (!settled) onNativeOk(); }, 2500);
+    } else {
+      // Driveストリーム候補は再生可能になるまで粘り、ダメなら次の候補へ
+      candTimer = setTimeout(function() { if (!settled) tryNext(); }, 7000);
+    }
   }
 
   function onNativeOk() {
