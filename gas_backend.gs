@@ -555,10 +555,13 @@ function doGet(e) {
 
   // ── 一時トークン：リッチメニュー初期設定（実行後に削除予定） ──
   if (action === 'setup_richmenu' && e.parameter.token === 'mono-setup-once-9f3a') {
-    return jsonResponse(setupRichMenu(e.parameter.img || (LP_BASE_URL + 'richmenu_main.png')));
+    return jsonResponse(setupRichMenu(e.parameter.img || (LP_BASE_URL + 'richmenu_main.jpg')));
   }
   if (action === 'list_richmenu' && e.parameter.token === 'mono-setup-once-9f3a') {
     return jsonResponse(listRichMenus());
+  }
+  if (action === 'delete_richmenu' && e.parameter.token === 'mono-setup-once-9f3a') {
+    return jsonResponse(deleteRichMenu(e.parameter.id || ''));
   }
 
   // ── 以降は管理者キー必須 ──────────────────────────────────────
@@ -1162,7 +1165,7 @@ function doGet(e) {
   // ── リッチメニュー セットアップ（Messaging API） ──
   if (action === 'setup_richmenu') {
     if (e.parameter.key !== ADMIN_KEY && e.parameter.token !== 'mono-setup-once-9f3a') return jsonResponse({ error: 'unauthorized' });
-    var imageUrl = e.parameter.img || (LP_BASE_URL + 'richmenu_main.png');
+    var imageUrl = e.parameter.img || (LP_BASE_URL + 'richmenu_main.jpg');
     return jsonResponse(setupRichMenu(imageUrl));
   }
   if (action === 'list_richmenu') {
