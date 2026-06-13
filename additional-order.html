@@ -66,12 +66,32 @@
       border-radius: 8px; padding: 12px 16px;
       font-size: 0.82rem; color: #93c5fd; line-height: 1.6; margin-bottom: 16px;
     }
+    .item-block {
+      background: #0f172a; border: 1px solid #334155;
+      border-radius: 10px; padding: 16px; margin-bottom: 14px;
+    }
+    .item-head {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
+    }
+    .item-no { font-size: 0.9rem; font-weight: 700; color: #60a5fa; }
+    .btn-remove {
+      background: #3f1d1d; color: #fca5a5; border: 1px solid #7f1d1d;
+      border-radius: 6px; padding: 5px 12px; font-size: 0.75rem; cursor: pointer;
+      width: auto; transition: background .2s;
+    }
+    .btn-remove:hover { background: #5b2424; }
+    .btn-add {
+      width: 100%; padding: 12px; background: #1e293b; color: #93c5fd;
+      border: 1px dashed #3b82f6; border-radius: 10px; font-size: 0.92rem;
+      font-weight: 600; cursor: pointer; transition: background .2s;
+    }
+    .btn-add:hover { background: #1e3a5f; }
   </style>
 </head>
 <body>
   <div class="header">
     <h1>📦 追加発注フォーム</h1>
-    <p>本数・素材URL・希望納期をご記入ください</p>
+    <p>本数・素材・ご希望時期をご記入ください</p>
   </div>
 
   <div class="container">
@@ -95,63 +115,14 @@
       </div>
 
       <div class="card">
-        <h2>② プラン選択 <span class="req">*</span></h2>
-        <div class="plan-grid" id="plan-grid">
-          <label class="plan-card" onclick="selectPlan(this,'ショート動画編集（1本）')">
-            <input type="radio" name="plan" value="ショート動画編集（1本）">
-            <div class="plan-name">📱 ショート動画編集</div>
-            <div class="plan-price">単品 / 1本〜</div>
-          </label>
-          <label class="plan-card" onclick="selectPlan(this,'長尺動画編集（1本）')">
-            <input type="radio" name="plan" value="長尺動画編集（1本）">
-            <div class="plan-name">🎬 長尺動画編集</div>
-            <div class="plan-price">単品 / 1本〜</div>
-          </label>
-          <label class="plan-card" onclick="selectPlan(this,'まとめて編集（ショート）')">
-            <input type="radio" name="plan" value="まとめて編集（ショート）">
-            <div class="plan-name">📦 まとめて編集</div>
-            <div class="plan-price">ショート / 複数本</div>
-          </label>
-          <label class="plan-card" onclick="selectPlan(this,'その他')">
-            <input type="radio" name="plan" value="その他">
-            <div class="plan-name">💬 その他</div>
-            <div class="plan-price">詳細はメモ欄へ</div>
-          </label>
+        <h2>② ご依頼内容（複数案件OK）<span class="req">*</span></h2>
+        <div style="font-size:0.78rem;color:#94a3b8;margin:-8px 0 16px;line-height:1.7;">
+          動画・案件ごとに <strong>プラン / 本数 / 素材URL / ご希望</strong> を分けて登録できます。<br>
+          別の素材・別の指定がある場合は <strong>「＋ 案件を追加」</strong> で何件でも追加してください。
         </div>
-        <div class="error-msg" id="err-plan">プランを選択してください</div>
-      </div>
-
-      <div class="card">
-        <h2>③ 発注内容</h2>
-        <div class="form-group">
-          <label>本数 <span class="req">*</span></label>
-          <select id="count" name="count" required>
-            <option value="">選択してください</option>
-            <option value="1本">1本</option>
-            <option value="2本">2本</option>
-            <option value="3本">3本</option>
-            <option value="4本">4本</option>
-            <option value="5本">5本</option>
-            <option value="6〜10本">6〜10本</option>
-            <option value="11本以上">11本以上</option>
-          </select>
-          <div class="error-msg" id="err-count">本数を選択してください</div>
-        </div>
-        <div class="form-group">
-          <label>素材URL（Google Drive / ギガファイル便など）<span class="req">*</span></label>
-          <input type="url" id="material_url" name="material_url"
-            placeholder="https://drive.google.com/..." required>
-          <div class="error-msg" id="err-material">素材URLを入力してください</div>
-        </div>
-        <div class="form-group">
-          <label>希望納期</label>
-          <input type="date" id="due_date" name="due_date">
-        </div>
-        <div class="form-group">
-          <label>連絡事項・メモ（任意）</label>
-          <textarea id="note" name="note"
-            placeholder="テロップ有無・BGM指定・参考動画URLなど"></textarea>
-        </div>
+        <div id="items"></div>
+        <button type="button" class="btn-add" id="add-item-btn" onclick="addItem()">＋ 案件を追加</button>
+        <div class="error-msg" id="err-items">少なくとも1件、プランと本数をご入力ください</div>
       </div>
 
       <button type="submit" class="btn-submit" id="submit-btn">
@@ -178,30 +149,116 @@
     var params = new URLSearchParams(location.search);
     var lineUid = params.get('uid') || '';
 
-    function selectPlan(card, value) {
-      document.querySelectorAll('.plan-card').forEach(function(c) {
-        c.classList.remove('selected');
-      });
-      card.classList.add('selected');
-      card.querySelector('input[type=radio]').checked = true;
+    // ── 案件ブロック（複数本対応）──
+    function itemTemplate(no) {
+      return ''
+        + '<div class="item-block" data-item>'
+        +   '<div class="item-head">'
+        +     '<span class="item-no">🎬 案件 ' + no + '</span>'
+        +     '<button type="button" class="btn-remove" onclick="removeItem(this)">✕ 削除</button>'
+        +   '</div>'
+        +   '<div class="form-group">'
+        +     '<label>プラン <span class="req">*</span></label>'
+        +     '<select class="it-plan">'
+        +       '<option value="">選択してください</option>'
+        +       '<option value="ショート動画編集">📱 ショート動画編集</option>'
+        +       '<option value="長尺動画編集">🎬 長尺動画編集</option>'
+        +       '<option value="まとめて編集（ショート）">📦 まとめて編集（ショート）</option>'
+        +       '<option value="その他">💬 その他（メモ欄へ）</option>'
+        +     '</select>'
+        +   '</div>'
+        +   '<div class="form-group">'
+        +     '<label>本数 <span class="req">*</span></label>'
+        +     '<select class="it-count">'
+        +       '<option value="">選択してください</option>'
+        +       '<option value="1本">1本</option>'
+        +       '<option value="2本">2本</option>'
+        +       '<option value="3本">3本</option>'
+        +       '<option value="4本">4本</option>'
+        +       '<option value="5本">5本</option>'
+        +       '<option value="6〜10本">6〜10本</option>'
+        +       '<option value="11本以上">11本以上</option>'
+        +     '</select>'
+        +   '</div>'
+        +   '<div class="form-group">'
+        +     '<label>素材URL（この案件のGoogle Driveフォルダ）</label>'
+        +     '<input type="url" class="it-material" placeholder="https://drive.google.com/...">'
+        +     '<div style="font-size:0.74rem;color:#94a3b8;margin-top:6px;line-height:1.6;">'
+        +       '案件ごとに素材フォルダを分けて貼り付けできます。<br>'
+        +       '<strong>不明・新規フォルダが必要な場合は空欄で送信</strong>いただければ折り返しご案内します。'
+        +     '</div>'
+        +   '</div>'
+        +   '<div class="form-group">'
+        +     '<label>ご希望の時期</label>'
+        +     '<select class="it-due">'
+        +       '<option value="">選択してください</option>'
+        +       '<option value="できるだけ早く">できるだけ早く</option>'
+        +       '<option value="2週間以内">2週間以内</option>'
+        +       '<option value="1ヶ月以内">1ヶ月以内</option>'
+        +       '<option value="特に急がない">特に急がない</option>'
+        +       '<option value="相談したい">相談したい</option>'
+        +     '</select>'
+        +   '</div>'
+        +   '<div class="form-group" style="margin-bottom:0;">'
+        +     '<label>連絡事項・メモ（任意）</label>'
+        +     '<textarea class="it-note" placeholder="テロップ有無・BGM指定・参考動画URLなど"></textarea>'
+        +   '</div>'
+        + '</div>';
     }
+
+    function renumberItems() {
+      var blocks = document.querySelectorAll('#items [data-item]');
+      blocks.forEach(function(b, i) {
+        b.querySelector('.item-no').textContent = '🎬 案件 ' + (i + 1);
+        // 案件が1件のときは削除ボタンを隠す
+        b.querySelector('.btn-remove').style.display = (blocks.length <= 1) ? 'none' : 'inline-block';
+      });
+    }
+
+    function addItem() {
+      var wrap = document.createElement('div');
+      wrap.innerHTML = itemTemplate(document.querySelectorAll('#items [data-item]').length + 1);
+      document.getElementById('items').appendChild(wrap.firstChild);
+      renumberItems();
+    }
+
+    function removeItem(btn) {
+      var block = btn.closest('[data-item]');
+      if (block) block.remove();
+      renumberItems();
+    }
+
+    function collectItems() {
+      var items = [];
+      document.querySelectorAll('#items [data-item]').forEach(function(b) {
+        var plan = b.querySelector('.it-plan').value;
+        var count = b.querySelector('.it-count').value;
+        var material_url = b.querySelector('.it-material').value.trim();
+        var due_date = b.querySelector('.it-due').value;
+        var note = b.querySelector('.it-note').value.trim();
+        // 完全に空のブロックは無視
+        if (!plan && !count && !material_url && !due_date && !note) return;
+        items.push({ plan: plan, count: count, material_url: material_url, due_date: due_date, note: note });
+      });
+      return items;
+    }
+
+    // 初期表示：1件目を自動追加
+    addItem();
 
     document.getElementById('order-form').addEventListener('submit', async function(e) {
       e.preventDefault();
 
-      // バリデーション
       var ok = true;
       var name = document.getElementById('name').value.trim();
-      var planEl = document.querySelector('[name=plan]:checked');
-      var count  = document.getElementById('count').value;
-      var matUrl = document.getElementById('material_url').value.trim();
+      var items = collectItems();
 
       document.querySelectorAll('.error-msg').forEach(function(el){ el.style.display='none'; });
 
       if (!name) { document.getElementById('err-name').style.display='block'; ok=false; }
-      if (!planEl){ document.getElementById('err-plan').style.display='block'; ok=false; }
-      if (!count) { document.getElementById('err-count').style.display='block'; ok=false; }
-      if (!matUrl){ document.getElementById('err-material').style.display='block'; ok=false; }
+      // 各案件にプラン・本数が入っているか
+      var validItems = items.filter(function(it){ return it.plan && it.count; });
+      if (!validItems.length) { document.getElementById('err-items').style.display='block'; ok=false; }
       if (!ok) return;
 
       var btn = document.getElementById('submit-btn');
@@ -209,15 +266,17 @@
       btn.textContent = '送信中…';
 
       var payload = {
-        action:       'additional_order',
-        line_uid:     lineUid,
-        name:         name,
-        email:        document.getElementById('email').value.trim(),
-        plan:         planEl ? planEl.value : '',
-        count:        count,
-        material_url: matUrl,
-        due_date:     document.getElementById('due_date').value,
-        note:         document.getElementById('note').value.trim(),
+        action:   'additional_order',
+        line_uid: lineUid,
+        name:     name,
+        email:    document.getElementById('email').value.trim(),
+        items:    validItems,
+        // 後方互換（1件目を従来フィールドにも反映）
+        plan:         validItems[0].plan,
+        count:        validItems[0].count,
+        material_url: validItems[0].material_url,
+        due_date:     validItems[0].due_date,
+        note:         validItems[0].note,
       };
 
       try {

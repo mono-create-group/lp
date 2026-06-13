@@ -6534,19 +6534,38 @@ async function loadOrders() {
 function renderOrders() {
   const el = document.getElementById('orders-body');
   if (!_adOrders.length) { el.innerHTML = '<tr><td colspan="6" class="table-empty">追加発注はまだありません。</td></tr>'; return; }
-  el.innerHTML = _adOrders.map(o => `
+  el.innerHTML = _adOrders.map(o => {
+    const items = (o.items && o.items.length) ? o.items : null;
+    const planCell = items
+      ? items.map((it,i) => `<div>${i+1}. ${esc(it.plan)} <span style="color:var(--sub);">/ ${esc(it.count)}</span>${it.due_date ? ` <span style="color:var(--sub);font-size:0.72rem;">(${esc(it.due_date)})</span>` : ''}</div>`).join('')
+        + (items.length > 1 ? `<div style="color:#60a5fa;font-size:0.72rem;margin-top:2px;">計 ${items.length} 案件</div>` : '')
+      : `${esc(o.plan)} <span style="color:var(--sub);">/ ${esc(o.count)}</span>`;
+    const dueCell = items
+      ? (items.length > 1 ? `${items.length}案件` : esc(items[0].due_date || '—'))
+      : esc(o.due_date || '—');
+    // 素材ボタン：案件ごと。複数なら 📁1 📁2 …、単一なら 📁素材
+    let matBtns = '';
+    if (items) {
+      matBtns = items.map((it,i) => it.material_url
+        ? `<button class="action-btn" style="background:#1e293b;color:#93c5fd;border:1px solid #334155;" onclick="window.open('${esc(it.material_url)}','_blank')">📁${items.length>1 ? (i+1) : ' 素材'}</button>`
+        : '').join('');
+    } else if (o.material_url) {
+      matBtns = `<button class="action-btn" style="background:#1e293b;color:#93c5fd;border:1px solid #334155;" onclick="window.open('${esc(o.material_url)}','_blank')">📁 素材</button>`;
+    }
+    return `
     <tr>
       <td class="td-date">${esc(o.date)}</td>
       <td class="td-name">${esc(o.name)}</td>
-      <td style="font-size:0.8rem;">${esc(o.plan)} <span style="color:var(--sub);">/ ${esc(o.count)}</span></td>
-      <td style="font-size:0.8rem;color:var(--sub);">${esc(o.due_date || '—')}</td>
+      <td style="font-size:0.8rem;line-height:1.5;">${planCell}</td>
+      <td style="font-size:0.8rem;color:var(--sub);">${dueCell}</td>
       <td><span class="status-badge status-${esc(o.status)}">${esc(o.status)}</span></td>
       <td><div class="td-actions">
         ${extractLineUid(o) ? `<button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${o.row},'orders')">💬 LINE返信</button>` : ''}
-        ${o.material_url ? `<button class="action-btn" style="background:#1e293b;color:#93c5fd;border:1px solid #334155;" onclick="window.open('${esc(o.material_url)}','_blank')">📁 素材</button>` : ''}
+        ${matBtns}
         ${o.email ? `<button class="action-btn btn-mail" onclick="openMail('${esc(o.email)}','${esc(o.name)}','${esc(o.plan)}')">✉ メール</button>` : ''}
       </div></td>
-    </tr>`).join('');
+    </tr>`;
+  }).join('');
 }
 
 /* ── 修正依頼（FB）タブ ── */
