@@ -2226,7 +2226,7 @@ function applyClientMasterToPaymentModal(name) {
       <button class="modal-close" onclick="closeHearingModal()">×</button>
     </div>
     <div style="padding:24px;">
-      <p style="color:var(--sub);font-size:0.85rem;margin-bottom:16px;">メールアドレス宛にヒアリングシートのURLを自動送信します。</p>
+      <p style="color:var(--sub);font-size:0.85rem;margin-bottom:16px;">ヒアリングシートのURLを送信します。<br><strong style="color:#4ade80;">LINE経由の問い合わせはLINEに自動送信</strong>（メールもあれば併送）されます。</p>
       <div class="modal-row"><p class="modal-label">お名前</p><p class="modal-val" id="hm-name">—</p></div>
       <div class="modal-row"><p class="modal-label">メール</p><p class="modal-val" id="hm-email">—</p></div>
       <div class="modal-row" style="margin-bottom:16px;">
@@ -2827,8 +2827,8 @@ function renderTable() {
           <button class="action-btn btn-mail" onclick="openMail('${esc(i.email)}','${esc(i.name)}','${esc(i.plan)}')">✉ メール</button>
           ${extractLineUid(i) ? `<button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${i.row},'inquiries')">\ud83d\udcac LINE返信</button>` : ''}
           <button class="action-btn btn-expand" onclick="openModal(${i.row})">詳細</button>
-          ${i.email ? `<button class="action-btn" style="background:#1a3a2a;color:#4ade80;border:1px solid #166534;" onclick="openHearingLinkModal(${i.row})">📋 ヒアリング案内</button>` : ''}
-          ${i.email ? `<button class="action-btn" style="background:#1a2a3a;color:#60a5fa;border:1px solid #1d4ed8;" onclick="openManualPaymentFromInquiry(${i.row})">💳 振込依頼</button>` : ''}
+          ${(i.email || extractLineUid(i)) ? `<button class="action-btn" style="background:#1a3a2a;color:#4ade80;border:1px solid #166534;" onclick="openHearingLinkModal(${i.row})">📋 ヒアリング案内</button>` : ''}
+          ${(i.email || extractLineUid(i)) ? `<button class="action-btn" style="background:#1a2a3a;color:#60a5fa;border:1px solid #1d4ed8;" onclick="openManualPaymentFromInquiry(${i.row})">💳 振込依頼</button>` : ''}
           <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="deleteInquiry(${i.row}, '${esc(i.name)}')">🗑 削除</button>
         </div>
       </td>
@@ -3437,6 +3437,9 @@ function renderPayments() {
       style="padding:5px 10px;background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;margin-left:6px;">
       🗑
     </button>`;
+    const lineBtn = extractLineUid(p)
+      ? `<button onclick="openQuickLine(${p.row},'payments')" style="padding:5px 10px;background:#06371f;color:#4ade80;border:1px solid #00b900;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;margin-right:6px;">💬 LINE返信</button>`
+      : '';
     return `<tr>
       <td>${esc(p.date)}</td>
       <td style="font-weight:600;">${esc(p.name)}</td>
@@ -3445,7 +3448,7 @@ function renderPayments() {
       <td style="font-weight:700;color:var(--gold);">${esc(p.amount)}</td>
       <td>${esc(p.payDate)}</td>
       <td style="color:${statusColor};font-weight:700;">${esc(p.status)}</td>
-      <td style="white-space:nowrap;">${btn}${delBtn}</td>
+      <td style="white-space:nowrap;">${lineBtn}${btn}${delBtn}</td>
     </tr>`;
   }).join('');
 }
@@ -3953,20 +3956,23 @@ function closeHearingModal() {
 }
 async function submitHearingLink() {
   const i = inquiries.find(x => x.row === _hearingLinkRow);
-  if (!i || !i.email) { showToast('メールアドレスがありません'); return; }
+  if (!i) return;
+  const uid = extractLineUid(i);
+  if (!i.email && !uid) { showToast('メールもLINEも宛先がありません', true); return; }
   const planKey = document.getElementById('hm-plan-key').value;
   const btn = document.getElementById('hm-send-btn');
   btn.disabled = true; btn.textContent = '送信中...';
   try {
     const url = `${GAS_URL}?action=send_hearing_link&key=${encodeURIComponent(getAdminPw())}`
-      + `&email=${encodeURIComponent(i.email)}`
+      + `&email=${encodeURIComponent(i.email||'')}`
       + `&name=${encodeURIComponent(i.name||'')}`
       + `&plan=${encodeURIComponent(i.plan||'')}`
-      + `&planKey=${encodeURIComponent(planKey)}`;
+      + `&planKey=${encodeURIComponent(planKey)}`
+      + `&line_uid=${encodeURIComponent(uid)}`;
     const res  = await gasFetch(url);
     const json = await res.json();
     if (json.success) {
-      showToast('📋 ヒアリング案内メールを送信しました');
+      showToast('📋 ヒアリング案内を送信しました（' + ((json.channels||[]).join('・') || '送信') + '）');
       closeHearingModal();
     } else {
       showToast('送信失敗: ' + (json.error || 'エラー'), true);
@@ -4116,6 +4122,7 @@ function refreshManualNameList() {
 }
 // 名前入力欄が変更されたら、一致する候補からメール/プラン/金額を自動補完
 function onManualNamePick(rawName) {
+  _manualLineUid = '';  // 手入力で名前変更時はLINE UIDをリセット（誤送信防止）
   const name = (rawName || '').trim();
   const hint = document.getElementById('manual-amount-hint');
   if (!name) { if (hint) hint.textContent = ''; return; }
@@ -4143,30 +4150,35 @@ function onManualNamePick(rawName) {
 }
 
 // ── 手動見積もり送信（ヒアリングなし） ─────────────────────────
+let _manualLineUid = '';
 async function submitManualPaymentRequest() {
   const name   = document.getElementById('manual-name').value.trim();
   const email  = document.getElementById('manual-email').value.trim();
   const plan   = document.getElementById('manual-plan').value.trim();
   const amount = document.getElementById('manual-amount').value.trim();
   const due    = document.getElementById('manual-due').value.trim();
-  if (!name || !email || !amount) { showToast('名前・メール・金額は必須です', true); return; }
-  if (email.indexOf('@') === -1) { showToast('メールアドレスを正しく入力してください', true); return; }
+  const uid    = _manualLineUid;
+  if (!name || !amount) { showToast('名前・金額は必須です', true); return; }
+  if (!email && !uid) { showToast('メールまたはLINE宛先が必要です', true); return; }
+  if (email && email.indexOf('@') === -1) { showToast('メールアドレスを正しく入力してください', true); return; }
   try {
     const url = `${GAS_URL}?action=send_payment_request&key=${encodeURIComponent(getAdminPw())}`
       + `&email=${encodeURIComponent(email)}`
       + `&name=${encodeURIComponent(name)}`
       + `&plan=${encodeURIComponent(plan || 'ご依頼プラン')}`
       + `&amount=${encodeURIComponent(amount)}`
-      + `&due=${encodeURIComponent(due || '7日以内')}`;
+      + `&due=${encodeURIComponent(due || '7日以内')}`
+      + `&line_uid=${encodeURIComponent(uid)}`;
     const res  = await gasFetch(url);
     const json = await res.json();
     if (json.success) {
-      showToast(`💳 ${name} 様に見積もりメールを送信しました`);
+      showToast(`💳 ${name} 様に見積もりを送信しました（` + ((json.channels||[]).join('・') || '送信') + '）');
       document.getElementById('manual-name').value   = '';
       document.getElementById('manual-email').value  = '';
       document.getElementById('manual-plan').value   = '';
       document.getElementById('manual-amount').value = '';
       document.getElementById('manual-due').value    = '';
+      _manualLineUid = '';
     } else {
       showToast('送信失敗: ' + (json.error || 'エラー'), true);
     }
@@ -4177,12 +4189,14 @@ async function submitManualPaymentRequest() {
 function openManualPaymentFromInquiry(row) {
   const i = inquiries.find(x => x.row === row);
   if (!i) return;
+  _manualLineUid = extractLineUid(i) || '';
   // ヒアリングタブの手動フォームに値を入れてタブ切替
   switchAdminTab('hearings');
   setTimeout(() => {
     document.getElementById('manual-name').value  = i.name  || '';
     document.getElementById('manual-email').value = i.email || '';
     document.getElementById('manual-plan').value  = i.plan  || '';
+    if (_manualLineUid) showToast('💬 LINE宛に送信されます（このお客様はLINE経由）');
     document.getElementById('manual-name').scrollIntoView({ behavior:'smooth', block:'center' });
     document.getElementById('manual-amount').focus();
   }, 150);
@@ -4302,7 +4316,9 @@ function closePaymentReqModal() {
 }
 async function submitPaymentRequest() {
   const h = hearings.find(x => x.row === _paymentReqRow);
-  if (!h || !h.email) { showToast('メールアドレスがありません'); return; }
+  if (!h) return;
+  const uid = extractLineUid(h);
+  if (!h.email && !uid) { showToast('メールもLINEも宛先がありません', true); return; }
   const amount = document.getElementById('pm-amount').value.trim();
   const isTrial = (amount === '0' || (h.answers && h.answers['__planKey'] === 'trial'));
   if (!isTrial && (!amount || isNaN(amount) || Number(amount) < 0)) {
@@ -4315,16 +4331,17 @@ async function submitPaymentRequest() {
   btn.disabled = true; btn.textContent = '送信中...';
   try {
     const url = `${GAS_URL}?action=send_payment_request&key=${encodeURIComponent(getAdminPw())}`
-      + `&email=${encodeURIComponent(h.email)}`
+      + `&email=${encodeURIComponent(h.email||'')}`
       + `&name=${encodeURIComponent(h.name||'')}`
       + `&plan=${encodeURIComponent(editedPlan)}`
       + `&amount=${encodeURIComponent(amount)}`
       + `&due=${encodeURIComponent(due)}`
-      + `&note=${encodeURIComponent(note)}`;
+      + `&note=${encodeURIComponent(note)}`
+      + `&line_uid=${encodeURIComponent(uid)}`;
     const res  = await gasFetch(url);
     const json = await res.json();
     if (json.success) {
-      showToast('💳 振込依頼メールを送信しました');
+      showToast('💳 振込依頼を送信しました（' + ((json.channels||[]).join('・') || '送信') + '）');
       closePaymentReqModal();
     } else {
       showToast('送信失敗: ' + (json.error || 'エラー'), true);
@@ -6024,7 +6041,9 @@ async function markInvoiceUnpaid(invNum) {
 var _origSubmitPaymentRequest = submitPaymentRequest;
 submitPaymentRequest = async function() {
   var h = hearings.find(function(x) { return x.row === _paymentReqRow; });
-  if (!h || !h.email) { showToast('メールアドレスがありません'); return; }
+  if (!h) return;
+  var uid = extractLineUid(h);
+  if (!h.email && !uid) { showToast('メールもLINEも宛先がありません', true); return; }
   var amount = document.getElementById('pm-amount').value.trim();
   var isTrial = (amount === '0' || (h.answers && h.answers['__planKey'] === 'trial'));
   if (!isTrial && (!amount || isNaN(amount) || Number(amount) < 0)) {
@@ -6038,17 +6057,18 @@ submitPaymentRequest = async function() {
   btn.disabled = true; btn.textContent = '送信中...';
   try {
     var url = GAS_URL + '?action=send_payment_request&key=' + encodeURIComponent(getAdminPw())
-      + '&email=' + encodeURIComponent(h.email)
+      + '&email=' + encodeURIComponent(h.email||'')
       + '&name='  + encodeURIComponent(h.name||'')
       + '&plan='  + encodeURIComponent(editedPlan)
       + '&amount='+ encodeURIComponent(amount)
       + '&due='   + encodeURIComponent(due)
       + '&note='  + encodeURIComponent(note)
-      + '&pay_type=' + encodeURIComponent(payType);
+      + '&pay_type=' + encodeURIComponent(payType)
+      + '&line_uid=' + encodeURIComponent(uid);
     var res  = await gasFetch(url);
     var json = await res.json();
     if (json.success) {
-      showToast('💳 振込依頼メールを送信しました');
+      showToast('💳 振込依頼を送信しました（' + ((json.channels||[]).join('・') || '送信') + '）');
       closePaymentReqModal();
     } else {
       showToast('送信失敗: ' + (json.error || 'エラー'), true);
@@ -6475,7 +6495,7 @@ function extractLineUid(rec) {
 let _quickLineUid = '', _quickLineName = '';
 
 function openQuickLine(row, sheet) {
-  const _lm = { hearings: hearings, inquiries: inquiries, orders: _adOrders, revisions: _fbList };
+  const _lm = { hearings: hearings, inquiries: inquiries, orders: _adOrders, revisions: _fbList, payments: payments };
   const list = _lm[sheet] || inquiries;
   const rec  = (list || []).find(x => x.row === row);
   const uid  = extractLineUid(rec);
