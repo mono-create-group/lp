@@ -288,8 +288,9 @@
     /* Mobile */
     @media (max-width: 720px) {
       .layout-short { grid-template-columns: 1fr !important; height: auto !important; }
+      /* ショート＝縦動画：縦長の枠で全体を表示（見切れ防止） */
       .layout-short .video-pane {
-        height: 56vw; min-height: 210px; max-height: 320px;
+        height: 64vh; min-height: 360px; max-height: 72vh;
         position: sticky; top: 0; z-index: 100;
       }
       .layout-long .video-pane { top: 0; }
