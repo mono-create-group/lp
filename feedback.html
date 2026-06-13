@@ -551,6 +551,11 @@ function loadVideo() {
   var autoBadge = document.getElementById('auto-badge');
   var slot      = document.getElementById('video-slot');
 
+  // ストリーム可能な直リンクが無く Drive のみ → ネイティブ再生はiOSで不可（黒画面/長時間スピナー）。
+  // ポートフォリオと同じ「タップで再生」方式へ直行（手動TC）。
+  if (!directVideoUrl && driveFileId) { loadIframeFallback(); return; }
+  if (!directVideoUrl && !driveFileId) { loading.classList.add('hidden'); return; }
+
   videoEl = document.createElement('video');
   videoEl.controls = true;
   videoEl.playsInline = true;
@@ -639,28 +644,36 @@ function loadVideo() {
   tryNext();
 }
 
+// ポートフォリオと同じ「サムネ＋▶ → タップで/preview iframe注入」方式。
+// iPhoneではこの方式だとDrive動画が黒くならず再生できる（ネイティブ再生は不可なため手動TC）。
+function buildThumbUrl(id) { return 'https://drive.google.com/thumbnail?id=' + id + '&sz=w640-h1138'; }
+
 function loadIframeFallback() {
   var slot      = document.getElementById('video-slot');
   var loading   = document.getElementById('video-loading');
   var autoBadge = document.getElementById('auto-badge');
 
-  var iframe = document.createElement('iframe');
-  iframe.src = buildPreviewUrl(driveFileId);
-  iframe.allow = 'autoplay; encrypted-media; fullscreen';
-  iframe.allowFullscreen = true;
-  iframe.style.cssText = 'width:100%;height:100%;border:none;display:block;background:#000;';
-  iframe.addEventListener('load', function() { loading.classList.add('hidden'); });
-
-  autoBadge.textContent = '📝 手動でTCを入力（⏱ボタンは非対応）';
+  loading.classList.add('hidden');
+  autoBadge.textContent = '▶ タップで再生（タイムコードは手動入力）';
   autoBadge.classList.add('manual');
 
-  slot.appendChild(iframe);
+  var thumb = driveFileId ? buildThumbUrl(driveFileId) : '';
+  var imgHtml = thumb
+    ? '<img src="' + thumb + '" alt="動画サムネイル" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000;cursor:pointer;" onclick="playDriveIframe()" onerror="this.style.display=\'none\'">'
+    : '<div style="position:absolute;inset:0;background:#000;cursor:pointer;" onclick="playDriveIframe()"></div>';
+  slot.innerHTML = imgHtml +
+    '<button onclick="playDriveIframe()" aria-label="再生" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);' +
+    'width:72px;height:72px;border-radius:50%;background:rgba(0,0,0,0.72);border:2px solid rgba(255,255,255,0.8);' +
+    'color:#fff;font-size:2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:8;backdrop-filter:blur(4px);">&#9654;</button>';
+}
 
-  setTimeout(function() {
-    if (!document.getElementById('video-loading').classList.contains('hidden')) {
-      document.getElementById('video-fallback').classList.add('show');
-    }
-  }, 15000);
+// ユーザーのタップ操作内で /preview iframe を注入 → iOSでも再生可能
+function playDriveIframe() {
+  if (!driveFileId) return;
+  var slot = document.getElementById('video-slot');
+  slot.innerHTML = '<iframe src="' + buildPreviewUrl(driveFileId) + '" ' +
+    'allow="autoplay; encrypted-media; fullscreen" allowfullscreen ' +
+    'style="position:absolute;inset:0;width:100%;height:100%;border:none;display:block;background:#000;"></iframe>';
 }
 
 /* ── TC record button click ── */
