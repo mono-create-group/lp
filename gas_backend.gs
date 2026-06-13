@@ -29,7 +29,7 @@ var LINE_CHANNEL_SECRET       = '1322ddbd622dbea420f68cfc2bd957f5';
 var LINE_CHANNEL_ACCESS_TOKEN = 'WoL98l0NE3ZWox6Kd5ntByqB85NlyxtoJ7Jwf/7f0T/TuCbmF9lHu5t90JR0kE7Jyz5sm5/B+pozKep+8s9Esv0Abhu/KbuAAOXRM7tMspiKlEfFme11mk6Fwowo4+pNeVUlUfR07h54CGZYLgxfdQdB04t89/1O/w1cDnyilFU=';
 var LINE_REPLY_API            = 'https://api.line.me/v2/bot/message/reply';
 var LINE_PUSH_API             = 'https://api.line.me/v2/bot/message/push';
-var OWNER_LINE_UID            = ''; // オーナーのLINE UID（Script Properties: OWNER_LINE_UID）
+var OWNER_LINE_UID            = 'U5e926566fa2cad3aec632c6f6811f915'; // オーナーのLINE UID（Script Properties: OWNER_LINE_UID）
 
 // 素材アップロード用：親フォルダID（mono.create.group@gmail.comが所有）
 var MATERIAL_PARENT_FOLDER_ID = '1YdwuPGNqYQZiHeseuMtyXF2GKkyqmSvo';
@@ -370,6 +370,10 @@ function doPost(e) {
     // 追加発注（LINE経由・フォーム経由・認証不要）
     if (data.action === 'additional_order') {
       return saveAdditionalOrder(data);
+    }
+
+    if (data.action === 'line_inquiry') {
+      return handleLineInquiry(data);
     }
 
     // LINE管理者プッシュ（管理者のみ・テンプレ送信）
@@ -4320,56 +4324,35 @@ function handleLineTextMessage(event) {
   var userId     = (event.source && event.source.userId) || '';
   var lowerText  = text.toLowerCase();
 
-  // 自分のLINE UIDを確認（オーナー設定用）
   if (lowerText === 'myid' || lowerText === 'my id' || lowerText === '自分のid') {
     replyToLine(replyToken, [{ type: 'text', text: 'あなたのLINE UID:\n' + userId }]);
     return;
   }
-
-  // 追加発注キーワード
-  if (lowerText.indexOf('追加発注') >= 0 || lowerText.indexOf('追加注文') >= 0 ||
-      lowerText.indexOf('依頼') >= 0    || lowerText.indexOf('発注') >= 0) {
+  if (text.indexOf('初回') >= 0 || text.indexOf('初めて') >= 0 || text.indexOf('はじめて') >= 0 || text.indexOf('新規') >= 0) {
+    recordLineInquiryLead(userId);
+    var inqUrl = LP_BASE_URL + 'line-inquiry.html?uid=' + encodeURIComponent(userId);
+    replyToLine(replyToken, [{ type: 'text', text: 'はじめまして！ご依頼ありがとうございます😊\n\nまずは下記フォームにご記入ください👇\n' + inqUrl + '\n\n（追ってヒアリングのご案内をLINEでお送りします）' }]);
+    return;
+  }
+  if (text.indexOf('継続') >= 0 || text.indexOf('追加') >= 0) {
     var orderUrl = LP_BASE_URL + 'additional-order.html?uid=' + encodeURIComponent(userId);
-    replyToLine(replyToken, [
-      {
-        type: 'text',
-        text: '追加のご依頼ありがとうございます！\n\n以下のフォームから内容をご記入ください👇\n\n' + orderUrl + '\n\n（本数・素材URL・希望納期をご入力いただくだけで完了です）'
-      }
-    ]);
+    replyToLine(replyToken, [{ type: 'text', text: 'いつもありがとうございます！追加のご依頼ですね😊\n\nこちらのフォームからお願いします👇\n' + orderUrl + '\n\n（納期は内容確認後に確定してご連絡します）' }]);
     return;
   }
-
-  // FBキーワード
-  if (lowerText.indexOf('フィードバック') >= 0 || lowerText.indexOf('fb') >= 0 ||
-      lowerText.indexOf('修正') >= 0) {
+  if (lowerText.indexOf('フィードバック') >= 0 || lowerText.indexOf('fb') >= 0 || text.indexOf('修正') >= 0) {
     var fbUrl = LP_BASE_URL + 'feedback.html?uid=' + encodeURIComponent(userId);
-    replyToLine(replyToken, [
-      {
-        type: 'text',
-        text: '修正・フィードバックはこちらのフォームからご記入ください👇\n\n' + fbUrl + '\n\n動画を見ながら修正箇所を記入できます。\n納品URLと動画の種類（ショート/長尺）を選んで開始してください！'
-      }
-    ]);
+    replyToLine(replyToken, [{ type: 'text', text: '修正のご依頼ですね、承知しました🙏\n\nこちらから動画を見ながら修正箇所をご記入ください👇\n' + fbUrl }]);
     return;
   }
-
-  // メニュー表示
+  if (text === 'その他' || text === 'そのほか') {
+    replyToLine(replyToken, [{ type: 'text', text: 'ご相談ありがとうございます😊\n\nこのトークにそのままメッセージをお送りください。担当より順次ご返信いたします！' }]);
+    return;
+  }
   if (text === 'メニュー' || text === 'menu' || text === 'help' || text === 'ヘルプ') {
-    replyToLine(replyToken, [
-      {
-        type: 'text',
-        text: '【mono.create メニュー】\n\n📦 追加のご依頼\n→「追加発注」と送信\n\n✏️ 修正・フィードバック\n→「修正」と送信\n\n💬 何でもご相談\n→ このLINEにそのままメッセージをどうぞ！\n\n全てこのLINEで完結します😊'
-      }
-    ]);
+    replyToLine(replyToken, [{ type: 'text', text: '【mono.create メニュー】\n\n🆕 初めてのご依頼 →「初回依頼」\n🔄 2回目以降 →「継続依頼」\n✏️ 修正のご相談 →「修正依頼」\n💬 その他 → そのままメッセージをどうぞ！\n\n下のリッチメニューからも選べます😊' }]);
     return;
   }
-
-  // その他（LINEで完結させる）
-  replyToLine(replyToken, [
-    {
-      type: 'text',
-      text: 'メッセージありがとうございます😊\n\n追加のご依頼 → 「追加発注」\n修正・FB → 「修正」\n\nその他のご相談はそのままこのトークにメッセージをお送りください！'
-    }
-  ]);
+  replyToLine(replyToken, [{ type: 'text', text: 'メッセージありがとうございます😊\n\n下のメニューからご用件をお選びいただくか、このままご相談内容をお送りください！\n\n🆕初回依頼 / 🔄継続依頼 / ✏️修正依頼' }]);
 }
 
 /**
@@ -4380,14 +4363,25 @@ function handleLinePostback(event) {
   var replyToken = event.replyToken || '';
   var userId     = (event.source && event.source.userId) || '';
 
-  if (data === 'action=additional_order') {
+  if (data === 'action=first_order') {
+    recordLineInquiryLead(userId);
+    var inqUrl = LP_BASE_URL + 'line-inquiry.html?uid=' + encodeURIComponent(userId);
+    replyToLine(replyToken, [{ type: 'text', text: 'はじめまして！ご依頼ありがとうございます😊\n\nまずは下記フォームにご記入ください👇\n' + inqUrl + '\n\n（追ってヒアリングのご案内をLINEでお送りします）' }]);
+    return;
+  }
+  if (data === 'action=repeat_order' || data === 'action=additional_order') {
     var orderUrl = LP_BASE_URL + 'additional-order.html?uid=' + encodeURIComponent(userId);
-    replyToLine(replyToken, [
-      {
-        type: 'text',
-        text: '追加発注フォームはこちらです👇\n\n' + orderUrl
-      }
-    ]);
+    replyToLine(replyToken, [{ type: 'text', text: 'いつもありがとうございます！追加のご依頼ですね😊\n\nこちらのフォームからお願いします👇\n' + orderUrl + '\n\n（本数・素材URL・ご希望時期をご記入ください。納期は内容確認後に確定してご連絡します）' }]);
+    return;
+  }
+  if (data === 'action=revision') {
+    var fbUrl = LP_BASE_URL + 'feedback.html?uid=' + encodeURIComponent(userId);
+    replyToLine(replyToken, [{ type: 'text', text: '修正のご依頼ですね、承知しました🙏\n\nこちらから動画を見ながら修正箇所をご記入ください👇\n' + fbUrl }]);
+    return;
+  }
+  if (data === 'action=other') {
+    replyToLine(replyToken, [{ type: 'text', text: 'ご相談ありがとうございます😊\n\nこのトークにそのままメッセージをお送りください。担当より順次ご返信いたします！' }]);
+    return;
   }
 }
 
@@ -4396,12 +4390,40 @@ function handleLinePostback(event) {
  */
 function handleLineFollow(event) {
   var replyToken = event.replyToken || '';
-  replyToLine(replyToken, [
-    {
-      type: 'text',
-      text: '友だち追加ありがとうございます！\nmono.create です😊\n\n追加のご依頼 → 「追加発注」\n修正・フィードバック → 「修正」\nその他ご相談 → そのままメッセージをどうぞ！\n\n全てこのLINEで完結しますので、お気軽にご連絡ください🙌'
+  replyToLine(replyToken, [{ type: 'text', text: '友だち追加ありがとうございます！mono.create です😊\n\n動画編集のご依頼は、下のメニューから選ぶだけ👇\n\n🆕 初めての方 → 「初回依頼」\n🔄 2回目以降 → 「継続依頼」\n✏️ 修正のご相談 → 「修正依頼」\n💬 その他 → 「その他」または直接メッセージ\n\n全てこのLINEで完結します。お気軽にどうぞ🙌' }]);
+}
+
+function recordLineInquiryLead(userId) {
+  try {
+    var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    var sheet = ss.getSheetByName(SHEET_NAME);
+    if (!sheet) {
+      sheet = ss.insertSheet(SHEET_NAME);
+      sheet.appendRow(['日時','名前','会社','メール','電話','プラン','メッセージ','ステータス']);
     }
-  ]);
+    var now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm:ss');
+    sheet.appendRow([now, '(LINE初回依頼)', '', '', '', '', 'LINE UID:' + userId, 'リード']);
+  } catch(e) { Logger.log('recordLineInquiryLead error: ' + e); }
+}
+
+function handleLineInquiry(data) {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) {
+    sheet = ss.insertSheet(SHEET_NAME);
+    sheet.appendRow(['日時','名前','会社','メール','電話','プラン','メッセージ','ステータス']);
+  }
+  var now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm:ss');
+  var uid = data.line_uid || '';
+  sheet.appendRow([now, data.name || '', '', data.email || '', '', data.plan || '', (data.message || '') + (uid ? ' [LINE UID:' + uid + ']' : ''), '新規(LINE初回)']);
+  var planMap = { 'ショート動画編集': 'short-single', '長尺動画編集': 'long-single', 'まとめて編集': 'set-8' };
+  var planKey = planMap[data.plan] || 'trial';
+  var hearingPath = HEARING_MAP[planKey] || 'hearing/short.html';
+  var hearingUrl = LP_BASE_URL + hearingPath + '?name=' + encodeURIComponent(data.name || '') + '&email=' + encodeURIComponent(data.email || '') + '&plan=' + encodeURIComponent(data.plan || '') + '&planKey=' + encodeURIComponent(planKey);
+  var lineText = (data.name || 'お客様') + ' 様\n\nお問い合わせありがとうございます😊\n\n続いて、以下のヒアリングシートにご記入をお願いいたします👇\n' + hearingUrl + '\n\n（3～5分で完了します）ご不明点はこのLINEにてお気軽にどうぞ！';
+  notifyClientLineOrEmail(uid, data.email || '', data.name || '', lineText, '【mono.create】お問い合わせありがとうございます', [(data.name || 'お客様') + ' 様', '', 'お問い合わせありがとうございます。', '', '以下のヒアリングシートにご記入をお願いいたします。', hearingUrl]);
+  notifyOwnerEmail('【LINE初回依頼】フォーム回答 — ' + (data.name || '') + ' / ' + (data.plan || ''), ['日時: ' + now, '名前: ' + (data.name || ''), 'メール: ' + (data.email || ''), 'プラン: ' + (data.plan || ''), 'メッセージ: ' + (data.message || ''), 'LINE UID: ' + uid]);
+  return jsonResponse({ success: true });
 }
 
 /**
@@ -4601,10 +4623,10 @@ function saveFeedback(data) {
   if (!sheet) {
     sheet = ss.insertSheet('feedbacks');
     sheet.appendRow([
-      '受信日時','クライアント名','メール','納品URL','フィードバックJSON','ラウンド','ステータス'
+      '受信日時','クライアント名','メール','納品URL','フィードバックJSON','ラウンド','ステータス','LINE UID'
     ]);
     sheet.setFrozenRows(1);
-    sheet.getRange(1, 1, 1, 7).setFontWeight('bold');
+    sheet.getRange(1, 1, 1, 8).setFontWeight('bold');
   }
   var now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
   sheet.appendRow([
@@ -4614,7 +4636,8 @@ function saveFeedback(data) {
     data.delivery_url || '',
     JSON.stringify(data.items || []),
     data.round        || '1',
-    '未対応'
+    '未対応',
+    data.line_uid     || ''
   ]);
 
   // オーナーへメール通知（編集者共有URLも含む）
@@ -4697,7 +4720,8 @@ function listFeedbacks() {
       delivery_url: r[3] || '',
       items:        items,
       round:        r[5] || '1',
-      status:       r[6] || '未対応'
+      status:       r[6] || '未対応',
+      line_uid:     r[7] || ''
     });
   }
   data.sort(function(a,b){ return b.date > a.date ? 1 : -1; });
