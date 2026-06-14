@@ -6722,6 +6722,7 @@ function renderOrders() {
         <button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${o.row},'orders')">${extractLineUid(o) ? '💬 LINE返信' : '✉ 返信・納品'}</button>
         ${matBtns}
         ${o.email ? `<button class="action-btn btn-mail" onclick="openMail('${esc(o.email)}','${esc(o.name)}','${esc(o.plan)}')">✉ メール</button>` : ''}
+        <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="deleteOrder(${o.row}, ${JSON.stringify(o.name || '')})">🗑 削除</button>
       </div></td>
     </tr>`;
   }).join('');
@@ -6756,6 +6757,17 @@ function openOrderDetail(row) {
   document.getElementById('order-detail-modal').style.display = 'flex';
 }
 function closeOrderDetail() { document.getElementById('order-detail-modal').style.display = 'none'; }
+
+/* ── 追加発注を削除 ── */
+async function deleteOrder(row, name) {
+  if (!confirm(`「${name || '(名前なし)'}」の追加発注を削除しますか？\n\nこの操作は元に戻せません。`)) return;
+  try {
+    const res = await gasFetch(`${GAS_URL}?action=additional_order_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    const j = await res.json();
+    if (j.success) { showToast('🗑 削除しました'); loadOrders(); }
+    else { showToast('削除失敗: ' + (j.error || 'エラー'), true); }
+  } catch(e) { showToast('削除失敗（通信）', true); }
+}
 
 /* ── 追加発注の状態をクリックで変更（未対応→対応中→完了）── */
 async function cycleOrderStatus(row) {
