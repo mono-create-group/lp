@@ -6718,6 +6718,7 @@ function renderOrders() {
       <td><span class="status-badge status-${esc(o.status)}">${esc(o.status)}</span></td>
       <td><div class="td-actions">
         <button class="action-btn" style="background:#1e293b;color:#cbd5e1;border:1px solid #334155;" onclick="openOrderDetail(${o.row})">📋 詳細</button>
+        <button class="action-btn" style="background:#1a2a3a;color:#60a5fa;border:1px solid #1d4ed8;font-weight:700;" onclick="sendOrderEstimate(${o.row})">💳 見積もり送信</button>
         <button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${o.row},'orders')">${extractLineUid(o) ? '💬 LINE返信' : '✉ 返信・納品'}</button>
         ${matBtns}
         ${o.email ? `<button class="action-btn btn-mail" onclick="openMail('${esc(o.email)}','${esc(o.name)}','${esc(o.plan)}')">✉ メール</button>` : ''}
@@ -6755,6 +6756,51 @@ function openOrderDetail(row) {
   document.getElementById('order-detail-modal').style.display = 'flex';
 }
 function closeOrderDetail() { document.getElementById('order-detail-modal').style.display = 'none'; }
+
+/* ── 追加発注から見積もり自動計算＆送信 ── */
+function _calcItemPrice(plan, n) {
+  plan = plan || ''; n = n || 0;
+  if (plan.indexOf('まとめて編集（ショート') === 0) { const off = n>=16?10:(n>=10?5:0); return { amount: Math.round(4000*(1-off/100))*n, off, unit:4000 }; }
+  if (plan.indexOf('まとめて編集（長尺')   === 0) { const off = n>=8?10:(n>=4?5:0);  return { amount: Math.round(15000*(1-off/100))*n, off, unit:15000 }; }
+  if (plan.indexOf('ショート') === 0) return { amount: 4000*n, off:0, unit:4000 };
+  if (plan.indexOf('長尺')     === 0) return { amount: 15000*n, off:0, unit:15000 };
+  return { amount: 0, off:0, unit:0 }; // その他 → 手動
+}
+async function sendOrderEstimate(row) {
+  const o = _adOrders.find(x => x.row === row);
+  if (!o) { showToast('発注が見つかりません', true); return; }
+  const uid = extractLineUid(o);
+  if (!o.email && !uid) { showToast('メール／LINEの宛先がありません', true); return; }
+  const items = (o.items && o.items.length) ? o.items : [{ plan: o.plan, count: o.count }];
+  let total = 0; const lines = [];
+  items.forEach(it => {
+    const n = parseInt(String(it.count || '').replace(/[^0-9]/g, ''), 10) || 0;
+    const r = _calcItemPrice(it.plan, n);
+    total += r.amount;
+    lines.push('・' + (it.plan || '') + ' ' + (it.count || '') + ' = ¥' + r.amount.toLocaleString() + (r.off ? '（' + r.off + '%OFF）' : '') + (r.amount === 0 ? '（要手動）' : ''));
+  });
+  const adj = prompt('【自動見積もり】\n' + lines.join('\n') + '\n────────────\n合計：¥' + total.toLocaleString() + '（税込）\n\nこの金額で見積もり／振込依頼を送信します。\n金額を変更する場合は数字を修正してください：', total);
+  if (adj === null) return;
+  const amount = parseInt(String(adj).replace(/[^0-9]/g, ''), 10) || total;
+  if (amount <= 0) { showToast('金額を正しく入力してください', true); return; }
+  const due = prompt('お振込期限（例：7日以内 / 2026年6月25日）', '7日以内') || '7日以内';
+  const planLabel = items.map(it => it.plan).filter(Boolean).join(' / ') || (o.plan || 'ご依頼プラン');
+  const via = uid ? 'LINE' : 'メール';
+  if (!confirm('【' + via + '】で見積もり（¥' + amount.toLocaleString() + '／税込）を送信します。よろしいですか？')) return;
+  try {
+    const url = `${GAS_URL}?action=send_payment_request&key=${encodeURIComponent(getAdminPw())}`
+      + `&email=${encodeURIComponent(o.email || '')}`
+      + `&name=${encodeURIComponent(o.name || '')}`
+      + `&plan=${encodeURIComponent(planLabel)}`
+      + `&amount=${encodeURIComponent(amount)}`
+      + `&due=${encodeURIComponent(due)}`
+      + `&line_uid=${encodeURIComponent(uid)}`;
+    const res = await gasFetch(url);
+    const j = await res.json();
+    if (j.success) showToast('💳 見積もりを送信しました（' + ((j.channels || [via]).join('・')) + '）');
+    else showToast('送信失敗: ' + (j.error || 'エラー'), true);
+  } catch(e) { showToast('通信エラー', true); }
+}
 
 /* ── 修正依頼（FB）タブ ── */
 async function loadRevisions() {
