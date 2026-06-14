@@ -6717,13 +6717,44 @@ function renderOrders() {
       <td style="font-size:0.8rem;color:var(--sub);">${dueCell}</td>
       <td><span class="status-badge status-${esc(o.status)}">${esc(o.status)}</span></td>
       <td><div class="td-actions">
-        ${(extractLineUid(o) || o.email) ? `<button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${o.row},'orders')">${extractLineUid(o) ? '💬 LINE返信' : '✉ 返信・納品'}</button>` : ''}
+        <button class="action-btn" style="background:#1e293b;color:#cbd5e1;border:1px solid #334155;" onclick="openOrderDetail(${o.row})">📋 詳細</button>
+        <button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${o.row},'orders')">${extractLineUid(o) ? '💬 LINE返信' : '✉ 返信・納品'}</button>
         ${matBtns}
         ${o.email ? `<button class="action-btn btn-mail" onclick="openMail('${esc(o.email)}','${esc(o.name)}','${esc(o.plan)}')">✉ メール</button>` : ''}
       </div></td>
     </tr>`;
   }).join('');
 }
+
+/* ── 追加発注 詳細モーダル ── */
+function openOrderDetail(row) {
+  const o = _adOrders.find(x => x.row === row);
+  if (!o) { showToast('発注が見つかりません'); return; }
+  const items = (o.items && o.items.length) ? o.items
+    : [{ plan: o.plan, count: o.count, material_url: o.material_url, title: '', subItems: [], links: [], due_date: o.due_date, note: o.note }];
+  let html = `<div style="font-size:0.86rem;line-height:1.9;color:var(--lt);">
+    <p><b>お名前：</b>${esc(o.name)}</p>
+    <p><b>メール：</b>${esc(o.email || '（なし）')}</p>
+    <p><b>受信：</b>${esc(o.date)}　／　<b>状態：</b>${esc(o.status)}</p>
+    <hr style="border:none;border-top:1px solid var(--border);margin:10px 0;">`;
+  items.forEach((it, i) => {
+    html += `<div style="margin-bottom:12px;padding:10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;">
+      <b>案件${i + 1}：</b>${esc(it.plan)} <span style="color:var(--sub);">/ ${esc(it.count)}</span>${it.due_date ? ` <span style="color:var(--sub);">（希望:${esc(it.due_date)}）</span>` : ''}`;
+    if (it.title) html += `<br>🎬 タイトル：${esc(it.title)}`;
+    if (it.subItems && it.subItems.length) {
+      html += it.subItems.map((s, k) => `<br>　${k + 1}. ${esc(s.title || '(無題)')}${s.link ? ` <a href="${esc(s.link)}" target="_blank" style="color:#60a5fa;">素材</a>` : ''}`).join('');
+    } else {
+      const ls = (it.links && it.links.length) ? it.links : (it.material_url ? [it.material_url] : []);
+      if (ls.length) html += ls.map((u, k) => `<br>📁 <a href="${esc(u)}" target="_blank" style="color:#60a5fa;">素材${ls.length > 1 ? (k + 1) : ''}</a>`).join('');
+    }
+    if (it.note) html += `<br>📝 ${esc(it.note)}`;
+    html += `</div>`;
+  });
+  html += `</div>`;
+  document.getElementById('order-detail-body').innerHTML = html;
+  document.getElementById('order-detail-modal').style.display = 'flex';
+}
+function closeOrderDetail() { document.getElementById('order-detail-modal').style.display = 'none'; }
 
 /* ── 修正依頼（FB）タブ ── */
 async function loadRevisions() {
@@ -6772,6 +6803,17 @@ async function deleteFeedback(row, name) {
     <p style="font-size:0.7rem;color:var(--sub);margin-bottom:14px;word-break:break-all;" id="quick-line-uid"></p>
     <div id="quick-line-buttons" style="display:flex;flex-direction:column;gap:10px;"></div>
     <p style="font-size:0.72rem;color:var(--sub);margin-top:14px;line-height:1.6;">※ ボタンを押すと確認後すぐ送信されます。<br>自由文・URL付きの返信は「💬 LINE送信」タブからどうぞ。</p>
+  </div>
+</div>
+
+<!-- ── 追加発注 詳細モーダル ── -->
+<div class="modal-overlay" id="order-detail-modal" onclick="if(event.target===this)closeOrderDetail()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;width:min(540px,92vw);max-height:85vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <h3 style="font-size:1rem;font-weight:800;">📋 追加発注の詳細</h3>
+      <button onclick="closeOrderDetail()" style="background:none;border:none;color:var(--sub);font-size:1.3rem;cursor:pointer;">✕</button>
+    </div>
+    <div id="order-detail-body"></div>
   </div>
 </div>
 
