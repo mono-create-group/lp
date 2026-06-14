@@ -642,6 +642,26 @@ async function submitContractAgreement() {
   // ページトップへスクロール
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+// ── 契約締結済みなら契約ゲートをスキップ（一度署名すれば次回以降不要）──
+(function checkContractAlreadySigned() {
+  var email = (new URLSearchParams(location.search).get('email') || '').trim();
+  if (!email) return; // メール無し → 通常どおり契約ゲート表示
+  fetch(CONTRACT_GAS + '?action=contract_check&email=' + encodeURIComponent(email))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (d && d.signed) {
+        document.getElementById('contract-modal').classList.remove('show');
+        var mc = document.getElementById('main-content');
+        mc.classList.remove('hidden');
+        var note = document.createElement('div');
+        note.style.cssText = 'background:#ecfdf5;border:1px solid #10b981;color:#065f46;border-radius:8px;padding:10px 14px;margin:12px 16px;font-size:13px;line-height:1.6;';
+        note.innerHTML = '✅ 業務委託契約は締結済みです' + (d.date ? '（' + d.date + '）' : '') + '。今回のご発注では再署名は不要です。';
+        mc.insertBefore(note, mc.firstChild);
+      }
+    })
+    .catch(function(){ /* 失敗時は安全側＝通常の契約ゲートを表示 */ });
+})();
 </script>
 
 <script>
