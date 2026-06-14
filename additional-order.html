@@ -202,6 +202,11 @@
         +       '<option value="11本以上">11本以上</option>'
         +     '</select>'
         +   '</div>'
+        +   '<div class="form-group single-only">'
+        +     '<label>動画タイトル <span class="req">*</span></label>'
+        +     '<input type="text" class="it-title" placeholder="例：〇〇店PR ショート動画">'
+        +     '<div class="mat-note">納品用フォルダ名になります（1本ご依頼の場合）。</div>'
+        +   '</div>'
         +   '<div class="form-group bulk-only" style="display:none;">'
         +     '<label>本数（まとめて編集） <span class="req">*</span></label>'
         +     '<input type="number" class="it-count-num" min="1" placeholder="例：12" oninput="updateDiscount(this.closest(\'[data-item]\'))">'
@@ -212,10 +217,10 @@
         +     '<div class="mat-note">送信後に<strong>専用アップロードフォルダを自動でご用意</strong>してご案内します。お持ちのフォルダがあれば貼り付けも可。</div>'
         +   '</div>'
         +   '<div class="form-group bulk-only" style="display:none;">'
-        +     '<label>含まれる動画の素材リンク（複数可・任意）</label>'
+        +     '<label>含まれる動画（タイトル＋素材リンク） <span class="req">*</span></label>'
         +     '<div class="it-sublinks"></div>'
-        +     '<button type="button" class="sublink-add" onclick="addSubLink(this)">＋ 素材リンクを追加</button>'
-        +     '<div class="mat-note">各動画の素材リンク（ギガファイル/Drive等）を並べて貼れます。<br>送信後に<strong>専用アップロードフォルダも自動でご用意</strong>してご案内します。</div>'
+        +     '<button type="button" class="sublink-add" onclick="addSubLink(this)">＋ 動画を追加</button>'
+        +     '<div class="mat-note">1本ずつ<strong>動画タイトル</strong>をご記入ください（素材リンクは任意）。<br>送信後に<strong>専用アップロードフォルダ（〇〇様_日付_ご依頼分）を自動でご用意</strong>してご案内します。</div>'
         +   '</div>'
         +   '<div class="form-group">'
         +     '<label>ご希望の時期</label>'
@@ -236,9 +241,12 @@
     }
 
     function subLinkRow() {
-      return '<div class="sublink-row" style="display:flex;gap:6px;margin-bottom:6px;">'
-        + '<input type="url" class="it-sublink" placeholder="https://...（素材リンク）" style="flex:1;">'
-        + '<button type="button" onclick="this.closest(\'.sublink-row\').remove()" style="background:#3f1d1d;color:#fca5a5;border:1px solid #7f1d1d;border-radius:8px;padding:0 12px;cursor:pointer;font-size:0.9rem;">✕</button>'
+      return '<div class="sublink-row" style="border:1px solid #334155;border-radius:8px;padding:8px;margin-bottom:8px;">'
+        + '<input type="text" class="it-subtitle" placeholder="動画タイトル（例：商品紹介①）" style="width:100%;margin-bottom:6px;">'
+        + '<div style="display:flex;gap:6px;">'
+        +   '<input type="url" class="it-sublink" placeholder="素材リンク（任意）" style="flex:1;">'
+        +   '<button type="button" onclick="this.closest(\'.sublink-row\').remove()" style="background:#3f1d1d;color:#fca5a5;border:1px solid #7f1d1d;border-radius:8px;padding:0 12px;cursor:pointer;font-size:0.9rem;flex-shrink:0;">✕</button>'
+        + '</div>'
         + '</div>';
     }
     function addSubLink(btn) {
@@ -303,19 +311,25 @@
         var plan = b.querySelector('.it-plan').value;
         var isBulk = plan.indexOf('まとめて編集') === 0;
         var count, material_url = '', links = [];
+        var title = '', subItems = [];
         if (isBulk) {
           var num = (b.querySelector('.it-count-num').value || '').trim();
           count = num ? (num + '本') : '';
-          b.querySelectorAll('.it-sublink').forEach(function(x){ if (x.value.trim()) links.push(x.value.trim()); });
+          b.querySelectorAll('.sublink-row').forEach(function(row){
+            var t = (row.querySelector('.it-subtitle').value || '').trim();
+            var l = (row.querySelector('.it-sublink').value || '').trim();
+            if (t || l) { subItems.push({ title: t, link: l }); if (l) links.push(l); }
+          });
         } else {
           count = b.querySelector('.it-count').value;
+          title = (b.querySelector('.it-title').value || '').trim();
           material_url = b.querySelector('.it-material').value.trim();
           if (material_url) links.push(material_url);
         }
         var due_date = b.querySelector('.it-due').value;
         var note = b.querySelector('.it-note').value.trim();
-        if (!plan && !count && !material_url && !links.length && !due_date && !note) return;
-        items.push({ plan: plan, count: count, material_url: material_url, links: links, due_date: due_date, note: note });
+        if (!plan && !count && !title && !material_url && !links.length && !subItems.length && !due_date && !note) return;
+        items.push({ plan: plan, count: count, title: title, subItems: subItems, material_url: material_url, links: links, due_date: due_date, note: note });
       });
       return items;
     }
@@ -333,8 +347,13 @@
       document.querySelectorAll('.error-msg').forEach(function(el){ el.style.display='none'; });
 
       if (!name) { document.getElementById('err-name').style.display='block'; ok=false; }
-      // 各案件にプラン・本数が入っているか
-      var validItems = items.filter(function(it){ return it.plan && it.count; });
+      // 各案件にプラン・本数・動画タイトルが入っているか
+      var validItems = items.filter(function(it){
+        if (!it.plan || !it.count) return false;
+        var isBulk = it.plan.indexOf('まとめて編集') === 0;
+        if (isBulk) return it.subItems && it.subItems.some(function(s){ return s.title; });
+        return !!it.title;
+      });
       if (!validItems.length) { document.getElementById('err-items').style.display='block'; ok=false; }
       if (!ok) return;
 
