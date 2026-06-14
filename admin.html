@@ -6748,8 +6748,16 @@ function renderRevisions() {
       <td><div class="td-actions">
         ${(extractLineUid(f) || f.email) ? `<button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${f.row},'revisions')">${extractLineUid(f) ? '💬 LINE返信' : '✉ 返信・納品'}</button>` : ''}
         ${f.email ? `<button class="action-btn btn-mail" onclick="openMail('${esc(f.email)}','${esc(f.client_name)}','修正対応')">✉ メール</button>` : ''}
+        <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="deleteFeedback(${f.row}, '${esc(f.client_name)}')">🗑 削除</button>
       </div></td>
     </tr>`).join('');
+}
+async function deleteFeedback(row, name) {
+  if (!confirm(`「${name}」の修正依頼(FB)を削除しますか？\nこの操作は元に戻せません。`)) return;
+  try {
+    await gasFetch(`${GAS_URL}?action=feedback_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    showToast('削除しました'); loadRevisions();
+  } catch(e) { showToast('削除に失敗しました', true); }
 }
 </script>
 
