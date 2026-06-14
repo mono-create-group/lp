@@ -6681,12 +6681,17 @@ function renderOrders() {
     const dueCell = items
       ? (items.length > 1 ? `${items.length}案件` : esc(items[0].due_date || '—'))
       : esc(o.due_date || '—');
-    // 素材ボタン：案件ごと。複数なら 📁1 📁2 …、単一なら 📁素材
+    // 素材ボタン：案件ごとの全リンク（links[]優先、無ければmaterial_url）。複数なら 📁1 📁2 …
     let matBtns = '';
     if (items) {
-      matBtns = items.map((it,i) => it.material_url
-        ? `<button class="action-btn" style="background:#1e293b;color:#93c5fd;border:1px solid #334155;" onclick="window.open('${esc(it.material_url)}','_blank')">📁${items.length>1 ? (i+1) : ' 素材'}</button>`
-        : '').join('');
+      let allLinks = [];
+      items.forEach(it => {
+        const ls = (it.links && it.links.length) ? it.links : (it.material_url ? [it.material_url] : []);
+        ls.forEach(u => allLinks.push(u));
+      });
+      matBtns = allLinks.map((u,i) =>
+        `<button class="action-btn" style="background:#1e293b;color:#93c5fd;border:1px solid #334155;" onclick="window.open('${esc(u)}','_blank')">📁${allLinks.length>1 ? (i+1) : ' 素材'}</button>`
+      ).join('');
     } else if (o.material_url) {
       matBtns = `<button class="action-btn" style="background:#1e293b;color:#93c5fd;border:1px solid #334155;" onclick="window.open('${esc(o.material_url)}','_blank')">📁 素材</button>`;
     }

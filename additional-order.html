@@ -86,6 +86,13 @@
       font-weight: 600; cursor: pointer; transition: background .2s;
     }
     .btn-add:hover { background: #1e3a5f; }
+    .mat-note { font-size: 0.74rem; color: #94a3b8; margin-top: 6px; line-height: 1.6; }
+    .sublink-add {
+      width: 100%; padding: 9px; background: #1e293b; color: #93c5fd;
+      border: 1px dashed #3b82f6; border-radius: 8px; font-size: 0.82rem;
+      font-weight: 600; cursor: pointer; margin-top: 2px;
+    }
+    .sublink-add:hover { background: #1e3a5f; }
   </style>
 </head>
 <body>
@@ -149,6 +156,12 @@
     var params = new URLSearchParams(location.search);
     var lineUid = params.get('uid') || '';
 
+    // ── まとめて編集の割引定義 ──
+    var BULK_PLANS = {
+      'まとめて編集（ショート）': { unit: 4000,  tiers: [ {n:16, off:10}, {n:10, off:5} ] },
+      'まとめて編集（長尺）':     { unit: 15000, tiers: [ {n:8,  off:10}, {n:4,  off:5} ] }
+    };
+
     // ── 案件ブロック（複数本対応）──
     function itemTemplate(no) {
       return ''
@@ -159,15 +172,17 @@
         +   '</div>'
         +   '<div class="form-group">'
         +     '<label>プラン <span class="req">*</span></label>'
-        +     '<select class="it-plan">'
+        +     '<select class="it-plan" onchange="onPlanChange(this)">'
         +       '<option value="">選択してください</option>'
         +       '<option value="ショート動画編集">📱 ショート動画編集</option>'
         +       '<option value="長尺動画編集">🎬 長尺動画編集</option>'
         +       '<option value="まとめて編集（ショート）">📦 まとめて編集（ショート）</option>'
+        +       '<option value="まとめて編集（長尺）">📦 まとめて編集（長尺）</option>'
         +       '<option value="その他">💬 その他（メモ欄へ）</option>'
         +     '</select>'
         +   '</div>'
-        +   '<div class="form-group">'
+        +   '<div class="it-discount" style="display:none;background:#0b2a1a;border:1px solid #166534;border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:0.8rem;color:#86efac;line-height:1.7;"></div>'
+        +   '<div class="form-group single-only">'
         +     '<label>本数 <span class="req">*</span></label>'
         +     '<select class="it-count">'
         +       '<option value="">選択してください</option>'
@@ -180,13 +195,20 @@
         +       '<option value="11本以上">11本以上</option>'
         +     '</select>'
         +   '</div>'
-        +   '<div class="form-group">'
-        +     '<label>素材URL（この案件のGoogle Driveフォルダ）</label>'
-        +     '<input type="url" class="it-material" placeholder="https://drive.google.com/...">'
-        +     '<div style="font-size:0.74rem;color:#94a3b8;margin-top:6px;line-height:1.6;">'
-        +       '案件ごとに素材フォルダを分けて貼り付けできます。<br>'
-        +       '<strong>不明・新規フォルダが必要な場合は空欄で送信</strong>いただければ折り返しご案内します。'
-        +     '</div>'
+        +   '<div class="form-group bulk-only" style="display:none;">'
+        +     '<label>本数（まとめて編集） <span class="req">*</span></label>'
+        +     '<input type="number" class="it-count-num" min="1" placeholder="例：12" oninput="updateDiscount(this.closest(\'[data-item]\'))">'
+        +   '</div>'
+        +   '<div class="form-group single-only">'
+        +     '<label>素材URL（任意）</label>'
+        +     '<input type="url" class="it-material" placeholder="https://drive.google.com/...（お持ちの場合）">'
+        +     '<div class="mat-note">送信後に<strong>専用アップロードフォルダを自動でご用意</strong>してご案内します。お持ちのフォルダがあれば貼り付けも可。</div>'
+        +   '</div>'
+        +   '<div class="form-group bulk-only" style="display:none;">'
+        +     '<label>含まれる動画の素材リンク（複数可・任意）</label>'
+        +     '<div class="it-sublinks"></div>'
+        +     '<button type="button" class="sublink-add" onclick="addSubLink(this)">＋ 素材リンクを追加</button>'
+        +     '<div class="mat-note">各動画の素材リンク（ギガファイル/Drive等）を並べて貼れます。<br>送信後に<strong>専用アップロードフォルダも自動でご用意</strong>してご案内します。</div>'
         +   '</div>'
         +   '<div class="form-group">'
         +     '<label>ご希望の時期</label>'
@@ -204,6 +226,46 @@
         +     '<textarea class="it-note" placeholder="テロップ有無・BGM指定・参考動画URLなど"></textarea>'
         +   '</div>'
         + '</div>';
+    }
+
+    function subLinkRow() {
+      return '<div class="sublink-row" style="display:flex;gap:6px;margin-bottom:6px;">'
+        + '<input type="url" class="it-sublink" placeholder="https://...（素材リンク）" style="flex:1;">'
+        + '<button type="button" onclick="this.closest(\'.sublink-row\').remove()" style="background:#3f1d1d;color:#fca5a5;border:1px solid #7f1d1d;border-radius:8px;padding:0 12px;cursor:pointer;font-size:0.9rem;">✕</button>'
+        + '</div>';
+    }
+    function addSubLink(btn) {
+      var wrap = document.createElement('div'); wrap.innerHTML = subLinkRow();
+      btn.closest('[data-item]').querySelector('.it-sublinks').appendChild(wrap.firstChild);
+    }
+    function onPlanChange(sel) {
+      var b = sel.closest('[data-item]');
+      var isBulk = sel.value.indexOf('まとめて編集') === 0;
+      b.querySelectorAll('.bulk-only').forEach(function(e){ e.style.display = isBulk ? '' : 'none'; });
+      b.querySelectorAll('.single-only').forEach(function(e){ e.style.display = isBulk ? 'none' : ''; });
+      if (isBulk && b.querySelectorAll('.it-sublink').length === 0) addSubLink(b.querySelector('.sublink-add'));
+      updateDiscount(b);
+    }
+    function updateDiscount(b) {
+      var plan = b.querySelector('.it-plan').value;
+      var box  = b.querySelector('.it-discount');
+      var info = BULK_PLANS[plan];
+      if (!info) { box.style.display = 'none'; return; }
+      box.style.display = '';
+      var numEl = b.querySelector('.it-count-num');
+      var n = parseInt(numEl ? numEl.value : '', 10) || 0;
+      var tierTxt = '定価 ¥' + info.unit.toLocaleString() + '/本 ／ '
+        + info.tiers.slice().reverse().map(function(t){ return t.n + '本以上で' + t.off + '%OFF'; }).join('・');
+      var calc = '';
+      if (n > 0) {
+        var off = 0;
+        for (var i = 0; i < info.tiers.length; i++) { if (n >= info.tiers[i].n) { off = info.tiers[i].off; break; } }
+        var unit = Math.round(info.unit * (1 - off/100));
+        var total = unit * n, saved = info.unit * n - total;
+        calc = '<br><strong>' + n + '本</strong> → 1本 ¥' + unit.toLocaleString() + (off ? '（' + off + '%OFF）' : '（割引なし＝単品扱い）')
+             + '<br>合計 <strong>¥' + total.toLocaleString() + '</strong>' + (saved > 0 ? '（¥' + saved.toLocaleString() + 'お得！）' : '');
+      }
+      box.innerHTML = '📦 ' + tierTxt + calc;
     }
 
     function renumberItems() {
@@ -232,13 +294,21 @@
       var items = [];
       document.querySelectorAll('#items [data-item]').forEach(function(b) {
         var plan = b.querySelector('.it-plan').value;
-        var count = b.querySelector('.it-count').value;
-        var material_url = b.querySelector('.it-material').value.trim();
+        var isBulk = plan.indexOf('まとめて編集') === 0;
+        var count, material_url = '', links = [];
+        if (isBulk) {
+          var num = (b.querySelector('.it-count-num').value || '').trim();
+          count = num ? (num + '本') : '';
+          b.querySelectorAll('.it-sublink').forEach(function(x){ if (x.value.trim()) links.push(x.value.trim()); });
+        } else {
+          count = b.querySelector('.it-count').value;
+          material_url = b.querySelector('.it-material').value.trim();
+          if (material_url) links.push(material_url);
+        }
         var due_date = b.querySelector('.it-due').value;
         var note = b.querySelector('.it-note').value.trim();
-        // 完全に空のブロックは無視
-        if (!plan && !count && !material_url && !due_date && !note) return;
-        items.push({ plan: plan, count: count, material_url: material_url, due_date: due_date, note: note });
+        if (!plan && !count && !material_url && !links.length && !due_date && !note) return;
+        items.push({ plan: plan, count: count, material_url: material_url, links: links, due_date: due_date, note: note });
       });
       return items;
     }
