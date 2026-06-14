@@ -3763,6 +3763,19 @@ section { contain: layout style; }
             <label>ご相談内容<span>*</span></label>
             <textarea class="form-control" name="message" placeholder="ご依頼の詳細・現状のお悩み・ご質問などをご記入ください。" required></textarea>
           </div>
+          <div class="form-row" style="background:#F0FDF4;border:2px solid #16A34A;border-radius:10px;padding:14px 16px;">
+            <label style="color:#166534;font-weight:800;">📸 制作実績（ポートフォリオ）への掲載について</label>
+            <select class="form-control" name="portfolio_consent" style="border-color:#16A34A;background:#fff;">
+              <option value="">-- 選択してください（任意）--</option>
+              <option value="掲載OK">掲載OK（実績・サンプルとして紹介してよい）</option>
+              <option value="一部OK・要相談">一部OK・要相談</option>
+              <option value="掲載NG">掲載しないでほしい</option>
+            </select>
+            <p style="font-size:0.75rem;color:#166534;margin-top:6px;line-height:1.7;">
+              ※「掲載OK」の場合、完成動画を弊社サイト・SNS等で制作実績としてご紹介させていただくことがあります。<br>
+              ※ 後から変更・お申し出もいつでも可能です。
+            </p>
+          </div>
           <div class="form-row" style="background:#FFFBEB;border:2px solid #D97706;border-radius:10px;padding:14px 16px;">
             <label style="color:#92400E;font-weight:800;">🎁 紹介コード（お持ちの方のみ）</label>
             <input type="text" class="form-control" name="referral_code" id="referral-code" placeholder="例：MC-XXXXX" style="border-color:#D97706;background:#fff;">
@@ -4611,6 +4624,7 @@ document.getElementById('contact-form').addEventListener('submit', async (e) => 
     plan:          form.plan.value,
     message:       form.message.value,
     referral_code: form.referral_code.value.trim(),
+    portfolio_consent: (form.portfolio_consent ? form.portfolio_consent.value : ''),
   };
 
   try {

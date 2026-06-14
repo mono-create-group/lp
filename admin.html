@@ -2814,6 +2814,7 @@ function renderTable() {
         ${esc(i.plan)}
         ${trialBadge(i, 'inquiries')}
         ${i.referral_code ? `<span class="trial-badge" style="background:rgba(217,119,6,0.12);color:#D97706;border-color:rgba(217,119,6,0.3);margin-top:4px;" title="紹介割引対象">🎟 ${esc(i.referral_code)}</span>` : ''}
+        ${i.portfolio_consent ? `<span class="trial-badge" style="background:rgba(22,163,74,0.12);color:#16a34a;border-color:rgba(22,163,74,0.3);margin-top:4px;" title="ポートフォリオ掲載">📸 ${esc(i.portfolio_consent)}</span>` : ''}
       </td>
       <td class="td-message" title="${esc(i.message)}">${esc(i.message)}</td>
       <td>
