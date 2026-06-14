@@ -155,6 +155,11 @@
     // URL から LINE userID を取得
     var params = new URLSearchParams(location.search);
     var lineUid = params.get('uid') || '';
+    // 名前・メールの事前入力（管理画面からの送付リンク用）
+    window.addEventListener('DOMContentLoaded', function() {
+      if (params.get('name'))  { var n = document.getElementById('name');  if (n) n.value  = params.get('name'); }
+      if (params.get('email')) { var e = document.getElementById('email'); if (e) e.value = params.get('email'); }
+    });
 
     // ── まとめて編集の割引定義 ──
     var BULK_PLANS = {

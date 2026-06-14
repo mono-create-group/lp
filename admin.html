@@ -6482,6 +6482,7 @@ const LINE_QUICK_REPLIES = [
   { label: '📁 入金確認＆素材フォルダ', text: '{{name}}様\n\nご入金を確認いたしました、ありがとうございます😊\n素材アップロード用フォルダはこちらです👇\n{{url}}\n\n素材のご共有をお願いいたします。' },
   { label: '📦 初稿を納品（複数リンク入力）', deliver: true, kind: 'first' },
   { label: '🔧 修正稿を納品（複数リンク入力）', deliver: true, kind: 'rev' },
+  { label: '🛒 追加発注フォームを送る', orderForm: true },
 ];
 
 // レコードから LINE UID を自動抽出（chatwork_id / message / line_uid いずれでも可）
@@ -6517,6 +6518,8 @@ function openQuickLine(row, sheet) {
   box.innerHTML = LINE_QUICK_REPLIES.map((t, idx) => {
     const preview = t.deliver
       ? '◇ドライブ ◇MP4ダウンロード ◇プロマネ を入力して納品します（修正リンクも自動生成）'
+      : t.orderForm
+      ? '追加発注フォームのURLを送ります（お名前・メール・本数割引表示つき・自動差し込み）'
       : t.text.replace(/\{\{name\}\}/g, _quickLineName || 'お客様').replace(/\{\{url\}\}/g, '（送信時に動画URLを入力）').replace(/\{\{fb\}\}/g, '（修正リンク自動生成）');
     return `<button onclick="sendQuickLine(${idx})"
       style="text-align:left;background:var(--bg);border:1px solid var(--border);border-left:3px solid #00b900;border-radius:9px;padding:11px 13px;cursor:pointer;display:flex;flex-direction:column;gap:5px;font-family:inherit;">
@@ -6536,26 +6539,37 @@ async function sendQuickLine(idx) {
   if (!tpl || (!_quickLineUid && !_quickLineEmail)) return;
   // 納品系は専用モーダル（複数リンク入力）へ
   if (tpl.deliver) { openDeliverModal(tpl.kind); return; }
-  let text = tpl.text.replace(/\{\{name\}\}/g, _quickLineName || 'お客様');
-
-  // 納品系（{{fb}}を含む）：動画URL＋直リンクMP4(任意)を聞いて、修正リンク(FB)を自動生成
-  if (text.indexOf('{{fb}}') !== -1) {
-    const videoUrl = prompt('🎬 納品動画URL（Google Drive 共有リンクなど）を入力してください');
-    if (videoUrl === null || !videoUrl.trim()) return;
-    const mp4 = prompt('（任意）スマホで自動タイムコードを効かせる直接再生用 MP4 URL。\n無ければ空のままOKです。') || '';
-    let fb = _fbBaseUrl()
-      + '?url=' + encodeURIComponent(videoUrl.trim())
-      + '&name=' + encodeURIComponent(_quickLineName || '')
-      + '&title=' + encodeURIComponent((_quickLineName ? _quickLineName + '様 ' : '') + '納品動画')
-      + '&round=' + encodeURIComponent(_quickLineRound || '1');
-    if (mp4.trim()) fb += '&video=' + encodeURIComponent(mp4.trim());
-    if (_quickLineUid) fb += '&uid=' + encodeURIComponent(_quickLineUid);
-    fb += '&_v=' + Date.now();  // キャッシュ回避：毎回ユニークURLに
-    text = text.replace(/\{\{url\}\}/g, videoUrl.trim()).replace(/\{\{fb\}\}/g, fb);
-  } else if (text.indexOf('{{url}}') !== -1) {
-    const url = prompt('挿入するURLを入力してください（見積もり / 請求書 / 契約書 / 素材フォルダ など）');
-    if (url === null || !url.trim()) return;
-    text = text.replace(/\{\{url\}\}/g, url.trim());
+  let text;
+  if (tpl.orderForm) {
+    // 追加発注フォームのURLを自動生成（名前・メール・UIDを差し込み）
+    var ofBase = location.origin + location.pathname.replace(/[^/]*$/, '') + 'additional-order.html';
+    var ourl = ofBase + '?name=' + encodeURIComponent(_quickLineName || '') + '&email=' + encodeURIComponent(_quickLineEmail || '');
+    if (_quickLineUid) ourl += '&uid=' + encodeURIComponent(_quickLineUid);
+    ourl += '&_v=' + Date.now();
+    text = (_quickLineName || 'お客様') + '様\n\n追加のご依頼ありがとうございます！\n'
+      + '下記フォームから、ご希望の本数・内容・素材リンクをご記入ください👇\n' + ourl + '\n\n'
+      + '「まとめて編集」は本数が多いほどお得になります（割引が自動表示されます）。\nご不明点はお気軽にどうぞ😊';
+  } else {
+    text = tpl.text.replace(/\{\{name\}\}/g, _quickLineName || 'お客様');
+    // 納品系（{{fb}}を含む）：動画URL＋直リンクMP4(任意)を聞いて、修正リンク(FB)を自動生成
+    if (text.indexOf('{{fb}}') !== -1) {
+      const videoUrl = prompt('🎬 納品動画URL（Google Drive 共有リンクなど）を入力してください');
+      if (videoUrl === null || !videoUrl.trim()) return;
+      const mp4 = prompt('（任意）スマホで自動タイムコードを効かせる直接再生用 MP4 URL。\n無ければ空のままOKです。') || '';
+      let fb = _fbBaseUrl()
+        + '?url=' + encodeURIComponent(videoUrl.trim())
+        + '&name=' + encodeURIComponent(_quickLineName || '')
+        + '&title=' + encodeURIComponent((_quickLineName ? _quickLineName + '様 ' : '') + '納品動画')
+        + '&round=' + encodeURIComponent(_quickLineRound || '1');
+      if (mp4.trim()) fb += '&video=' + encodeURIComponent(mp4.trim());
+      if (_quickLineUid) fb += '&uid=' + encodeURIComponent(_quickLineUid);
+      fb += '&_v=' + Date.now();  // キャッシュ回避：毎回ユニークURLに
+      text = text.replace(/\{\{url\}\}/g, videoUrl.trim()).replace(/\{\{fb\}\}/g, fb);
+    } else if (text.indexOf('{{url}}') !== -1) {
+      const url = prompt('挿入するURLを入力してください（見積もり / 請求書 / 契約書 / 素材フォルダ など）');
+      if (url === null || !url.trim()) return;
+      text = text.replace(/\{\{url\}\}/g, url.trim());
+    }
   }
 
   const via = _quickLineUid ? 'LINE' : 'メール';
