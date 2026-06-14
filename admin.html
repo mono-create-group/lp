@@ -6715,7 +6715,7 @@ function renderOrders() {
       <td class="td-name">${esc(o.name)}</td>
       <td style="font-size:0.8rem;line-height:1.5;">${planCell}</td>
       <td style="font-size:0.8rem;color:var(--sub);">${dueCell}</td>
-      <td><span class="status-badge status-${esc(o.status)}">${esc(o.status)}</span></td>
+      <td><span class="status-badge status-${esc(o.status)}" style="cursor:pointer;" title="クリックで状態変更" onclick="cycleOrderStatus(${o.row})">${esc(o.status)}</span></td>
       <td><div class="td-actions">
         <button class="action-btn" style="background:#1e293b;color:#cbd5e1;border:1px solid #334155;" onclick="openOrderDetail(${o.row})">📋 詳細</button>
         <button class="action-btn" style="background:#1a2a3a;color:#60a5fa;border:1px solid #1d4ed8;font-weight:700;" onclick="sendOrderEstimate(${o.row})">💳 見積もり送信</button>
@@ -6756,6 +6756,21 @@ function openOrderDetail(row) {
   document.getElementById('order-detail-modal').style.display = 'flex';
 }
 function closeOrderDetail() { document.getElementById('order-detail-modal').style.display = 'none'; }
+
+/* ── 追加発注の状態をクリックで変更（未対応→対応中→完了）── */
+async function cycleOrderStatus(row) {
+  const o = _adOrders.find(x => x.row === row);
+  if (!o) return;
+  const order = ['未対応', '対応中', '完了'];
+  const idx = order.indexOf(o.status);
+  o.status = order[(idx + 1) % order.length];
+  renderOrders();
+  try {
+    const res = await gasFetch(`${GAS_URL}?action=additional_order_status&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(o.status)}`);
+    const j = await res.json();
+    if (!j.success) showToast('状態の保存に失敗: ' + (j.error || ''), true);
+  } catch(e) { showToast('状態の保存に失敗（通信）', true); }
+}
 
 /* ── 追加発注から見積もり自動計算＆送信 ── */
 function _calcItemPrice(plan, n) {
