@@ -527,6 +527,10 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
         📤 振込依頼履歴
       </button>
+      <button id="tab-trash-btn" onclick="switchAdminTab('trash')"
+        style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
+        🗑 ゴミ箱
+      </button>
     </div>
 
     <!-- ── 問い合わせタブ ── -->
@@ -666,6 +670,31 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         </table>
       </div>
     </div><!-- /tab-payment-requests -->
+
+    <!-- ── ゴミ箱タブ ── -->
+    <div id="tab-trash" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h2 style="font-size:1rem;font-weight:700;">🗑 ゴミ箱</h2>
+        <button onclick="loadTrash()" style="padding:7px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--sub);font-size:0.8rem;font-family:inherit;cursor:pointer;">更新</button>
+      </div>
+      <p style="font-size:0.78rem;color:var(--sub);margin-bottom:20px;line-height:1.7;">
+        各タブで削除した項目はここに退避されます。「↩ 復元」で元のタブに戻せます。<br>
+        ※ 復元すると元の一覧の末尾に追加されます。「完全削除」すると元に戻せません。
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>削除日時</th>
+            <th>種別</th>
+            <th>内容（プレビュー）</th>
+            <th>操作</th>
+          </tr></thead>
+          <tbody id="trash-body">
+            <tr><td colspan="4" class="table-empty"><span class="spinner"></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div><!-- /tab-trash -->
 
     <div id="tab-contracts" style="display:none;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
@@ -3156,7 +3185,7 @@ function exportCSV() {
 }
 
 // ── Tab switch ──
-const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps','sales-apps','partner-apps','private-link','client-master','invoices','line','orders','revisions','payment-requests'];
+const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps','sales-apps','partner-apps','private-link','client-master','invoices','line','orders','revisions','payment-requests','trash'];
 function switchAdminTab(tab) {
   ADMIN_TABS.forEach(t => {
     document.getElementById('tab-' + t).style.display = t === tab ? '' : 'none';
@@ -3182,6 +3211,7 @@ function switchAdminTab(tab) {
   if (tab === 'orders')      loadOrders();
   if (tab === 'revisions')   loadRevisions();
   if (tab === 'payment-requests') loadPaymentRequests();
+  if (tab === 'trash')            loadTrash();
 }
 
 // ── LP コンテンツ編集 ─────────────────────────────────────────
@@ -3539,14 +3569,70 @@ function renderPaymentRequests() {
 }
 
 async function deletePaymentRequest(row, name) {
-  if (!confirm(`「${name}」への振込依頼履歴を削除しますか？\n\nこの操作は元に戻せません。`)) return;
+  if (!confirm(`「${name}」への振込依頼履歴を削除しますか？\n\n削除しても🗑ゴミ箱から復元できます。`)) return;
   try {
     await gasFetch(`${GAS_URL}?action=payment_request_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
-    showToast('削除しました');
+    showToast('削除しました（ゴミ箱から復元可）');
     loadPaymentRequests();
   } catch(e) {
     alert('削除に失敗しました。');
   }
+}
+
+// ── ゴミ箱 ────────────────────────────────────────────────────
+let trashItems = [];
+async function loadTrash() {
+  document.getElementById('trash-body').innerHTML =
+    '<tr><td colspan="4" class="table-empty"><span class="spinner"></span></td></tr>';
+  try {
+    const res  = await gasFetch(`${GAS_URL}?action=trash_list&key=${encodeURIComponent(getAdminPw())}`);
+    const json = await res.json();
+    trashItems = json.data || [];
+    renderTrash();
+  } catch(e) {
+    document.getElementById('trash-body').innerHTML =
+      '<tr><td colspan="4" class="table-empty">読み込みに失敗しました。</td></tr>';
+  }
+}
+
+function renderTrash() {
+  const el = document.getElementById('trash-body');
+  if (!trashItems.length) {
+    el.innerHTML = '<tr><td colspan="4" class="table-empty">ゴミ箱は空です。</td></tr>';
+    return;
+  }
+  el.innerHTML = trashItems.map(t => {
+    const dt = t.deleted_at ? new Date(t.deleted_at).toLocaleString('ja-JP') : '';
+    return `<tr>
+      <td style="white-space:nowrap;">${esc(dt)}</td>
+      <td style="white-space:nowrap;font-weight:600;">${esc(t.label)}</td>
+      <td style="font-size:0.8rem;color:var(--sub);">${esc(t.preview)}</td>
+      <td style="white-space:nowrap;">
+        <button onclick="restoreTrash('${esc(t.id)}')" style="padding:5px 12px;background:#06371f;color:#4ade80;border:1px solid #166534;border-radius:6px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;margin-right:6px;">↩ 復元</button>
+        <button onclick="purgeTrash('${esc(t.id)}')" style="padding:5px 10px;background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;border-radius:6px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">完全削除</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function restoreTrash(id) {
+  if (!confirm('この項目を元のタブに復元しますか？')) return;
+  try {
+    const res  = await gasFetch(`${GAS_URL}?action=trash_restore&key=${encodeURIComponent(getAdminPw())}&id=${encodeURIComponent(id)}`);
+    const json = await res.json();
+    if (json.success) { showToast('↩ 復元しました（' + (json.source || '') + '）'); loadTrash(); }
+    else showToast('復元失敗: ' + (json.error || 'エラー'), true);
+  } catch(e) { showToast('復元エラー', true); }
+}
+
+async function purgeTrash(id) {
+  if (!confirm('完全に削除します。\n\nこの操作は元に戻せません。よろしいですか？')) return;
+  try {
+    const res  = await gasFetch(`${GAS_URL}?action=trash_purge&key=${encodeURIComponent(getAdminPw())}&id=${encodeURIComponent(id)}`);
+    const json = await res.json();
+    if (json.success) { showToast('🗑 完全に削除しました'); loadTrash(); }
+    else showToast('削除失敗: ' + (json.error || 'エラー'), true);
+  } catch(e) { showToast('削除エラー', true); }
 }
 
 async function deleteContract(row, name) {
