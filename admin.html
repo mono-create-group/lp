@@ -6089,6 +6089,7 @@ async function loadInvoiceList() {
       var toggleBtn = inv.status !== '支払済'
         ? '<button onclick="markInvoicePaid(\'' + esc(inv.inv_num) + '\')" style="padding:4px 8px;background:rgba(16,185,129,0.12);color:#10b981;border:1px solid rgba(16,185,129,0.3);border-radius:5px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">✅ 支払済</button>'
         : '<button onclick="markInvoiceUnpaid(\'' + esc(inv.inv_num) + '\')" style="padding:4px 8px;background:rgba(107,114,128,0.1);color:var(--sub);border:1px solid var(--border);border-radius:5px;font-size:0.72rem;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;">↩ 未払いに戻す</button>';
+      var delBtn = '<button onclick="deleteInvoice(\'' + esc(inv.inv_num) + '\',\'' + esc((inv.client||'').replace(/\x27/g,"")) + '\')" style="padding:4px 8px;background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;border-radius:5px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">🗑 削除</button>';
       return '<tr style="border-top:1px solid var(--border);">'
         + '<td style="padding:12px 14px;font-weight:700;color:var(--text);">' + esc(inv.inv_num) + '</td>'
         + '<td style="padding:12px 14px;color:var(--text);">' + esc(inv.client) + '</td>'
@@ -6096,7 +6097,7 @@ async function loadInvoiceList() {
         + '<td style="padding:12px 14px;text-align:center;color:var(--sub);font-size:0.78rem;">' + esc(inv.issue_date) + '</td>'
         + '<td style="padding:12px 14px;text-align:center;color:var(--sub);font-size:0.78rem;">' + esc(inv.due) + '</td>'
         + '<td style="padding:12px 14px;text-align:center;"><span style="padding:3px 10px;border-radius:99px;font-size:0.75rem;font-weight:700;background:' + statusBg + ';color:' + statusColor + ';">' + esc(inv.status) + '</span></td>'
-        + '<td style="padding:12px 14px;text-align:center;display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">' + driveBtn + toggleBtn + '</td>'
+        + '<td style="padding:12px 14px;text-align:center;display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">' + driveBtn + toggleBtn + delBtn + '</td>'
         + '</tr>';
     }).join('');
   } catch(e) {
@@ -6126,6 +6127,16 @@ async function markInvoiceUnpaid(invNum) {
     const json = await res.json();
     if (json.success) { showToast('↩ 未払いに戻しました'); loadInvoiceList(); }
     else showToast('更新失敗', true);
+  } catch(e) { showToast('エラー: ' + e.message, true); }
+}
+
+async function deleteInvoice(invNum, client) {
+  if (!confirm('請求書「' + invNum + '」' + (client ? '（' + client + '）' : '') + ' を削除しますか？\n\nDrive上の請求書ファイルもゴミ箱に移動します。\nこの操作は元に戻せません。')) return;
+  try {
+    const res  = await gasFetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'invoice_delete', key: getAdminPw(), inv_num: invNum }) });
+    const json = await res.json();
+    if (json.success) { showToast('🗑 請求書を削除しました'); loadInvoiceList(); }
+    else showToast('削除失敗: ' + (json.error || 'エラー'), true);
   } catch(e) { showToast('エラー: ' + e.message, true); }
 }
 
