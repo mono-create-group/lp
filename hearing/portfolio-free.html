@@ -198,6 +198,13 @@ label.form-check-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
         <label>Chatwork ID（お持ちの場合）</label>
         <input type="text" class="form-input" name="chatwork_id" placeholder="例: yamada_taro">
       </div>
+      <div class="form-group" id="first-time-group">
+        <label>mono.createへのご依頼は初めてですか？ <span>*</span></label>
+        <div class="form-radio-group">
+          <label class="form-radio-item"><input type="radio" name="isFirstTime" value="yes" required><span>はい、初めてです</span></label>
+          <label class="form-radio-item"><input type="radio" name="isFirstTime" value="no"><span>いいえ、以前にご依頼したことがあります</span></label>
+        </div>
+      </div>
     </div>
 
     <!-- SNS情報 -->
@@ -289,7 +296,17 @@ label.form-check-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
       </div>
     </div>
 
-    <button type="submit" class="submit-btn" id="submit-btn">ヒアリングシートを送信する →</button>
+    <div style="background:#F0FDF4;border:2px solid #16A34A;border-radius:10px;padding:14px 16px;margin-bottom:16px;">
+        <label style="display:block;color:#166534;font-weight:800;margin-bottom:8px;">📸 制作実績（ポートフォリオ）への掲載について</label>
+        <select name="portfolio_consent" style="width:100%;padding:10px;border:1px solid #16A34A;border-radius:8px;font-size:0.9rem;font-family:inherit;background:#fff;">
+          <option value="">-- 選択してください（任意）--</option>
+          <option value="掲載OK">掲載OK（実績・サンプルとして紹介してよい）</option>
+          <option value="一部OK・要相談">一部OK・要相談</option>
+          <option value="掲載NG">掲載しないでほしい</option>
+        </select>
+        <p style="font-size:0.74rem;color:#166534;margin-top:6px;line-height:1.6;">※「掲載OK」の場合、完成動画を弊社サイト・SNS等で実績紹介することがあります。後から変更も可能です。</p>
+      </div>
+      <button type="submit" class="submit-btn" id="submit-btn">ヒアリングシートを送信する →</button>
   </form>
 
   <div class="success-box" id="success-box">
@@ -389,7 +406,8 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
   const form = e.target;
   const _valid = _validateFields([
     { el: document.getElementById('f-name'),  msg: 'お名前を入力してください' },
-    { el: document.getElementById('f-email'), msg: '正しいメールアドレスを入力してください', test: function(el){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim()); } }
+    { el: document.getElementById('f-email'), msg: '正しいメールアドレスを入力してください', test: function(el){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim()); } },
+    { el: form.querySelector('[name=isFirstTime]'), msg: '初回かどうかをお選びください', test: function() { return !!form.querySelector('[name=isFirstTime]:checked'); } }
   ]);
   if (!_valid) return;
   const btn = document.getElementById('submit-btn');
@@ -403,6 +421,7 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
 
   const answers = {
     '__planKey':           paramPlanKey,
+    'ポートフォリオ掲載許可': (fd.get('portfolio_consent')||''),
     'ジャンル':            fd.get('genre') || paramGenre,
     'Chatwork ID':        fd.get('chatwork_id') || '',
     'SNSアカウントURL':   fd.get('sns_url') || '',
@@ -422,11 +441,12 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
       method: 'POST', mode: 'no-cors',
       body: JSON.stringify({
         type: 'hearing',
-        name:  fd.get('name'),
-        email: fd.get('email'),
-        plan:  paramPlan,
-        planKey: paramPlanKey,
-        genre: fd.get('genre') || paramGenre,
+        name:        fd.get('name'),
+        email:       fd.get('email'),
+        plan:        paramPlan,
+        planKey:     paramPlanKey,
+        genre:       fd.get('genre') || paramGenre,
+        isFirstTime: fd.get('isFirstTime') || '',
         answers,
       }),
     });
