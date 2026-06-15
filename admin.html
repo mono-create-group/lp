@@ -6742,7 +6742,7 @@ function buildDeliveryMessage() {
     if (_quickLineUid) fb += '&uid=' + encodeURIComponent(_quickLineUid);
     fb += '&_v=' + Date.now();  // キャッシュ回避：毎回ユニークURLに
     lines.push('-----------------------------------------',
-      '✏️ 修正のご依頼はこちらから（動画を見ながらタイムコード付きで記入できます）', fb);
+      '✏️ 修正のご依頼はこちらから', fb);
   }
   if (trial) lines.push('', '※ トライアルは無料です。ご継続をご希望の場合は、このままお見積り・お振込のご案内へお進みいただけます😊');
   return lines.join('\n');
