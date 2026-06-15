@@ -2755,6 +2755,8 @@ function isSessionValid() {
   if (isSessionValid()) {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
+    // セッション復元時もデータを読み込む（リロード・再訪で一覧が空のままになる不具合の修正）
+    if (typeof loadData === 'function') loadData();
     return;
   }
   // パスワード未設定なら初回セットアップへ
