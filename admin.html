@@ -523,6 +523,10 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
         🛠 修正依頼
       </button>
+      <button id="tab-payment-requests-btn" onclick="switchAdminTab('payment-requests')"
+        style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
+        📤 振込依頼履歴
+      </button>
     </div>
 
     <!-- ── 問い合わせタブ ── -->
@@ -629,6 +633,39 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         </table>
       </div>
     </div><!-- /tab-payments -->
+
+    <!-- ── 振込依頼履歴タブ ── -->
+    <div id="tab-payment-requests" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h2 style="font-size:1rem;font-weight:700;">📤 振込依頼履歴</h2>
+        <div style="display:flex;gap:10px;">
+          <button onclick="loadPaymentRequests()" style="padding:7px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--sub);font-size:0.8rem;font-family:inherit;cursor:pointer;">更新</button>
+          <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="clearAllRecords('payment_requests','振込依頼履歴',loadPaymentRequests)">🗑 全件削除</button>
+        </div>
+      </div>
+      <p style="font-size:0.78rem;color:var(--sub);margin-bottom:20px;line-height:1.7;">
+        クライアントに送信した見積もり・振込依頼の履歴です。LINE／メールで送った依頼が自動で記録されます。<br>
+        実際の入金報告は「💳 振込確認」タブで承認してください。
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>依頼日時</th>
+            <th>名前</th>
+            <th>連絡先</th>
+            <th>プラン</th>
+            <th>金額</th>
+            <th>振込期限</th>
+            <th>備考</th>
+            <th>送信</th>
+            <th>操作</th>
+          </tr></thead>
+          <tbody id="payment-requests-body">
+            <tr><td colspan="9" class="table-empty"><span class="spinner"></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div><!-- /tab-payment-requests -->
 
     <div id="tab-contracts" style="display:none;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
@@ -3117,7 +3154,7 @@ function exportCSV() {
 }
 
 // ── Tab switch ──
-const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps','sales-apps','partner-apps','private-link','client-master','invoices','line','orders','revisions'];
+const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps','sales-apps','partner-apps','private-link','client-master','invoices','line','orders','revisions','payment-requests'];
 function switchAdminTab(tab) {
   ADMIN_TABS.forEach(t => {
     document.getElementById('tab-' + t).style.display = t === tab ? '' : 'none';
@@ -3142,6 +3179,7 @@ function switchAdminTab(tab) {
   if (tab === 'client-master') loadClientMaster();
   if (tab === 'orders')      loadOrders();
   if (tab === 'revisions')   loadRevisions();
+  if (tab === 'payment-requests') loadPaymentRequests();
 }
 
 // ── LP コンテンツ編集 ─────────────────────────────────────────
@@ -3452,6 +3490,61 @@ function renderPayments() {
       <td style="white-space:nowrap;">${lineBtn}${btn}${delBtn}</td>
     </tr>`;
   }).join('');
+}
+
+// ── 振込依頼履歴 ──────────────────────────────────────────────
+let paymentRequests = [];
+async function loadPaymentRequests() {
+  document.getElementById('payment-requests-body').innerHTML =
+    '<tr><td colspan="9" class="table-empty"><span class="spinner"></span></td></tr>';
+  try {
+    const res  = await gasFetch(`${GAS_URL}?action=payment_requests_list&key=${encodeURIComponent(getAdminPw())}`);
+    const json = await res.json();
+    paymentRequests = json.data || [];
+    renderPaymentRequests();
+  } catch(e) {
+    document.getElementById('payment-requests-body').innerHTML =
+      '<tr><td colspan="9" class="table-empty">読み込みに失敗しました。</td></tr>';
+  }
+}
+
+function renderPaymentRequests() {
+  const el = document.getElementById('payment-requests-body');
+  if (!paymentRequests.length) {
+    el.innerHTML = '<tr><td colspan="9" class="table-empty">振込依頼の履歴はまだありません。</td></tr>';
+    return;
+  }
+  el.innerHTML = paymentRequests.map(p => {
+    const dt = p.date ? new Date(p.date).toLocaleString('ja-JP') : '';
+    const amt = (typeof p.amount === 'number')
+      ? '¥' + p.amount.toLocaleString()
+      : (p.amount || '');
+    return `<tr>
+      <td style="white-space:nowrap;">${esc(dt)}</td>
+      <td style="font-weight:600;">${esc(p.name)}</td>
+      <td style="font-size:0.78rem;">${esc(p.contact)}</td>
+      <td>${esc(p.plan)}</td>
+      <td style="font-weight:700;color:var(--gold);">${esc(amt)}</td>
+      <td>${esc(p.due)}</td>
+      <td style="font-size:0.78rem;color:var(--sub);">${esc(p.note)}</td>
+      <td style="font-size:0.78rem;">${esc(p.channels)}</td>
+      <td style="white-space:nowrap;">
+        <button onclick="deletePaymentRequest(${p.row}, ${JSON.stringify(p.name||'')})"
+          style="padding:5px 10px;background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;">🗑</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function deletePaymentRequest(row, name) {
+  if (!confirm(`「${name}」への振込依頼履歴を削除しますか？\n\nこの操作は元に戻せません。`)) return;
+  try {
+    await gasFetch(`${GAS_URL}?action=payment_request_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    showToast('削除しました');
+    loadPaymentRequests();
+  } catch(e) {
+    alert('削除に失敗しました。');
+  }
 }
 
 async function deleteContract(row, name) {
