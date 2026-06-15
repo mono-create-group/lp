@@ -900,7 +900,7 @@ function buildFormHtml(meta) {
     '<button class="btn-add" id="btn-add" onclick="addSlot()">＋ 修正箇所を追加</button>' +
     '<button class="btn-submit" id="btn-submit" onclick="submitFB()">📤 フィードバックを送信する</button>';
 }
-function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+function esc(s) { return String(s===null||s===undefined?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
 
 /* ── Slots ── */
 function addSlot() {
@@ -1021,14 +1021,53 @@ function copyShareUrl() {
 
 /* ── Review mode ── */
 function loadReviewMode(p) {
-  var videoUrl = p.get('video') || '';
-  var itemsB64 = p.get('items') || '';
-  var name     = p.get('name')  || '';
-  var round    = p.get('round') || '1';
-  var type     = p.get('type')  || 'short';
+  var fbId = p.get('id') || '';
+  var fbRow = p.get('fb') || p.get('row') || '';
+  // ID/行番号があればサーバーからFB本文を取得（URL切断に強い）
+  if (fbId || fbRow) {
+    var q = fbId ? ('id=' + encodeURIComponent(fbId)) : ('fb=' + encodeURIComponent(fbRow));
+    fetch(GAS_URL + '?action=get_feedback&' + q, { redirect: 'follow' })
+      .then(function(r){ return r.json(); })
+      .then(function(j){
+        if (j && j.success) {
+          renderReviewMode({
+            video: p.get('video') || j.delivery_url || '',
+            items: j.items || [],
+            name:  j.client_name || p.get('name') || '',
+            round: j.round || p.get('round') || '1',
+            type:  p.get('type') || 'short'
+          });
+        } else {
+          // 取得失敗 → URLのbase64 itemsにフォールバック
+          loadReviewModeFromUrl(p);
+        }
+      })
+      .catch(function(){ loadReviewModeFromUrl(p); });
+    return;
+  }
+  loadReviewModeFromUrl(p);
+}
 
+// 旧方式（URLにbase64で埋め込まれたitems）— 後方互換
+function loadReviewModeFromUrl(p) {
+  var itemsB64 = p.get('items') || '';
   var items = [];
   try { items = JSON.parse(decodeURIComponent(escape(atob(itemsB64)))); } catch(e) {}
+  renderReviewMode({
+    video: p.get('video') || '',
+    items: items,
+    name:  p.get('name')  || '',
+    round: p.get('round') || '1',
+    type:  p.get('type')  || 'short'
+  });
+}
+
+function renderReviewMode(o) {
+  var videoUrl = o.video || '';
+  var name     = o.name  || '';
+  var round    = o.round || '1';
+  var type     = o.type  || 'short';
+  var items    = o.items || [];
 
   driveFileId  = parseDriveId(videoUrl);
   videoType    = type;

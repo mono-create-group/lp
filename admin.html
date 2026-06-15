@@ -7043,12 +7043,28 @@ function renderRevisions() {
       <td>${f.delivery_url ? `<a href="${esc(f.delivery_url)}" target="_blank" style="color:#60a5fa;font-size:0.78rem;">🎬 開く</a>` : '—'}</td>
       <td><span class="status-badge status-${esc(f.status)}">${esc(f.status)}</span></td>
       <td><div class="td-actions">
+        <button class="action-btn" style="background:#1e293b;color:#93c5fd;border:1px solid #334155;font-weight:700;" onclick="copyEditorFbLink(${f.row})">🔗 編集者リンク</button>
         ${(extractLineUid(f) || f.email) ? `<button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${f.row},'revisions')">${extractLineUid(f) ? '💬 LINE返信' : '✉ 返信・納品'}</button>` : ''}
         ${f.email ? `<button class="action-btn btn-mail" onclick="openMail('${esc(f.email)}','${esc(f.client_name)}','修正対応')">✉ メール</button>` : ''}
         <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="deleteFeedback(${f.row}, '${esc(f.client_name)}')">🗑 削除</button>
       </div></td>
     </tr>`).join('');
 }
+// 編集者用FBリンクをコピー（ID優先・無ければ行番号。URLにFB本文を埋め込まないので切断に強い）
+function copyEditorFbLink(row) {
+  const f = (_fbList || []).find(x => x.row === row);
+  if (!f) { showToast('対象が見つかりません', true); return; }
+  const idPart = f.fb_id ? ('id=' + encodeURIComponent(f.fb_id)) : ('fb=' + row);
+  const url = _fbBaseUrl()
+    + '?review=1&' + idPart
+    + '&video=' + encodeURIComponent(f.delivery_url || '')
+    + '&name='  + encodeURIComponent(f.client_name || '')
+    + '&round=' + encodeURIComponent(f.round || '1');
+  navigator.clipboard.writeText(url)
+    .then(() => showToast('🔗 編集者用リンクをコピーしました（編集者に転送してください）'))
+    .catch(() => prompt('このリンクを編集者に渡してください：', url));
+}
+
 async function deleteFeedback(row, name) {
   if (!confirm(`「${name}」の修正依頼(FB)を削除しますか？\nこの操作は元に戻せません。`)) return;
   try {
