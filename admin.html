@@ -6668,6 +6668,7 @@ const LINE_QUICK_REPLIES = [
   { label: '🔎 確認中です',     text: '{{name}}様\n\n内容を確認しております🙏\nもう少々お待ちくださいませ。' },
   { label: '💰 入金を確認',     text: '{{name}}様\n\nご入金を確認いたしました！\nありがとうございます😊\nこのあと制作を進めてまいりますので、よろしくお願いいたします。' },
   { label: '🛠 修正を承りました', text: '{{name}}様\n\n修正のご依頼を承りました🙏\n対応が完了次第、改めてご連絡いたします。' },
+  { label: '📋 FB受領（直後のお礼）', text: '{{name}}様\n\nフィードバックをお送りいただきありがとうございます🙏\nいただいた内容を一つずつ確認し、修正版を制作いたします。\n\n完成まで今しばらくお待ちくださいませ😊\nご不明点はこのままお気軽にお送りください。' },
   { label: '🎉 ありがとうございました', text: '{{name}}様\n\nこの度はご依頼いただきありがとうございました😊\nまたのご依頼を心よりお待ちしております。' },
   { label: '📄 見積もり・お振込のご案内', text: '{{name}}様\n\nお見積もりとお振込のご案内です👇\n{{url}}\n\nご確認のほどよろしくお願いいたします。' },
   { label: '🧾 請求書の送付', text: '{{name}}様\n\n請求書をお送りします👇\n{{url}}\n\nご確認をお願いいたします。' },
@@ -7043,6 +7044,7 @@ function renderRevisions() {
       <td>${f.delivery_url ? `<a href="${esc(f.delivery_url)}" target="_blank" style="color:#60a5fa;font-size:0.78rem;">🎬 開く</a>` : '—'}</td>
       <td><span class="status-badge status-${esc(f.status)}">${esc(f.status)}</span></td>
       <td><div class="td-actions">
+        <button class="action-btn" style="background:#1e293b;color:#cbd5e1;border:1px solid #334155;font-weight:700;" onclick="openFbDetail(${f.row})">📋 内容を見る</button>
         <button class="action-btn" style="background:#1e293b;color:#93c5fd;border:1px solid #334155;font-weight:700;" onclick="copyEditorFbLink(${f.row})">🔗 編集者リンク</button>
         ${(extractLineUid(f) || f.email) ? `<button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${f.row},'revisions')">${extractLineUid(f) ? '💬 LINE返信' : '✉ 返信・納品'}</button>` : ''}
         ${f.email ? `<button class="action-btn btn-mail" onclick="openMail('${esc(f.email)}','${esc(f.client_name)}','修正対応')">✉ メール</button>` : ''}
@@ -7050,6 +7052,32 @@ function renderRevisions() {
       </div></td>
     </tr>`).join('');
 }
+// 修正依頼タブ：送信されたFB内容を表示
+function openFbDetail(row) {
+  const f = (_fbList || []).find(x => x.row === row);
+  if (!f) { showToast('対象が見つかりません', true); return; }
+  const items = f.items || [];
+  let html = `<div style="font-size:0.86rem;line-height:1.8;color:var(--lt);">
+    <p><b>クライアント：</b>${esc(f.client_name)}${f.title ? `（🎬 ${esc(f.title)}）` : ''}</p>
+    <p><b>受信：</b>${esc(f.date)}　／　<b>ラウンド：</b>${esc(f.round)}　／　<b>件数：</b>${items.length}件</p>
+    ${f.delivery_url ? `<p><b>納品動画：</b><a href="${esc(f.delivery_url)}" target="_blank" style="color:#60a5fa;">🎬 開く</a></p>` : ''}
+    <hr style="border:none;border-top:1px solid var(--border);margin:10px 0;">`;
+  if (!items.length) {
+    html += `<p style="color:var(--sub);">FB項目がありません。</p>`;
+  } else {
+    items.forEach((it, i) => {
+      html += `<div style="margin-bottom:10px;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;">
+        <div style="font-size:0.78rem;color:#60a5fa;font-weight:700;margin-bottom:4px;">#${i + 1}${it.time ? `　⏱ ${esc(it.time)}` : ''}</div>
+        <div style="white-space:pre-wrap;">${esc(it.comment || '(コメントなし)')}</div>
+      </div>`;
+    });
+  }
+  html += `</div>`;
+  document.getElementById('fb-detail-body').innerHTML = html;
+  document.getElementById('fb-detail-modal').style.display = 'flex';
+}
+function closeFbDetail() { document.getElementById('fb-detail-modal').style.display = 'none'; }
+
 // 編集者用FBリンクをコピー（ID優先・無ければ行番号。URLにFB本文を埋め込まないので切断に強い）
 function copyEditorFbLink(row) {
   const f = (_fbList || []).find(x => x.row === row);
@@ -7096,6 +7124,17 @@ async function deleteFeedback(row, name) {
       <button onclick="closeOrderDetail()" style="background:none;border:none;color:var(--sub);font-size:1.3rem;cursor:pointer;">✕</button>
     </div>
     <div id="order-detail-body"></div>
+  </div>
+</div>
+
+<!-- ── FB（修正依頼）詳細モーダル ── -->
+<div class="modal-overlay" id="fb-detail-modal" onclick="if(event.target===this)closeFbDetail()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;width:min(560px,92vw);max-height:85vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <h3 style="font-size:1rem;font-weight:800;">📋 修正依頼（FB）の内容</h3>
+      <button onclick="closeFbDetail()" style="background:none;border:none;color:var(--sub);font-size:1.3rem;cursor:pointer;">✕</button>
+    </div>
+    <div id="fb-detail-body"></div>
   </div>
 </div>
 
