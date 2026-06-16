@@ -773,6 +773,15 @@ nav.nav-scrolled {
 }
 /* Loading */
 #portfolio-loading-txt { color: var(--sub); font-size:0.85rem; padding:32px 0; }
+.testimonial-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:32px; }
+.testimonial-card { background:#fff; border:1px solid #e5e9f0; border-radius:14px; overflow:hidden; box-shadow:0 4px 18px rgba(15,23,42,0.06); transition:transform .2s, box-shadow .2s; cursor:zoom-in; }
+.testimonial-card:hover { transform:translateY(-3px); box-shadow:0 10px 28px rgba(15,23,42,0.12); }
+.testimonial-card img { width:100%; display:block; background:#f1f5f9; }
+.testimonial-card .tcap { padding:12px 14px; font-size:0.82rem; color:#475569; line-height:1.6; }
+@media (max-width:768px){ .testimonial-grid { grid-template-columns:repeat(2,1fr); gap:12px; } .testimonial-card .tcap { font-size:0.76rem; padding:10px; } }
+@media (max-width:430px){ .testimonial-grid { grid-template-columns:1fr; } }
+.tlightbox { position:fixed; inset:0; background:rgba(0,0,0,0.85); display:none; align-items:center; justify-content:center; z-index:99999; padding:20px; }
+.tlightbox img { max-width:96vw; max-height:92vh; border-radius:10px; }
 
 /* ── Portfolio Mobile Card Grid ── */
 .pf-mobile-grid {
@@ -2849,6 +2858,16 @@ section { contain: layout style; }
   </div>
 </section>
 
+<!-- ═══ お客様の声 ═══ -->
+<section class="section" id="testimonials" style="display:none;">
+  <div class="container">
+    <p class="label">VOICE</p>
+    <h2 class="section-title fade-up">お客様の声</h2>
+    <p class="section-sub fade-up">ご依頼いただいたお客様から<br class="sp-br">いただいた声の一部をご紹介します。</p>
+    <div class="testimonial-grid" id="testimonials-grid"></div>
+  </div>
+</section>
+
 <!-- ═══ 無料ポートフォリオ制作 ═══ -->
 <section id="section-pf-free" class="section" style="background:#fff;">
   <div class="container">
@@ -4226,6 +4245,42 @@ async function loadPortfolio(retries) {
 }
 loadPortfolio();
 
+// ── お客様の声 ──────────────────────────────────────────────
+function testimonialImgSrc(url) {
+  var m = (url || '').match(/\/file\/d\/([^/?#]+)/) || (url || '').match(/[?&]id=([^&]+)/);
+  if (m) return 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w1000';
+  return url;
+}
+function openTestimonialLightbox(src) {
+  var lb = document.getElementById('t-lightbox');
+  if (!lb) return;
+  document.getElementById('t-lightbox-img').src = src;
+  lb.style.display = 'flex';
+}
+async function loadTestimonials(retries) {
+  retries = retries || 0;
+  if (!GAS_URL) return;
+  try {
+    var res = await fetch(GAS_URL + '?action=testimonials&_t=' + Date.now());
+    var json = await res.json();
+    var items = (json && json.data) || [];
+    var sec = document.getElementById('testimonials');
+    var grid = document.getElementById('testimonials-grid');
+    if (!items.length) { sec.style.display = 'none'; return; }
+    grid.innerHTML = items.map(function(it) {
+      var src = testimonialImgSrc(it.url);
+      var cap = it.caption ? '<div class="tcap">' + String(it.caption).replace(/</g,'&lt;') + '</div>' : '';
+      return '<div class="testimonial-card" onclick="openTestimonialLightbox(\'' + src.replace(/'/g, "\\'") + '\')">'
+        + '<img src="' + src + '" alt="お客様の声" loading="lazy" onerror="this.parentNode.style.display=\'none\'">'
+        + cap + '</div>';
+    }).join('');
+    sec.style.display = '';
+  } catch (e) {
+    if (retries < 2) setTimeout(function() { loadTestimonials(retries + 1); }, 3000);
+  }
+}
+loadTestimonials();
+
 // ── LP コンテンツ動的反映 ────────────────────────────────────
 function applyContent(content) {
   Object.keys(content).forEach(function(key) {
@@ -4943,5 +4998,8 @@ function closeMobileNav() {
   document.body.style.overflow = '';
 }
 </script>
+<div class="tlightbox" id="t-lightbox" onclick="this.style.display='none'">
+  <img id="t-lightbox-img" src="" alt="お客様の声">
+</div>
 </body>
 </html>

@@ -531,6 +531,10 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
         🗑 ゴミ箱
       </button>
+      <button id="tab-testimonials-btn" onclick="switchAdminTab('testimonials')"
+        style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
+        💬 お客様の声
+      </button>
     </div>
 
     <!-- ── 問い合わせタブ ── -->
@@ -695,6 +699,27 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         </table>
       </div>
     </div><!-- /tab-trash -->
+
+    <!-- ── お客様の声タブ ── -->
+    <div id="tab-testimonials" style="display:none;max-width:860px;margin:0 auto;padding:24px 0;">
+      <h2 style="font-size:1.05rem;font-weight:800;margin-bottom:4px;">💬 お客様の声</h2>
+      <p style="font-size:0.8rem;color:var(--sub);margin-bottom:18px;line-height:1.7;">
+        LPの「制作実績」の下に表示される、お客様の声（スクショ画像）を管理します。<br>
+        画像URL（Google Drive の共有リンク／画像直リンク）を貼って追加してください。
+      </p>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:20px;">
+        <label style="display:block;font-size:0.78rem;color:var(--sub);margin-bottom:5px;">画像URL <span style="color:#f87171;">*</span></label>
+        <input type="url" id="ts-url" placeholder="https://drive.google.com/file/d/.../view など"
+          style="width:100%;padding:10px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;margin-bottom:12px;">
+        <label style="display:block;font-size:0.78rem;color:var(--sub);margin-bottom:5px;">キャプション（任意）</label>
+        <input type="text" id="ts-caption" placeholder="例：株式会社〇〇 様 / リール編集"
+          style="width:100%;padding:10px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;margin-bottom:14px;">
+        <button class="action-btn" style="background:#1a3a2a;color:#4ade80;border:1px solid #166534;font-weight:700;padding:9px 20px;" onclick="addTestimonial()">＋ 追加して掲載</button>
+      </div>
+      <div id="testimonials-admin-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;">
+        <p style="color:var(--sub);font-size:0.82rem;"><span class="spinner"></span></p>
+      </div>
+    </div><!-- /tab-testimonials -->
 
     <div id="tab-contracts" style="display:none;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
@@ -2898,6 +2923,7 @@ function renderTable() {
           <button class="action-btn btn-expand" onclick="openModal(${i.row})">詳細</button>
           ${(i.email || extractLineUid(i)) ? `<button class="action-btn" style="background:#1a3a2a;color:#4ade80;border:1px solid #166534;" onclick="openHearingLinkModal(${i.row})">📋 ヒアリング案内</button>` : ''}
           ${(i.email || extractLineUid(i)) ? `<button class="action-btn" style="background:#1a2a3a;color:#60a5fa;border:1px solid #1d4ed8;" onclick="openManualPaymentFromInquiry(${i.row})">💳 振込依頼</button>` : ''}
+          ${(i.email && !extractLineUid(i)) ? `<button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;" onclick="sendLineInviteAdmin('${esc(i.email)}','${esc(i.name)}')">📨 LINE案内</button>` : ''}
           <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="deleteInquiry(${i.row}, '${esc(i.name)}')">🗑 削除</button>
         </div>
       </td>
@@ -3185,7 +3211,7 @@ function exportCSV() {
 }
 
 // ── Tab switch ──
-const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps','sales-apps','partner-apps','private-link','client-master','invoices','line','orders','revisions','payment-requests','trash'];
+const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps','sales-apps','partner-apps','private-link','client-master','invoices','line','orders','revisions','payment-requests','trash','testimonials'];
 function switchAdminTab(tab) {
   ADMIN_TABS.forEach(t => {
     document.getElementById('tab-' + t).style.display = t === tab ? '' : 'none';
@@ -3212,6 +3238,7 @@ function switchAdminTab(tab) {
   if (tab === 'revisions')   loadRevisions();
   if (tab === 'payment-requests') loadPaymentRequests();
   if (tab === 'trash')            loadTrash();
+  if (tab === 'testimonials')     loadTestimonialsAdmin();
 }
 
 // ── LP コンテンツ編集 ─────────────────────────────────────────
@@ -7052,6 +7079,66 @@ function renderRevisions() {
       </div></td>
     </tr>`).join('');
 }
+// LINE案内メールを送信（顧客に合言葉コード付きの友だち追加案内を送る）
+async function sendLineInviteAdmin(email, name) {
+  if (!email) { showToast('メールアドレスがありません', true); return; }
+  if (!confirm(`${name || 'この顧客'} 様（${email}）に\n公式LINE追加のご案内メール（合言葉コード付き）を送信しますか？`)) return;
+  try {
+    const res = await gasFetch(`${GAS_URL}?action=line_invite&key=${encodeURIComponent(getAdminPw())}&email=${encodeURIComponent(email)}&name=${encodeURIComponent(name||'')}`);
+    const j = await res.json();
+    if (j.already_linked) { showToast('✅ この顧客は既にLINE連携済みです'); }
+    else if (j.success) { showToast('📨 LINE案内メールを送信しました'); }
+    else { showToast('送信失敗: ' + (j.error || 'エラー'), true); }
+  } catch(e) { showToast('送信エラー', true); }
+}
+
+// ── お客様の声 管理 ──────────────────────────────────────────
+function tsImgSrc(url) {
+  var m = (url||'').match(/\/file\/d\/([^/?#]+)/) || (url||'').match(/[?&]id=([^&]+)/);
+  if (m) return 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w400';
+  return url;
+}
+async function loadTestimonialsAdmin() {
+  const el = document.getElementById('testimonials-admin-list');
+  el.innerHTML = '<p style="color:var(--sub);font-size:0.82rem;"><span class="spinner"></span></p>';
+  try {
+    const res = await gasFetch(`${GAS_URL}?action=testimonials&_t=${Date.now()}`);
+    const j = await res.json();
+    const items = j.data || [];
+    if (!items.length) { el.innerHTML = '<p style="color:var(--sub);font-size:0.82rem;">まだ登録がありません。上のフォームから追加してください。</p>'; return; }
+    el.innerHTML = items.map(t => `
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+        <img src="${tsImgSrc(t.url)}" style="width:100%;display:block;background:#0f172a;" onerror="this.style.opacity=0.3;this.alt='画像を表示できません';">
+        ${t.caption ? `<div style="padding:6px 10px;font-size:0.74rem;color:var(--sub);">${esc(t.caption)}</div>` : ''}
+        <div style="padding:8px 10px;border-top:1px solid var(--border);">
+          <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;width:100%;" onclick="deleteTestimonial(${t.row})">🗑 削除</button>
+        </div>
+      </div>`).join('');
+  } catch(e) {
+    el.innerHTML = '<p style="color:#ef4444;font-size:0.82rem;">読み込みに失敗しました。</p>';
+  }
+}
+async function addTestimonial() {
+  const url = document.getElementById('ts-url').value.trim();
+  const caption = document.getElementById('ts-caption').value.trim();
+  if (!url) { showToast('画像URLを入力してください', true); return; }
+  try {
+    await gasFetch(GAS_URL, { method:'POST', body: JSON.stringify({ action:'testimonial_add', key:getAdminPw(), url, caption }) });
+    document.getElementById('ts-url').value = '';
+    document.getElementById('ts-caption').value = '';
+    showToast('💬 お客様の声を追加しました');
+    setTimeout(loadTestimonialsAdmin, 1500);
+  } catch(e) { showToast('追加に失敗しました', true); }
+}
+async function deleteTestimonial(row) {
+  if (!confirm('このお客様の声を削除しますか？\n\n削除しても🗑ゴミ箱から復元できます。')) return;
+  try {
+    await gasFetch(`${GAS_URL}?action=testimonial_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    showToast('🗑 削除しました（ゴミ箱から復元可）');
+    loadTestimonialsAdmin();
+  } catch(e) { showToast('削除に失敗しました', true); }
+}
+
 // 修正依頼タブ：送信されたFB内容を表示
 function openFbDetail(row) {
   const f = (_fbList || []).find(x => x.row === row);
