@@ -85,7 +85,7 @@ label.form-check-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
     <p class="intro-plan" id="plan-display">編集者派遣</p>
     <h1>📋 ヒアリングシート</h1>
     <p>契約同意ありがとうございます。即戦力の編集者をチームへ迎え入れるにあたり、現状と要件をお聞かせください。<br>
-    回答後、2営業日以内にChatworkまたはメールにてご連絡いたします。</p>
+    回答後、2営業日以内に公式LINEまたはメールにてご連絡いたします。</p>
   </div>
   <div id="plan-details-card" style="display:none;background:#FFFBEB;border:1.5px solid #F59E0B;border-radius:16px;padding:24px 28px;margin-bottom:32px;"></div>
 <form class="form-card" id="hearing-form">
@@ -104,10 +104,6 @@ label.form-check-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
       <div class="form-group">
         <label>会社名 / 屋号 <span>*</span></label>
         <input type="text" class="form-input" name="company" required placeholder="株式会社〇〇">
-      </div>
-      <div class="form-group">
-        <label>Chatwork ID（お持ちの場合）</label>
-        <input type="text" class="form-input" name="chatwork_id" placeholder="例: yamada_taro">
       </div>
       <div class="form-group" id="first-time-group">
         <label>mono.createへのご依頼は初めてですか？ <span>*</span></label>
@@ -241,8 +237,8 @@ label.form-check-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
     <div class="success-icon">✅</div>
     <h2>回答を受け付けました！</h2>
     <p>ありがとうございます。<strong id="success-name"></strong> 様のご回答を確認いたしました。<br>
-    2営業日以内に <strong id="success-email"></strong> またはChatworkにてご連絡いたします。<br><br>
-    お急ぎの場合はメール（mono.create.group@gmail.com）またはChatwork（ID: wl0b2t4akjur）までご連絡ください。</p>
+    2営業日以内に <strong id="success-email"></strong> にご連絡いたします。<br><br>
+    お急ぎの場合はメール（mono.create.group@gmail.com）または公式LINEまでご連絡ください。</p>
     <a href="https://mono-create-group.github.io/lp/" style="display:inline-block;margin-top:24px;padding:12px 28px;background:#1E40AF;color:#fff;border-radius:10px;font-weight:700;text-decoration:none;font-size:0.9rem;">🏠 ホームに戻る</a>
   </div>
 
@@ -404,7 +400,6 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
     '__planKey':          paramPlanKey,
     'ポートフォリオ掲載許可': (fd.get('portfolio_consent')||''),
     '会社名/屋号':        fd.get('company') || '',
-    'Chatwork ID':        fd.get('chatwork_id') || '',
     '現在のチーム規模':   fd.get('team_size') || '',
     '月の制作本数':       fd.get('monthly_volume') || '',
     '外注の理由':         reasons.join(' / ') || '',

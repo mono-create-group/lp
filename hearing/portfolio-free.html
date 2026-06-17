@@ -166,7 +166,7 @@ label.form-check-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
     <p class="intro-plan" id="plan-display">📸 無料ポートフォリオ制作</p>
     <h1>📋 無料ポートフォリオ制作 ヒアリングシート</h1>
     <p>お申し込みいただきありがとうございます。以下の項目にご回答ください。<br>
-    回答後、2営業日以内にChatworkまたはメールにてご連絡いたします。</p>
+    回答後、2営業日以内に公式LINEまたはメールにてご連絡いたします。</p>
     <!-- ポートフォリオ掲載バナー -->
     <div style="margin-top:16px;padding:14px 18px;background:#EFF6FF;border:1px solid #3B82F6;border-radius:10px;font-size:0.82rem;color:#1E3A8A;line-height:1.8;">
       <p style="font-weight:800;margin-bottom:6px;">📸 ポートフォリオ掲載条件について</p>
@@ -193,10 +193,6 @@ label.form-check-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
       <div class="form-group">
         <label>メールアドレス <span>*</span></label>
         <input type="email" class="form-input" id="f-email" name="email" required placeholder="email@example.com">
-      </div>
-      <div class="form-group">
-        <label>Chatwork ID（お持ちの場合）</label>
-        <input type="text" class="form-input" name="chatwork_id" placeholder="例: yamada_taro">
       </div>
       <div class="form-group" id="first-time-group">
         <label>mono.createへのご依頼は初めてですか？ <span>*</span></label>
@@ -313,8 +309,8 @@ label.form-check-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
     <div class="success-icon">📸</div>
     <h2>回答を受け付けました！</h2>
     <p>ありがとうございます。<strong id="success-name"></strong> 様のご回答を確認いたしました。<br>
-    2営業日以内に <strong id="success-email"></strong> またはChatworkにてご連絡いたします。<br><br>
-    お急ぎの場合はメール（mono.create.group@gmail.com）またはChatwork（ID: wl0b2t4akjur）までご連絡ください。</p>
+    2営業日以内に <strong id="success-email"></strong> にご連絡いたします。<br><br>
+    お急ぎの場合はメール（mono.create.group@gmail.com）または公式LINEまでご連絡ください。</p>
     <a href="https://mono-create-group.github.io/lp/" style="display:inline-block;margin-top:24px;padding:12px 28px;background:#D97706;color:#fff;border-radius:10px;font-weight:700;text-decoration:none;font-size:0.9rem;">🏠 ホームに戻る</a>
   </div>
 
@@ -423,7 +419,6 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
     '__planKey':           paramPlanKey,
     'ポートフォリオ掲載許可': (fd.get('portfolio_consent')||''),
     'ジャンル':            fd.get('genre') || paramGenre,
-    'Chatwork ID':        fd.get('chatwork_id') || '',
     'SNSアカウントURL':   fd.get('sns_url') || '',
     'アカウントジャンル': fd.get('account_genre') || '',
     '動画の長さ':         fd.get('duration') || '',

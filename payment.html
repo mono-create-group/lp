@@ -442,7 +442,7 @@ footer {
     <div style="font-size:2rem;flex-shrink:0;">📋</div>
     <div>
       <p style="font-size:0.95rem;font-weight:700;color:#60A5FA;margin-bottom:4px;">長尺動画プランは後払いです</p>
-      <p style="font-size:0.82rem;color:#8B9BB4;line-height:1.7;">動画の尺によって料金が変動するため、<strong style="color:#E8EDF5;">納品確認後に金額を確定してご請求</strong>します。<br>請求書をChatworkまたはGmailでお送りしますので、内容をご確認のうえ7日以内にお振込みください。</p>
+      <p style="font-size:0.82rem;color:#8B9BB4;line-height:1.7;">動画の尺によって料金が変動するため、<strong style="color:#E8EDF5;">納品確認後に金額を確定してご請求</strong>します。<br>請求書を公式LINEまたはメールでお送りしますので、内容をご確認のうえ7日以内にお振込みください。</p>
     </div>
   </div>
 
@@ -453,7 +453,7 @@ footer {
       <li>ヒアリングシートご記入・契約同意</li>
       <li>素材をご共有ください（先払い不要）</li>
       <li>編集・投稿代行を実施</li>
-      <li>納品完了後、正確な金額をChatworkまたはGmailでご連絡</li>
+      <li>納品完了後、正確な金額を公式LINEまたはメールでご連絡</li>
       <li>請求書受領後<strong style="color:#E8EDF5;">7日以内に</strong>下記口座へお振込み</li>
     </ol>
     <p style="font-size:0.78rem;color:#8B9BB4;margin-top:12px;">※ 振込完了後、下記フォームからご報告ください。</p>
@@ -517,7 +517,7 @@ footer {
     <div class="notice-list">
       <div class="notice-item"><span>振込手数料はご負担ください。</span></div>
       <div class="notice-item"><span>振込人名義は<strong style="color:#E8EDF5;">ご本人名義</strong>でお振込みください。法人の場合は会社名義でも可。</span></div>
-      <div class="notice-item"><span>振込確認後、ChatworkまたはGmailにてご連絡します（通常営業時間内に対応）。</span></div>
+      <div class="notice-item"><span>振込確認後、公式LINEまたはメールにてご連絡します（通常営業時間内に対応）。</span></div>
       <div class="notice-item"><span>振込完了後、下記フォームから<strong style="color:#E8EDF5;">振込完了のご報告</strong>をお願いします。確認がスムーズになります。</span></div>
       <div class="notice-item"><span>ご入金確認前に素材の共有をいただいても、作業は開始できません。</span></div>
       <div class="notice-item">稼働時間外（19:00以降・日曜）の入金確認は翌営業日になります。</div>
@@ -534,8 +534,8 @@ footer {
           <input type="text" class="form-input" id="r-name" placeholder="山田 太郎" required>
         </div>
         <div class="form-group">
-          <label class="form-label">Chatwork IDまたはメールアドレス<span class="req">*</span></label>
-          <input type="text" class="form-input" id="r-contact" placeholder="例：mono_create / example@mail.com" required>
+          <label class="form-label">メールアドレス<span class="req">*</span></label>
+          <input type="email" class="form-input" id="r-contact" placeholder="例：example@mail.com" required>
         </div>
         <div class="form-group">
           <label class="form-label">ご契約プラン<span class="req">*</span></label>
@@ -583,7 +583,7 @@ footer {
         <div class="success-box__icon">✅</div>
         <p class="success-box__title">ご報告ありがとうございます！</p>
         <p class="success-box__body">
-          内容を確認次第、ChatworkまたはGmailにてご連絡いたします。<br>
+          内容を確認次第、公式LINEまたはメールにてご連絡いたします。<br>
           通常、営業時間内（月〜土 9:00〜19:00）に対応します。<br>
           素材の共有は、入金確認のご連絡後にお願いします。
         </p>
@@ -677,7 +677,7 @@ function setPayType(type) {
   // 後払いフロー案内
   document.getElementById('postpay-notice').style.display = isPre ? 'none' : 'block';
   // 振込金額ラベル
-  document.getElementById('amount-display').textContent = isPre ? 'お見積もりメールをご確認ください' : '納品後にChatworkまたはGmailでご連絡します';
+  document.getElementById('amount-display').textContent = isPre ? 'お見積もりメールをご確認ください' : '納品後に公式LINEまたはメールでご連絡します';
 }
 
 // URLパラメータからプラン・金額・名前を反映
@@ -766,7 +766,7 @@ document.getElementById('report-form').addEventListener('submit', async function
 
   const ok = _validateFields([
     { el: nameEl,    msg: 'お名前（振込人名義）を入力してください' },
-    { el: contactEl, msg: 'ChatworkIDまたはメールアドレスを入力してください' },
+    { el: contactEl, msg: 'メールアドレスを入力してください' },
     { el: planEl,    msg: 'ご契約プランを選択してください',
       test: el => el.value !== '' },
     { el: amountEl,  msg: '振込金額を入力してください' },
@@ -796,7 +796,7 @@ document.getElementById('report-form').addEventListener('submit', async function
     document.getElementById('report-form-wrap').querySelector('form').style.display = 'none';
     document.getElementById('success-box').style.display = 'block';
   } catch(err) {
-    alert('送信に失敗しました。Chatworkにて直接ご連絡ください。');
+    alert('送信に失敗しました。お手数ですがメール（mono.create.group@gmail.com）または公式LINEにて直接ご連絡ください。');
     btn.disabled = false;
     btn.textContent = '振込完了を報告する';
   }

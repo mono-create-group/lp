@@ -3413,7 +3413,7 @@ section { contain: layout style; }
       <div class="flow-step fade-up">
         <p class="flow-num">STEP 01</p>
         <h3>無料相談・お問い合わせ</h3>
-        <p>目的・ご予算・参考動画をフォームからお送りください。<br>ChatworkまたはGmailにてご連絡いたします。</p>
+        <p>目的・ご予算・参考動画をフォームからお送りください。<br>公式LINEまたはメールにてご連絡いたします。</p>
         <a href="#contact" class="flow-pay-link" style="margin-top:10px;">↓ お問い合わせフォームへ</a>
       </div>
       <div class="flow-step fade-up">
@@ -3542,10 +3542,10 @@ section { contain: layout style; }
       </div>
       <div class="faq-item fade-up">
         <div class="faq-q" onclick="toggleFaq(this)">
-          <span>Chatwork以外での連絡は可能ですか？</span>
+          <span>連絡手段は何ですか？</span>
           <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         </div>
-        <div class="faq-a">基本的な連絡手段はChatworkとなります。まずはこのページのお問い合わせフォームからご連絡いただければ、Chatworkでのやり取りへスムーズに移行できます。</div>
+        <div class="faq-a">ご連絡は公式LINEまたはメールで承ります。まずはこのページのお問い合わせフォームからご連絡いただければ、公式LINE（おすすめ）またはメールでやり取りへスムーズに移行できます。</div>
       </div>
       <div class="faq-item fade-up">
         <div class="faq-q" onclick="toggleFaq(this)">
@@ -3719,7 +3719,7 @@ section { contain: layout style; }
           <div class="contact-item-icon">💬</div>
           <div class="contact-item-body">
             <p class="contact-item-label">主な連絡手段</p>
-            <p class="contact-item-val">Chatwork</p>
+            <p class="contact-item-val">公式LINE・メール</p>
           </div>
         </div>
       </div>
@@ -3739,10 +3739,6 @@ section { contain: layout style; }
           <div class="form-row">
             <label>メールアドレス<span>*</span></label>
             <input type="email" class="form-control" name="email" placeholder="example@mail.com" required>
-          </div>
-          <div class="form-row">
-            <label>Chatwork ID（お持ちの方）</label>
-            <input type="text" class="form-control" name="chatwork_id" placeholder="例：mono_create">
           </div>
           <div class="form-row">
             <label>ご関心のあるサービス<span>*</span></label>
@@ -3807,12 +3803,12 @@ section { contain: layout style; }
           <button type="submit" class="form-submit" id="submit-btn">
             送信する
           </button>
-          <p class="form-note">送信後、Chatworkまたはメールにてご連絡します。</p>
+          <p class="form-note">送信後、公式LINEまたはメールにてご連絡します。</p>
         </form>
         <div class="form-success" id="form-success">
           <div class="form-success-icon">✅</div>
           <h3>送信完了しました！</h3>
-          <p>Chatworkまたはメールにてご連絡いたします。<br>しばらくお待ちください。</p>
+          <p>公式LINEまたはメールにてご連絡いたします。<br>しばらくお待ちください。</p>
         </div>
       </div>
     </div>
@@ -4675,7 +4671,7 @@ document.getElementById('contact-form').addEventListener('submit', async (e) => 
     name:          form.name.value,
     company:       form.company.value,
     email:         form.email.value,
-    chatwork_id:   form.chatwork_id.value,
+    chatwork_id:   '',
     plan:          form.plan.value,
     message:       form.message.value,
     referral_code: form.referral_code.value.trim(),

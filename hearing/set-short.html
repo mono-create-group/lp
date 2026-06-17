@@ -90,7 +90,7 @@ label.form-check-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
     <p class="intro-plan" id="plan-display">SNS全対応パック</p>
     <h1>📋 ヒアリングシート</h1>
     <p>契約同意ありがとうございます。ショート動画編集 + 投稿代行をご利用いただくにあたり、アカウントの状況や運用方針をお聞かせください。<br>
-    回答後、2営業日以内にChatworkまたはメールにてご連絡いたします。</p>
+    回答後、2営業日以内に公式LINEまたはメールにてご連絡いたします。</p>
   </div>
   <div id="plan-details-card" style="display:none;background:#FFFBEB;border:1.5px solid #F59E0B;border-radius:16px;padding:24px 28px;margin-bottom:32px;"></div>
 <form class="form-card" id="hearing-form">
@@ -109,10 +109,6 @@ label.form-check-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
       <div class="form-group">
         <label>会社名 / 屋号</label>
         <input type="text" class="form-input" name="company" placeholder="株式会社〇〇 / 個人の場合は空欄でOK">
-      </div>
-      <div class="form-group">
-        <label>Chatwork ID（お持ちの場合）</label>
-        <input type="text" class="form-input" name="chatwork_id" placeholder="例: yamada_taro">
       </div>
       <div class="form-group" id="first-time-group">
         <label>mono.createへのご依頼は初めてですか？ <span>*</span></label>
@@ -243,7 +239,7 @@ label.form-check-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
             <li>動画・音声・画像・プロジェクトファイル等を直接アップロード</li>
           </ul>
           <p style="font-size:0.78rem;color:#0369A1;margin-top:10px;">
-            ▶ アップロード完了後は Chatwork またはメールでご連絡ください<br>
+            ▶ アップロード完了後は 公式LINE またはメールでご連絡ください<br>
             ▶ その他のご希望（特殊形式・大容量等）は備考欄にご記入ください<br>🎁 無料トライアルの場合は、お申し込み後すぐに専用フォルダをご案内します（入金不要・このメッセージの後にURLをお送りします）
           </p>
         </div>
@@ -251,7 +247,7 @@ label.form-check-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
       <div class="form-group">
         <label>投稿代行のためのアカウントログイン情報の共有</label>
         <div class="form-radio-group">
-          <label class="form-radio-item"><input type="radio" name="login_share" value="Chatworkで別途共有"><span>Chatworkで別途共有</span></label>
+          <label class="form-radio-item"><input type="radio" name="login_share" value="メールで別途共有"><span>メールで別途共有</span></label>
           <label class="form-radio-item"><input type="radio" name="login_share" value="メールで別途共有"><span>メールで別途共有</span></label>
           <label class="form-radio-item"><input type="radio" name="login_share" value="開始前に相談したい"><span>開始前に相談したい</span></label>
         </div>
@@ -276,8 +272,8 @@ label.form-check-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
     <div class="success-icon">✅</div>
     <h2>回答を受け付けました！</h2>
     <p>ありがとうございます。<strong id="success-name"></strong> 様のご回答を確認いたしました。<br>
-    2営業日以内に <strong id="success-email"></strong> またはChatworkにてご連絡いたします。<br><br>
-    お急ぎの場合はメール（mono.create.group@gmail.com）またはChatwork（ID: wl0b2t4akjur）までご連絡ください。</p>
+    2営業日以内に <strong id="success-email"></strong> にご連絡いたします。<br><br>
+    お急ぎの場合はメール（mono.create.group@gmail.com）または公式LINEまでご連絡ください。</p>
     <a href="https://mono-create-group.github.io/lp/" style="display:inline-block;margin-top:24px;padding:12px 28px;background:#1E40AF;color:#fff;border-radius:10px;font-weight:700;text-decoration:none;font-size:0.9rem;">🏠 ホームに戻る</a>
   </div>
 
@@ -438,7 +434,6 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
     '__planKey':             paramPlanKey,
     'ポートフォリオ掲載許可': (fd.get('portfolio_consent')||''),
     '会社名/屋号':          fd.get('company') || '',
-    'Chatwork ID':          fd.get('chatwork_id') || '',
     'SNSアカウントURL':     fd.get('sns_url') || '',
     '投稿SNS':              platforms.join(' / ') || '',
     'ジャンル/テーマ':      fd.get('genre') || '',
