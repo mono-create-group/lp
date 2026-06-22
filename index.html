@@ -3886,6 +3886,7 @@ section { contain: layout style; }
       <h4 style="text-align:center;font-size:1rem;margin-bottom:4px;">📋 サービス概要のご確認</h4>
       <p style="font-size:0.78rem;color:var(--sub);text-align:center;margin-bottom:20px;">mono.create / 担当：中村 航汰</p>
 
+      <div id="ctr-service-detail">
       <h4>🎯 サービスの流れ</h4>
       <ol style="padding-left:18px;margin-bottom:14px;">
         <li><strong>お問い合わせ送信（今ここ）</strong> — ヒアリングシートのURLをメールでお送りします</li>
@@ -3921,6 +3922,7 @@ section { contain: layout style; }
         <li>そのフォルダにブラウザから直接アップロードいただきます（Googleアカウント不要）</li>
         <li>第三者の著作権・肖像権侵害素材はお受けできません</li>
       </ul>
+      </div><!-- /ctr-service-detail -->
 
       <h4>🔒 個人情報の取扱い</h4>
       <ul>
@@ -4339,11 +4341,63 @@ const PLAN_MAP = {
   'ai-system':      ['AIシステム構築（¥15,000〜）',                       'hearing/consul.html'],
 };
 
+let _ctrDefaultDetail = null;
+function setCtrServiceDetail(planId) {
+  const box = document.getElementById('ctr-service-detail');
+  if (!box) return;
+  if (_ctrDefaultDetail === null) _ctrDefaultDetail = box.innerHTML;
+  const consulEdit = `
+      <h4>🎯 サービスの流れ</h4>
+      <ol style="padding-left:18px;margin-bottom:14px;">
+        <li><strong>お問い合わせ送信（今ここ）</strong> — ヒアリングシートのURLをメールでお送りします</li>
+        <li><strong>ヒアリングシート回答</strong> — ご相談内容・現状の課題をお聞きします</li>
+        <li><strong>日程調整</strong> — 専用リンクからご希望日時をご予約</li>
+        <li><strong>お支払い → コンサル実施</strong>（オンライン／電話・約60分）</li>
+      </ol>
+      <h4>💰 料金・お支払い</h4>
+      <ul><li>¥5,000 / 1時間（税込）</li><li>事前または当日までにお振込</li><li>振込手数料はお客様ご負担</li></ul>
+      <h4>🗓 形式・時間</h4>
+      <ul><li>オンライン（Zoom等）または電話、約60分</li><li>延長・継続のご相談も可能（別途）</li></ul>
+      <h4>📋 ご相談例</h4>
+      <ul><li>編集スピード・効率化、単価アップ、案件獲得</li><li>ポートフォリオ添削、編集の方向性 など</li></ul>`;
+  const consulAi = `
+      <h4>🎯 サービスの流れ</h4>
+      <ol style="padding-left:18px;margin-bottom:14px;">
+        <li><strong>お問い合わせ送信（今ここ）</strong> — ヒアリングシートのURLをメールでお送りします</li>
+        <li><strong>ヒアリングシート回答</strong> — AI活用の目的・現状の業務をお聞きします</li>
+        <li><strong>日程調整</strong> — 専用リンクからご希望日時をご予約</li>
+        <li><strong>お支払い → コンサル実施</strong>（オンライン／電話・約60分）</li>
+      </ol>
+      <h4>💰 料金・お支払い</h4>
+      <ul><li>¥5,000 / 1時間（税込）</li><li>事前または当日までにお振込</li><li>振込手数料はお客様ご負担</li></ul>
+      <h4>🗓 形式・時間</h4>
+      <ul><li>オンライン（Zoom等）または電話、約60分</li></ul>
+      <h4>📋 ご相談例</h4>
+      <ul><li>業務へのAI（ChatGPT等）導入、自動化の方針設計</li><li>ツール選定・活用法、何から始めるか など</li></ul>`;
+  const aiSystem = `
+      <h4>🎯 サービスの流れ</h4>
+      <ol style="padding-left:18px;margin-bottom:14px;">
+        <li><strong>お問い合わせ送信（今ここ）</strong> — ヒアリングシートのURLをメールでお送りします</li>
+        <li><strong>ヒアリングシート回答</strong> — 構築したい内容・要件をお聞きします</li>
+        <li><strong>お見積もりのご提示</strong> — 内容に応じた正式金額をご案内</li>
+        <li><strong>ご契約・お支払い → 構築開始</strong></li>
+        <li><strong>納品・お引き渡し</strong></li>
+      </ol>
+      <h4>💰 料金・お支払い</h4>
+      <ul><li>¥15,000〜¥100,000（内容により変動・個別お見積もり）</li><li>着手金／残金の分割等は内容に応じてご相談</li><li>振込手数料はお客様ご負担</li></ul>
+      <h4>🛠 進め方</h4>
+      <ul><li>要件整理 → 設計 → 構築 → テスト → 納品</li><li>仕様変更は都度ご相談</li></ul>
+      <h4>📋 構築例</h4>
+      <ul><li>問い合わせ・データ集計の自動化、AI／API連携 など</li></ul>`;
+  const map = { 'consul-edit': consulEdit, 'consul-ai': consulAi, 'ai-system': aiSystem };
+  box.innerHTML = map[planId] || _ctrDefaultDetail;
+}
 function openContract(planId) {
   _ctrPlan = planId;
   const info = PLAN_MAP[planId] || [planId, 'hearing/short.html'];
   _ctrHearing = info[1];
   document.getElementById('contractPlanTag').textContent = '申込プラン：' + info[0];
+  setCtrServiceDetail(planId);
   document.getElementById('ctrName').value = '';
   document.getElementById('ctrEmail').value = '';
   document.getElementById('ctrAgree').checked = false;
