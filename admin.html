@@ -539,6 +539,10 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
         📱 LINE友だち
       </button>
+      <button id="tab-progress-btn" onclick="switchAdminTab('progress')"
+        style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
+        📦 納品進捗
+      </button>
     </div>
 
     <!-- ── 問い合わせタブ ── -->
@@ -748,6 +752,36 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         </table>
       </div>
     </div><!-- /tab-line-followers -->
+
+    <!-- ── 納品進捗（都度納品の残数）タブ ── -->
+    <div id="tab-progress" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h2 style="font-size:1rem;font-weight:700;">📦 納品進捗（都度納品の残数）</h2>
+        <button onclick="loadProgress()" style="padding:7px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--sub);font-size:0.8rem;font-family:inherit;cursor:pointer;">更新</button>
+      </div>
+      <p style="font-size:0.78rem;color:var(--sub);margin-bottom:16px;line-height:1.7;">
+        「まとめて編集」など、合計本数の中から都度納品するご依頼の残数を管理します。納品ごとに「＋1納品」を押してください。
+      </p>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:18px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;">
+        <div><label style="display:block;font-size:0.74rem;color:var(--sub);margin-bottom:4px;">クライアント名</label>
+          <input type="text" id="pg-client" placeholder="横井 美和" style="padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:#fff;font-size:0.85rem;font-family:inherit;"></div>
+        <div><label style="display:block;font-size:0.74rem;color:var(--sub);margin-bottom:4px;">プラン</label>
+          <input type="text" id="pg-plan" placeholder="まとめて編集 ショート" style="padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:#fff;font-size:0.85rem;font-family:inherit;"></div>
+        <div><label style="display:block;font-size:0.74rem;color:var(--sub);margin-bottom:4px;">合計本数</label>
+          <input type="number" id="pg-total" min="1" placeholder="13" style="width:90px;padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:#fff;font-size:0.85rem;font-family:inherit;"></div>
+        <button class="action-btn" style="background:#1a3a2a;color:#4ade80;border:1px solid #166534;font-weight:700;padding:9px 18px;" onclick="addProgress()">＋ 登録</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>クライアント</th><th>プラン</th><th>進捗</th><th>残数</th><th>操作</th>
+          </tr></thead>
+          <tbody id="progress-body">
+            <tr><td colspan="5" class="table-empty"><span class="spinner"></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div><!-- /tab-progress -->
 
     <div id="tab-contracts" style="display:none;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
@@ -3239,7 +3273,7 @@ function exportCSV() {
 }
 
 // ── Tab switch ──
-const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps','sales-apps','partner-apps','private-link','client-master','invoices','line','orders','revisions','payment-requests','trash','testimonials','line-followers'];
+const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps','sales-apps','partner-apps','private-link','client-master','invoices','line','orders','revisions','payment-requests','trash','testimonials','line-followers','progress'];
 function switchAdminTab(tab) {
   ADMIN_TABS.forEach(t => {
     document.getElementById('tab-' + t).style.display = t === tab ? '' : 'none';
@@ -3268,6 +3302,7 @@ function switchAdminTab(tab) {
   if (tab === 'trash')            loadTrash();
   if (tab === 'testimonials')     loadTestimonialsAdmin();
   if (tab === 'line-followers')   loadLineFollowers();
+  if (tab === 'progress')         loadProgress();
 }
 
 // ── LP コンテンツ編集 ─────────────────────────────────────────
@@ -3946,6 +3981,19 @@ async function toggleService(key, trackEl) {
 
 // ── Contracts ──
 let contracts = [];
+async function regenContractPdf(row) {
+  if (!confirm('この契約書のPDFを再生成しますか？\n（メール登録があればPDF添付で再送します）')) return;
+  showToast('🔄 PDF再生成中…');
+  try {
+    const res = await gasFetch(`${GAS_URL}?action=contract_regenerate_pdf&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    const j = await res.json();
+    if (j.success) { showToast('✅ PDFを再生成しました'); loadContracts(); }
+    else if (String(j.error||'').indexOf('documents') !== -1 || String(j.error||'').indexOf('DocumentApp') !== -1) {
+      alert('❌ Googleドキュメント権限が未承認のため生成できません。\n\nscript.google.com でプロジェクトを開き、関数を1回実行して「Googleドキュメント」権限を承認してください。');
+    } else { showToast('再生成失敗: ' + (j.error || 'エラー'), true); }
+  } catch(e) { showToast('通信エラー', true); }
+}
+
 async function loadContracts() {
   document.getElementById('contracts-body').innerHTML =
     '<tr><td colspan="6" class="table-empty"><span class="spinner"></span></td></tr>';
@@ -3969,9 +4017,12 @@ function renderContracts() {
     const stageBadge = isFinal
       ? '<span style="background:#0a2a1a;color:#4ade80;border:1px solid #166534;padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:700;">📝 締結</span>'
       : '<span style="background:#1a2332;color:#60a5fa;border:1px solid #1d4ed8;padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:700;">📨 問合せ</span>';
-    const pdfCell = c.pdfUrl
+    const pdfLink = c.pdfUrl
       ? `<a href="${esc(c.pdfUrl)}" target="_blank" rel="noopener" style="color:#60a5fa;text-decoration:underline;font-size:0.78rem;">📄 PDF</a>`
       : '<span style="color:var(--sub);font-size:0.75rem;">—</span>';
+    const pdfCell = isFinal
+      ? `${pdfLink}<br><button onclick="regenContractPdf(${c.row})" style="margin-top:4px;padding:3px 8px;background:#1e293b;color:#93c5fd;border:1px solid #334155;border-radius:5px;font-size:0.7rem;font-weight:700;cursor:pointer;font-family:inherit;">🔄 PDF再生成</button>`
+      : pdfLink;
     return `
     <tr>
       <td class="td-date">${esc(c.date)}</td>
@@ -6848,10 +6899,28 @@ function openDeliverModal(kind) {
   document.getElementById('dlv-mp4').value = '';
   document.getElementById('dlv-proma').value = '';
   document.getElementById('dlv-stream').value = '';
-  const via = _quickLineUid ? 'LINE' : (_quickLineEmail ? ('✉ ' + _quickLineEmail) : '宛先なし');
-  document.getElementById('dlv-recipient').textContent = (_quickLineName || '（名前なし）') + '　[' + via + ']';
+  const recEl = document.getElementById('dlv-recipient');
+  if (_quickLineUid) {
+    recEl.textContent = (_quickLineName || '（名前なし）') + '　[📱 LINE]';
+  } else if (_quickLineEmail) {
+    recEl.textContent = (_quickLineName || '（名前なし）') + '　[送信先を判定中…]';
+    resolveDeliverChannel();   // サーバーでLINE連携を確認して正確に表示
+  } else {
+    recEl.textContent = (_quickLineName || '（名前なし）') + '　[宛先なし]';
+  }
   updateDeliverPreview();
   document.getElementById('deliver-modal').style.display = 'flex';
+}
+// メール/名前からLINE連携を確認し、送信先表示を更新
+async function resolveDeliverChannel() {
+  try {
+    const res = await gasFetch(`${GAS_URL}?action=resolve_channel&key=${encodeURIComponent(getAdminPw())}&email=${encodeURIComponent(_quickLineEmail||'')}&name=${encodeURIComponent(_quickLineName||'')}`);
+    const j = await res.json();
+    const via = j.via_line ? '📱 LINE' : ('✉ ' + (_quickLineEmail || 'メール'));
+    document.getElementById('dlv-recipient').textContent = (_quickLineName || '（名前なし）') + '　[' + via + ']';
+  } catch(e) {
+    document.getElementById('dlv-recipient').textContent = (_quickLineName || '（名前なし）') + '　[✉ ' + (_quickLineEmail || 'メール') + ']';
+  }
 }
 function closeDeliverModal() { document.getElementById('deliver-modal').style.display = 'none'; }
 
@@ -6917,7 +6986,7 @@ async function sendDelivery() {
     }
     const res  = await gasFetch(GAS_URL, { method: 'POST', body: JSON.stringify(body) });
     const data = await res.json();
-    if (data.success) { showToast('✅ ' + via + 'で納品しました'); closeDeliverModal(); }
+    if (data.success) { showToast('✅ ' + (data.channel || via) + 'で納品しました'); closeDeliverModal(); }
     else { showToast('❌ 送信失敗: ' + (data.error || data.line_error || '不明'), true); }
   } catch(e) { showToast('❌ 通信エラー', true); }
   finally { if (btn) { btn.disabled = false; btn.textContent = '📤 この内容で納品する'; } }
@@ -7148,6 +7217,71 @@ async function loadLineFollowers() {
   } catch(e) {
     el.innerHTML = '<tr><td colspan="4" class="table-empty">読み込みに失敗しました。</td></tr>';
   }
+}
+
+// ── 納品進捗（都度納品の残数） ───────────────────────────────
+let progressItems = [];
+async function loadProgress() {
+  document.getElementById('progress-body').innerHTML = '<tr><td colspan="5" class="table-empty"><span class="spinner"></span></td></tr>';
+  try {
+    const res = await gasFetch(`${GAS_URL}?action=progress_list&key=${encodeURIComponent(getAdminPw())}`);
+    const j = await res.json();
+    progressItems = j.data || [];
+    renderProgress();
+  } catch(e) {
+    document.getElementById('progress-body').innerHTML = '<tr><td colspan="5" class="table-empty">読み込みに失敗しました。</td></tr>';
+  }
+}
+function renderProgress() {
+  const el = document.getElementById('progress-body');
+  if (!progressItems.length) { el.innerHTML = '<tr><td colspan="5" class="table-empty">登録がありません。上のフォームから追加してください。</td></tr>'; return; }
+  el.innerHTML = progressItems.map(p => {
+    const done = p.remaining <= 0;
+    const pct = p.total ? Math.round(p.delivered / p.total * 100) : 0;
+    return `<tr>
+      <td style="font-weight:600;">${esc(p.client)}</td>
+      <td style="font-size:0.8rem;color:var(--sub);">${esc(p.plan)}</td>
+      <td style="min-width:160px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="flex:1;height:8px;background:var(--bg3);border-radius:99px;overflow:hidden;"><div style="width:${pct}%;height:100%;background:${done?'#10b981':'#60a5fa'};"></div></div>
+          <span style="font-size:0.78rem;white-space:nowrap;">${p.delivered}/${p.total}</span>
+        </div>
+      </td>
+      <td style="text-align:center;font-weight:800;color:${done?'#10b981':'#f59e0b'};">${done ? '✅ 完納' : '残' + p.remaining}</td>
+      <td style="white-space:nowrap;">
+        <button onclick="bumpProgress(${p.row},${p.delivered + 1},${p.total})" ${done?'disabled':''} style="padding:5px 10px;background:#06371f;color:#4ade80;border:1px solid #166534;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:${done?'not-allowed':'pointer'};font-family:inherit;opacity:${done?0.5:1};">＋1納品</button>
+        <button onclick="bumpProgress(${p.row},${Math.max(0,p.delivered - 1)},${p.total})" style="padding:5px 8px;background:var(--bg3);color:var(--sub);border:1px solid var(--border);border-radius:6px;font-size:0.75rem;cursor:pointer;font-family:inherit;margin-left:4px;">−1</button>
+        <button onclick="deleteProgress(${p.row},'${esc(p.client).replace(/'/g,"\\'")}')" style="padding:5px 8px;background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;border-radius:6px;font-size:0.75rem;cursor:pointer;font-family:inherit;margin-left:4px;">🗑</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+async function addProgress() {
+  const client = document.getElementById('pg-client').value.trim();
+  const plan = document.getElementById('pg-plan').value.trim();
+  const total = document.getElementById('pg-total').value.trim();
+  if (!client) { showToast('クライアント名を入力してください', true); return; }
+  if (!total || +total < 1) { showToast('合計本数を入力してください', true); return; }
+  try {
+    await gasFetch(`${GAS_URL}?action=progress_add&key=${encodeURIComponent(getAdminPw())}&client=${encodeURIComponent(client)}&plan=${encodeURIComponent(plan)}&total=${encodeURIComponent(total)}`);
+    document.getElementById('pg-client').value=''; document.getElementById('pg-plan').value=''; document.getElementById('pg-total').value='';
+    showToast('📦 登録しました');
+    setTimeout(loadProgress, 1200);
+  } catch(e) { showToast('登録に失敗しました', true); }
+}
+async function bumpProgress(row, delivered, total) {
+  if (delivered > total) return;
+  try {
+    await gasFetch(`${GAS_URL}?action=progress_update&key=${encodeURIComponent(getAdminPw())}&row=${row}&delivered=${delivered}`);
+    loadProgress();
+  } catch(e) { showToast('更新に失敗しました', true); }
+}
+async function deleteProgress(row, client) {
+  if (!confirm(`「${client}」の納品進捗を削除しますか？\n（ゴミ箱から復元できます）`)) return;
+  try {
+    await gasFetch(`${GAS_URL}?action=progress_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    showToast('🗑 削除しました'); loadProgress();
+  } catch(e) { showToast('削除に失敗しました', true); }
 }
 
 async function loadTestimonialsAdmin() {
