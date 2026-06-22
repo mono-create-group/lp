@@ -535,6 +535,10 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
         💬 お客様の声
       </button>
+      <button id="tab-line-followers-btn" onclick="switchAdminTab('line-followers')"
+        style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
+        📱 LINE友だち
+      </button>
     </div>
 
     <!-- ── 問い合わせタブ ── -->
@@ -720,6 +724,30 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         <p style="color:var(--sub);font-size:0.82rem;"><span class="spinner"></span></p>
       </div>
     </div><!-- /tab-testimonials -->
+
+    <!-- ── LINE友だちタブ ── -->
+    <div id="tab-line-followers" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h2 style="font-size:1rem;font-weight:700;">📱 LINE友だち</h2>
+        <button onclick="loadLineFollowers()" style="padding:7px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--sub);font-size:0.8rem;font-family:inherit;cursor:pointer;">更新</button>
+      </div>
+      <p style="font-size:0.78rem;color:var(--sub);margin-bottom:20px;line-height:1.7;">
+        公式LINEを友だち追加した方の一覧です。追加直後に「お名前」をご記入いただく案内が自動送信され、記入されるとここに反映されます。
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>追加日時</th>
+            <th>お名前</th>
+            <th>LINE表示名</th>
+            <th>状態</th>
+          </tr></thead>
+          <tbody id="line-followers-body">
+            <tr><td colspan="4" class="table-empty"><span class="spinner"></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div><!-- /tab-line-followers -->
 
     <div id="tab-contracts" style="display:none;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
@@ -3211,7 +3239,7 @@ function exportCSV() {
 }
 
 // ── Tab switch ──
-const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps','sales-apps','partner-apps','private-link','client-master','invoices','line','orders','revisions','payment-requests','trash','testimonials'];
+const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps','sales-apps','partner-apps','private-link','client-master','invoices','line','orders','revisions','payment-requests','trash','testimonials','line-followers'];
 function switchAdminTab(tab) {
   ADMIN_TABS.forEach(t => {
     document.getElementById('tab-' + t).style.display = t === tab ? '' : 'none';
@@ -3239,6 +3267,7 @@ function switchAdminTab(tab) {
   if (tab === 'payment-requests') loadPaymentRequests();
   if (tab === 'trash')            loadTrash();
   if (tab === 'testimonials')     loadTestimonialsAdmin();
+  if (tab === 'line-followers')   loadLineFollowers();
 }
 
 // ── LP コンテンツ編集 ─────────────────────────────────────────
@@ -7098,6 +7127,29 @@ function tsImgSrc(url) {
   if (m) return 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w400';
   return url;
 }
+async function loadLineFollowers() {
+  const el = document.getElementById('line-followers-body');
+  el.innerHTML = '<tr><td colspan="4" class="table-empty"><span class="spinner"></span></td></tr>';
+  try {
+    const res = await gasFetch(`${GAS_URL}?action=line_followers_list&key=${encodeURIComponent(getAdminPw())}`);
+    const j = await res.json();
+    const d = j.data || [];
+    if (!d.length) { el.innerHTML = '<tr><td colspan="4" class="table-empty">まだLINE友だちの記録がありません。</td></tr>'; return; }
+    el.innerHTML = d.map(f => {
+      const dt = f.followed_at ? new Date(f.followed_at).toLocaleString('ja-JP') : '';
+      const named = f.status === 'named';
+      return `<tr>
+        <td style="white-space:nowrap;">${esc(dt)}</td>
+        <td style="font-weight:600;">${esc(f.name || '（未記入）')}</td>
+        <td style="font-size:0.82rem;color:var(--sub);">${esc(f.display_name || '')}</td>
+        <td><span style="color:${named ? '#10b981' : '#f59e0b'};font-weight:700;font-size:0.78rem;">${named ? '✅ 登録済' : '⏳ お名前待ち'}</span></td>
+      </tr>`;
+    }).join('');
+  } catch(e) {
+    el.innerHTML = '<tr><td colspan="4" class="table-empty">読み込みに失敗しました。</td></tr>';
+  }
+}
+
 async function loadTestimonialsAdmin() {
   const el = document.getElementById('testimonials-admin-list');
   el.innerHTML = '<p style="color:var(--sub);font-size:0.82rem;"><span class="spinner"></span></p>';
