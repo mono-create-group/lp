@@ -3016,14 +3016,40 @@ section { contain: layout style; }
             <p class="pricing-row-name">編集コンサルティング</p>
             <p class="pricing-row-desc">1時間のオンライン相談。アカウント分析→改善提案。</p>
           </div>
-          <p class="pricing-price" data-ck="price_consulting">¥5,000 / h</p>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+            <p class="pricing-price" data-ck="price_consulting">¥5,000 / h</p>
+            <a href="#" onclick="openContract('consul-edit');return false;" class="btn btn-gold" style="font-size:0.78rem;padding:8px 16px;white-space:nowrap;">申し込む →</a>
+          </div>
+        </div>
+        <div id="svc-consul-ai" class="pricing-row fade-up">
+          <div>
+            <p class="pricing-row-name">AI導入コンサルティング</p>
+            <p class="pricing-row-desc">1時間のオンライン相談。業務へのAI活用・自動化の方針を設計。</p>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+            <p class="pricing-price">¥5,000 / h</p>
+            <a href="#" onclick="openContract('consul-ai');return false;" class="btn btn-gold" style="font-size:0.78rem;padding:8px 16px;white-space:nowrap;">申し込む →</a>
+          </div>
+        </div>
+        <div id="svc-ai-system" class="pricing-row fade-up">
+          <div>
+            <p class="pricing-row-name">AIシステム構築</p>
+            <p class="pricing-row-desc">業務自動化・AI連携システムの構築。内容により個別お見積もり。</p>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+            <p class="pricing-price">¥15,000〜¥100,000</p>
+            <a href="#" onclick="openContract('ai-system');return false;" class="btn btn-gold" style="font-size:0.78rem;padding:8px 16px;white-space:nowrap;">申し込む →</a>
+          </div>
         </div>
         <div id="svc-manual" class="pricing-row fade-up">
           <div>
             <p class="pricing-row-name">編集マニュアル作成</p>
             <p class="pricing-row-desc">即外注可能なマニュアルを編集者目線で作成。</p>
           </div>
-          <p class="pricing-price" data-ck="price_manual">¥5,000〜</p>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+            <p class="pricing-price" data-ck="price_manual">¥5,000〜</p>
+            <a href="#contact" class="btn btn-gold" style="font-size:0.78rem;padding:8px 16px;white-space:nowrap;">相談する →</a>
+          </div>
         </div>
         <p style="font-size:0.8rem;color:var(--sub);margin-top:20px;padding:0 8px;">※ 修正3回まで無料。<br>4回目以降¥1,000/回(長尺動画は¥5,000/回)<br>こちら側のミスは無制限対応</p>
 
