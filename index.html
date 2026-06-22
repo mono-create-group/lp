@@ -4000,17 +4000,6 @@ function toggleLongform(row) {
   row.classList.toggle('open', isOpen);
 }
 
-function copyCwId(btn) {
-  const id = document.getElementById('cw-id-text').textContent.trim();
-  navigator.clipboard.writeText(id).then(() => {
-    btn.textContent = '✅ コピーしました！';
-    btn.classList.add('copied');
-    setTimeout(() => {
-      btn.textContent = 'IDをコピーしてChatworkで検索';
-      btn.classList.remove('copied');
-    }, 2500);
-  });
-}
 
 function switchTab(tab, el) {
   document.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
