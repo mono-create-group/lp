@@ -745,6 +745,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
             <th>お名前</th>
             <th>LINE表示名</th>
             <th>状態</th>
+            <th>会話</th>
           </tr></thead>
           <tbody id="line-followers-body">
             <tr><td colspan="4" class="table-empty"><span class="spinner"></span></td></tr>
@@ -7203,26 +7204,57 @@ function tsImgSrc(url) {
 }
 async function loadLineFollowers() {
   const el = document.getElementById('line-followers-body');
-  el.innerHTML = '<tr><td colspan="4" class="table-empty"><span class="spinner"></span></td></tr>';
+  el.innerHTML = '<tr><td colspan="5" class="table-empty"><span class="spinner"></span></td></tr>';
   try {
     const res = await gasFetch(`${GAS_URL}?action=line_followers_list&key=${encodeURIComponent(getAdminPw())}`);
     const j = await res.json();
     const d = j.data || [];
-    if (!d.length) { el.innerHTML = '<tr><td colspan="4" class="table-empty">まだLINE友だちの記録がありません。</td></tr>'; return; }
+    if (!d.length) { el.innerHTML = '<tr><td colspan="5" class="table-empty">まだLINE友だちの記録がありません。</td></tr>'; return; }
     el.innerHTML = d.map(f => {
       const dt = f.followed_at ? new Date(f.followed_at).toLocaleString('ja-JP') : '';
       const named = f.status === 'named';
+      const dispName = (f.name || f.display_name || '');
       return `<tr>
         <td style="white-space:nowrap;">${esc(dt)}</td>
         <td style="font-weight:600;">${esc(f.name || '（未記入）')}</td>
         <td style="font-size:0.82rem;color:var(--sub);">${esc(f.display_name || '')}</td>
         <td><span style="color:${named ? '#10b981' : '#f59e0b'};font-weight:700;font-size:0.78rem;">${named ? '✅ 登録済' : '⏳ お名前待ち'}</span></td>
+        <td><button onclick="openLineConversation('${esc(f.uid)}','${esc(dispName).replace(/'/g,"\\'")}')" style="padding:5px 12px;background:#06371f;color:#4ade80;border:1px solid #166534;border-radius:6px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">💬 会話を見る</button></td>
       </tr>`;
     }).join('');
   } catch(e) {
-    el.innerHTML = '<tr><td colspan="4" class="table-empty">読み込みに失敗しました。</td></tr>';
+    el.innerHTML = '<tr><td colspan="5" class="table-empty">読み込みに失敗しました。</td></tr>';
   }
 }
+
+// ── LINE会話ビュー（人別の受信履歴を時系列表示）──
+async function openLineConversation(uid, name) {
+  const modal = document.getElementById('line-conv-modal');
+  document.getElementById('line-conv-title').textContent = '💬 ' + (name || '') + ' さんの履歴';
+  document.getElementById('line-conv-body').innerHTML = '<p style="color:var(--sub);font-size:0.85rem;"><span class="spinner"></span> 読み込み中…</p>';
+  modal.style.display = 'flex';
+  try {
+    const res = await gasFetch(`${GAS_URL}?action=line_conversation&key=${encodeURIComponent(getAdminPw())}&uid=${encodeURIComponent(uid)}`);
+    const j = await res.json();
+    const ev = j.events || [];
+    let html = `<p style="font-size:0.76rem;color:var(--sub);margin-bottom:12px;word-break:break-all;">UID: ${esc(uid)}${j.follower ? '　/　表示名: ' + esc(j.follower.display_name||'') + '　/　状態: ' + esc(j.follower.status||'') : ''}</p>`;
+    if (!ev.length) { html += '<p style="color:var(--sub);">履歴がありません。</p>'; }
+    else {
+      html += ev.map(e => {
+        const dt = e.date ? new Date(e.date).toLocaleString('ja-JP') : '';
+        return `<div style="border-left:3px solid #00b900;background:var(--bg);border-radius:8px;padding:10px 12px;margin-bottom:8px;">
+          <div style="font-size:0.72rem;color:var(--sub);margin-bottom:3px;"><span style="color:#4ade80;font-weight:700;">${esc(e.source)}</span>　${esc(dt)}</div>
+          <div style="font-size:0.86rem;white-space:pre-wrap;">${esc(e.text || '（本文なし）')}</div>
+        </div>`;
+      }).join('');
+    }
+    html += `<p style="font-size:0.74rem;color:var(--sub);margin-top:10px;line-height:1.6;">※ これはシステムが受信・記録した履歴です。返信は「💬 LINE返信」または問い合わせタブから送れます。</p>`;
+    document.getElementById('line-conv-body').innerHTML = html;
+  } catch(e) {
+    document.getElementById('line-conv-body').innerHTML = '<p style="color:#ef4444;">読み込みに失敗しました。</p>';
+  }
+}
+function closeLineConversation() { document.getElementById('line-conv-modal').style.display = 'none'; }
 
 // ── 納品進捗（都度納品の残数） ───────────────────────────────
 let progressItems = [];
@@ -7402,6 +7434,17 @@ async function deleteFeedback(row, name) {
       <button onclick="closeOrderDetail()" style="background:none;border:none;color:var(--sub);font-size:1.3rem;cursor:pointer;">✕</button>
     </div>
     <div id="order-detail-body"></div>
+  </div>
+</div>
+
+<!-- ── LINE会話ビュー モーダル ── -->
+<div class="modal-overlay" id="line-conv-modal" onclick="if(event.target===this)closeLineConversation()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;width:min(560px,92vw);max-height:85vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <h3 id="line-conv-title" style="font-size:1rem;font-weight:800;">💬 LINE履歴</h3>
+      <button onclick="closeLineConversation()" style="background:none;border:none;color:var(--sub);font-size:1.3rem;cursor:pointer;">✕</button>
+    </div>
+    <div id="line-conv-body"></div>
   </div>
 </div>
 
