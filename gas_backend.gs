@@ -608,6 +608,24 @@ function doGet(e) {
     return deleteContract(row);
   }
 
+  if (action === 'get_contract_by_email') {
+    var email = (e.parameter.email || '').toLowerCase().trim();
+    if (!email) return jsonResponse({ error: 'email_required' });
+    var sh = getContractSigSheet();
+    var data = sh.getDataRange().getValues();
+    var results = [];
+    for (var i = 1; i < data.length; i++) {
+      if ((data[i][3] || '').toLowerCase().trim() === email) {
+        results.push({
+          token: data[i][0], type: data[i][1], name: data[i][2], email: data[i][3],
+          created_at: data[i][4], status: data[i][6],
+          url: LP_BASE_URL + 'contract.html?t=' + data[i][0]
+        });
+      }
+    }
+    return jsonResponse({ results: results });
+  }
+
   if (action === 'hearing_delete') {
     var row = parseInt(e.parameter.row, 10);
     return deleteHearing(row);
