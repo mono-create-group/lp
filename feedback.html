@@ -131,7 +131,7 @@
 
     /* TC Record Button (shown when paused) */
     .tc-record-btn {
-      position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+      position: absolute; bottom: 92px; left: 50%; transform: translateX(-50%);
       z-index: 25; white-space: nowrap;
       background: rgba(30,41,59,.85); border: 2px solid #475569;
       color: #64748b; border-radius: 14px; padding: 10px 22px;
@@ -157,6 +157,25 @@
       font-size: 0.73rem; color: #94a3b8; text-decoration: none; transition: background .2s;
     }
     .drive-open-btn:hover { background: rgba(255,255,255,.12); color: #e2e8f0; }
+
+    /* 独自プレーヤーコントロール（iOS標準の被りを回避・映像下部に固定） */
+    .vc-bar {
+      position: absolute; left: 0; right: 0; bottom: 32px; height: 48px; z-index: 16;
+      display: flex; align-items: center; gap: 10px; padding: 0 12px;
+      background: rgba(0,0,0,0.78);
+    }
+    .vc-btn {
+      background: none; border: none; color: #fff; font-size: 1.15rem;
+      cursor: pointer; padding: 0; line-height: 1; flex-shrink: 0;
+      width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
+    }
+    .vc-range {
+      flex: 1; height: 5px; -webkit-appearance: none; appearance: none;
+      background: rgba(255,255,255,0.35); border-radius: 3px; outline: none; cursor: pointer;
+    }
+    .vc-range::-webkit-slider-thumb { -webkit-appearance: none; width: 15px; height: 15px; border-radius: 50%; background: #fff; cursor: pointer; }
+    .vc-range::-moz-range-thumb { width: 15px; height: 15px; border: none; border-radius: 50%; background: #fff; cursor: pointer; }
+    .vc-time { color: #fff; font-size: 0.72rem; font-variant-numeric: tabular-nums; flex-shrink: 0; min-width: 78px; text-align: right; letter-spacing: .02em; }
 
     /* ── Form Pane ── */
     .form-pane { padding: 18px 16px 80px; }
@@ -288,13 +307,28 @@
     /* Mobile */
     @media (max-width: 720px) {
       .layout-short { grid-template-columns: 1fr !important; height: auto !important; }
+      /* ショート＝縦動画：縦長の枠で全体を表示（見切れ防止） */
       .layout-short .video-pane {
-        height: 35vw; min-height: 180px; max-height: 260px;
-        position: sticky; top: 52px; z-index: 100;
+        height: 64vh; min-height: 360px; max-height: 72vh;
+        position: sticky; top: 0; z-index: 100;
       }
+      .layout-long .video-pane { top: 0; }
       .layout-short .form-pane { height: auto; overflow: visible; }
+      .form-pane { padding: 16px 12px 90px; }
       .meta-grid { grid-template-columns: 1fr; }
       .slot-row { grid-template-columns: 1fr; }
+
+      /* ヘッダー：横はみ出し防止＋Driveリンクを次行へ折り返し */
+      .header { padding: 10px 14px; gap: 6px 8px; }
+      .header h1 { font-size: .9rem; line-height: 1.3; }
+      .header-link { margin-left: auto; flex-basis: 100%; text-align: right; font-size: .72rem; }
+      .badge { font-size: .66rem; padding: 2px 7px; }
+
+      /* タップしやすいTC記録ボタン・入力 */
+      .tc-record-btn { bottom: 96px; padding: 12px 24px; font-size: .95rem; }
+      .fb-slot { padding: 13px; }
+      .slot-field input, .slot-field select, .slot-comment textarea { font-size: 16px; }
+      .time-wrap input { font-size: 16px; }
     }
   </style>
 </head>
@@ -307,6 +341,25 @@
   <div style="max-width:580px;margin:32px auto;padding:0 16px 60px">
     <div class="setup-card">
       <h2>✏️ FBシートを開始する</h2>
+
+      <style>
+        #mobile-fb-alt { display:none; }
+        @media (max-width: 640px) {
+          #mobile-fb-alt { display:block; }
+          #pc-fb-note { display:none; }
+        }
+        #mobile-fb-alt .mfb-btn { display:block; width:100%; box-sizing:border-box; text-align:center; text-decoration:none; padding:13px; border-radius:10px; font-weight:700; font-size:0.95rem; margin-bottom:10px; }
+      </style>
+      <div id="mobile-fb-alt" style="background:#0e2a1a;border:1px solid #166534;border-radius:12px;padding:16px;margin-bottom:20px;">
+        <p style="font-size:0.9rem;font-weight:800;color:#4ade80;margin:0 0 8px;">📱 スマホの方はこちらが簡単です</p>
+        <p style="font-size:0.82rem;color:#cbd5e1;line-height:1.7;margin:0 0 14px;">
+          このフォームはパソコン向けです。スマホでは、<strong style="color:#fff;">LINEまたはメールで直接</strong>修正箇所をお送りいただくのがスムーズです。<br>
+          <span style="color:#94a3b8;font-size:0.78rem;">例：「0:12 テロップ誤字」「1:30〜1:45 カット削除」など、時間（秒）で教えてください。</span>
+        </p>
+        <a class="mfb-btn" href="https://line.me/R/" onclick="alert('LINEのトークに戻って、修正箇所を文章でそのままお送りください😊');return false;" style="background:#06C755;color:#fff;">💬 LINEのトークに戻って送る</a>
+        <a class="mfb-btn" href="mailto:mono.create.group@gmail.com?subject=%E4%BF%AE%E6%AD%A3%E4%BE%9D%E9%A0%BC&body=%E3%80%90%E3%81%8A%E5%90%8D%E5%89%8D%E3%80%91%0A%0A%E3%80%90%E5%8B%95%E7%94%BB%E3%83%BB%E6%A1%88%E4%BB%B6%E3%80%91%0A%0A%E3%80%90%E4%BF%AE%E6%AD%A3%E5%86%85%E5%AE%B9%EF%BC%88%E6%99%82%E9%96%93%E3%81%A8%E5%85%B1%E3%81%AB%EF%BC%89%E3%80%91%0A%E4%BE%8B%EF%BC%9A0%3A12%20%E3%83%86%E3%83%AD%E3%83%83%E3%83%97%E8%AA%A4%E5%AD%97%0A" style="background:#1e293b;color:#93c5fd;border:1px solid #334155;">✉️ メールで送る</a>
+        <p style="font-size:0.74rem;color:#64748b;text-align:center;margin:4px 0 0;">▼ それでもこのフォームで入力する場合は下へ</p>
+      </div>
 
       <div class="form-group">
         <label class="field-label">動画の種類 <span class="req">*</span></label>
@@ -321,11 +374,25 @@
       </div>
 
       <div class="form-group">
-        <label class="field-label">納品動画のGoogle Drive URL <span class="req">*</span></label>
+        <label class="field-label">動画タイトル / 案件名 <span class="req">*</span></label>
+        <input type="text" id="setup-title" placeholder="例：〇〇店PR ショート動画 第1弾">
+        <div class="url-hint">※ どの動画への修正かが分かるタイトルをご記入ください</div>
+      </div>
+
+      <div class="form-group">
+        <label class="field-label">納品動画のGoogle Drive URL</label>
         <input type="url" id="setup-url" placeholder="https://drive.google.com/file/d/〇〇/view?usp=sharing">
         <div class="url-hint">
-          ※ Google Drive 共有リンク（<span>「リンクを知っている全員が閲覧可」</span>に設定必須）<br>
-          ※ 一時停止すると<span>タイムコードが自動入力</span>されます（ネイティブ再生時）
+          ※ Google Drive 共有リンク（<span>「リンクを知っている全員が閲覧可」</span>に設定必須）
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="field-label">▶ 直接再生用の動画URL（MP4等・任意）</label>
+        <input type="url" id="setup-direct-url" placeholder="https://〇〇.com/video.mp4">
+        <div class="url-hint">
+          ※ <span>こちらを入れると iPhone でもネイティブ再生</span>され、一時停止で<span>タイムコードが自動入力</span>されます（推奨）<br>
+          ※ Drive と どちらか一方でOK。両方ある場合は直接URLを優先します
         </div>
       </div>
 
@@ -380,6 +447,8 @@ var MAX_SLOTS = 30;
 var videoType = 'short';
 var driveFileId = '';
 var driveOrigUrl = '';
+var directVideoUrl = '';   // 直接再生用URL（MP4等）— あればiPhoneでもネイティブ再生→自動TC
+var fbTitle = '';          // 動画タイトル / 案件名
 var slotCount = 0;
 var slotIdSeed = 0;
 var videoEl = null;
@@ -400,6 +469,8 @@ var lineUidParam = '';
     return;
   }
   if (p.get('url'))   { document.getElementById('setup-url').value   = p.get('url');   }
+  if (p.get('title')) { document.getElementById('setup-title').value = p.get('title'); }
+  if (p.get('video')) { document.getElementById('setup-direct-url').value = p.get('video'); }
   if (p.get('name'))  { document.getElementById('setup-name').value  = p.get('name');  }
   if (p.get('email')) { document.getElementById('setup-email').value = p.get('email'); }
   if (p.get('round')) { document.getElementById('setup-round').value = p.get('round'); }
@@ -452,16 +523,24 @@ function startFeedback() {
   var round = document.getElementById('setup-round').value || '1';
   var err   = document.getElementById('setup-err');
   err.style.display = 'none';
-  if (!url) { err.textContent = '納品動画のGoogle Drive URLを入力してください。'; err.style.display = 'block'; return; }
-  driveFileId = parseDriveId(url);
-  if (!driveFileId) { err.textContent = 'Drive URLの形式を確認してください。'; err.style.display = 'block'; return; }
-  driveOrigUrl = url;
+  fbTitle = (document.getElementById('setup-title') ? document.getElementById('setup-title').value : '').trim();
+  if (!fbTitle) { err.textContent = '動画タイトル / 案件名をご記入ください。'; err.style.display = 'block'; return; }
+  var directUrl = (document.getElementById('setup-direct-url') ? document.getElementById('setup-direct-url').value : '').trim();
+  if (!url && !directUrl) { err.textContent = 'Google Drive URL か 直接動画URL のどちらかを入力してください。'; err.style.display = 'block'; return; }
+  if (url) {
+    driveFileId = parseDriveId(url);
+    if (!driveFileId) { err.textContent = 'Drive URLの形式を確認してください。'; err.style.display = 'block'; return; }
+    driveOrigUrl = url;
+  }
+  directVideoUrl = directUrl;
 
   document.getElementById('setup-screen').style.display = 'none';
   document.getElementById('main-layout').style.display  = 'block';
+  document.getElementById('hdr-title').textContent = fbTitle ? ('✏️ ' + fbTitle) : '✏️ FBシート';
   document.getElementById('hdr-round').textContent = round + 'R';
   document.getElementById('hdr-type').textContent  = videoType === 'short' ? 'ショート' : '長尺';
-  document.getElementById('hdr-drive-link').href   = buildDirectUrl(driveFileId);
+  var openUrl = driveFileId ? buildDirectUrl(driveFileId) : directVideoUrl;
+  document.getElementById('hdr-drive-link').href   = openUrl;
 
   buildLayout({ name: name, email: email, round: round });
 }
@@ -470,7 +549,7 @@ function startFeedback() {
 function buildLayout(meta) {
   var wrap      = document.getElementById('layout-wrap');
   var outerCls  = videoType === 'short' ? 'layout-short' : 'layout-long';
-  var directUrl = buildDirectUrl(driveFileId);
+  var directUrl = driveFileId ? buildDirectUrl(driveFileId) : directVideoUrl;
 
   wrap.innerHTML =
     '<div class="' + outerCls + '" id="main-grid">' +
@@ -494,41 +573,102 @@ function buildLayout(meta) {
   loadVideo();
 }
 
-/* ── Video: native first → iframe fallback ── */
+/* ── 複数のDriveストリームURL候補（順に試してネイティブ再生を粘る）── */
+function streamCandidates(id) {
+  return [
+    'https://drive.usercontent.google.com/download?id=' + id + '&export=download&confirm=t',
+    'https://drive.google.com/uc?export=download&id=' + id,
+    'https://docs.google.com/uc?export=download&id=' + id,
+    'https://drive.usercontent.google.com/download?id=' + id + '&export=download&confirm=1'
+  ];
+}
+
+/* ── Video: native first（複数URLを順に試す）→ iframe fallback ── */
 function loadVideo() {
   var loading   = document.getElementById('video-loading');
-  var fallback  = document.getElementById('video-fallback');
   var autoBadge = document.getElementById('auto-badge');
   var slot      = document.getElementById('video-slot');
 
-  videoEl = document.createElement('video');
-  videoEl.controls = true;
-  videoEl.playsInline = true;
-  videoEl.preload = 'auto';
-  videoEl.style.cssText = 'width:100%;height:100%;object-fit:contain;background:#000;';
-  videoEl.src = buildStreamUrl(driveFileId);
+  // Drive のみ → まず blob 取得（CORS許可済）でネイティブ再生を試す＝iPhoneでも自動TC可能。
+  // 失敗時のみ「タップで再生」(/preview iframe・手動TC) にフォールバック。
+  if (!directVideoUrl && driveFileId) { tryDriveBlob(driveFileId); return; }
+  if (!directVideoUrl && !driveFileId) { loading.classList.add('hidden'); return; }
 
-  var done = false;
+  videoEl = document.createElement('video');
+  videoEl.controls = false;
+  videoEl.playsInline = true;
+  videoEl.setAttribute('playsinline', '');
+  videoEl.setAttribute('webkit-playsinline', '');
+  videoEl.preload = 'metadata';
+  videoEl.style.cssText = 'width:100%;height:100%;object-fit:contain;background:#000;';
+
+  // 直接URLがあれば最優先（iPhoneでもネイティブ再生できる）。次にDriveの各候補。
+  var cands = [];
+  if (directVideoUrl) cands.push(directVideoUrl);
+  if (driveFileId)    cands = cands.concat(streamCandidates(driveFileId));
+  var idx = 0;
+  var settled = false;       // ネイティブ成功 or 全滅で確定
+  var candTimer = null;
+
+  function clearCandTimer() { if (candTimer) { clearTimeout(candTimer); candTimer = null; } }
+
+  function tryNext() {
+    clearCandTimer();
+    if (settled) return;
+    if (idx >= cands.length) { onAllFail(); return; }
+    var u = cands[idx++];
+    var isDirect = (directVideoUrl && u === directVideoUrl);
+    videoEl.src = u;
+    try { videoEl.load(); } catch(e) {}
+    if (isDirect) {
+      // 直リンクMP4は再生可能とみなす（iOSはタップまでメタ데이타を読まないことがあるため、
+      // タイムアウトで失敗扱いにせず「ネイティブ採用」。実際に再生不可なら error で次へ）
+      candTimer = setTimeout(function() { if (!settled) onNativeOk(); }, 2500);
+    } else {
+      // Driveストリーム候補は再生可能になるまで粘り、ダメなら次の候補へ
+      candTimer = setTimeout(function() { if (!settled) tryNext(); }, 7000);
+    }
+  }
+
   function onNativeOk() {
-    if (done) return; done = true;
+    if (settled) return; settled = true;
+    clearCandTimer();
     nativeVideo = true;
     loading.classList.add('hidden');
     autoBadge.textContent = '⏸ 一時停止 → ボタンでTC記録';
     autoBadge.classList.add('on');
-    document.getElementById('hdr-autobadge').style.display = '';
+    var hb = document.getElementById('hdr-autobadge'); if (hb) hb.style.display = '';
     var btn = document.getElementById('tc-record-btn');
     if (btn) btn.style.display = '';
-    showToast('⏸ 一時停止後に「タイムコードを記録する」ボタンを押してください');
+    attachCustomControls(videoEl);
+    showToast('⏸ 再生して止めたい所で一時停止 → 「タイムコードを記録する」を押してください');
   }
-  function onNativeFail() {
-    if (done) return; done = true;
-    videoEl.remove(); videoEl = null;
-    loadIframeFallback();
+  function onCandErr() {
+    if (settled) return;
+    clearCandTimer();
+    tryNext();   // 次の候補URLを試す（即フォールバックしない）
+  }
+  function onAllFail() {
+    if (settled) return; settled = true;
+    clearCandTimer();
+    if (videoEl) { videoEl.remove(); videoEl = null; }
+    if (driveFileId) {
+      loadIframeFallback();   // Driveがあれば埋め込みプレーヤーで表示（手動TC）
+    } else {
+      // 直接URLのみで再生不可 → 案内表示
+      var loading = document.getElementById('video-loading');
+      if (loading) loading.classList.add('hidden');
+      var autoBadge = document.getElementById('auto-badge');
+      if (autoBadge) { autoBadge.textContent = '⚠ 動画を再生できません（URLをご確認ください）'; autoBadge.classList.add('manual'); }
+      var fb = document.getElementById('video-fallback');
+      if (fb) fb.classList.add('show');
+    }
   }
 
-  videoEl.addEventListener('loadeddata', onNativeOk);
-  videoEl.addEventListener('canplay',    onNativeOk);
-  videoEl.addEventListener('error',      onNativeFail);
+  videoEl.addEventListener('loadeddata',     onNativeOk);
+  videoEl.addEventListener('canplay',        onNativeOk);
+  videoEl.addEventListener('loadedmetadata', onNativeOk);
+  videoEl.addEventListener('error',          onCandErr);
   // pause → ボタン有効化 / play → ボタン無効化
   videoEl.addEventListener('pause', function() {
     var btn = document.getElementById('tc-record-btn');
@@ -538,33 +678,146 @@ function loadVideo() {
     var btn = document.getElementById('tc-record-btn');
     if (btn) { btn.classList.remove('paused'); }
   });
-  setTimeout(function() { if (!done) onNativeFail(); }, 9000);
 
   slot.appendChild(videoEl);
+  tryNext();
 }
+
+// ── 独自プレーヤーコントロール（iOS標準コントロールの被りを回避）──
+function attachCustomControls(v) {
+  if (!v) return;
+  v.controls = false;
+  var pane = document.getElementById('video-pane');
+  if (!pane || document.getElementById('vc-bar')) return;
+  var bar = document.createElement('div');
+  bar.id = 'vc-bar'; bar.className = 'vc-bar';
+  bar.innerHTML =
+    '<button class="vc-btn" id="vc-play" aria-label="再生/一時停止">&#9654;</button>' +
+    '<input class="vc-range" id="vc-range" type="range" min="0" max="1000" value="0" aria-label="シーク">' +
+    '<span class="vc-time" id="vc-time">0:00 / 0:00</span>';
+  pane.appendChild(bar);
+  var playBtn = bar.querySelector('#vc-play');
+  var range   = bar.querySelector('#vc-range');
+  var timeEl  = bar.querySelector('#vc-time');
+  var seeking = false;
+  function fmt(s) { s = s || 0; var m = Math.floor(s/60), x = Math.floor(s%60); return m + ':' + String(x).padStart(2,'0'); }
+  function sync() {
+    if (v.duration && !seeking) range.value = Math.round(v.currentTime / v.duration * 1000);
+    timeEl.textContent = fmt(v.currentTime) + ' / ' + fmt(v.duration);
+  }
+  playBtn.addEventListener('click', function() { if (v.paused) v.play(); else v.pause(); });
+  v.addEventListener('play',  function() { playBtn.innerHTML = '&#10074;&#10074;'; });
+  v.addEventListener('pause', function() { playBtn.innerHTML = '&#9654;'; });
+  v.addEventListener('timeupdate', sync);
+  v.addEventListener('loadedmetadata', sync);
+  range.addEventListener('input', function() { seeking = true; if (v.duration) { v.currentTime = range.value/1000 * v.duration; timeEl.textContent = fmt(v.currentTime) + ' / ' + fmt(v.duration); } });
+  range.addEventListener('change', function() { seeking = false; });
+}
+
+// ── Drive動画を blob で取得 → ネイティブ<video>で再生（iPhoneでも自動TC可能）──
+function _setLoadingText(t) {
+  var el = document.querySelector('#video-loading .loading-text');
+  if (el) el.innerHTML = t;
+}
+function tryDriveBlob(id) {
+  var loading = document.getElementById('video-loading');
+  loading.classList.remove('hidden');
+  _setLoadingText('動画を読み込み中… 0%<br><small>初回はサイズにより数秒〜数十秒かかります</small>');
+  var url = 'https://drive.usercontent.google.com/download?id=' + id + '&export=download&confirm=t';
+  var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+  var timer = setTimeout(function(){ if (ctrl) ctrl.abort(); }, 120000); // 2分でタイムアウト
+
+  fetch(url, ctrl ? { signal: ctrl.signal } : {}).then(function(resp){
+    if (!resp.ok) throw new Error('http ' + resp.status);
+    var ctype = resp.headers.get('content-type') || '';
+    if (ctype.indexOf('text/html') === 0) throw new Error('interstitial-html');
+    var len = parseInt(resp.headers.get('content-length') || '0', 10);
+    if (!resp.body || !resp.body.getReader) return resp.blob();
+    var reader = resp.body.getReader(); var chunks = []; var recv = 0;
+    return new Promise(function(res, rej){
+      (function pump(){
+        reader.read().then(function(r){
+          if (r.done) { res(new Blob(chunks, { type: ctype || 'video/mp4' })); return; }
+          chunks.push(r.value); recv += r.value.length;
+          if (len) _setLoadingText('動画を読み込み中… ' + Math.round(recv/len*100) + '%<br><small>もう少しお待ちください</small>');
+          else _setLoadingText('動画を読み込み中… ' + Math.round(recv/1048576) + 'MB<br><small>もう少しお待ちください</small>');
+          pump();
+        }).catch(rej);
+      })();
+    });
+  }).then(function(blob){
+    clearTimeout(timer);
+    if (blob.type && blob.type.indexOf('text/html') === 0) throw new Error('interstitial');
+    if (blob.size < 50000) throw new Error('too-small');
+    playNativeBlob(URL.createObjectURL(blob));
+  }).catch(function(e){
+    clearTimeout(timer);
+    if (window.console) console.warn('Drive blob 取得失敗 → iframe再生へ:', e && e.message);
+    loadIframeFallback();
+  });
+}
+
+function playNativeBlob(burl) {
+  var loading   = document.getElementById('video-loading');
+  var autoBadge = document.getElementById('auto-badge');
+  var slot      = document.getElementById('video-slot');
+  videoEl = document.createElement('video');
+  videoEl.controls = false; videoEl.playsInline = true;
+  videoEl.setAttribute('playsinline', ''); videoEl.setAttribute('webkit-playsinline', '');
+  videoEl.preload = 'auto';
+  videoEl.style.cssText = 'width:100%;height:100%;object-fit:contain;background:#000;';
+  videoEl.src = burl;
+  function ok() {
+    if (nativeVideo) return; nativeVideo = true;
+    loading.classList.add('hidden');
+    autoBadge.textContent = '⏸ 一時停止 → ボタンでTC記録';
+    autoBadge.classList.add('on');
+    var hb = document.getElementById('hdr-autobadge'); if (hb) hb.style.display = '';
+    var btn = document.getElementById('tc-record-btn'); if (btn) btn.style.display = '';
+    attachCustomControls(videoEl);
+    showToast('⏸ 再生して止めたい所で一時停止 → 「タイムコードを記録する」を押してください');
+  }
+  videoEl.addEventListener('loadedmetadata', ok);
+  videoEl.addEventListener('loadeddata', ok);
+  videoEl.addEventListener('canplay', ok);
+  videoEl.addEventListener('error', function(){ if (!nativeVideo) loadIframeFallback(); });
+  videoEl.addEventListener('pause', function(){ var b=document.getElementById('tc-record-btn'); if(b){ b.style.display=''; b.classList.add('paused'); } });
+  videoEl.addEventListener('play',  function(){ var b=document.getElementById('tc-record-btn'); if(b) b.classList.remove('paused'); });
+  slot.innerHTML = '';
+  slot.appendChild(videoEl);
+  try { videoEl.load(); } catch(e) {}
+}
+
+// ポートフォリオと同じ「サムネ＋▶ → タップで/preview iframe注入」方式。
+// iPhoneではこの方式だとDrive動画が黒くならず再生できる（ネイティブ再生は不可なため手動TC）。
+function buildThumbUrl(id) { return 'https://drive.google.com/thumbnail?id=' + id + '&sz=w640-h1138'; }
 
 function loadIframeFallback() {
   var slot      = document.getElementById('video-slot');
   var loading   = document.getElementById('video-loading');
   var autoBadge = document.getElementById('auto-badge');
 
-  var iframe = document.createElement('iframe');
-  iframe.src = buildPreviewUrl(driveFileId);
-  iframe.allow = 'autoplay; encrypted-media; fullscreen';
-  iframe.allowFullscreen = true;
-  iframe.style.cssText = 'width:100%;height:100%;border:none;display:block;background:#000;';
-  iframe.addEventListener('load', function() { loading.classList.add('hidden'); });
-
-  autoBadge.textContent = '📝 手動でTCを入力（⏱ボタンは非対応）';
+  loading.classList.add('hidden');
+  autoBadge.textContent = '▶ タップで再生（タイムコードは手動入力）';
   autoBadge.classList.add('manual');
 
-  slot.appendChild(iframe);
+  var thumb = driveFileId ? buildThumbUrl(driveFileId) : '';
+  var imgHtml = thumb
+    ? '<img src="' + thumb + '" alt="動画サムネイル" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000;cursor:pointer;" onclick="playDriveIframe()" onerror="this.style.display=\'none\'">'
+    : '<div style="position:absolute;inset:0;background:#000;cursor:pointer;" onclick="playDriveIframe()"></div>';
+  slot.innerHTML = imgHtml +
+    '<button onclick="playDriveIframe()" aria-label="再生" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);' +
+    'width:72px;height:72px;border-radius:50%;background:rgba(0,0,0,0.72);border:2px solid rgba(255,255,255,0.8);' +
+    'color:#fff;font-size:2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:8;backdrop-filter:blur(4px);">&#9654;</button>';
+}
 
-  setTimeout(function() {
-    if (!document.getElementById('video-loading').classList.contains('hidden')) {
-      document.getElementById('video-fallback').classList.add('show');
-    }
-  }, 15000);
+// ユーザーのタップ操作内で /preview iframe を注入 → iOSでも再生可能
+function playDriveIframe() {
+  if (!driveFileId) return;
+  var slot = document.getElementById('video-slot');
+  slot.innerHTML = '<iframe src="' + buildPreviewUrl(driveFileId) + '" ' +
+    'allow="autoplay; encrypted-media; fullscreen" allowfullscreen ' +
+    'style="position:absolute;inset:0;width:100%;height:100%;border:none;display:block;background:#000;"></iframe>';
 }
 
 /* ── TC record button click ── */
@@ -647,7 +900,7 @@ function buildFormHtml(meta) {
     '<button class="btn-add" id="btn-add" onclick="addSlot()">＋ 修正箇所を追加</button>' +
     '<button class="btn-submit" id="btn-submit" onclick="submitFB()">📤 フィードバックを送信する</button>';
 }
-function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+function esc(s) { return String(s===null||s===undefined?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
 
 /* ── Slots ── */
 function addSlot() {
@@ -717,7 +970,7 @@ function submitFB() {
     method: 'POST',
     body: JSON.stringify({
       action: 'save_feedback', client_name: name, email: email,
-      line_uid: lineUidParam,
+      line_uid: lineUidParam, title: fbTitle,
       delivery_url: buildDirectUrl(driveFileId), round: round,
       video_type: videoType, items: items
     }),
@@ -768,14 +1021,53 @@ function copyShareUrl() {
 
 /* ── Review mode ── */
 function loadReviewMode(p) {
-  var videoUrl = p.get('video') || '';
-  var itemsB64 = p.get('items') || '';
-  var name     = p.get('name')  || '';
-  var round    = p.get('round') || '1';
-  var type     = p.get('type')  || 'short';
+  var fbId = p.get('id') || '';
+  var fbRow = p.get('fb') || p.get('row') || '';
+  // ID/行番号があればサーバーからFB本文を取得（URL切断に強い）
+  if (fbId || fbRow) {
+    var q = fbId ? ('id=' + encodeURIComponent(fbId)) : ('fb=' + encodeURIComponent(fbRow));
+    fetch(GAS_URL + '?action=get_feedback&' + q, { redirect: 'follow' })
+      .then(function(r){ return r.json(); })
+      .then(function(j){
+        if (j && j.success) {
+          renderReviewMode({
+            video: p.get('video') || j.delivery_url || '',
+            items: j.items || [],
+            name:  j.client_name || p.get('name') || '',
+            round: j.round || p.get('round') || '1',
+            type:  p.get('type') || 'short'
+          });
+        } else {
+          // 取得失敗 → URLのbase64 itemsにフォールバック
+          loadReviewModeFromUrl(p);
+        }
+      })
+      .catch(function(){ loadReviewModeFromUrl(p); });
+    return;
+  }
+  loadReviewModeFromUrl(p);
+}
 
+// 旧方式（URLにbase64で埋め込まれたitems）— 後方互換
+function loadReviewModeFromUrl(p) {
+  var itemsB64 = p.get('items') || '';
   var items = [];
   try { items = JSON.parse(decodeURIComponent(escape(atob(itemsB64)))); } catch(e) {}
+  renderReviewMode({
+    video: p.get('video') || '',
+    items: items,
+    name:  p.get('name')  || '',
+    round: p.get('round') || '1',
+    type:  p.get('type')  || 'short'
+  });
+}
+
+function renderReviewMode(o) {
+  var videoUrl = o.video || '';
+  var name     = o.name  || '';
+  var round    = o.round || '1';
+  var type     = o.type  || 'short';
+  var items    = o.items || [];
 
   driveFileId  = parseDriveId(videoUrl);
   videoType    = type;

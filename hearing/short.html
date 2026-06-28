@@ -168,7 +168,7 @@ label.form-check-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
     <p class="intro-plan" id="plan-display">ショート動画編集パック</p>
     <h1>📋 ヒアリングシート</h1>
     <p>契約同意ありがとうございます。以下の項目にご回答いただくことで、最適な編集環境をご用意できます。<br>
-    回答後、2営業日以内にChatworkまたはメールにてご連絡いたします。</p>
+    回答後、2営業日以内に公式LINEまたはメールにてご連絡いたします。</p>
     <div style="margin-top:14px;padding:12px 16px;background:#FEF9C3;border:1px solid #D97706;border-radius:10px;font-size:0.82rem;color:#92400E;line-height:1.7;">
       🎁 <strong>初回トライアル：1本目は無料</strong>でご依頼いただけます。<br>
       まずはお気軽にご回答ください。
@@ -192,9 +192,12 @@ label.form-check-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
         <label>会社名 / 屋号</label>
         <input type="text" class="form-input" name="company" placeholder="株式会社〇〇 / 個人の場合は空欄でOK">
       </div>
-      <div class="form-group">
-        <label>Chatwork ID（お持ちの場合）</label>
-        <input type="text" class="form-input" name="chatwork_id" placeholder="例: yamada_taro">
+      <div class="form-group" id="first-time-group">
+        <label>mono.createへのご依頼は初めてですか？ <span>*</span></label>
+        <div class="form-radio-group">
+          <label class="form-radio-item"><input type="radio" name="isFirstTime" value="yes" required><span>はい、初めてです</span></label>
+          <label class="form-radio-item"><input type="radio" name="isFirstTime" value="no"><span>いいえ、以前にご依頼したことがあります</span></label>
+        </div>
       </div>
     </div>
 
@@ -332,8 +335,8 @@ label.form-check-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
             <li>動画・音声・画像・プロジェクトファイル等を直接アップロード</li>
           </ul>
           <p style="font-size:0.78rem;color:#0369A1;margin-top:10px;">
-            ▶ アップロード完了後は Chatwork またはメールでご連絡ください<br>
-            ▶ その他のご希望（特殊形式・大容量等）は備考欄にご記入ください
+            ▶ アップロード完了後は 公式LINE またはメールでご連絡ください<br>
+            ▶ その他のご希望（特殊形式・大容量等）は備考欄にご記入ください<br>🎁 無料トライアルの場合は、お申し込み後すぐに専用フォルダをご案内します（入金不要・このメッセージの後にURLをお送りします）
           </p>
         </div>
       </div>
@@ -348,15 +351,25 @@ label.form-check-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.
       </div>
     </div>
 
-    <button type="submit" class="submit-btn" id="submit-btn">ヒアリングシートを送信する →</button>
+    <div style="background:#F0FDF4;border:2px solid #16A34A;border-radius:10px;padding:14px 16px;margin-bottom:16px;">
+        <label style="display:block;color:#166534;font-weight:800;margin-bottom:8px;">📸 制作実績（ポートフォリオ）への掲載について</label>
+        <select name="portfolio_consent" style="width:100%;padding:10px;border:1px solid #16A34A;border-radius:8px;font-size:0.9rem;font-family:inherit;background:#fff;">
+          <option value="">-- 選択してください（任意）--</option>
+          <option value="掲載OK">掲載OK（実績・サンプルとして紹介してよい）</option>
+          <option value="一部OK・要相談">一部OK・要相談</option>
+          <option value="掲載NG">掲載しないでほしい</option>
+        </select>
+        <p style="font-size:0.74rem;color:#166534;margin-top:6px;line-height:1.6;">※「掲載OK」の場合、完成動画を弊社サイト・SNS等で実績紹介することがあります。後から変更も可能です。</p>
+      </div>
+      <button type="submit" class="submit-btn" id="submit-btn">ヒアリングシートを送信する →</button>
   </form>
 
   <div class="success-box" id="success-box">
     <div class="success-icon">✅</div>
     <h2>回答を受け付けました！</h2>
     <p>ありがとうございます。<strong id="success-name"></strong> 様のご回答を確認いたしました。<br>
-    2営業日以内に <strong id="success-email"></strong> またはChatworkにてご連絡いたします。<br><br>
-    お急ぎの場合はメール（mono.create.group@gmail.com）またはChatwork（ID: wl0b2t4akjur）までご連絡ください。</p>
+    2営業日以内に <strong id="success-email"></strong> にご連絡いたします。<br><br>
+    お急ぎの場合はメール（mono.create.group@gmail.com）または公式LINEまでご連絡ください。</p>
     <a href="https://mono-create-group.github.io/lp/" style="display:inline-block;margin-top:24px;padding:12px 28px;background:#1E40AF;color:#fff;border-radius:10px;font-weight:700;text-decoration:none;font-size:0.9rem;">🏠 ホームに戻る</a>
   </div>
 
@@ -536,7 +549,8 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
     { el: document.getElementById('f-name'),  msg: 'お名前を入力してください' },
     { el: document.getElementById('f-email'), msg: '正しいメールアドレスを入力してください', test: function(el){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim()); } },
     { el: form.querySelector('[name=sns_url]'), msg: 'SNSアカウントURLを入力してください' },
-    { el: form.querySelector('[name=genre]'),   msg: 'ジャンル/テーマを入力してください' }
+    { el: form.querySelector('[name=genre]'),   msg: 'ジャンル/テーマを入力してください' },
+    { el: form.querySelector('[name=isFirstTime]'), msg: '初回かどうかをお選びください', test: function() { return !!form.querySelector('[name=isFirstTime]:checked'); } }
   ]);
   if (!_valid) return;
   const btn = document.getElementById('submit-btn');
@@ -549,8 +563,8 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
 
   const answers = {
     '__planKey':           paramPlanKey,
+    'ポートフォリオ掲載許可': (fd.get('portfolio_consent')||''),
     '会社名/屋号':        fd.get('company') || '',
-    'Chatwork ID':        fd.get('chatwork_id') || '',
     'SNSアカウントURL':   fd.get('sns_url') || '',
     '投稿SNS':            platforms.join(' / ') || '',
     'ジャンル/テーマ':    fd.get('genre') || '',
@@ -572,9 +586,10 @@ document.getElementById('hearing-form').addEventListener('submit', async (e) => 
       method: 'POST', mode: 'no-cors',
       body: JSON.stringify({
         type: 'hearing',
-        name:  fd.get('name'),
-        email: fd.get('email'),
-        plan:  paramPlan,
+        name:        fd.get('name'),
+        email:       fd.get('email'),
+        plan:        paramPlan,
+        isFirstTime: fd.get('isFirstTime') || '',
         answers,
       }),
     });

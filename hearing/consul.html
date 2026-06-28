@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ヒアリングシート — コンサルティング | mono.create</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body { font-family:'Noto Sans JP',sans-serif;background:#FAF9F6;color:#0F172A;line-height:1.8;-webkit-font-smoothing:antialiased;min-height:100vh;padding-bottom:60px; }
+a { color:inherit;text-decoration:none; }
+.header { background:#fff;border-bottom:1px solid rgba(15,23,42,0.09);padding:16px 24px;display:flex;align-items:center;gap:12px; }
+.header-logo { font-weight:900;font-size:1.1rem; }
+.header-logo span { color:#2563EB; }
+.header-plan { font-size:0.75rem;font-weight:700;color:#2563EB;background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.2);padding:4px 12px;border-radius:20px;margin-left:auto; }
+.container { max-width:680px;margin:40px auto;padding:0 24px; }
+.intro-card { background:#fff;border:1px solid rgba(15,23,42,0.09);border-radius:16px;padding:28px 32px;margin-bottom:32px; }
+.intro-card h1 { font-size:1.25rem;font-weight:900;margin-bottom:8px; }
+.intro-card p { font-size:0.88rem;color:#64748B;line-height:1.8; }
+.intro-plan { display:inline-block;margin-bottom:16px;font-size:0.75rem;font-weight:700;color:#B45309;background:#FEF3C7;border:1px solid #D97706;padding:4px 14px;border-radius:20px; }
+.form-card { background:#fff;border:1px solid rgba(15,23,42,0.09);border-radius:16px;padding:32px; }
+.form-section { border-top:1px solid rgba(15,23,42,0.07);padding-top:24px;margin-top:24px; }
+.form-section:first-child { border-top:none;padding-top:0;margin-top:0; }
+.form-section-title { font-size:0.8rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#2563EB;margin-bottom:20px; }
+.form-group { margin-bottom:20px; }
+.form-group label { display:block;font-size:0.82rem;font-weight:700;color:#0F172A;margin-bottom:6px; }
+.form-group label span { color:#DC2626;font-size:0.75rem; }
+.form-group .hint { font-size:0.75rem;color:#64748B;margin-bottom:6px; }
+.form-input,.form-select,.form-textarea { width:100%;padding:11px 14px;border:1.5px solid rgba(15,23,42,0.12);border-radius:10px;font-size:0.88rem;font-family:inherit;color:#0F172A;background:#fff;transition:border-color 0.2s,box-shadow 0.2s;outline:none; }
+.form-input:focus,.form-select:focus,.form-textarea:focus { border-color:#2563EB;box-shadow:0 0 0 3px rgba(37,99,235,0.10); }
+.form-textarea { resize:vertical;min-height:90px; }
+.form-radio-group { display:flex;flex-direction:column;gap:8px; }
+label.form-radio-item {
+  display: flex !important; align-items: flex-start; gap: 14px;
+  padding: 10px 14px; border: 1.5px solid rgba(15,23,42,0.10);
+  border-radius: 8px; cursor: pointer; transition: border-color 0.2s, background 0.2s; margin-bottom: 0;
+}
+label.form-radio-item:has(input:checked) { border-color:#2563EB;background:rgba(37,99,235,0.05); }
+label.form-radio-item input { accent-color: #2563EB; width: 18px; height: 18px; flex: 0 0 18px; margin: 1px 0 0 0; }
+label.form-radio-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.5; word-break: break-word; }
+.form-check-group { display:flex;flex-direction:column;gap:8px; }
+label.form-check-item {
+  display: flex !important; align-items: flex-start; gap: 14px;
+  padding: 9px 14px; border: 1.5px solid rgba(15,23,42,0.10);
+  border-radius: 8px; cursor: pointer; transition: border-color 0.2s, background 0.2s; margin-bottom: 0;
+}
+label.form-check-item:has(input:checked) { border-color:#2563EB;background:rgba(37,99,235,0.04); }
+label.form-check-item input { accent-color: #2563EB; width: 18px; height: 18px; flex: 0 0 18px; margin: 1px 0 0 0; }
+label.form-check-item span { font-size: 0.85rem; flex: 1 1 auto; line-height: 1.5; word-break: break-word; }
+.submit-btn { width:100%;padding:15px;background:#1E40AF;color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;margin-top:32px;transition:opacity 0.2s,transform 0.2s; }
+.submit-btn:hover { opacity:0.88;transform:translateY(-1px); }
+.submit-btn:disabled { opacity:0.4;cursor:not-allowed;transform:none; }
+.success-box { display:none;background:#F0FDF4;border:1.5px solid #16A34A;border-radius:16px;padding:40px 32px;text-align:center;margin-top:32px; }
+.success-box.visible { display:block; }
+.success-box h2 { font-size:1.2rem;font-weight:900;color:#15803D;margin-bottom:12px; }
+.success-box p { font-size:0.88rem;color:#166534;line-height:1.9; }
+.success-icon { font-size:3rem;margin-bottom:16px; }
+.other-text-input { display:none;margin-top:6px;width:100%;padding:9px 12px;border:1.5px solid #3B82F6;border-radius:8px;font-size:0.83rem;font-family:inherit;color:#0F172A;background:#F8FAFC;outline:none; }
+.other-text-input.visible { display:block; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-logo">mono<span>.</span>create</div>
+  <span class="header-plan" id="plan-badge">コンサルティング</span>
+</header>
+
+<div class="container">
+
+  <div class="intro-card">
+    <p class="intro-plan" id="plan-display">コンサルティング</p>
+    <h1>📋 ヒアリングシート</h1>
+    <p>お申し込みありがとうございます。事前に内容をお伺いし、当日のコンサルを最大限有意義にするためのヒアリングです。<br>
+    ご回答後、<strong>日程調整リンク</strong>を公式LINEまたはメールでお送りします。そちらからご都合の良い日時をご予約ください。</p>
+  </div>
+  <div id="plan-details-card" style="display:none;background:#FFFBEB;border:1.5px solid #F59E0B;border-radius:16px;padding:24px 28px;margin-bottom:32px;"></div>
+
+<form class="form-card" id="hearing-form">
+
+    <!-- 基本情報 -->
+    <div class="form-section">
+      <p class="form-section-title">基本情報</p>
+      <div class="form-group">
+        <label>お名前 <span>*</span></label>
+        <input type="text" class="form-input" id="f-name" name="name" required placeholder="山田 太郎">
+      </div>
+      <div class="form-group">
+        <label>メールアドレス <span>*</span></label>
+        <input type="email" class="form-input" id="f-email" name="email" required placeholder="email@example.com">
+      </div>
+      <div class="form-group">
+        <label>会社名 / 屋号 / 活動名</label>
+        <input type="text" class="form-input" name="company" placeholder="株式会社〇〇 / 個人の場合は空欄でOK">
+      </div>
+      <div class="form-group">
+        <label>現在の活動・事業内容</label>
+        <input type="text" class="form-input" name="business" placeholder="例：YouTube運営／飲食店経営／フリーランス編集者 など">
+      </div>
+    </div>
+
+    <!-- ご相談内容 -->
+    <div class="form-section">
+      <p class="form-section-title">ご相談内容</p>
+      <div class="form-group">
+        <label>今回ご相談したいこと <span>*</span></label>
+        <p class="hint" id="topic-hint">具体的にお書きいただくほど、当日の密度が上がります。</p>
+        <textarea class="form-textarea" name="topic" required placeholder=""></textarea>
+      </div>
+      <div class="form-group">
+        <label>現状の課題・お困りごと</label>
+        <textarea class="form-textarea" name="challenge" placeholder="例：思うように成果が出ない／作業に時間がかかりすぎる／何から手をつければいいか分からない など"></textarea>
+      </div>
+      <div class="form-group">
+        <label>達成したい目標・理想の状態</label>
+        <textarea class="form-textarea" name="goal" placeholder="例：3ヶ月で登録者1万人／編集時間を半分に／業務を自動化したい など"></textarea>
+      </div>
+      <!-- AIシステム構築のみ：予算 -->
+      <div class="form-group" id="budget-group" style="display:none;">
+        <label>想定予算（AIシステム構築）</label>
+        <p class="hint">構築内容により ¥15,000〜¥100,000 で変動します。目安をお選びください。</p>
+        <div class="form-radio-group">
+          <label class="form-radio-item"><input type="radio" name="budget" value="〜3万円"><span>〜3万円（小さな自動化・スクリプト）</span></label>
+          <label class="form-radio-item"><input type="radio" name="budget" value="3〜6万円"><span>3〜6万円（ツール連携・業務効率化）</span></label>
+          <label class="form-radio-item"><input type="radio" name="budget" value="6〜10万円"><span>6〜10万円（本格的なシステム構築）</span></label>
+          <label class="form-radio-item"><input type="radio" name="budget" value="要相談"><span>要相談（内容を見て判断したい）</span></label>
+        </div>
+      </div>
+      <!-- AI系：使っているツール -->
+      <div class="form-group" id="aitools-group" style="display:none;">
+        <label>現在使っているツール・環境（任意）</label>
+        <input type="text" class="form-input" name="ai_tools" placeholder="例：ChatGPT／Notion／スプレッドシート／特になし">
+      </div>
+    </div>
+
+    <!-- 日程の希望 -->
+    <div class="form-section">
+      <p class="form-section-title">日程の希望</p>
+      <div class="form-group">
+        <label>ご希望の曜日・時間帯（任意）</label>
+        <p class="hint">正式なご予約は、この後お送りする日程調整リンクから確定いただけます。</p>
+        <input type="text" class="form-input" name="schedule_pref" placeholder="例：平日の夜／土日の午前中 など">
+      </div>
+      <div class="form-group">
+        <label>当日の希望形式</label>
+        <div class="form-radio-group">
+          <label class="form-radio-item"><input type="radio" name="format" value="オンライン（Zoom等）"><span>オンライン（Zoom等）</span></label>
+          <label class="form-radio-item"><input type="radio" name="format" value="電話"><span>電話</span></label>
+          <label class="form-radio-item"><input type="radio" name="format" value="どちらでも"><span>どちらでも可</span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- その他 -->
+    <div class="form-section">
+      <p class="form-section-title">その他</p>
+      <div class="form-group">
+        <label>参考URL（任意）</label>
+        <input type="text" class="form-input" name="ref_url" placeholder="チャンネル・SNS・現状の資料など">
+      </div>
+      <div class="form-group">
+        <label>その他、事前に伝えておきたいこと（任意）</label>
+        <textarea class="form-textarea" name="note" placeholder="ご自由にご記入ください"></textarea>
+      </div>
+    </div>
+
+    <button type="submit" class="submit-btn" id="submit-btn">ヒアリングシートを送信する →</button>
+</form>
+
+  <div class="success-box" id="success-box">
+    <div class="success-icon">✅</div>
+    <h2>回答を受け付けました！</h2>
+    <p>ありがとうございます。<strong id="success-name"></strong> 様のご回答を確認いたしました。<br>
+    この後、<strong>日程調整リンク</strong>を公式LINEまたはメール（<strong id="success-email"></strong>）でお送りします。<br>
+    ご都合の良い日時をご予約ください。<br><br>
+    お急ぎの場合はメール（mono.create.group@gmail.com）または公式LINEまでご連絡ください。</p>
+    <a href="https://mono-create-group.github.io/lp/" style="display:inline-block;margin-top:24px;padding:12px 28px;background:#1E40AF;color:#fff;border-radius:10px;font-weight:700;text-decoration:none;font-size:0.9rem;">🏠 ホームに戻る</a>
+  </div>
+
+</div>
+
+<script>
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
+const params = new URLSearchParams(location.search);
+const paramName    = params.get('name')    || '';
+const paramEmail   = params.get('email')   || '';
+const paramPlanKey = params.get('planKey') || 'consul-edit';
+
+const PLAN_DETAILS = {
+  'consul-edit': {
+    label: '編集コンサルティング',
+    title: '🎓 編集コンサルティング', summary: '¥5,000 / 1時間',
+    items: ['動画編集の技術・効率化のアドバイス', '案件獲得・単価アップの相談', 'ポートフォリオ添削', 'オンライン（Zoom等）または電話'],
+    topicHint: '例：編集スピードを上げたい／単価を上げたい／案件の取り方を知りたい など'
+  },
+  'consul-ai': {
+    label: 'AI導入コンサルティング',
+    title: '🤖 AI導入コンサルティング', summary: '¥5,000 / 1時間',
+    items: ['業務へのAI（ChatGPT等）導入アドバイス', '効率化・自動化の方針設計', 'ツール選定・活用法', 'オンライン（Zoom等）または電話'],
+    topicHint: '例：業務にAIを取り入れたい／何から始めればいいか知りたい／作業を自動化したい など'
+  },
+  'ai-system': {
+    label: 'AIシステム構築',
+    title: '🛠 AIシステム構築', summary: '¥15,000〜¥100,000（内容により変動）',
+    items: ['業務自動化システムの構築', 'AI／API・ツール連携の開発', '内容・規模に応じて個別お見積もり', 'まずはヒアリングで要件を整理'],
+    topicHint: '例：問い合わせ対応を自動化したい／データ集計を自動化したい／作りたいものがある など'
+  },
+};
+
+function renderPlanDetails() {
+  const d = PLAN_DETAILS[paramPlanKey] || PLAN_DETAILS['consul-edit'];
+  document.getElementById('plan-display').textContent = d.label;
+  document.getElementById('plan-badge').textContent = d.label;
+  const th = document.getElementById('topic-hint');
+  if (th && d.topicHint) th.textContent = d.topicHint;
+  // AI系の追加項目を表示
+  if (paramPlanKey === 'ai-system') {
+    document.getElementById('budget-group').style.display = '';
+    document.getElementById('aitools-group').style.display = '';
+  } else if (paramPlanKey === 'consul-ai') {
+    document.getElementById('aitools-group').style.display = '';
+  }
+  const box = document.getElementById('plan-details-card');
+  box.innerHTML = `
+    <p style="font-size:0.72rem;font-weight:700;letter-spacing:0.06em;color:#B45309;margin-bottom:4px;">お申し込み内容</p>
+    <h2 style="font-size:1.05rem;font-weight:900;color:#0F172A;margin-bottom:6px;">${d.title}</h2>
+    <p style="font-size:0.9rem;font-weight:800;color:#B45309;margin-bottom:10px;">${d.summary}</p>
+    <ul style="margin:0 0 0 18px;padding:0;font-size:0.82rem;color:#0F172A;line-height:1.85;">
+      ${d.items.map(i=>'<li>'+i+'</li>').join('')}
+    </ul>`;
+  box.style.display = 'block';
+}
+
+if (paramName)  document.getElementById('f-name').value  = paramName;
+if (paramEmail) document.getElementById('f-email').value = paramEmail;
+renderPlanDetails();
+
+function _setFieldError(el, msg) {
+  el.style.borderColor = '#EF4444'; el.style.boxShadow = '0 0 0 3px rgba(239,68,68,0.18)';
+  let errEl = el.parentNode.querySelector('.field-err-msg');
+  if (!errEl) { errEl = document.createElement('p'); errEl.className='field-err-msg'; errEl.style.cssText='color:#EF4444;font-size:0.76rem;margin:4px 0 0;line-height:1.4;'; el.insertAdjacentElement('afterend', errEl); }
+  errEl.textContent = '⚠ ' + msg;
+}
+function _clearFieldError(el) { el.style.borderColor=''; el.style.boxShadow=''; const e=el.parentNode.querySelector('.field-err-msg'); if(e)e.remove(); }
+function _validateFields(checks) {
+  let firstBad=null;
+  checks.forEach(function({el,test,msg}){ const ok=test?test(el):(el.value.trim()!==''); if(!ok){_setFieldError(el,msg||'この項目は必須です'); if(!firstBad)firstBad=el;} else _clearFieldError(el); });
+  if(firstBad){ firstBad.scrollIntoView({behavior:'smooth',block:'center'}); firstBad.focus(); return false; }
+  return true;
+}
+
+document.getElementById('hearing-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const d = PLAN_DETAILS[paramPlanKey] || PLAN_DETAILS['consul-edit'];
+  const _valid = _validateFields([
+    { el: document.getElementById('f-name'),  msg: 'お名前を入力してください' },
+    { el: document.getElementById('f-email'), msg: '正しいメールアドレスを入力してください', test: function(el){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim()); } },
+    { el: form.querySelector('[name=topic]'), msg: 'ご相談内容を入力してください' },
+  ]);
+  if (!_valid) return;
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true; btn.textContent = '送信中...';
+  const fd = new FormData(form);
+  const answers = {
+    '__planKey':        paramPlanKey,
+    '会社名/屋号':      fd.get('company') || '',
+    '活動・事業内容':   fd.get('business') || '',
+    'ご相談したいこと': fd.get('topic') || '',
+    '現状の課題':       fd.get('challenge') || '',
+    '達成したい目標':   fd.get('goal') || '',
+    '想定予算':         fd.get('budget') || '',
+    '使用ツール・環境': fd.get('ai_tools') || '',
+    '希望日程':         fd.get('schedule_pref') || '',
+    '希望形式':         fd.get('format') || '',
+    '参考URL':          fd.get('ref_url') || '',
+    'その他':           fd.get('note') || '',
+  };
+  try {
+    await fetch(GAS_URL, { method:'POST', mode:'no-cors',
+      body: JSON.stringify({ type:'hearing', name:fd.get('name'), email:fd.get('email'), plan:d.label, isFirstTime:'', answers }) });
+  } catch(err) {}
+  document.getElementById('hearing-form').style.display = 'none';
+  const sb = document.getElementById('success-box');
+  sb.classList.add('visible');
+  document.getElementById('success-name').textContent  = fd.get('name');
+  document.getElementById('success-email').textContent = fd.get('email');
+  window.scrollTo({ top:0, behavior:'smooth' });
+});
+</script>
+</body>
+</html>

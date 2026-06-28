@@ -773,6 +773,15 @@ nav.nav-scrolled {
 }
 /* Loading */
 #portfolio-loading-txt { color: var(--sub); font-size:0.85rem; padding:32px 0; }
+.testimonial-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:32px; }
+.testimonial-card { background:#fff; border:1px solid #e5e9f0; border-radius:14px; overflow:hidden; box-shadow:0 4px 18px rgba(15,23,42,0.06); transition:transform .2s, box-shadow .2s; cursor:zoom-in; }
+.testimonial-card:hover { transform:translateY(-3px); box-shadow:0 10px 28px rgba(15,23,42,0.12); }
+.testimonial-card img { width:100%; display:block; background:#f1f5f9; }
+.testimonial-card .tcap { padding:12px 14px; font-size:0.82rem; color:#475569; line-height:1.6; }
+@media (max-width:768px){ .testimonial-grid { grid-template-columns:repeat(2,1fr); gap:12px; } .testimonial-card .tcap { font-size:0.76rem; padding:10px; } }
+@media (max-width:430px){ .testimonial-grid { grid-template-columns:1fr; } }
+.tlightbox { position:fixed; inset:0; background:rgba(0,0,0,0.85); display:none; align-items:center; justify-content:center; z-index:99999; padding:20px; }
+.tlightbox img { max-width:96vw; max-height:92vh; border-radius:10px; }
 
 /* ── Portfolio Mobile Card Grid ── */
 .pf-mobile-grid {
@@ -2773,8 +2782,9 @@ section { contain: layout style; }
         <div class="service-icon">👥</div>
         <h3>編集者派遣</h3>
         <p>即戦力の動画編集者をチームに追加。<br>採用・育成コストをゼロにしながら、<br class="sp-br">すぐに生産力を上げられます。</p>
-        <span class="service-badge">ショート ¥2,500〜 / 本</span>
-        <span class="service-badge" style="margin-top:6px;display:inline-block;">長尺 ¥6,000〜 / 本</span>
+        <span class="service-badge">ショート ¥3,500〜 / 本</span>
+        <span class="service-badge" style="margin-top:6px;display:inline-block;">長尺 ¥9,000〜 / 本</span>
+        <span style="display:block;font-size:0.72rem;color:var(--sub);margin-top:6px;">※ ショート：編集料¥3,000＋手数料¥500／長尺：編集料¥8,000＋手数料¥1,000</span>
       </div>
       <div class="service-card fade-up">
         <div class="service-icon">🚀</div>
@@ -2846,6 +2856,16 @@ section { contain: layout style; }
         <p class="pf-count" id="pf-count"></p>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ═══ お客様の声 ═══ -->
+<section class="section" id="testimonials" style="display:none;">
+  <div class="container">
+    <p class="label">VOICE</p>
+    <h2 class="section-title fade-up">お客様の声</h2>
+    <p class="section-sub fade-up">ご依頼いただいたお客様から<br class="sp-br">いただいた声の一部をご紹介します。</p>
+    <div class="testimonial-grid" id="testimonials-grid"></div>
   </div>
 </section>
 
@@ -2936,7 +2956,7 @@ section { contain: layout style; }
   <div class="container">
     <p class="label">PRICING</p>
     <h2 class="section-title fade-up"><span class="mark">料金プラン</span></h2>
-    <p class="section-sub fade-up">記載は最低料金です。詳細はお問い合わせください。</p>
+    <p class="section-sub fade-up">記載は最低料金の目安です。尺・テロップ量・素材の状態・演出など<strong>編集内容によって料金が変動する場合があります</strong>。正式な金額はお見積もりでご確認ください。</p>
 
     <!-- 無料トライアルバナー -->
     <div class="fade-up trial-banner" style="background:linear-gradient(135deg,rgba(16,185,129,0.13),rgba(59,130,246,0.08));border:1px solid rgba(16,185,129,0.45);border-radius:16px;padding:28px 32px;margin:36px 0;box-sizing:border-box;width:100%;max-width:100%;overflow:hidden;">
@@ -2966,7 +2986,7 @@ section { contain: layout style; }
         <div id="svc-edit-short" class="pricing-row fade-up">
           <div>
             <p class="pricing-row-name">ショート動画編集</p>
-            <p class="pricing-row-desc">縦型1本。テロップ・SE・BGM・エフェクト込み。<br class="sp-br">最短当日〜3日納品。</p>
+            <p class="pricing-row-desc">縦型1本。テロップ・SE・BGM・エフェクト込み。<br class="sp-br">最短当日〜3日納品。<br class="sp-br"><span style="font-size:0.75rem;color:#F59E0B;">※¥4,000は最低料金。編集内容により変動する場合があります。</span></p>
           </div>
           <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
             <p class="pricing-price" data-ck="price_edit_short">¥4,000〜</p>
@@ -2979,7 +2999,7 @@ section { contain: layout style; }
               <p class="pricing-row-name">長尺動画編集</p>
               <span class="pricing-tag">YouTube<br>セミナー等</span>
             </div>
-            <p class="pricing-row-desc">納品7〜8日。動画の長さによって料金が変わります。<span class="longform-toggle-hint">▼ 詳細を見る</span><br><span style="font-size:0.75rem;color:#60A5FA;">🎁 トライアル：まず30秒を無償編集 → 問題なければ1本納品・1本分の料金</span></p>
+            <p class="pricing-row-desc">納品7〜8日。動画の長さ・編集内容によって料金が変動します（下記は目安）。<span class="longform-toggle-hint">▼ 詳細を見る</span><br><span style="font-size:0.75rem;color:#60A5FA;">🎁 トライアル：まず30秒を無償編集 → 問題なければ1本納品・1本分の料金</span></p>
             <div class="longform-detail">
               <table class="longform-table">
                 <tr><td>〜10分</td><td class="longform-price" data-ck="price_long_10min">¥20,000</td></tr>
@@ -2996,14 +3016,40 @@ section { contain: layout style; }
             <p class="pricing-row-name">編集コンサルティング</p>
             <p class="pricing-row-desc">1時間のオンライン相談。アカウント分析→改善提案。</p>
           </div>
-          <p class="pricing-price" data-ck="price_consulting">¥5,000 / h</p>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+            <p class="pricing-price" data-ck="price_consulting">¥5,000 / h</p>
+            <a href="#" onclick="openContract('consul-edit');return false;" class="btn btn-gold" style="font-size:0.78rem;padding:8px 16px;white-space:nowrap;">申し込む →</a>
+          </div>
+        </div>
+        <div id="svc-consul-ai" class="pricing-row fade-up">
+          <div>
+            <p class="pricing-row-name">AI導入コンサルティング</p>
+            <p class="pricing-row-desc">1時間のオンライン相談。業務へのAI活用・自動化の方針を設計。</p>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+            <p class="pricing-price">¥5,000 / h</p>
+            <a href="#" onclick="openContract('consul-ai');return false;" class="btn btn-gold" style="font-size:0.78rem;padding:8px 16px;white-space:nowrap;">申し込む →</a>
+          </div>
+        </div>
+        <div id="svc-ai-system" class="pricing-row fade-up">
+          <div>
+            <p class="pricing-row-name">AIシステム構築</p>
+            <p class="pricing-row-desc">業務自動化・AI連携システムの構築。内容により個別お見積もり。</p>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+            <p class="pricing-price">¥15,000〜¥100,000</p>
+            <a href="#" onclick="openContract('ai-system');return false;" class="btn btn-gold" style="font-size:0.78rem;padding:8px 16px;white-space:nowrap;">申し込む →</a>
+          </div>
         </div>
         <div id="svc-manual" class="pricing-row fade-up">
           <div>
             <p class="pricing-row-name">編集マニュアル作成</p>
             <p class="pricing-row-desc">即外注可能なマニュアルを編集者目線で作成。</p>
           </div>
-          <p class="pricing-price" data-ck="price_manual">¥5,000〜</p>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+            <p class="pricing-price" data-ck="price_manual">¥5,000〜</p>
+            <a href="#contact" class="btn btn-gold" style="font-size:0.78rem;padding:8px 16px;white-space:nowrap;">相談する →</a>
+          </div>
         </div>
         <p style="font-size:0.8rem;color:var(--sub);margin-top:20px;padding:0 8px;">※ 修正3回まで無料。<br>4回目以降¥1,000/回(長尺動画は¥5,000/回)<br>こちら側のミスは無制限対応</p>
 
@@ -3021,11 +3067,13 @@ section { contain: layout style; }
           <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
             <div style="flex:1;min-width:120px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 16px;text-align:center;">
               <p style="font-size:0.72rem;color:var(--sub);margin:0 0 4px;">ショート動画</p>
-              <p style="font-size:1.1rem;font-weight:800;color:var(--gold);margin:0;">¥3,000〜<span style="font-size:0.72rem;font-weight:500;color:var(--sub);">/本</span></p>
+              <p style="font-size:1.1rem;font-weight:800;color:var(--gold);margin:0;">¥3,500〜<span style="font-size:0.72rem;font-weight:500;color:var(--sub);">/本</span></p>
+              <p style="font-size:0.66rem;color:var(--sub);margin:4px 0 0;">編集料¥3,000＋手数料¥500</p>
             </div>
             <div style="flex:1;min-width:120px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 16px;text-align:center;">
               <p style="font-size:0.72rem;color:var(--sub);margin:0 0 4px;">YouTube長尺</p>
-              <p style="font-size:1.1rem;font-weight:800;color:var(--gold);margin:0;">¥7,000〜<span style="font-size:0.72rem;font-weight:500;color:var(--sub);">/本</span></p>
+              <p style="font-size:1.1rem;font-weight:800;color:var(--gold);margin:0;">¥9,000〜<span style="font-size:0.72rem;font-weight:500;color:var(--sub);">/本</span></p>
+              <p style="font-size:0.66rem;color:var(--sub);margin:4px 0 0;">編集料¥8,000＋手数料¥1,000</p>
             </div>
           </div>
           <ul class="pack-features" style="margin-bottom:20px;">
@@ -3083,7 +3131,7 @@ section { contain: layout style; }
         <p style="font-size:0.8rem;font-weight:700;margin-bottom:12px;color:var(--sub);padding-left:8px;">◎ ショート動画</p>
         <div class="pack-card fade-up" style="margin-bottom:32px;">
           <p class="pack-name" style="margin-bottom:4px;">まとめて編集プラン（ショート）</p>
-          <p style="font-size:0.74rem;color:var(--sub);margin-bottom:18px;">定価¥4,000/本 → 本数に応じて最大10%割引。月額合計と節約額の目安です。</p>
+          <p style="font-size:0.74rem;color:var(--sub);margin-bottom:18px;">定価¥4,000/本 → 本数に応じて最大10%割引。まとめてご依頼いただいた場合の合計・節約額の目安です（月額・定期契約ではなく、必要なときに何本でもまとめて発注できます）。</p>
 
           <!-- ショートプラン 月額合計テーブル -->
           <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;">
@@ -3131,7 +3179,7 @@ section { contain: layout style; }
         <p style="font-size:0.8rem;font-weight:700;margin-bottom:12px;color:var(--sub);padding-left:8px;">◎ YouTube長尺動画</p>
         <div class="pack-card fade-up" style="margin-bottom:48px;">
           <p class="pack-name" style="margin-bottom:4px;">まとめて編集プラン（長尺）</p>
-          <p style="font-size:0.74rem;color:var(--sub);margin-bottom:18px;">定価¥15,000/本（〜10分）→ 本数に応じて最大10%割引。月額合計と節約額の目安です。</p>
+          <p style="font-size:0.74rem;color:var(--sub);margin-bottom:18px;">定価¥15,000/本（〜10分）→ 本数に応じて最大10%割引。まとめてご依頼いただいた場合の合計・節約額の目安です（月額・定期契約ではなく、必要なときに何本でもまとめて発注できます）。</p>
 
           <!-- 長尺 月額合計テーブル（〜10分の動画基準） -->
           <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:6px;">
@@ -3394,7 +3442,7 @@ section { contain: layout style; }
       <div class="flow-step fade-up">
         <p class="flow-num">STEP 01</p>
         <h3>無料相談・お問い合わせ</h3>
-        <p>目的・ご予算・参考動画をフォームからお送りください。<br>ChatworkまたはGmailにてご連絡いたします。</p>
+        <p>目的・ご予算・参考動画をフォームからお送りください。<br>公式LINEまたはメールにてご連絡いたします。</p>
         <a href="#contact" class="flow-pay-link" style="margin-top:10px;">↓ お問い合わせフォームへ</a>
       </div>
       <div class="flow-step fade-up">
@@ -3470,7 +3518,7 @@ section { contain: layout style; }
           <td style="color:#FB923C;font-weight:700;text-align:right;padding:8px 4px;">¥2,000</td>
         </tr>
         <tr style="border-bottom:1px solid rgba(251,146,60,0.2);">
-          <td style="color:#FED7AA;padding:8px 4px;">まとめて編集プラン（月額）</td>
+          <td style="color:#FED7AA;padding:8px 4px;">まとめて編集プラン（都度・まとめて発注）</td>
           <td style="color:#FB923C;font-weight:700;text-align:right;padding:8px 4px;">¥3,000</td>
         </tr>
         <tr style="border-bottom:1px solid rgba(251,146,60,0.2);">
@@ -3523,10 +3571,10 @@ section { contain: layout style; }
       </div>
       <div class="faq-item fade-up">
         <div class="faq-q" onclick="toggleFaq(this)">
-          <span>Chatwork以外での連絡は可能ですか？</span>
+          <span>連絡手段は何ですか？</span>
           <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         </div>
-        <div class="faq-a">基本的な連絡手段はChatworkとなります。まずはこのページのお問い合わせフォームからご連絡いただければ、Chatworkでのやり取りへスムーズに移行できます。</div>
+        <div class="faq-a">ご連絡は公式LINEまたはメールで承ります。まずはこのページのお問い合わせフォームからご連絡いただければ、公式LINE（おすすめ）またはメールでやり取りへスムーズに移行できます。</div>
       </div>
       <div class="faq-item fade-up">
         <div class="faq-q" onclick="toggleFaq(this)">
@@ -3700,7 +3748,7 @@ section { contain: layout style; }
           <div class="contact-item-icon">💬</div>
           <div class="contact-item-body">
             <p class="contact-item-label">主な連絡手段</p>
-            <p class="contact-item-val">Chatwork</p>
+            <p class="contact-item-val">公式LINE・メール</p>
           </div>
         </div>
       </div>
@@ -3720,10 +3768,6 @@ section { contain: layout style; }
           <div class="form-row">
             <label>メールアドレス<span>*</span></label>
             <input type="email" class="form-control" name="email" placeholder="example@mail.com" required>
-          </div>
-          <div class="form-row">
-            <label>Chatwork ID（お持ちの方）</label>
-            <input type="text" class="form-control" name="chatwork_id" placeholder="例：mono_create">
           </div>
           <div class="form-row">
             <label>ご関心のあるサービス<span>*</span></label>
@@ -3750,8 +3794,10 @@ section { contain: layout style; }
                 <option>運用丸投げパック プレミアム（¥220,000/月）</option>
               </optgroup>
               <optgroup label="── その他サービス">
-                <option>編集者派遣（ショート¥2,500〜 / 長尺¥6,000〜）</option>
+                <option>編集者派遣（ショート¥3,500〜[編集料¥3,000＋手数料¥500] / 長尺¥9,000〜[編集料¥8,000＋手数料¥1,000]）</option>
                 <option>編集コンサルティング（¥5,000/h）</option>
+                <option>AI導入コンサルティング（¥5,000/h）</option>
+                <option>AIシステム構築（¥15,000〜¥100,000・内容により変動）</option>
                 <option>編集ディレクション・外注管理</option>
                 <option>SNS運用代行（北海道のみ ¥69,800〜）</option>
                 <option>📸 無料ポートフォリオ制作（初回無料）</option>
@@ -3762,6 +3808,19 @@ section { contain: layout style; }
           <div class="form-row">
             <label>ご相談内容<span>*</span></label>
             <textarea class="form-control" name="message" placeholder="ご依頼の詳細・現状のお悩み・ご質問などをご記入ください。" required></textarea>
+          </div>
+          <div class="form-row" style="background:#F0FDF4;border:2px solid #16A34A;border-radius:10px;padding:14px 16px;">
+            <label style="color:#166534;font-weight:800;">📸 制作実績（ポートフォリオ）への掲載について</label>
+            <select class="form-control" name="portfolio_consent" style="border-color:#16A34A;background:#fff;">
+              <option value="">-- 選択してください（任意）--</option>
+              <option value="掲載OK">掲載OK（実績・サンプルとして紹介してよい）</option>
+              <option value="一部OK・要相談">一部OK・要相談</option>
+              <option value="掲載NG">掲載しないでほしい</option>
+            </select>
+            <p style="font-size:0.75rem;color:#166534;margin-top:6px;line-height:1.7;">
+              ※「掲載OK」の場合、完成動画を弊社サイト・SNS等で制作実績としてご紹介させていただくことがあります。<br>
+              ※ 後から変更・お申し出もいつでも可能です。
+            </p>
           </div>
           <div class="form-row" style="background:#FFFBEB;border:2px solid #D97706;border-radius:10px;padding:14px 16px;">
             <label style="color:#92400E;font-weight:800;">🎁 紹介コード（お持ちの方のみ）</label>
@@ -3775,12 +3834,12 @@ section { contain: layout style; }
           <button type="submit" class="form-submit" id="submit-btn">
             送信する
           </button>
-          <p class="form-note">送信後、Chatworkまたはメールにてご連絡します。</p>
+          <p class="form-note">送信後、公式LINEまたはメールにてご連絡します。</p>
         </form>
         <div class="form-success" id="form-success">
           <div class="form-success-icon">✅</div>
           <h3>送信完了しました！</h3>
-          <p>Chatworkまたはメールにてご連絡いたします。<br>しばらくお待ちください。</p>
+          <p>公式LINEまたはメールにてご連絡いたします。<br>しばらくお待ちください。</p>
         </div>
       </div>
     </div>
@@ -3827,6 +3886,7 @@ section { contain: layout style; }
       <h4 style="text-align:center;font-size:1rem;margin-bottom:4px;">📋 サービス概要のご確認</h4>
       <p style="font-size:0.78rem;color:var(--sub);text-align:center;margin-bottom:20px;">mono.create / 担当：中村 航汰</p>
 
+      <div id="ctr-service-detail">
       <h4>🎯 サービスの流れ</h4>
       <ol style="padding-left:18px;margin-bottom:14px;">
         <li><strong>お問い合わせ送信（今ここ）</strong> — ヒアリングシートのURLをメールでお送りします</li>
@@ -3862,6 +3922,7 @@ section { contain: layout style; }
         <li>そのフォルダにブラウザから直接アップロードいただきます（Googleアカウント不要）</li>
         <li>第三者の著作権・肖像権侵害素材はお受けできません</li>
       </ul>
+      </div><!-- /ctr-service-detail -->
 
       <h4>🔒 個人情報の取扱い</h4>
       <ul>
@@ -3972,17 +4033,6 @@ function toggleLongform(row) {
   row.classList.toggle('open', isOpen);
 }
 
-function copyCwId(btn) {
-  const id = document.getElementById('cw-id-text').textContent.trim();
-  navigator.clipboard.writeText(id).then(() => {
-    btn.textContent = '✅ コピーしました！';
-    btn.classList.add('copied');
-    setTimeout(() => {
-      btn.textContent = 'IDをコピーしてChatworkで検索';
-      btn.classList.remove('copied');
-    }, 2500);
-  });
-}
 
 function switchTab(tab, el) {
   document.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
@@ -4213,6 +4263,42 @@ async function loadPortfolio(retries) {
 }
 loadPortfolio();
 
+// ── お客様の声 ──────────────────────────────────────────────
+function testimonialImgSrc(url) {
+  var m = (url || '').match(/\/file\/d\/([^/?#]+)/) || (url || '').match(/[?&]id=([^&]+)/);
+  if (m) return 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w1000';
+  return url;
+}
+function openTestimonialLightbox(src) {
+  var lb = document.getElementById('t-lightbox');
+  if (!lb) return;
+  document.getElementById('t-lightbox-img').src = src;
+  lb.style.display = 'flex';
+}
+async function loadTestimonials(retries) {
+  retries = retries || 0;
+  if (!GAS_URL) return;
+  try {
+    var res = await fetch(GAS_URL + '?action=testimonials&_t=' + Date.now());
+    var json = await res.json();
+    var items = (json && json.data) || [];
+    var sec = document.getElementById('testimonials');
+    var grid = document.getElementById('testimonials-grid');
+    if (!items.length) { sec.style.display = 'none'; return; }
+    grid.innerHTML = items.map(function(it) {
+      var src = testimonialImgSrc(it.url);
+      var cap = it.caption ? '<div class="tcap">' + String(it.caption).replace(/</g,'&lt;') + '</div>' : '';
+      return '<div class="testimonial-card" onclick="openTestimonialLightbox(\'' + src.replace(/'/g, "\\'") + '\')">'
+        + '<img src="' + src + '" alt="お客様の声" loading="lazy" onerror="this.parentNode.style.display=\'none\'">'
+        + cap + '</div>';
+    }).join('');
+    sec.style.display = '';
+  } catch (e) {
+    if (retries < 2) setTimeout(function() { loadTestimonials(retries + 1); }, 3000);
+  }
+}
+loadTestimonials();
+
 // ── LP コンテンツ動的反映 ────────────────────────────────────
 function applyContent(content) {
   Object.keys(content).forEach(function(key) {
@@ -4250,13 +4336,68 @@ const PLAN_MAP = {
   'mixed-pre':  ['運用丸投げパック プレミアム（¥220,000/月）',       'hearing/ops-pack.html'],
   'dispatch':       ['編集者派遣',                                       'hearing/dispatch.html'],
   'portfolio-free': ['無料ポートフォリオ制作',                            'hearing/portfolio-free.html'],
+  'consul-edit':    ['編集コンサルティング（¥5,000/h）',                  'hearing/consul.html'],
+  'consul-ai':      ['AI導入コンサルティング（¥5,000/h）',               'hearing/consul.html'],
+  'ai-system':      ['AIシステム構築（¥15,000〜）',                       'hearing/consul.html'],
 };
 
+let _ctrDefaultDetail = null;
+function setCtrServiceDetail(planId) {
+  const box = document.getElementById('ctr-service-detail');
+  if (!box) return;
+  if (_ctrDefaultDetail === null) _ctrDefaultDetail = box.innerHTML;
+  const consulEdit = `
+      <h4>🎯 サービスの流れ</h4>
+      <ol style="padding-left:18px;margin-bottom:14px;">
+        <li><strong>お問い合わせ送信（今ここ）</strong> — ヒアリングシートのURLをメールでお送りします</li>
+        <li><strong>ヒアリングシート回答</strong> — ご相談内容・現状の課題をお聞きします</li>
+        <li><strong>日程調整</strong> — 専用リンクからご希望日時をご予約</li>
+        <li><strong>お支払い → コンサル実施</strong>（オンライン／電話・約60分）</li>
+      </ol>
+      <h4>💰 料金・お支払い</h4>
+      <ul><li>¥5,000 / 1時間（税込）</li><li>事前または当日までにお振込</li><li>振込手数料はお客様ご負担</li></ul>
+      <h4>🗓 形式・時間</h4>
+      <ul><li>オンライン（Zoom等）または電話、約60分</li><li>延長・継続のご相談も可能（別途）</li></ul>
+      <h4>📋 ご相談例</h4>
+      <ul><li>編集スピード・効率化、単価アップ、案件獲得</li><li>ポートフォリオ添削、編集の方向性 など</li></ul>`;
+  const consulAi = `
+      <h4>🎯 サービスの流れ</h4>
+      <ol style="padding-left:18px;margin-bottom:14px;">
+        <li><strong>お問い合わせ送信（今ここ）</strong> — ヒアリングシートのURLをメールでお送りします</li>
+        <li><strong>ヒアリングシート回答</strong> — AI活用の目的・現状の業務をお聞きします</li>
+        <li><strong>日程調整</strong> — 専用リンクからご希望日時をご予約</li>
+        <li><strong>お支払い → コンサル実施</strong>（オンライン／電話・約60分）</li>
+      </ol>
+      <h4>💰 料金・お支払い</h4>
+      <ul><li>¥5,000 / 1時間（税込）</li><li>事前または当日までにお振込</li><li>振込手数料はお客様ご負担</li></ul>
+      <h4>🗓 形式・時間</h4>
+      <ul><li>オンライン（Zoom等）または電話、約60分</li></ul>
+      <h4>📋 ご相談例</h4>
+      <ul><li>業務へのAI（ChatGPT等）導入、自動化の方針設計</li><li>ツール選定・活用法、何から始めるか など</li></ul>`;
+  const aiSystem = `
+      <h4>🎯 サービスの流れ</h4>
+      <ol style="padding-left:18px;margin-bottom:14px;">
+        <li><strong>お問い合わせ送信（今ここ）</strong> — ヒアリングシートのURLをメールでお送りします</li>
+        <li><strong>ヒアリングシート回答</strong> — 構築したい内容・要件をお聞きします</li>
+        <li><strong>お見積もりのご提示</strong> — 内容に応じた正式金額をご案内</li>
+        <li><strong>ご契約・お支払い → 構築開始</strong></li>
+        <li><strong>納品・お引き渡し</strong></li>
+      </ol>
+      <h4>💰 料金・お支払い</h4>
+      <ul><li>¥15,000〜¥100,000（内容により変動・個別お見積もり）</li><li>着手金／残金の分割等は内容に応じてご相談</li><li>振込手数料はお客様ご負担</li></ul>
+      <h4>🛠 進め方</h4>
+      <ul><li>要件整理 → 設計 → 構築 → テスト → 納品</li><li>仕様変更は都度ご相談</li></ul>
+      <h4>📋 構築例</h4>
+      <ul><li>問い合わせ・データ集計の自動化、AI／API連携 など</li></ul>`;
+  const map = { 'consul-edit': consulEdit, 'consul-ai': consulAi, 'ai-system': aiSystem };
+  box.innerHTML = map[planId] || _ctrDefaultDetail;
+}
 function openContract(planId) {
   _ctrPlan = planId;
   const info = PLAN_MAP[planId] || [planId, 'hearing/short.html'];
   _ctrHearing = info[1];
   document.getElementById('contractPlanTag').textContent = '申込プラン：' + info[0];
+  setCtrServiceDetail(planId);
   document.getElementById('ctrName').value = '';
   document.getElementById('ctrEmail').value = '';
   document.getElementById('ctrAgree').checked = false;
@@ -4607,10 +4748,11 @@ document.getElementById('contact-form').addEventListener('submit', async (e) => 
     name:          form.name.value,
     company:       form.company.value,
     email:         form.email.value,
-    chatwork_id:   form.chatwork_id.value,
+    chatwork_id:   '',
     plan:          form.plan.value,
     message:       form.message.value,
     referral_code: form.referral_code.value.trim(),
+    portfolio_consent: (form.portfolio_consent ? form.portfolio_consent.value : ''),
   };
 
   try {
@@ -4929,5 +5071,8 @@ function closeMobileNav() {
   document.body.style.overflow = '';
 }
 </script>
+<div class="tlightbox" id="t-lightbox" onclick="this.style.display='none'">
+  <img id="t-lightbox-img" src="" alt="お客様の声">
+</div>
 </body>
 </html>

@@ -523,6 +523,26 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
         🛠 修正依頼
       </button>
+      <button id="tab-payment-requests-btn" onclick="switchAdminTab('payment-requests')"
+        style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
+        📤 振込依頼履歴
+      </button>
+      <button id="tab-trash-btn" onclick="switchAdminTab('trash')"
+        style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
+        🗑 ゴミ箱
+      </button>
+      <button id="tab-testimonials-btn" onclick="switchAdminTab('testimonials')"
+        style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
+        💬 お客様の声
+      </button>
+      <button id="tab-line-followers-btn" onclick="switchAdminTab('line-followers')"
+        style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
+        📱 LINE友だち
+      </button>
+      <button id="tab-progress-btn" onclick="switchAdminTab('progress')"
+        style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
+        📦 納品進捗
+      </button>
     </div>
 
     <!-- ── 問い合わせタブ ── -->
@@ -629,6 +649,140 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         </table>
       </div>
     </div><!-- /tab-payments -->
+
+    <!-- ── 振込依頼履歴タブ ── -->
+    <div id="tab-payment-requests" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h2 style="font-size:1rem;font-weight:700;">📤 振込依頼履歴</h2>
+        <div style="display:flex;gap:10px;">
+          <button onclick="loadPaymentRequests()" style="padding:7px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--sub);font-size:0.8rem;font-family:inherit;cursor:pointer;">更新</button>
+          <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="clearAllRecords('payment_requests','振込依頼履歴',loadPaymentRequests)">🗑 全件削除</button>
+        </div>
+      </div>
+      <p style="font-size:0.78rem;color:var(--sub);margin-bottom:20px;line-height:1.7;">
+        クライアントに送信した見積もり・振込依頼の履歴です。LINE／メールで送った依頼が自動で記録されます。<br>
+        実際の入金報告は「💳 振込確認」タブで承認してください。
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>依頼日時</th>
+            <th>名前</th>
+            <th>連絡先</th>
+            <th>プラン</th>
+            <th>金額</th>
+            <th>振込期限</th>
+            <th>備考</th>
+            <th>送信</th>
+            <th>操作</th>
+          </tr></thead>
+          <tbody id="payment-requests-body">
+            <tr><td colspan="9" class="table-empty"><span class="spinner"></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div><!-- /tab-payment-requests -->
+
+    <!-- ── ゴミ箱タブ ── -->
+    <div id="tab-trash" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h2 style="font-size:1rem;font-weight:700;">🗑 ゴミ箱</h2>
+        <button onclick="loadTrash()" style="padding:7px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--sub);font-size:0.8rem;font-family:inherit;cursor:pointer;">更新</button>
+      </div>
+      <p style="font-size:0.78rem;color:var(--sub);margin-bottom:20px;line-height:1.7;">
+        各タブで削除した項目はここに退避されます。「↩ 復元」で元のタブに戻せます。<br>
+        ※ 復元すると元の一覧の末尾に追加されます。「完全削除」すると元に戻せません。
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>削除日時</th>
+            <th>種別</th>
+            <th>内容（プレビュー）</th>
+            <th>操作</th>
+          </tr></thead>
+          <tbody id="trash-body">
+            <tr><td colspan="4" class="table-empty"><span class="spinner"></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div><!-- /tab-trash -->
+
+    <!-- ── お客様の声タブ ── -->
+    <div id="tab-testimonials" style="display:none;max-width:860px;margin:0 auto;padding:24px 0;">
+      <h2 style="font-size:1.05rem;font-weight:800;margin-bottom:4px;">💬 お客様の声</h2>
+      <p style="font-size:0.8rem;color:var(--sub);margin-bottom:18px;line-height:1.7;">
+        LPの「制作実績」の下に表示される、お客様の声（スクショ画像）を管理します。<br>
+        画像URL（Google Drive の共有リンク／画像直リンク）を貼って追加してください。
+      </p>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:20px;">
+        <label style="display:block;font-size:0.78rem;color:var(--sub);margin-bottom:5px;">画像URL <span style="color:#f87171;">*</span></label>
+        <input type="url" id="ts-url" placeholder="https://drive.google.com/file/d/.../view など"
+          style="width:100%;padding:10px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;margin-bottom:12px;">
+        <label style="display:block;font-size:0.78rem;color:var(--sub);margin-bottom:5px;">キャプション（任意）</label>
+        <input type="text" id="ts-caption" placeholder="例：株式会社〇〇 様 / リール編集"
+          style="width:100%;padding:10px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;margin-bottom:14px;">
+        <button class="action-btn" style="background:#1a3a2a;color:#4ade80;border:1px solid #166534;font-weight:700;padding:9px 20px;" onclick="addTestimonial()">＋ 追加して掲載</button>
+      </div>
+      <div id="testimonials-admin-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;">
+        <p style="color:var(--sub);font-size:0.82rem;"><span class="spinner"></span></p>
+      </div>
+    </div><!-- /tab-testimonials -->
+
+    <!-- ── LINE友だちタブ ── -->
+    <div id="tab-line-followers" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h2 style="font-size:1rem;font-weight:700;">📱 LINE友だち</h2>
+        <button onclick="loadLineFollowers()" style="padding:7px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--sub);font-size:0.8rem;font-family:inherit;cursor:pointer;">更新</button>
+      </div>
+      <p style="font-size:0.78rem;color:var(--sub);margin-bottom:20px;line-height:1.7;">
+        公式LINEを友だち追加した方の一覧です。追加直後に「お名前」をご記入いただく案内が自動送信され、記入されるとここに反映されます。
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>追加日時</th>
+            <th>お名前</th>
+            <th>LINE表示名</th>
+            <th>状態</th>
+            <th>会話</th>
+          </tr></thead>
+          <tbody id="line-followers-body">
+            <tr><td colspan="4" class="table-empty"><span class="spinner"></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div><!-- /tab-line-followers -->
+
+    <!-- ── 納品進捗（都度納品の残数）タブ ── -->
+    <div id="tab-progress" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h2 style="font-size:1rem;font-weight:700;">📦 納品進捗（都度納品の残数）</h2>
+        <button onclick="loadProgress()" style="padding:7px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--sub);font-size:0.8rem;font-family:inherit;cursor:pointer;">更新</button>
+      </div>
+      <p style="font-size:0.78rem;color:var(--sub);margin-bottom:16px;line-height:1.7;">
+        「まとめて編集」など、合計本数の中から都度納品するご依頼の残数を管理します。納品ごとに「＋1納品」を押してください。
+      </p>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:18px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;">
+        <div><label style="display:block;font-size:0.74rem;color:var(--sub);margin-bottom:4px;">クライアント名</label>
+          <input type="text" id="pg-client" placeholder="横井 美和" style="padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:#fff;font-size:0.85rem;font-family:inherit;"></div>
+        <div><label style="display:block;font-size:0.74rem;color:var(--sub);margin-bottom:4px;">プラン</label>
+          <input type="text" id="pg-plan" placeholder="まとめて編集 ショート" style="padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:#fff;font-size:0.85rem;font-family:inherit;"></div>
+        <div><label style="display:block;font-size:0.74rem;color:var(--sub);margin-bottom:4px;">合計本数</label>
+          <input type="number" id="pg-total" min="1" placeholder="13" style="width:90px;padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:#fff;font-size:0.85rem;font-family:inherit;"></div>
+        <button class="action-btn" style="background:#1a3a2a;color:#4ade80;border:1px solid #166534;font-weight:700;padding:9px 18px;" onclick="addProgress()">＋ 登録</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>クライアント</th><th>プラン</th><th>進捗</th><th>残数</th><th>操作</th>
+          </tr></thead>
+          <tbody id="progress-body">
+            <tr><td colspan="5" class="table-empty"><span class="spinner"></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div><!-- /tab-progress -->
 
     <div id="tab-contracts" style="display:none;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
@@ -2226,7 +2380,7 @@ function applyClientMasterToPaymentModal(name) {
       <button class="modal-close" onclick="closeHearingModal()">×</button>
     </div>
     <div style="padding:24px;">
-      <p style="color:var(--sub);font-size:0.85rem;margin-bottom:16px;">メールアドレス宛にヒアリングシートのURLを自動送信します。</p>
+      <p style="color:var(--sub);font-size:0.85rem;margin-bottom:16px;">ヒアリングシートのURLを送信します。<br><strong style="color:#4ade80;">LINE経由の問い合わせはLINEに自動送信</strong>（メールもあれば併送）されます。</p>
       <div class="modal-row"><p class="modal-label">お名前</p><p class="modal-val" id="hm-name">—</p></div>
       <div class="modal-row"><p class="modal-label">メール</p><p class="modal-val" id="hm-email">—</p></div>
       <div class="modal-row" style="margin-bottom:16px;">
@@ -2254,6 +2408,11 @@ function applyClientMasterToPaymentModal(name) {
           </optgroup>
           <optgroup label="👥 派遣">
             <option value="dispatch">編集者派遣</option>
+          </optgroup>
+          <optgroup label="🎓 コンサル / AI">
+            <option value="consul-edit">編集コンサルティング（¥5,000/h）</option>
+            <option value="consul-ai">AI導入コンサルティング（¥5,000/h）</option>
+            <option value="ai-system">AIシステム構築（¥15,000〜）</option>
           </optgroup>
         </select>
       </div>
@@ -2718,6 +2877,8 @@ function isSessionValid() {
   if (isSessionValid()) {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
+    // セッション復元時もデータを読み込む（リロード・再訪で一覧が空のままになる不具合の修正）
+    if (typeof loadData === 'function') loadData();
     return;
   }
   // パスワード未設定なら初回セットアップへ
@@ -2814,6 +2975,7 @@ function renderTable() {
         ${esc(i.plan)}
         ${trialBadge(i, 'inquiries')}
         ${i.referral_code ? `<span class="trial-badge" style="background:rgba(217,119,6,0.12);color:#D97706;border-color:rgba(217,119,6,0.3);margin-top:4px;" title="紹介割引対象">🎟 ${esc(i.referral_code)}</span>` : ''}
+        ${i.portfolio_consent ? `<span class="trial-badge" style="background:rgba(22,163,74,0.12);color:#16a34a;border-color:rgba(22,163,74,0.3);margin-top:4px;" title="ポートフォリオ掲載">📸 ${esc(i.portfolio_consent)}</span>` : ''}
       </td>
       <td class="td-message" title="${esc(i.message)}">${esc(i.message)}</td>
       <td>
@@ -2825,10 +2987,11 @@ function renderTable() {
         <div class="td-actions">
           ${i.chatwork_id ? `<button class="action-btn btn-cw" onclick="openCW('${esc(i.chatwork_id)}')">💬 CW</button>` : ''}
           <button class="action-btn btn-mail" onclick="openMail('${esc(i.email)}','${esc(i.name)}','${esc(i.plan)}')">✉ メール</button>
-          ${extractLineUid(i) ? `<button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${i.row},'inquiries')">\ud83d\udcac LINE返信</button>` : ''}
+          ${(extractLineUid(i) || i.email) ? `<button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${i.row},'inquiries')">${extractLineUid(i) ? '💬 LINE返信' : '✉ 返信・納品'}</button>` : ''}
           <button class="action-btn btn-expand" onclick="openModal(${i.row})">詳細</button>
-          ${i.email ? `<button class="action-btn" style="background:#1a3a2a;color:#4ade80;border:1px solid #166534;" onclick="openHearingLinkModal(${i.row})">📋 ヒアリング案内</button>` : ''}
-          ${i.email ? `<button class="action-btn" style="background:#1a2a3a;color:#60a5fa;border:1px solid #1d4ed8;" onclick="openManualPaymentFromInquiry(${i.row})">💳 振込依頼</button>` : ''}
+          ${(i.email || extractLineUid(i)) ? `<button class="action-btn" style="background:#1a3a2a;color:#4ade80;border:1px solid #166534;" onclick="openHearingLinkModal(${i.row})">📋 ヒアリング案内</button>` : ''}
+          ${(i.email || extractLineUid(i)) ? `<button class="action-btn" style="background:#1a2a3a;color:#60a5fa;border:1px solid #1d4ed8;" onclick="openManualPaymentFromInquiry(${i.row})">💳 振込依頼</button>` : ''}
+          ${(i.email && !extractLineUid(i)) ? `<button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;" onclick="sendLineInviteAdmin('${esc(i.email)}','${esc(i.name)}')">📨 LINE案内</button>` : ''}
           <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="deleteInquiry(${i.row}, '${esc(i.name)}')">🗑 削除</button>
         </div>
       </td>
@@ -3116,7 +3279,7 @@ function exportCSV() {
 }
 
 // ── Tab switch ──
-const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps','sales-apps','partner-apps','private-link','client-master','invoices','line','orders','revisions'];
+const ADMIN_TABS = ['inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps','sales-apps','partner-apps','private-link','client-master','invoices','line','orders','revisions','payment-requests','trash','testimonials','line-followers','progress'];
 function switchAdminTab(tab) {
   ADMIN_TABS.forEach(t => {
     document.getElementById('tab-' + t).style.display = t === tab ? '' : 'none';
@@ -3141,6 +3304,11 @@ function switchAdminTab(tab) {
   if (tab === 'client-master') loadClientMaster();
   if (tab === 'orders')      loadOrders();
   if (tab === 'revisions')   loadRevisions();
+  if (tab === 'payment-requests') loadPaymentRequests();
+  if (tab === 'trash')            loadTrash();
+  if (tab === 'testimonials')     loadTestimonialsAdmin();
+  if (tab === 'line-followers')   loadLineFollowers();
+  if (tab === 'progress')         loadProgress();
 }
 
 // ── LP コンテンツ編集 ─────────────────────────────────────────
@@ -3437,6 +3605,9 @@ function renderPayments() {
       style="padding:5px 10px;background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;margin-left:6px;">
       🗑
     </button>`;
+    const lineBtn = extractLineUid(p)
+      ? `<button onclick="openQuickLine(${p.row},'payments')" style="padding:5px 10px;background:#06371f;color:#4ade80;border:1px solid #00b900;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;margin-right:6px;">💬 LINE返信</button>`
+      : '';
     return `<tr>
       <td>${esc(p.date)}</td>
       <td style="font-weight:600;">${esc(p.name)}</td>
@@ -3445,9 +3616,120 @@ function renderPayments() {
       <td style="font-weight:700;color:var(--gold);">${esc(p.amount)}</td>
       <td>${esc(p.payDate)}</td>
       <td style="color:${statusColor};font-weight:700;">${esc(p.status)}</td>
-      <td style="white-space:nowrap;">${btn}${delBtn}</td>
+      <td style="white-space:nowrap;">${lineBtn}${btn}${delBtn}</td>
     </tr>`;
   }).join('');
+}
+
+// ── 振込依頼履歴 ──────────────────────────────────────────────
+let paymentRequests = [];
+async function loadPaymentRequests() {
+  document.getElementById('payment-requests-body').innerHTML =
+    '<tr><td colspan="9" class="table-empty"><span class="spinner"></span></td></tr>';
+  try {
+    const res  = await gasFetch(`${GAS_URL}?action=payment_requests_list&key=${encodeURIComponent(getAdminPw())}`);
+    const json = await res.json();
+    paymentRequests = json.data || [];
+    renderPaymentRequests();
+  } catch(e) {
+    document.getElementById('payment-requests-body').innerHTML =
+      '<tr><td colspan="9" class="table-empty">読み込みに失敗しました。</td></tr>';
+  }
+}
+
+function renderPaymentRequests() {
+  const el = document.getElementById('payment-requests-body');
+  if (!paymentRequests.length) {
+    el.innerHTML = '<tr><td colspan="9" class="table-empty">振込依頼の履歴はまだありません。</td></tr>';
+    return;
+  }
+  el.innerHTML = paymentRequests.map(p => {
+    const dt = p.date ? new Date(p.date).toLocaleString('ja-JP') : '';
+    const amt = (typeof p.amount === 'number')
+      ? '¥' + p.amount.toLocaleString()
+      : (p.amount || '');
+    return `<tr>
+      <td style="white-space:nowrap;">${esc(dt)}</td>
+      <td style="font-weight:600;">${esc(p.name)}</td>
+      <td style="font-size:0.78rem;">${esc(p.contact)}</td>
+      <td>${esc(p.plan)}</td>
+      <td style="font-weight:700;color:var(--gold);">${esc(amt)}</td>
+      <td>${esc(p.due)}</td>
+      <td style="font-size:0.78rem;color:var(--sub);">${esc(p.note)}</td>
+      <td style="font-size:0.78rem;">${esc(p.channels)}</td>
+      <td style="white-space:nowrap;">
+        <button onclick="deletePaymentRequest(${p.row}, ${JSON.stringify(p.name||'')})"
+          style="padding:5px 10px;background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;">🗑</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function deletePaymentRequest(row, name) {
+  if (!confirm(`「${name}」への振込依頼履歴を削除しますか？\n\n削除しても🗑ゴミ箱から復元できます。`)) return;
+  try {
+    await gasFetch(`${GAS_URL}?action=payment_request_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    showToast('削除しました（ゴミ箱から復元可）');
+    loadPaymentRequests();
+  } catch(e) {
+    alert('削除に失敗しました。');
+  }
+}
+
+// ── ゴミ箱 ────────────────────────────────────────────────────
+let trashItems = [];
+async function loadTrash() {
+  document.getElementById('trash-body').innerHTML =
+    '<tr><td colspan="4" class="table-empty"><span class="spinner"></span></td></tr>';
+  try {
+    const res  = await gasFetch(`${GAS_URL}?action=trash_list&key=${encodeURIComponent(getAdminPw())}`);
+    const json = await res.json();
+    trashItems = json.data || [];
+    renderTrash();
+  } catch(e) {
+    document.getElementById('trash-body').innerHTML =
+      '<tr><td colspan="4" class="table-empty">読み込みに失敗しました。</td></tr>';
+  }
+}
+
+function renderTrash() {
+  const el = document.getElementById('trash-body');
+  if (!trashItems.length) {
+    el.innerHTML = '<tr><td colspan="4" class="table-empty">ゴミ箱は空です。</td></tr>';
+    return;
+  }
+  el.innerHTML = trashItems.map(t => {
+    const dt = t.deleted_at ? new Date(t.deleted_at).toLocaleString('ja-JP') : '';
+    return `<tr>
+      <td style="white-space:nowrap;">${esc(dt)}</td>
+      <td style="white-space:nowrap;font-weight:600;">${esc(t.label)}</td>
+      <td style="font-size:0.8rem;color:var(--sub);">${esc(t.preview)}</td>
+      <td style="white-space:nowrap;">
+        <button onclick="restoreTrash('${esc(t.id)}')" style="padding:5px 12px;background:#06371f;color:#4ade80;border:1px solid #166534;border-radius:6px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;margin-right:6px;">↩ 復元</button>
+        <button onclick="purgeTrash('${esc(t.id)}')" style="padding:5px 10px;background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;border-radius:6px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">完全削除</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function restoreTrash(id) {
+  if (!confirm('この項目を元のタブに復元しますか？')) return;
+  try {
+    const res  = await gasFetch(`${GAS_URL}?action=trash_restore&key=${encodeURIComponent(getAdminPw())}&id=${encodeURIComponent(id)}`);
+    const json = await res.json();
+    if (json.success) { showToast('↩ 復元しました（' + (json.source || '') + '）'); loadTrash(); }
+    else showToast('復元失敗: ' + (json.error || 'エラー'), true);
+  } catch(e) { showToast('復元エラー', true); }
+}
+
+async function purgeTrash(id) {
+  if (!confirm('完全に削除します。\n\nこの操作は元に戻せません。よろしいですか？')) return;
+  try {
+    const res  = await gasFetch(`${GAS_URL}?action=trash_purge&key=${encodeURIComponent(getAdminPw())}&id=${encodeURIComponent(id)}`);
+    const json = await res.json();
+    if (json.success) { showToast('🗑 完全に削除しました'); loadTrash(); }
+    else showToast('削除失敗: ' + (json.error || 'エラー'), true);
+  } catch(e) { showToast('削除エラー', true); }
 }
 
 async function deleteContract(row, name) {
@@ -3705,6 +3987,19 @@ async function toggleService(key, trackEl) {
 
 // ── Contracts ──
 let contracts = [];
+async function regenContractPdf(row) {
+  if (!confirm('この契約書のPDFを再生成しますか？\n（メール登録があればPDF添付で再送します）')) return;
+  showToast('🔄 PDF再生成中…');
+  try {
+    const res = await gasFetch(`${GAS_URL}?action=contract_regenerate_pdf&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    const j = await res.json();
+    if (j.success) { showToast('✅ PDFを再生成しました'); loadContracts(); }
+    else if (String(j.error||'').indexOf('documents') !== -1 || String(j.error||'').indexOf('DocumentApp') !== -1) {
+      alert('❌ Googleドキュメント権限が未承認のため生成できません。\n\nscript.google.com でプロジェクトを開き、関数を1回実行して「Googleドキュメント」権限を承認してください。');
+    } else { showToast('再生成失敗: ' + (j.error || 'エラー'), true); }
+  } catch(e) { showToast('通信エラー', true); }
+}
+
 async function loadContracts() {
   document.getElementById('contracts-body').innerHTML =
     '<tr><td colspan="6" class="table-empty"><span class="spinner"></span></td></tr>';
@@ -3728,9 +4023,12 @@ function renderContracts() {
     const stageBadge = isFinal
       ? '<span style="background:#0a2a1a;color:#4ade80;border:1px solid #166534;padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:700;">📝 締結</span>'
       : '<span style="background:#1a2332;color:#60a5fa;border:1px solid #1d4ed8;padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:700;">📨 問合せ</span>';
-    const pdfCell = c.pdfUrl
+    const pdfLink = c.pdfUrl
       ? `<a href="${esc(c.pdfUrl)}" target="_blank" rel="noopener" style="color:#60a5fa;text-decoration:underline;font-size:0.78rem;">📄 PDF</a>`
       : '<span style="color:var(--sub);font-size:0.75rem;">—</span>';
+    const pdfCell = isFinal
+      ? `${pdfLink}<br><button onclick="regenContractPdf(${c.row})" style="margin-top:4px;padding:3px 8px;background:#1e293b;color:#93c5fd;border:1px solid #334155;border-radius:5px;font-size:0.7rem;font-weight:700;cursor:pointer;font-family:inherit;">🔄 PDF再生成</button>`
+      : pdfLink;
     return `
     <tr>
       <td class="td-date">${esc(c.date)}</td>
@@ -3787,7 +4085,7 @@ function renderHearings() {
       <td>
         <div class="td-actions">
           <button class="action-btn btn-expand" onclick="openHearingDetail(${h.row})">詳細</button>
-          ${extractLineUid(h) ? `<button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${h.row},'hearings')">\ud83d\udcac LINE返信</button>` : ''}
+          ${(extractLineUid(h) || h.email) ? `<button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${h.row},'hearings')">${extractLineUid(h) ? '💬 LINE返信' : '✉ 返信・納品'}</button>` : ''}
           ${isTrial(h)
             ? `<button class="action-btn" style="background:#1e3a5f;color:#93c5fd;border:1px solid #3b82f6;font-weight:700;" onclick="openTrialMail(${h.row})">📁 Drive+メール</button>`
             : `<button class="action-btn btn-mail" onclick="openMail('${esc(h.email)}','${esc(h.name)}','${esc(h.plan)}','hearing')">✉ メール</button>`
@@ -3953,20 +4251,23 @@ function closeHearingModal() {
 }
 async function submitHearingLink() {
   const i = inquiries.find(x => x.row === _hearingLinkRow);
-  if (!i || !i.email) { showToast('メールアドレスがありません'); return; }
+  if (!i) return;
+  const uid = extractLineUid(i);
+  if (!i.email && !uid) { showToast('メールもLINEも宛先がありません', true); return; }
   const planKey = document.getElementById('hm-plan-key').value;
   const btn = document.getElementById('hm-send-btn');
   btn.disabled = true; btn.textContent = '送信中...';
   try {
     const url = `${GAS_URL}?action=send_hearing_link&key=${encodeURIComponent(getAdminPw())}`
-      + `&email=${encodeURIComponent(i.email)}`
+      + `&email=${encodeURIComponent(i.email||'')}`
       + `&name=${encodeURIComponent(i.name||'')}`
       + `&plan=${encodeURIComponent(i.plan||'')}`
-      + `&planKey=${encodeURIComponent(planKey)}`;
+      + `&planKey=${encodeURIComponent(planKey)}`
+      + `&line_uid=${encodeURIComponent(uid)}`;
     const res  = await gasFetch(url);
     const json = await res.json();
     if (json.success) {
-      showToast('📋 ヒアリング案内メールを送信しました');
+      showToast('📋 ヒアリング案内を送信しました（' + ((json.channels||[]).join('・') || '送信') + '）');
       closeHearingModal();
     } else {
       showToast('送信失敗: ' + (json.error || 'エラー'), true);
@@ -4116,6 +4417,7 @@ function refreshManualNameList() {
 }
 // 名前入力欄が変更されたら、一致する候補からメール/プラン/金額を自動補完
 function onManualNamePick(rawName) {
+  _manualLineUid = '';  // 手入力で名前変更時はLINE UIDをリセット（誤送信防止）
   const name = (rawName || '').trim();
   const hint = document.getElementById('manual-amount-hint');
   if (!name) { if (hint) hint.textContent = ''; return; }
@@ -4143,30 +4445,35 @@ function onManualNamePick(rawName) {
 }
 
 // ── 手動見積もり送信（ヒアリングなし） ─────────────────────────
+let _manualLineUid = '';
 async function submitManualPaymentRequest() {
   const name   = document.getElementById('manual-name').value.trim();
   const email  = document.getElementById('manual-email').value.trim();
   const plan   = document.getElementById('manual-plan').value.trim();
   const amount = document.getElementById('manual-amount').value.trim();
   const due    = document.getElementById('manual-due').value.trim();
-  if (!name || !email || !amount) { showToast('名前・メール・金額は必須です', true); return; }
-  if (email.indexOf('@') === -1) { showToast('メールアドレスを正しく入力してください', true); return; }
+  const uid    = _manualLineUid;
+  if (!name || !amount) { showToast('名前・金額は必須です', true); return; }
+  if (!email && !uid) { showToast('メールまたはLINE宛先が必要です', true); return; }
+  if (email && email.indexOf('@') === -1) { showToast('メールアドレスを正しく入力してください', true); return; }
   try {
     const url = `${GAS_URL}?action=send_payment_request&key=${encodeURIComponent(getAdminPw())}`
       + `&email=${encodeURIComponent(email)}`
       + `&name=${encodeURIComponent(name)}`
       + `&plan=${encodeURIComponent(plan || 'ご依頼プラン')}`
       + `&amount=${encodeURIComponent(amount)}`
-      + `&due=${encodeURIComponent(due || '7日以内')}`;
+      + `&due=${encodeURIComponent(due || '7日以内')}`
+      + `&line_uid=${encodeURIComponent(uid)}`;
     const res  = await gasFetch(url);
     const json = await res.json();
     if (json.success) {
-      showToast(`💳 ${name} 様に見積もりメールを送信しました`);
+      showToast(`💳 ${name} 様に見積もりを送信しました（` + ((json.channels||[]).join('・') || '送信') + '）');
       document.getElementById('manual-name').value   = '';
       document.getElementById('manual-email').value  = '';
       document.getElementById('manual-plan').value   = '';
       document.getElementById('manual-amount').value = '';
       document.getElementById('manual-due').value    = '';
+      _manualLineUid = '';
     } else {
       showToast('送信失敗: ' + (json.error || 'エラー'), true);
     }
@@ -4177,12 +4484,14 @@ async function submitManualPaymentRequest() {
 function openManualPaymentFromInquiry(row) {
   const i = inquiries.find(x => x.row === row);
   if (!i) return;
+  _manualLineUid = extractLineUid(i) || '';
   // ヒアリングタブの手動フォームに値を入れてタブ切替
   switchAdminTab('hearings');
   setTimeout(() => {
     document.getElementById('manual-name').value  = i.name  || '';
     document.getElementById('manual-email').value = i.email || '';
     document.getElementById('manual-plan').value  = i.plan  || '';
+    if (_manualLineUid) showToast('💬 LINE宛に送信されます（このお客様はLINE経由）');
     document.getElementById('manual-name').scrollIntoView({ behavior:'smooth', block:'center' });
     document.getElementById('manual-amount').focus();
   }, 150);
@@ -4302,7 +4611,9 @@ function closePaymentReqModal() {
 }
 async function submitPaymentRequest() {
   const h = hearings.find(x => x.row === _paymentReqRow);
-  if (!h || !h.email) { showToast('メールアドレスがありません'); return; }
+  if (!h) return;
+  const uid = extractLineUid(h);
+  if (!h.email && !uid) { showToast('メールもLINEも宛先がありません', true); return; }
   const amount = document.getElementById('pm-amount').value.trim();
   const isTrial = (amount === '0' || (h.answers && h.answers['__planKey'] === 'trial'));
   if (!isTrial && (!amount || isNaN(amount) || Number(amount) < 0)) {
@@ -4315,16 +4626,17 @@ async function submitPaymentRequest() {
   btn.disabled = true; btn.textContent = '送信中...';
   try {
     const url = `${GAS_URL}?action=send_payment_request&key=${encodeURIComponent(getAdminPw())}`
-      + `&email=${encodeURIComponent(h.email)}`
+      + `&email=${encodeURIComponent(h.email||'')}`
       + `&name=${encodeURIComponent(h.name||'')}`
       + `&plan=${encodeURIComponent(editedPlan)}`
       + `&amount=${encodeURIComponent(amount)}`
       + `&due=${encodeURIComponent(due)}`
-      + `&note=${encodeURIComponent(note)}`;
+      + `&note=${encodeURIComponent(note)}`
+      + `&line_uid=${encodeURIComponent(uid)}`;
     const res  = await gasFetch(url);
     const json = await res.json();
     if (json.success) {
-      showToast('💳 振込依頼メールを送信しました');
+      showToast('💳 振込依頼を送信しました（' + ((json.channels||[]).join('・') || '送信') + '）');
       closePaymentReqModal();
     } else {
       showToast('送信失敗: ' + (json.error || 'エラー'), true);
@@ -5976,6 +6288,7 @@ async function loadInvoiceList() {
       var toggleBtn = inv.status !== '支払済'
         ? '<button onclick="markInvoicePaid(\'' + esc(inv.inv_num) + '\')" style="padding:4px 8px;background:rgba(16,185,129,0.12);color:#10b981;border:1px solid rgba(16,185,129,0.3);border-radius:5px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">✅ 支払済</button>'
         : '<button onclick="markInvoiceUnpaid(\'' + esc(inv.inv_num) + '\')" style="padding:4px 8px;background:rgba(107,114,128,0.1);color:var(--sub);border:1px solid var(--border);border-radius:5px;font-size:0.72rem;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;">↩ 未払いに戻す</button>';
+      var delBtn = '<button onclick="deleteInvoice(\'' + esc(inv.inv_num) + '\',\'' + esc((inv.client||'').replace(/\x27/g,"")) + '\')" style="padding:4px 8px;background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;border-radius:5px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">🗑 削除</button>';
       return '<tr style="border-top:1px solid var(--border);">'
         + '<td style="padding:12px 14px;font-weight:700;color:var(--text);">' + esc(inv.inv_num) + '</td>'
         + '<td style="padding:12px 14px;color:var(--text);">' + esc(inv.client) + '</td>'
@@ -5983,7 +6296,7 @@ async function loadInvoiceList() {
         + '<td style="padding:12px 14px;text-align:center;color:var(--sub);font-size:0.78rem;">' + esc(inv.issue_date) + '</td>'
         + '<td style="padding:12px 14px;text-align:center;color:var(--sub);font-size:0.78rem;">' + esc(inv.due) + '</td>'
         + '<td style="padding:12px 14px;text-align:center;"><span style="padding:3px 10px;border-radius:99px;font-size:0.75rem;font-weight:700;background:' + statusBg + ';color:' + statusColor + ';">' + esc(inv.status) + '</span></td>'
-        + '<td style="padding:12px 14px;text-align:center;display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">' + driveBtn + toggleBtn + '</td>'
+        + '<td style="padding:12px 14px;text-align:center;display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">' + driveBtn + toggleBtn + delBtn + '</td>'
         + '</tr>';
     }).join('');
   } catch(e) {
@@ -6016,6 +6329,16 @@ async function markInvoiceUnpaid(invNum) {
   } catch(e) { showToast('エラー: ' + e.message, true); }
 }
 
+async function deleteInvoice(invNum, client) {
+  if (!confirm('請求書「' + invNum + '」' + (client ? '（' + client + '）' : '') + ' を削除しますか？\n\nDrive上の請求書ファイルもゴミ箱に移動します。\nこの操作は元に戻せません。')) return;
+  try {
+    const res  = await gasFetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'invoice_delete', key: getAdminPw(), inv_num: invNum }) });
+    const json = await res.json();
+    if (json.success) { showToast('🗑 請求書を削除しました'); loadInvoiceList(); }
+    else showToast('削除失敗: ' + (json.error || 'エラー'), true);
+  } catch(e) { showToast('エラー: ' + e.message, true); }
+}
+
 // ══════════════════════════════════════════════════════════════
 // ── 機能2: submitPaymentRequestに pay_type を追加 ──
 // （既存の submitPaymentRequest 関数をオーバーライドします）
@@ -6024,7 +6347,9 @@ async function markInvoiceUnpaid(invNum) {
 var _origSubmitPaymentRequest = submitPaymentRequest;
 submitPaymentRequest = async function() {
   var h = hearings.find(function(x) { return x.row === _paymentReqRow; });
-  if (!h || !h.email) { showToast('メールアドレスがありません'); return; }
+  if (!h) return;
+  var uid = extractLineUid(h);
+  if (!h.email && !uid) { showToast('メールもLINEも宛先がありません', true); return; }
   var amount = document.getElementById('pm-amount').value.trim();
   var isTrial = (amount === '0' || (h.answers && h.answers['__planKey'] === 'trial'));
   if (!isTrial && (!amount || isNaN(amount) || Number(amount) < 0)) {
@@ -6038,17 +6363,18 @@ submitPaymentRequest = async function() {
   btn.disabled = true; btn.textContent = '送信中...';
   try {
     var url = GAS_URL + '?action=send_payment_request&key=' + encodeURIComponent(getAdminPw())
-      + '&email=' + encodeURIComponent(h.email)
+      + '&email=' + encodeURIComponent(h.email||'')
       + '&name='  + encodeURIComponent(h.name||'')
       + '&plan='  + encodeURIComponent(editedPlan)
       + '&amount='+ encodeURIComponent(amount)
       + '&due='   + encodeURIComponent(due)
       + '&note='  + encodeURIComponent(note)
-      + '&pay_type=' + encodeURIComponent(payType);
+      + '&pay_type=' + encodeURIComponent(payType)
+      + '&line_uid=' + encodeURIComponent(uid);
     var res  = await gasFetch(url);
     var json = await res.json();
     if (json.success) {
-      showToast('💳 振込依頼メールを送信しました');
+      showToast('💳 振込依頼を送信しました（' + ((json.channels||[]).join('・') || '送信') + '）');
       closePaymentReqModal();
     } else {
       showToast('送信失敗: ' + (json.error || 'エラー'), true);
@@ -6455,12 +6781,15 @@ const LINE_QUICK_REPLIES = [
   { label: '🔎 確認中です',     text: '{{name}}様\n\n内容を確認しております🙏\nもう少々お待ちくださいませ。' },
   { label: '💰 入金を確認',     text: '{{name}}様\n\nご入金を確認いたしました！\nありがとうございます😊\nこのあと制作を進めてまいりますので、よろしくお願いいたします。' },
   { label: '🛠 修正を承りました', text: '{{name}}様\n\n修正のご依頼を承りました🙏\n対応が完了次第、改めてご連絡いたします。' },
+  { label: '📋 FB受領（直後のお礼）', text: '{{name}}様\n\nフィードバックをお送りいただきありがとうございます🙏\nいただいた内容を一つずつ確認し、修正版を制作いたします。\n\n完成まで今しばらくお待ちくださいませ😊\nご不明点はこのままお気軽にお送りください。' },
   { label: '🎉 ありがとうございました', text: '{{name}}様\n\nこの度はご依頼いただきありがとうございました😊\nまたのご依頼を心よりお待ちしております。' },
   { label: '📄 見積もり・お振込のご案内', text: '{{name}}様\n\nお見積もりとお振込のご案内です👇\n{{url}}\n\nご確認のほどよろしくお願いいたします。' },
   { label: '🧾 請求書の送付', text: '{{name}}様\n\n請求書をお送りします👇\n{{url}}\n\nご確認をお願いいたします。' },
   { label: '📑 契約書のご確認', text: '{{name}}様\n\n契約書のご確認をお願いいたします👇\n{{url}}\n\nご同意いただけましたら、お振込へお進みください。' },
   { label: '📁 入金確認＆素材フォルダ', text: '{{name}}様\n\nご入金を確認いたしました、ありがとうございます😊\n素材アップロード用フォルダはこちらです👇\n{{url}}\n\n素材のご共有をお願いいたします。' },
-  { label: '🎬 納品のご連絡', text: '{{name}}様\n\n動画が完成しました🎬\n納品データはこちらです👇\n{{url}}\n\nご確認をお願いいたします。修正がございましたらお気軽にどうぞ。' },
+  { label: '📦 初稿を納品（複数リンク入力）', deliver: true, kind: 'first' },
+  { label: '🔧 修正稿を納品（複数リンク入力）', deliver: true, kind: 'rev' },
+  { label: '🛒 追加発注フォームを送る', orderForm: true },
 ];
 
 // レコードから LINE UID を自動抽出（chatwork_id / message / line_uid いずれでも可）
@@ -6472,21 +6801,33 @@ function extractLineUid(rec) {
   } catch(e) { return ''; }
 }
 
-let _quickLineUid = '', _quickLineName = '';
+let _quickLineUid = '', _quickLineName = '', _quickLineEmail = '', _quickLineRound = '1';
+
+function _fbBaseUrl() {
+  // admin.html と同じディレクトリの feedback.html を絶対URLで
+  return location.origin + location.pathname.replace(/[^/]*$/, '') + 'feedback.html';
+}
 
 function openQuickLine(row, sheet) {
-  const _lm = { hearings: hearings, inquiries: inquiries, orders: _adOrders, revisions: _fbList };
+  const _lm = { hearings: hearings, inquiries: inquiries, orders: _adOrders, revisions: _fbList, payments: payments };
   const list = _lm[sheet] || inquiries;
   const rec  = (list || []).find(x => x.row === row);
   const uid  = extractLineUid(rec);
-  if (!uid) { showToast('このレコードにLINE UIDがありません（手動でLINE送信タブからどうぞ）'); return; }
-  _quickLineUid  = uid;
-  _quickLineName = (rec && (rec.name || rec.client_name)) || '';
+  const email = (rec && rec.email) || '';
+  if (!uid && !email) { showToast('このレコードにLINE UIDもメールもありません'); return; }
+  _quickLineUid   = uid;
+  _quickLineEmail = email;
+  _quickLineName  = (rec && (rec.name || rec.client_name)) || '';
+  _quickLineRound = (rec && rec.round) || '1';
   document.getElementById('quick-line-name').textContent = _quickLineName || '（名前なし）';
-  document.getElementById('quick-line-uid').textContent  = uid;
+  document.getElementById('quick-line-uid').textContent  = uid ? ('LINE: ' + uid) : ('✉ メール: ' + email);
   const box = document.getElementById('quick-line-buttons');
   box.innerHTML = LINE_QUICK_REPLIES.map((t, idx) => {
-    const preview = t.text.replace(/\{\{name\}\}/g, _quickLineName || 'お客様').replace(/\{\{url\}\}/g, '（送信時にURLを入力）');
+    const preview = t.deliver
+      ? '◇ドライブ ◇MP4ダウンロード ◇プロマネ を入力して納品します（修正リンクも自動生成）'
+      : t.orderForm
+      ? '追加発注フォームのURLを送ります（お名前・メール・本数割引表示つき・自動差し込み）'
+      : t.text.replace(/\{\{name\}\}/g, _quickLineName || 'お客様').replace(/\{\{url\}\}/g, '（送信時に動画URLを入力）').replace(/\{\{fb\}\}/g, '（修正リンク自動生成）');
     return `<button onclick="sendQuickLine(${idx})"
       style="text-align:left;background:var(--bg);border:1px solid var(--border);border-left:3px solid #00b900;border-radius:9px;padding:11px 13px;cursor:pointer;display:flex;flex-direction:column;gap:5px;font-family:inherit;">
       <span style="font-weight:700;color:var(--lt);font-size:0.85rem;">${esc(t.label)}</span>
@@ -6502,23 +6843,159 @@ function closeQuickLine() {
 
 async function sendQuickLine(idx) {
   const tpl = LINE_QUICK_REPLIES[idx];
-  if (!tpl || !_quickLineUid) return;
-  let text = tpl.text.replace(/\{\{name\}\}/g, _quickLineName || 'お客様');
-  if (text.indexOf('{{url}}') !== -1) {
-    const url = prompt('挿入するURLを入力してください（見積もり / 請求書 / 契約書 / 素材フォルダ / 納品 など）');
-    if (url === null || !url.trim()) return;
-    text = text.replace(/\{\{url\}\}/g, url.trim());
+  if (!tpl || (!_quickLineUid && !_quickLineEmail)) return;
+  // 納品系は専用モーダル（複数リンク入力）へ
+  if (tpl.deliver) { openDeliverModal(tpl.kind); return; }
+  let text;
+  if (tpl.orderForm) {
+    // 追加発注フォームのURLを自動生成（名前・メール・UIDを差し込み）
+    var ofBase = location.origin + location.pathname.replace(/[^/]*$/, '') + 'additional-order.html';
+    var ourl = ofBase + '?name=' + encodeURIComponent(_quickLineName || '') + '&email=' + encodeURIComponent(_quickLineEmail || '');
+    if (_quickLineUid) ourl += '&uid=' + encodeURIComponent(_quickLineUid);
+    ourl += '&_v=' + Date.now();
+    text = (_quickLineName || 'お客様') + '様\n\n追加のご依頼ありがとうございます！\n'
+      + '下記フォームから、ご希望の本数・内容・素材リンクをご記入ください👇\n' + ourl + '\n\n'
+      + '「まとめて編集」は本数が多いほどお得になります（割引が自動表示されます）。\nご不明点はお気軽にどうぞ😊';
+  } else {
+    text = tpl.text.replace(/\{\{name\}\}/g, _quickLineName || 'お客様');
+    // 納品系（{{fb}}を含む）：動画URL＋直リンクMP4(任意)を聞いて、修正リンク(FB)を自動生成
+    if (text.indexOf('{{fb}}') !== -1) {
+      const videoUrl = prompt('🎬 納品動画URL（Google Drive 共有リンクなど）を入力してください');
+      if (videoUrl === null || !videoUrl.trim()) return;
+      const mp4 = prompt('（任意）スマホで自動タイムコードを効かせる直接再生用 MP4 URL。\n無ければ空のままOKです。') || '';
+      let fb = _fbBaseUrl()
+        + '?url=' + encodeURIComponent(videoUrl.trim())
+        + '&name=' + encodeURIComponent(_quickLineName || '')
+        + '&title=' + encodeURIComponent((_quickLineName ? _quickLineName + '様 ' : '') + '納品動画')
+        + '&round=' + encodeURIComponent(_quickLineRound || '1');
+      if (mp4.trim()) fb += '&video=' + encodeURIComponent(mp4.trim());
+      if (_quickLineUid) fb += '&uid=' + encodeURIComponent(_quickLineUid);
+      fb += '&_v=' + Date.now();  // キャッシュ回避：毎回ユニークURLに
+      text = text.replace(/\{\{url\}\}/g, videoUrl.trim()).replace(/\{\{fb\}\}/g, fb);
+    } else if (text.indexOf('{{url}}') !== -1) {
+      const url = prompt('挿入するURLを入力してください（見積もり / 請求書 / 契約書 / 素材フォルダ など）');
+      if (url === null || !url.trim()) return;
+      text = text.replace(/\{\{url\}\}/g, url.trim());
+    }
   }
-  if (!confirm('以下の内容をLINEで送信します：\n\n' + text)) return;
+
+  const via = _quickLineUid ? 'LINE' : 'メール';
+  if (!confirm('以下の内容を【' + via + '】で送信します：\n\n' + text)) return;
   try {
-    const res  = await gasFetch(GAS_URL, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'admin_line_push', key: getAdminPw(), line_uid: _quickLineUid, text: text })
-    });
+    let body;
+    if (_quickLineUid) {
+      body = { action: 'admin_line_push', key: getAdminPw(), line_uid: _quickLineUid, text: text };
+    } else {
+      body = { action: 'send_delivery', key: getAdminPw(), email: _quickLineEmail, name: _quickLineName, subject: '【mono.create】' + tpl.label.replace(/^[^ぁ-ん一-龠a-zA-Z]+/, ''), text: text };
+    }
+    const res  = await gasFetch(GAS_URL, { method: 'POST', body: JSON.stringify(body) });
     const data = await res.json();
-    if (data.success) { showToast('✅ LINEで送信しました'); closeQuickLine(); }
+    if (data.success) { showToast('✅ ' + via + 'で送信しました'); closeQuickLine(); }
     else { showToast('❌ 送信失敗: ' + (data.error || data.line_error || '不明')); }
   } catch(e) { showToast('❌ 通信エラー'); }
+}
+
+/* ── 納品モーダル（複数リンク：ドライブ / MP4 / プロマネ）── */
+function openDeliverModal(kind) {
+  closeQuickLine();
+  document.getElementById('dlv-kind').value = (kind === 'rev') ? 'rev' : 'first';
+  document.getElementById('dlv-trial').checked = false;
+  document.getElementById('dlv-fb').checked = true;
+  document.getElementById('dlv-drive').value = '';
+  document.getElementById('dlv-mp4').value = '';
+  document.getElementById('dlv-proma').value = '';
+  document.getElementById('dlv-stream').value = '';
+  const recEl = document.getElementById('dlv-recipient');
+  if (_quickLineUid) {
+    recEl.textContent = (_quickLineName || '（名前なし）') + '　[📱 LINE]';
+  } else if (_quickLineEmail) {
+    recEl.textContent = (_quickLineName || '（名前なし）') + '　[送信先を判定中…]';
+    resolveDeliverChannel();   // サーバーでLINE連携を確認して正確に表示
+  } else {
+    recEl.textContent = (_quickLineName || '（名前なし）') + '　[宛先なし]';
+  }
+  updateDeliverPreview();
+  document.getElementById('deliver-modal').style.display = 'flex';
+}
+// メール/名前からLINE連携を確認し、送信先表示を更新
+async function resolveDeliverChannel() {
+  try {
+    const res = await gasFetch(`${GAS_URL}?action=resolve_channel&key=${encodeURIComponent(getAdminPw())}&email=${encodeURIComponent(_quickLineEmail||'')}&name=${encodeURIComponent(_quickLineName||'')}`);
+    const j = await res.json();
+    const via = j.via_line ? '📱 LINE' : ('✉ ' + (_quickLineEmail || 'メール'));
+    document.getElementById('dlv-recipient').textContent = (_quickLineName || '（名前なし）') + '　[' + via + ']';
+  } catch(e) {
+    document.getElementById('dlv-recipient').textContent = (_quickLineName || '（名前なし）') + '　[✉ ' + (_quickLineEmail || 'メール') + ']';
+  }
+}
+function closeDeliverModal() { document.getElementById('deliver-modal').style.display = 'none'; }
+
+function buildDeliveryMessage() {
+  const name  = _quickLineName || 'お客様';
+  const isRev = document.getElementById('dlv-kind').value === 'rev';
+  const trial = document.getElementById('dlv-trial').checked;
+  const incFb = document.getElementById('dlv-fb').checked;
+  const drive  = document.getElementById('dlv-drive').value.trim();
+  const mp4    = document.getElementById('dlv-mp4').value.trim();
+  const proma  = document.getElementById('dlv-proma').value.trim();
+  const stream = document.getElementById('dlv-stream').value.trim();
+  const lines = [];
+  lines.push(name + '様', '', 'お世話になっております！',
+    '下記動画の' + (isRev ? '修正稿' : '初稿') + 'を提出いたします。',
+    'ご確認のほど、よろしくお願いいたします。',
+    '-----------------------------------------');
+  if (trial) lines.push('【トライアル】', '--------------------------------------------');
+  if (drive) lines.push('◇ドライブリンク', drive, '');
+  if (mp4)   lines.push('◇MP4ダウンロード' + (isRev ? '（ギガファイル）' : ''), mp4, '');
+  if (proma) lines.push('◇プロマネ' + (isRev ? '（ギガファイル）' : '（素材あり）'), proma, '');
+  if (incFb) {
+    // 自動TC用のストリーム動画：dlv-stream優先。無ければ .mp4 で終わる直リンクをmp4欄から流用
+    var streamSrc = stream || (/\.mp4($|\?)/i.test(mp4) ? mp4 : '');
+    let fb = _fbBaseUrl()
+      + '?url=' + encodeURIComponent(drive || streamSrc || mp4 || '')
+      + '&name=' + encodeURIComponent(name === 'お客様' ? '' : name)
+      + '&title=' + encodeURIComponent((name === 'お客様' ? '' : name + '様 ') + (isRev ? '修正稿' : '初稿'))
+      + '&round=' + encodeURIComponent(_quickLineRound || '1');
+    if (streamSrc) fb += '&video=' + encodeURIComponent(streamSrc);
+    if (_quickLineUid) fb += '&uid=' + encodeURIComponent(_quickLineUid);
+    fb += '&_v=' + Date.now();  // キャッシュ回避：毎回ユニークURLに
+    lines.push('-----------------------------------------',
+      '✏️ 修正のご依頼はこちらから', fb);
+  }
+  if (trial) lines.push('', '※ トライアルは無料です。ご継続をご希望の場合は、このままお見積り・お振込のご案内へお進みいただけます😊');
+  return lines.join('\n');
+}
+function updateDeliverPreview() {
+  const el = document.getElementById('dlv-preview');
+  if (el) el.textContent = buildDeliveryMessage();
+}
+async function sendDelivery() {
+  const drive = document.getElementById('dlv-drive').value.trim();
+  const mp4   = document.getElementById('dlv-mp4').value.trim();
+  const proma = document.getElementById('dlv-proma').value.trim();
+  const stream = document.getElementById('dlv-stream').value.trim();
+  if (!drive && !mp4 && !proma && !stream) { showToast('リンクを1つ以上入力してください', true); return; }
+  if (!_quickLineUid && !_quickLineEmail) { showToast('宛先がありません', true); return; }
+  const text = buildDeliveryMessage();
+  const via  = _quickLineUid ? 'LINE' : 'メール';
+  const isRev = document.getElementById('dlv-kind').value === 'rev';
+  if (!confirm('【' + via + '】で納品メッセージを送信します。よろしいですか？')) return;
+  const btn = document.getElementById('dlv-send-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '送信中…'; }
+  try {
+    let body;
+    if (_quickLineUid) {
+      body = { action: 'admin_line_push', key: getAdminPw(), line_uid: _quickLineUid, text: text };
+    } else {
+      body = { action: 'send_delivery', key: getAdminPw(), email: _quickLineEmail, name: _quickLineName,
+        subject: '【mono.create】' + (isRev ? '修正稿' : '初稿') + 'のご提出', text: text };
+    }
+    const res  = await gasFetch(GAS_URL, { method: 'POST', body: JSON.stringify(body) });
+    const data = await res.json();
+    if (data.success) { showToast('✅ ' + (data.channel || via) + 'で納品しました'); closeDeliverModal(); }
+    else { showToast('❌ 送信失敗: ' + (data.error || data.line_error || '不明'), true); }
+  } catch(e) { showToast('❌ 通信エラー', true); }
+  finally { if (btn) { btn.disabled = false; btn.textContent = '📤 この内容で納品する'; } }
 }
 
 /* ── 追加発注タブ ── */
@@ -6534,19 +7011,147 @@ async function loadOrders() {
 function renderOrders() {
   const el = document.getElementById('orders-body');
   if (!_adOrders.length) { el.innerHTML = '<tr><td colspan="6" class="table-empty">追加発注はまだありません。</td></tr>'; return; }
-  el.innerHTML = _adOrders.map(o => `
+  el.innerHTML = _adOrders.map(o => {
+    const items = (o.items && o.items.length) ? o.items : null;
+    const planCell = items
+      ? items.map((it,i) => `<div>${i+1}. ${esc(it.plan)} <span style="color:var(--sub);">/ ${esc(it.count)}</span>${it.due_date ? ` <span style="color:var(--sub);font-size:0.72rem;">(${esc(it.due_date)})</span>` : ''}</div>`).join('')
+        + (items.length > 1 ? `<div style="color:#60a5fa;font-size:0.72rem;margin-top:2px;">計 ${items.length} 案件</div>` : '')
+      : `${esc(o.plan)} <span style="color:var(--sub);">/ ${esc(o.count)}</span>`;
+    const dueCell = items
+      ? (items.length > 1 ? `${items.length}案件` : esc(items[0].due_date || '—'))
+      : esc(o.due_date || '—');
+    // 素材ボタン：案件ごとの全リンク（links[]優先、無ければmaterial_url）。複数なら 📁1 📁2 …
+    let matBtns = '';
+    if (items) {
+      let allLinks = [];
+      items.forEach(it => {
+        const ls = (it.links && it.links.length) ? it.links : (it.material_url ? [it.material_url] : []);
+        ls.forEach(u => allLinks.push(u));
+      });
+      matBtns = allLinks.map((u,i) =>
+        `<button class="action-btn" style="background:#1e293b;color:#93c5fd;border:1px solid #334155;" onclick="window.open('${esc(u)}','_blank')">📁${allLinks.length>1 ? (i+1) : ' 素材'}</button>`
+      ).join('');
+    } else if (o.material_url) {
+      matBtns = `<button class="action-btn" style="background:#1e293b;color:#93c5fd;border:1px solid #334155;" onclick="window.open('${esc(o.material_url)}','_blank')">📁 素材</button>`;
+    }
+    return `
     <tr>
       <td class="td-date">${esc(o.date)}</td>
       <td class="td-name">${esc(o.name)}</td>
-      <td style="font-size:0.8rem;">${esc(o.plan)} <span style="color:var(--sub);">/ ${esc(o.count)}</span></td>
-      <td style="font-size:0.8rem;color:var(--sub);">${esc(o.due_date || '—')}</td>
-      <td><span class="status-badge status-${esc(o.status)}">${esc(o.status)}</span></td>
+      <td style="font-size:0.8rem;line-height:1.5;">${planCell}</td>
+      <td style="font-size:0.8rem;color:var(--sub);">${dueCell}</td>
+      <td><span class="status-badge status-${esc(o.status)}" style="cursor:pointer;" title="クリックで状態変更" onclick="cycleOrderStatus(${o.row})">${esc(o.status)}</span></td>
       <td><div class="td-actions">
-        ${extractLineUid(o) ? `<button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${o.row},'orders')">💬 LINE返信</button>` : ''}
-        ${o.material_url ? `<button class="action-btn" style="background:#1e293b;color:#93c5fd;border:1px solid #334155;" onclick="window.open('${esc(o.material_url)}','_blank')">📁 素材</button>` : ''}
+        <button class="action-btn" style="background:#1e293b;color:#cbd5e1;border:1px solid #334155;" onclick="openOrderDetail(${o.row})">📋 詳細</button>
+        <button class="action-btn" style="background:#1a2a3a;color:#60a5fa;border:1px solid #1d4ed8;font-weight:700;" onclick="sendOrderEstimate(${o.row})">💳 見積もり送信</button>
+        <button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${o.row},'orders')">${extractLineUid(o) ? '💬 LINE返信' : '✉ 返信・納品'}</button>
+        ${matBtns}
         ${o.email ? `<button class="action-btn btn-mail" onclick="openMail('${esc(o.email)}','${esc(o.name)}','${esc(o.plan)}')">✉ メール</button>` : ''}
+        <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="deleteOrder(${o.row}, '${esc(o.name||'').replace(/'/g,"\\'").replace(/`/g,'\\`')}')">🗑 削除</button>
       </div></td>
-    </tr>`).join('');
+    </tr>`;
+  }).join('');
+}
+
+/* ── 追加発注 詳細モーダル ── */
+function openOrderDetail(row) {
+  const o = _adOrders.find(x => x.row === row);
+  if (!o) { showToast('発注が見つかりません'); return; }
+  const items = (o.items && o.items.length) ? o.items
+    : [{ plan: o.plan, count: o.count, material_url: o.material_url, title: '', subItems: [], links: [], due_date: o.due_date, note: o.note }];
+  let html = `<div style="font-size:0.86rem;line-height:1.9;color:var(--lt);">
+    <p><b>お名前：</b>${esc(o.name)}</p>
+    <p><b>メール：</b>${esc(o.email || '（なし）')}</p>
+    <p><b>受信：</b>${esc(o.date)}　／　<b>状態：</b>${esc(o.status)}</p>
+    <hr style="border:none;border-top:1px solid var(--border);margin:10px 0;">`;
+  items.forEach((it, i) => {
+    html += `<div style="margin-bottom:12px;padding:10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;">
+      <b>案件${i + 1}：</b>${esc(it.plan)} <span style="color:var(--sub);">/ ${esc(it.count)}</span>${it.due_date ? ` <span style="color:var(--sub);">（希望:${esc(it.due_date)}）</span>` : ''}`;
+    if (it.title) html += `<br>🎬 タイトル：${esc(it.title)}`;
+    if (it.subItems && it.subItems.length) {
+      html += it.subItems.map((s, k) => `<br>　${k + 1}. ${esc(s.title || '(無題)')}${s.link ? ` <a href="${esc(s.link)}" target="_blank" style="color:#60a5fa;">素材</a>` : ''}`).join('');
+    } else {
+      const ls = (it.links && it.links.length) ? it.links : (it.material_url ? [it.material_url] : []);
+      if (ls.length) html += ls.map((u, k) => `<br>📁 <a href="${esc(u)}" target="_blank" style="color:#60a5fa;">素材${ls.length > 1 ? (k + 1) : ''}</a>`).join('');
+    }
+    if (it.note) html += `<br>📝 ${esc(it.note)}`;
+    html += `</div>`;
+  });
+  html += `</div>`;
+  document.getElementById('order-detail-body').innerHTML = html;
+  document.getElementById('order-detail-modal').style.display = 'flex';
+}
+function closeOrderDetail() { document.getElementById('order-detail-modal').style.display = 'none'; }
+
+/* ── 追加発注を削除 ── */
+async function deleteOrder(row, name) {
+  if (!confirm(`「${name || '(名前なし)'}」の追加発注を削除しますか？\n\nこの操作は元に戻せません。`)) return;
+  try {
+    const res = await gasFetch(`${GAS_URL}?action=additional_order_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    const j = await res.json();
+    if (j.success) { showToast('🗑 削除しました'); loadOrders(); }
+    else { showToast('削除失敗: ' + (j.error || 'エラー'), true); }
+  } catch(e) { showToast('削除失敗（通信）', true); }
+}
+
+/* ── 追加発注の状態をクリックで変更（未対応→対応中→完了）── */
+async function cycleOrderStatus(row) {
+  const o = _adOrders.find(x => x.row === row);
+  if (!o) return;
+  const order = ['未対応', '対応中', '完了'];
+  const idx = order.indexOf(o.status);
+  o.status = order[(idx + 1) % order.length];
+  renderOrders();
+  try {
+    const res = await gasFetch(`${GAS_URL}?action=additional_order_status&key=${encodeURIComponent(getAdminPw())}&row=${row}&status=${encodeURIComponent(o.status)}`);
+    const j = await res.json();
+    if (!j.success) showToast('状態の保存に失敗: ' + (j.error || ''), true);
+  } catch(e) { showToast('状態の保存に失敗（通信）', true); }
+}
+
+/* ── 追加発注から見積もり自動計算＆送信 ── */
+function _calcItemPrice(plan, n) {
+  plan = plan || ''; n = n || 0;
+  if (plan.indexOf('まとめて編集（ショート') === 0) { const off = n>=16?10:(n>=10?5:0); return { amount: Math.round(4000*(1-off/100))*n, off, unit:4000 }; }
+  if (plan.indexOf('まとめて編集（長尺')   === 0) { const off = n>=8?10:(n>=4?5:0);  return { amount: Math.round(15000*(1-off/100))*n, off, unit:15000 }; }
+  if (plan.indexOf('ショート') === 0) return { amount: 4000*n, off:0, unit:4000 };
+  if (plan.indexOf('長尺')     === 0) return { amount: 15000*n, off:0, unit:15000 };
+  return { amount: 0, off:0, unit:0 }; // その他 → 手動
+}
+async function sendOrderEstimate(row) {
+  const o = _adOrders.find(x => x.row === row);
+  if (!o) { showToast('発注が見つかりません', true); return; }
+  const uid = extractLineUid(o);
+  if (!o.email && !uid) { showToast('メール／LINEの宛先がありません', true); return; }
+  const items = (o.items && o.items.length) ? o.items : [{ plan: o.plan, count: o.count }];
+  let total = 0; const lines = [];
+  items.forEach(it => {
+    const n = parseInt(String(it.count || '').replace(/[^0-9]/g, ''), 10) || 0;
+    const r = _calcItemPrice(it.plan, n);
+    total += r.amount;
+    lines.push('・' + (it.plan || '') + ' ' + (it.count || '') + ' = ¥' + r.amount.toLocaleString() + (r.off ? '（' + r.off + '%OFF）' : '') + (r.amount === 0 ? '（要手動）' : ''));
+  });
+  const adj = prompt('【自動見積もり】\n' + lines.join('\n') + '\n────────────\n合計：¥' + total.toLocaleString() + '（税込）\n\nこの金額で見積もり／振込依頼を送信します。\n金額を変更する場合は数字を修正してください：', total);
+  if (adj === null) return;
+  const amount = parseInt(String(adj).replace(/[^0-9]/g, ''), 10) || total;
+  if (amount <= 0) { showToast('金額を正しく入力してください', true); return; }
+  const due = prompt('お振込期限（例：7日以内 / 2026年6月25日）', '7日以内') || '7日以内';
+  const planLabel = items.map(it => it.plan).filter(Boolean).join(' / ') || (o.plan || 'ご依頼プラン');
+  const via = uid ? 'LINE' : 'メール';
+  if (!confirm('【' + via + '】で見積もり（¥' + amount.toLocaleString() + '／税込）を送信します。よろしいですか？')) return;
+  try {
+    const url = `${GAS_URL}?action=send_payment_request&key=${encodeURIComponent(getAdminPw())}`
+      + `&email=${encodeURIComponent(o.email || '')}`
+      + `&name=${encodeURIComponent(o.name || '')}`
+      + `&plan=${encodeURIComponent(planLabel)}`
+      + `&amount=${encodeURIComponent(amount)}`
+      + `&due=${encodeURIComponent(due)}`
+      + `&line_uid=${encodeURIComponent(uid)}`;
+    const res = await gasFetch(url);
+    const j = await res.json();
+    if (j.success) showToast('💳 見積もりを送信しました（' + ((j.channels || [via]).join('・')) + '）');
+    else showToast('送信失敗: ' + (j.error || 'エラー'), true);
+  } catch(e) { showToast('通信エラー', true); }
 }
 
 /* ── 修正依頼（FB）タブ ── */
@@ -6564,16 +7169,246 @@ function renderRevisions() {
   el.innerHTML = _fbList.map(f => `
     <tr>
       <td class="td-date">${esc(f.date)}</td>
-      <td class="td-name">${esc(f.client_name)}</td>
+      <td class="td-name">${esc(f.client_name)}${f.title ? `<div style="font-size:0.72rem;color:var(--sub);margin-top:2px;">🎬 ${esc(f.title)}</div>` : ''}</td>
       <td style="text-align:center;">${esc(f.round)}</td>
       <td style="text-align:center;">${(f.items || []).length}件</td>
       <td>${f.delivery_url ? `<a href="${esc(f.delivery_url)}" target="_blank" style="color:#60a5fa;font-size:0.78rem;">🎬 開く</a>` : '—'}</td>
       <td><span class="status-badge status-${esc(f.status)}">${esc(f.status)}</span></td>
       <td><div class="td-actions">
-        ${extractLineUid(f) ? `<button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${f.row},'revisions')">💬 LINE返信</button>` : ''}
+        <button class="action-btn" style="background:#1e293b;color:#cbd5e1;border:1px solid #334155;font-weight:700;" onclick="openFbDetail(${f.row})">📋 内容を見る</button>
+        <button class="action-btn" style="background:#1e293b;color:#93c5fd;border:1px solid #334155;font-weight:700;" onclick="copyEditorFbLink(${f.row})">🔗 編集者リンク</button>
+        ${(extractLineUid(f) || f.email) ? `<button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${f.row},'revisions')">${extractLineUid(f) ? '💬 LINE返信' : '✉ 返信・納品'}</button>` : ''}
         ${f.email ? `<button class="action-btn btn-mail" onclick="openMail('${esc(f.email)}','${esc(f.client_name)}','修正対応')">✉ メール</button>` : ''}
+        <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="deleteFeedback(${f.row}, '${esc(f.client_name)}')">🗑 削除</button>
       </div></td>
     </tr>`).join('');
+}
+// LINE案内メールを送信（顧客に合言葉コード付きの友だち追加案内を送る）
+async function sendLineInviteAdmin(email, name) {
+  if (!email) { showToast('メールアドレスがありません', true); return; }
+  if (!confirm(`${name || 'この顧客'} 様（${email}）に\n公式LINE追加のご案内メール（合言葉コード付き）を送信しますか？`)) return;
+  try {
+    const res = await gasFetch(`${GAS_URL}?action=line_invite&key=${encodeURIComponent(getAdminPw())}&email=${encodeURIComponent(email)}&name=${encodeURIComponent(name||'')}`);
+    const j = await res.json();
+    if (j.already_linked) { showToast('✅ この顧客は既にLINE連携済みです'); }
+    else if (j.success) { showToast('📨 LINE案内メールを送信しました'); }
+    else { showToast('送信失敗: ' + (j.error || 'エラー'), true); }
+  } catch(e) { showToast('送信エラー', true); }
+}
+
+// ── お客様の声 管理 ──────────────────────────────────────────
+function tsImgSrc(url) {
+  var m = (url||'').match(/\/file\/d\/([^/?#]+)/) || (url||'').match(/[?&]id=([^&]+)/);
+  if (m) return 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w400';
+  return url;
+}
+async function loadLineFollowers() {
+  const el = document.getElementById('line-followers-body');
+  el.innerHTML = '<tr><td colspan="5" class="table-empty"><span class="spinner"></span></td></tr>';
+  try {
+    const res = await gasFetch(`${GAS_URL}?action=line_followers_list&key=${encodeURIComponent(getAdminPw())}`);
+    const j = await res.json();
+    const d = j.data || [];
+    if (!d.length) { el.innerHTML = '<tr><td colspan="5" class="table-empty">まだLINE友だちの記録がありません。</td></tr>'; return; }
+    el.innerHTML = d.map(f => {
+      const dt = f.followed_at ? new Date(f.followed_at).toLocaleString('ja-JP') : '';
+      const named = f.status === 'named';
+      const dispName = (f.name || f.display_name || '');
+      return `<tr>
+        <td style="white-space:nowrap;">${esc(dt)}</td>
+        <td style="font-weight:600;">${esc(f.name || '（未記入）')}</td>
+        <td style="font-size:0.82rem;color:var(--sub);">${esc(f.display_name || '')}</td>
+        <td><span style="color:${named ? '#10b981' : '#f59e0b'};font-weight:700;font-size:0.78rem;">${named ? '✅ 登録済' : '⏳ お名前待ち'}</span></td>
+        <td><button onclick="openLineConversation('${esc(f.uid)}','${esc(dispName).replace(/'/g,"\\'")}')" style="padding:5px 12px;background:#06371f;color:#4ade80;border:1px solid #166534;border-radius:6px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">💬 会話を見る</button></td>
+      </tr>`;
+    }).join('');
+  } catch(e) {
+    el.innerHTML = '<tr><td colspan="5" class="table-empty">読み込みに失敗しました。</td></tr>';
+  }
+}
+
+// ── LINE会話ビュー（人別の受信履歴を時系列表示）──
+async function openLineConversation(uid, name) {
+  const modal = document.getElementById('line-conv-modal');
+  document.getElementById('line-conv-title').textContent = '💬 ' + (name || '') + ' さんの履歴';
+  document.getElementById('line-conv-body').innerHTML = '<p style="color:var(--sub);font-size:0.85rem;"><span class="spinner"></span> 読み込み中…</p>';
+  modal.style.display = 'flex';
+  try {
+    const res = await gasFetch(`${GAS_URL}?action=line_conversation&key=${encodeURIComponent(getAdminPw())}&uid=${encodeURIComponent(uid)}`);
+    const j = await res.json();
+    const ev = j.events || [];
+    let html = `<p style="font-size:0.76rem;color:var(--sub);margin-bottom:12px;word-break:break-all;">UID: ${esc(uid)}${j.follower ? '　/　表示名: ' + esc(j.follower.display_name||'') + '　/　状態: ' + esc(j.follower.status||'') : ''}</p>`;
+    if (!ev.length) { html += '<p style="color:var(--sub);">履歴がありません。</p>'; }
+    else {
+      html += ev.map(e => {
+        const dt = e.date ? new Date(e.date).toLocaleString('ja-JP') : '';
+        return `<div style="border-left:3px solid #00b900;background:var(--bg);border-radius:8px;padding:10px 12px;margin-bottom:8px;">
+          <div style="font-size:0.72rem;color:var(--sub);margin-bottom:3px;"><span style="color:#4ade80;font-weight:700;">${esc(e.source)}</span>　${esc(dt)}</div>
+          <div style="font-size:0.86rem;white-space:pre-wrap;">${esc(e.text || '（本文なし）')}</div>
+        </div>`;
+      }).join('');
+    }
+    html += `<p style="font-size:0.74rem;color:var(--sub);margin-top:10px;line-height:1.6;">※ これはシステムが受信・記録した履歴です。返信は「💬 LINE返信」または問い合わせタブから送れます。</p>`;
+    document.getElementById('line-conv-body').innerHTML = html;
+  } catch(e) {
+    document.getElementById('line-conv-body').innerHTML = '<p style="color:#ef4444;">読み込みに失敗しました。</p>';
+  }
+}
+function closeLineConversation() { document.getElementById('line-conv-modal').style.display = 'none'; }
+
+// ── 納品進捗（都度納品の残数） ───────────────────────────────
+let progressItems = [];
+async function loadProgress() {
+  document.getElementById('progress-body').innerHTML = '<tr><td colspan="5" class="table-empty"><span class="spinner"></span></td></tr>';
+  try {
+    const res = await gasFetch(`${GAS_URL}?action=progress_list&key=${encodeURIComponent(getAdminPw())}`);
+    const j = await res.json();
+    progressItems = j.data || [];
+    renderProgress();
+  } catch(e) {
+    document.getElementById('progress-body').innerHTML = '<tr><td colspan="5" class="table-empty">読み込みに失敗しました。</td></tr>';
+  }
+}
+function renderProgress() {
+  const el = document.getElementById('progress-body');
+  if (!progressItems.length) { el.innerHTML = '<tr><td colspan="5" class="table-empty">登録がありません。上のフォームから追加してください。</td></tr>'; return; }
+  el.innerHTML = progressItems.map(p => {
+    const done = p.remaining <= 0;
+    const pct = p.total ? Math.round(p.delivered / p.total * 100) : 0;
+    return `<tr>
+      <td style="font-weight:600;">${esc(p.client)}</td>
+      <td style="font-size:0.8rem;color:var(--sub);">${esc(p.plan)}</td>
+      <td style="min-width:160px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="flex:1;height:8px;background:var(--bg3);border-radius:99px;overflow:hidden;"><div style="width:${pct}%;height:100%;background:${done?'#10b981':'#60a5fa'};"></div></div>
+          <span style="font-size:0.78rem;white-space:nowrap;">${p.delivered}/${p.total}</span>
+        </div>
+      </td>
+      <td style="text-align:center;font-weight:800;color:${done?'#10b981':'#f59e0b'};">${done ? '✅ 完納' : '残' + p.remaining}</td>
+      <td style="white-space:nowrap;">
+        <button onclick="bumpProgress(${p.row},${p.delivered + 1},${p.total})" ${done?'disabled':''} style="padding:5px 10px;background:#06371f;color:#4ade80;border:1px solid #166534;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:${done?'not-allowed':'pointer'};font-family:inherit;opacity:${done?0.5:1};">＋1納品</button>
+        <button onclick="bumpProgress(${p.row},${Math.max(0,p.delivered - 1)},${p.total})" style="padding:5px 8px;background:var(--bg3);color:var(--sub);border:1px solid var(--border);border-radius:6px;font-size:0.75rem;cursor:pointer;font-family:inherit;margin-left:4px;">−1</button>
+        <button onclick="deleteProgress(${p.row},'${esc(p.client).replace(/'/g,"\\'")}')" style="padding:5px 8px;background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;border-radius:6px;font-size:0.75rem;cursor:pointer;font-family:inherit;margin-left:4px;">🗑</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+async function addProgress() {
+  const client = document.getElementById('pg-client').value.trim();
+  const plan = document.getElementById('pg-plan').value.trim();
+  const total = document.getElementById('pg-total').value.trim();
+  if (!client) { showToast('クライアント名を入力してください', true); return; }
+  if (!total || +total < 1) { showToast('合計本数を入力してください', true); return; }
+  try {
+    await gasFetch(`${GAS_URL}?action=progress_add&key=${encodeURIComponent(getAdminPw())}&client=${encodeURIComponent(client)}&plan=${encodeURIComponent(plan)}&total=${encodeURIComponent(total)}`);
+    document.getElementById('pg-client').value=''; document.getElementById('pg-plan').value=''; document.getElementById('pg-total').value='';
+    showToast('📦 登録しました');
+    setTimeout(loadProgress, 1200);
+  } catch(e) { showToast('登録に失敗しました', true); }
+}
+async function bumpProgress(row, delivered, total) {
+  if (delivered > total) return;
+  try {
+    await gasFetch(`${GAS_URL}?action=progress_update&key=${encodeURIComponent(getAdminPw())}&row=${row}&delivered=${delivered}`);
+    loadProgress();
+  } catch(e) { showToast('更新に失敗しました', true); }
+}
+async function deleteProgress(row, client) {
+  if (!confirm(`「${client}」の納品進捗を削除しますか？\n（ゴミ箱から復元できます）`)) return;
+  try {
+    await gasFetch(`${GAS_URL}?action=progress_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    showToast('🗑 削除しました'); loadProgress();
+  } catch(e) { showToast('削除に失敗しました', true); }
+}
+
+async function loadTestimonialsAdmin() {
+  const el = document.getElementById('testimonials-admin-list');
+  el.innerHTML = '<p style="color:var(--sub);font-size:0.82rem;"><span class="spinner"></span></p>';
+  try {
+    const res = await gasFetch(`${GAS_URL}?action=testimonials&_t=${Date.now()}`);
+    const j = await res.json();
+    const items = j.data || [];
+    if (!items.length) { el.innerHTML = '<p style="color:var(--sub);font-size:0.82rem;">まだ登録がありません。上のフォームから追加してください。</p>'; return; }
+    el.innerHTML = items.map(t => `
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+        <img src="${tsImgSrc(t.url)}" style="width:100%;display:block;background:#0f172a;" onerror="this.style.opacity=0.3;this.alt='画像を表示できません';">
+        ${t.caption ? `<div style="padding:6px 10px;font-size:0.74rem;color:var(--sub);">${esc(t.caption)}</div>` : ''}
+        <div style="padding:8px 10px;border-top:1px solid var(--border);">
+          <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;width:100%;" onclick="deleteTestimonial(${t.row})">🗑 削除</button>
+        </div>
+      </div>`).join('');
+  } catch(e) {
+    el.innerHTML = '<p style="color:#ef4444;font-size:0.82rem;">読み込みに失敗しました。</p>';
+  }
+}
+async function addTestimonial() {
+  const url = document.getElementById('ts-url').value.trim();
+  const caption = document.getElementById('ts-caption').value.trim();
+  if (!url) { showToast('画像URLを入力してください', true); return; }
+  try {
+    await gasFetch(GAS_URL, { method:'POST', body: JSON.stringify({ action:'testimonial_add', key:getAdminPw(), url, caption }) });
+    document.getElementById('ts-url').value = '';
+    document.getElementById('ts-caption').value = '';
+    showToast('💬 お客様の声を追加しました');
+    setTimeout(loadTestimonialsAdmin, 1500);
+  } catch(e) { showToast('追加に失敗しました', true); }
+}
+async function deleteTestimonial(row) {
+  if (!confirm('このお客様の声を削除しますか？\n\n削除しても🗑ゴミ箱から復元できます。')) return;
+  try {
+    await gasFetch(`${GAS_URL}?action=testimonial_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    showToast('🗑 削除しました（ゴミ箱から復元可）');
+    loadTestimonialsAdmin();
+  } catch(e) { showToast('削除に失敗しました', true); }
+}
+
+// 修正依頼タブ：送信されたFB内容を表示
+function openFbDetail(row) {
+  const f = (_fbList || []).find(x => x.row === row);
+  if (!f) { showToast('対象が見つかりません', true); return; }
+  const items = f.items || [];
+  let html = `<div style="font-size:0.86rem;line-height:1.8;color:var(--lt);">
+    <p><b>クライアント：</b>${esc(f.client_name)}${f.title ? `（🎬 ${esc(f.title)}）` : ''}</p>
+    <p><b>受信：</b>${esc(f.date)}　／　<b>ラウンド：</b>${esc(f.round)}　／　<b>件数：</b>${items.length}件</p>
+    ${f.delivery_url ? `<p><b>納品動画：</b><a href="${esc(f.delivery_url)}" target="_blank" style="color:#60a5fa;">🎬 開く</a></p>` : ''}
+    <hr style="border:none;border-top:1px solid var(--border);margin:10px 0;">`;
+  if (!items.length) {
+    html += `<p style="color:var(--sub);">FB項目がありません。</p>`;
+  } else {
+    items.forEach((it, i) => {
+      html += `<div style="margin-bottom:10px;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;">
+        <div style="font-size:0.78rem;color:#60a5fa;font-weight:700;margin-bottom:4px;">#${i + 1}${it.time ? `　⏱ ${esc(it.time)}` : ''}</div>
+        <div style="white-space:pre-wrap;">${esc(it.comment || '(コメントなし)')}</div>
+      </div>`;
+    });
+  }
+  html += `</div>`;
+  document.getElementById('fb-detail-body').innerHTML = html;
+  document.getElementById('fb-detail-modal').style.display = 'flex';
+}
+function closeFbDetail() { document.getElementById('fb-detail-modal').style.display = 'none'; }
+
+// 編集者用FBリンクをコピー（ID優先・無ければ行番号。URLにFB本文を埋め込まないので切断に強い）
+function copyEditorFbLink(row) {
+  const f = (_fbList || []).find(x => x.row === row);
+  if (!f) { showToast('対象が見つかりません', true); return; }
+  const idPart = f.fb_id ? ('id=' + encodeURIComponent(f.fb_id)) : ('fb=' + row);
+  const url = _fbBaseUrl()
+    + '?review=1&' + idPart
+    + '&video=' + encodeURIComponent(f.delivery_url || '')
+    + '&name='  + encodeURIComponent(f.client_name || '')
+    + '&round=' + encodeURIComponent(f.round || '1');
+  navigator.clipboard.writeText(url)
+    .then(() => showToast('🔗 編集者用リンクをコピーしました（編集者に転送してください）'))
+    .catch(() => prompt('このリンクを編集者に渡してください：', url));
+}
+
+async function deleteFeedback(row, name) {
+  if (!confirm(`「${name}」の修正依頼(FB)を削除しますか？\nこの操作は元に戻せません。`)) return;
+  try {
+    await gasFetch(`${GAS_URL}?action=feedback_delete&key=${encodeURIComponent(getAdminPw())}&row=${row}`);
+    showToast('削除しました'); loadRevisions();
+  } catch(e) { showToast('削除に失敗しました', true); }
 }
 </script>
 
@@ -6581,13 +7416,95 @@ function renderRevisions() {
 <div class="modal-overlay" id="quick-line-modal" onclick="if(event.target===this)closeQuickLine()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center;">
   <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;width:min(460px,92vw);max-height:85vh;overflow-y:auto;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-      <h3 style="font-size:1rem;font-weight:800;">💬 LINEワンタップ返信</h3>
+      <h3 style="font-size:1rem;font-weight:800;">💬 ワンタップ返信・納品（LINE / メール自動判定）</h3>
       <button onclick="closeQuickLine()" style="background:none;border:none;color:var(--sub);font-size:1.3rem;cursor:pointer;">✕</button>
     </div>
     <p style="font-size:0.8rem;color:var(--sub);margin-bottom:3px;">送信先：<span id="quick-line-name" style="color:var(--lt);font-weight:700;"></span></p>
     <p style="font-size:0.7rem;color:var(--sub);margin-bottom:14px;word-break:break-all;" id="quick-line-uid"></p>
     <div id="quick-line-buttons" style="display:flex;flex-direction:column;gap:10px;"></div>
     <p style="font-size:0.72rem;color:var(--sub);margin-top:14px;line-height:1.6;">※ ボタンを押すと確認後すぐ送信されます。<br>自由文・URL付きの返信は「💬 LINE送信」タブからどうぞ。</p>
+  </div>
+</div>
+
+<!-- ── 追加発注 詳細モーダル ── -->
+<div class="modal-overlay" id="order-detail-modal" onclick="if(event.target===this)closeOrderDetail()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;width:min(540px,92vw);max-height:85vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <h3 style="font-size:1rem;font-weight:800;">📋 追加発注の詳細</h3>
+      <button onclick="closeOrderDetail()" style="background:none;border:none;color:var(--sub);font-size:1.3rem;cursor:pointer;">✕</button>
+    </div>
+    <div id="order-detail-body"></div>
+  </div>
+</div>
+
+<!-- ── LINE会話ビュー モーダル ── -->
+<div class="modal-overlay" id="line-conv-modal" onclick="if(event.target===this)closeLineConversation()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;width:min(560px,92vw);max-height:85vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <h3 id="line-conv-title" style="font-size:1rem;font-weight:800;">💬 LINE履歴</h3>
+      <button onclick="closeLineConversation()" style="background:none;border:none;color:var(--sub);font-size:1.3rem;cursor:pointer;">✕</button>
+    </div>
+    <div id="line-conv-body"></div>
+  </div>
+</div>
+
+<!-- ── FB（修正依頼）詳細モーダル ── -->
+<div class="modal-overlay" id="fb-detail-modal" onclick="if(event.target===this)closeFbDetail()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;width:min(560px,92vw);max-height:85vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <h3 style="font-size:1rem;font-weight:800;">📋 修正依頼（FB）の内容</h3>
+      <button onclick="closeFbDetail()" style="background:none;border:none;color:var(--sub);font-size:1.3rem;cursor:pointer;">✕</button>
+    </div>
+    <div id="fb-detail-body"></div>
+  </div>
+</div>
+
+<!-- ── 納品モーダル（複数リンク：ドライブ / MP4 / プロマネ）── -->
+<div class="modal-overlay" id="deliver-modal" onclick="if(event.target===this)closeDeliverModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;width:min(560px,94vw);max-height:90vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+      <h3 style="font-size:1rem;font-weight:800;">📦 納品（複数リンク・LINE/メール自動判定）</h3>
+      <button onclick="closeDeliverModal()" style="background:none;border:none;color:var(--sub);font-size:1.3rem;cursor:pointer;">✕</button>
+    </div>
+    <p style="font-size:0.78rem;color:var(--sub);margin-bottom:3px;">送信先：<span id="dlv-recipient" style="color:var(--lt);font-weight:700;"></span></p>
+
+    <div style="display:flex;gap:8px;margin:12px 0;">
+      <label style="flex:1;"><span style="font-size:0.74rem;color:var(--sub);">種別</span>
+        <select id="dlv-kind" onchange="updateDeliverPreview()" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--lt);font-size:0.85rem;font-family:inherit;">
+          <option value="first">初稿提出</option>
+          <option value="rev">修正稿提出</option>
+        </select>
+      </label>
+      <label style="display:flex;align-items:flex-end;gap:6px;font-size:0.82rem;color:var(--lt);padding-bottom:8px;">
+        <input type="checkbox" id="dlv-trial" onchange="updateDeliverPreview()"> 🎁 トライアル
+      </label>
+    </div>
+
+    <div style="margin-bottom:10px;">
+      <label style="font-size:0.74rem;color:var(--sub);display:block;margin-bottom:3px;">◇ ドライブリンク</label>
+      <input id="dlv-drive" type="url" oninput="updateDeliverPreview()" placeholder="https://drive.google.com/..." style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 11px;color:var(--lt);font-size:0.85rem;font-family:inherit;">
+    </div>
+    <div style="margin-bottom:10px;">
+      <label style="font-size:0.74rem;color:var(--sub);display:block;margin-bottom:3px;">◇ MP4ダウンロード（ギガファイル等・クライアント用DL）</label>
+      <input id="dlv-mp4" type="url" oninput="updateDeliverPreview()" placeholder="https://xgf.nu/..." style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 11px;color:var(--lt);font-size:0.85rem;font-family:inherit;">
+    </div>
+    <div style="margin-bottom:10px;">
+      <label style="font-size:0.74rem;color:var(--sub);display:block;margin-bottom:3px;">◇ プロマネ（素材／ギガファイル）</label>
+      <input id="dlv-proma" type="url" oninput="updateDeliverPreview()" placeholder="https://..." style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 11px;color:var(--lt);font-size:0.85rem;font-family:inherit;">
+    </div>
+    <div style="margin-bottom:10px;border:1px dashed #00b900;border-radius:8px;padding:9px 11px;background:rgba(0,185,0,0.06);">
+      <label style="font-size:0.74rem;color:#4ade80;display:block;margin-bottom:3px;font-weight:700;">▶ スマホ自動TC用 直リンクMP4（Dropbox等・任意）</label>
+      <input id="dlv-stream" type="url" oninput="updateDeliverPreview()" placeholder="https://....mp4（Dropboxは末尾 ?raw=1）" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 11px;color:var(--lt);font-size:0.85rem;font-family:inherit;">
+      <p style="font-size:0.68rem;color:var(--sub);margin-top:4px;line-height:1.5;">※ ここに<strong>ストリーミング可能な直リンクMP4</strong>を入れると、iPhoneでも修正リンク内で自動再生→タイムコード自動入力が効きます。<br>※ Drive・ギガファイルのDLリンクはストリーム不可のため自動TCになりません（その場合は手動入力）。</p>
+    </div>
+    <label style="display:flex;align-items:center;gap:6px;font-size:0.8rem;color:var(--lt);margin-bottom:12px;">
+      <input type="checkbox" id="dlv-fb" onchange="updateDeliverPreview()" checked> ✏️ 修正リンク（FBフォーム）を自動で末尾に付ける
+    </label>
+
+    <label style="font-size:0.74rem;color:var(--sub);display:block;margin-bottom:4px;">プレビュー</label>
+    <pre id="dlv-preview" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:11px 13px;color:var(--lt);font-size:0.78rem;line-height:1.7;white-space:pre-wrap;word-break:break-all;max-height:200px;overflow:auto;font-family:inherit;margin-bottom:14px;"></pre>
+
+    <button id="dlv-send-btn" onclick="sendDelivery()" style="width:100%;padding:13px;background:#00b900;color:#fff;border:none;border-radius:10px;font-size:0.95rem;font-weight:700;cursor:pointer;font-family:inherit;">📤 この内容で納品する</button>
   </div>
 </div>
 
