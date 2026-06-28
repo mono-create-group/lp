@@ -608,6 +608,15 @@ function doGet(e) {
     return deleteContract(row);
   }
 
+  if (action === 'create_contract_token') {
+    var type  = e.parameter.type  || 'editor';
+    var name  = e.parameter.name  || '';
+    var email = e.parameter.email || '';
+    if (!name || !email) return jsonResponse({ error: 'name_and_email_required' });
+    var result = createContractToken(type, name, email);
+    return jsonResponse({ success: true, token: result.token, url: result.url });
+  }
+
   if (action === 'get_contract_by_email') {
     var email = (e.parameter.email || '').toLowerCase().trim();
     if (!email) return jsonResponse({ error: 'email_required' });
