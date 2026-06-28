@@ -171,7 +171,12 @@
           </div>
           <div class="meta-item">
             <div class="meta-label">契約締結者（乙）</div>
-            <div class="meta-value" id="meta-name">—</div>
+            <div class="meta-value">
+              <input type="text" id="meta-name" placeholder="本名を入力してください"
+                style="border:1px solid #CBD5E1;border-radius:6px;padding:4px 10px;font-size:14px;color:#1E293B;background:#F8FAFC;width:100%;box-sizing:border-box;outline:none;"
+                oninput="onNameChange()" onfocus="this.style.borderColor='#6366F1'" onblur="this.style.borderColor='#CBD5E1'">
+              <div style="font-size:11px;color:#94A3B8;margin-top:3px;">✏️ 活動名ではなく本名（戸籍名）をご入力ください</div>
+            </div>
           </div>
           <div class="meta-item">
             <div class="meta-label">発注者（甲）</div>
@@ -215,10 +220,10 @@
         </label>
 
         <div class="field-group">
-          <div class="field-label">氏名（署名）</div>
-          <div class="field-sub">契約者ご本人のお名前をご入力ください（確認用）</div>
-          <input type="text" class="sign-input" id="sign-name" placeholder="例：山田 太郎" oninput="checkReady()">
-          <div class="field-error" id="name-error">氏名を入力してください</div>
+          <div class="field-label">氏名（署名・本名）</div>
+          <div class="field-sub">上部の「契約締結者」欄に入力した本名がそのまま署名されます</div>
+          <div id="sign-name-preview" style="padding:10px 14px;border-radius:8px;border:1px solid #E2E8F0;background:#F8FAFC;font-size:14px;color:#1E293B;min-height:38px;"></div>
+          <div class="field-error" id="name-error">氏名（本名）を入力してください</div>
         </div>
 
         <div class="timestamp-note">
@@ -286,7 +291,9 @@ async function loadContract() {
 
 /* ── 契約書レンダリング ── */
 function renderContract(d) {
-  document.getElementById('meta-name').textContent = d.name + ' 様';
+  const nameInput = document.getElementById('meta-name');
+  nameInput.value = d.name || '';
+  document.getElementById('sign-name-preview').textContent = d.name || '';
   document.getElementById('meta-date').textContent = formatDate(d.created_at);
 
   const badge = document.getElementById('badge-type');
@@ -312,17 +319,29 @@ function renderContract(d) {
   });
 }
 
+/* ── 名前変更時：契約書本文＆プレビューを更新 ── */
+function onNameChange() {
+  const name = document.getElementById('meta-name').value.trim();
+  document.getElementById('sign-name-preview').textContent = name || '';
+  const today = formatDate(new Date().toISOString());
+  if (contractData) {
+    document.getElementById('contract-text').innerHTML =
+      contractData.type === 'sales' ? buildSalesContract(name, today) : buildEditorContract(name, today);
+  }
+  checkReady();
+}
+
 /* ── 署名ボタン活性チェック ── */
 function checkReady() {
-  const ok = document.getElementById('agree-check').checked &&
-              document.getElementById('sign-name').value.trim().length > 0;
+  const name = document.getElementById('meta-name').value.trim();
+  const ok = document.getElementById('agree-check').checked && name.length > 0;
   document.getElementById('sign-btn').disabled = !ok;
 }
 
 /* ── 署名送信 ── */
 async function submitSign() {
   const btn = document.getElementById('sign-btn');
-  const signedName = document.getElementById('sign-name').value.trim();
+  const signedName = document.getElementById('meta-name').value.trim();
   if (!signedName) { document.getElementById('name-error').style.display = 'block'; return; }
 
   btn.disabled = true;
@@ -487,7 +506,10 @@ function buildEditorContract(name, today) {
 </div>
 <div class="article">
   <div class="article-title">第3条（報酬・費用）</div>
-  <div class="article-body">１．本業務の報酬は、案件の難易度や規模に応じて個別契約ごとに変動するものとする。ただし、1案件あたりの最低報酬額は2,000円（消費税込み）とする。
+  <div class="article-body">１．本業務の報酬は、案件の難易度や規模に応じて個別契約ごとに変動するものとする。報酬の目安は以下のとおりとする。
+・ショート動画編集（縦型・60秒以内）：1本あたり2,500円〜
+・長尺動画編集（横型・1分超）：1本あたり5,000円〜
+詳細な報酬額は個別契約にて別途合意する。
 ２．振込手数料その他報酬の支払に要する費用は、乙の負担とする。</div>
 </div>
 <div class="article">
