@@ -229,7 +229,14 @@ textarea.form-control { min-height:80px; resize:vertical; }
       <!-- 実績・PF -->
       <div class="form-row">
         <label>実績・ポートフォリオURL<span class="req">*</span></label>
-        <input type="text" class="form-control" name="portfolio" placeholder="https://... （複数あればカンマ区切りでOK）" required>
+        <div id="portfolio-list">
+          <div class="portfolio-entry" style="display:flex;gap:8px;margin-bottom:6px;">
+            <input type="text" class="form-control portfolio-url" placeholder="https://..." style="flex:1;" required>
+            <button type="button" onclick="removePortfolio(this)" style="padding:0 12px;border:1px solid #E2E8F0;border-radius:8px;background:#fff;color:#94A3B8;font-size:18px;cursor:pointer;line-height:1;" title="削除">×</button>
+          </div>
+        </div>
+        <button type="button" onclick="addPortfolio()" style="margin-top:4px;padding:7px 16px;border:1px dashed #6366F1;border-radius:8px;background:#F5F3FF;color:#6366F1;font-size:13px;font-weight:600;cursor:pointer;width:100%;">＋ URLを追加</button>
+        <p style="font-size:11px;color:#94A3B8;margin-top:4px;">YouTube・TikTok・Instagramなど複数の実績URLを入力できます</p>
       </div>
 
       <!-- 対応本数 -->
@@ -348,6 +355,21 @@ function _validateFields(checks) {
   return true;
 }
 
+function addPortfolio() {
+  const list = document.getElementById('portfolio-list');
+  const div = document.createElement('div');
+  div.className = 'portfolio-entry';
+  div.style.cssText = 'display:flex;gap:8px;margin-bottom:6px;';
+  div.innerHTML = '<input type="text" class="form-control portfolio-url" placeholder="https://..." style="flex:1;"><button type="button" onclick="removePortfolio(this)" style="padding:0 12px;border:1px solid #E2E8F0;border-radius:8px;background:#fff;color:#94A3B8;font-size:18px;cursor:pointer;line-height:1;" title="削除">×</button>';
+  list.appendChild(div);
+  div.querySelector('input').focus();
+}
+function removePortfolio(btn) {
+  const entries = document.querySelectorAll('.portfolio-entry');
+  if (entries.length <= 1) return;
+  btn.closest('.portfolio-entry').remove();
+}
+
 document.getElementById('apply-form').addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -367,7 +389,8 @@ document.getElementById('apply-form').addEventListener('submit', async (e) => {
     { el: form.email,              msg: 'メールアドレスを入力してください',
       test: el => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim()) },
     { el: caseTypeEl,              msg: '希望する案件を選択してください', test: () => !!case_type },
-    { el: form.portfolio,          msg: '実績・ポートフォリオURLを入力してください' },
+    { el: document.querySelector('.portfolio-url'), msg: '実績・ポートフォリオURLを1つ以上入力してください',
+      test: () => [...document.querySelectorAll('.portfolio-url')].some(i => i.value.trim() !== '') },
     { el: form.weekly_monthly_vol, msg: '納品可能な本数の目安を入力してください' },
     { el: form.specialty,          msg: '得意分野・ジャンルを入力してください' },
     { el: longTermEl,              msg: '長期契約の可否を選択してください', test: () => !!long_term },
@@ -385,7 +408,7 @@ document.getElementById('apply-form').addEventListener('submit', async (e) => {
     gender:             gender,
     email:              form.email.value,
     case_type:          case_type,
-    portfolio:          form.portfolio.value,
+    portfolio:          [...document.querySelectorAll('.portfolio-url')].map(i => i.value.trim()).filter(Boolean).join('\n'),
     weekly_monthly_vol: form.weekly_monthly_vol.value,
     specialty:          form.specialty.value,
     long_term:          long_term,
