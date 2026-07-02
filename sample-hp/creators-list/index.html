@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>動画編集者派遣｜クリエイターズリスト｜mono.create</title>
+<meta name="description" content="mono.create在籍の動画編集者を、必要な期間・本数だけ派遣。YouTube長尺・縦型ショート・企業VPまで、最短3営業日でアサイン。編集リソース不足をすぐに解消します。">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="動画編集者派遣｜クリエイターズリスト｜mono.create">
+<meta property="og:description" content="在籍編集者を必要な期間・本数だけ派遣。最短3営業日でアサイン。">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "動画編集者派遣(クリエイターズリスト)",
+  "serviceType": "動画編集者派遣・編集代行",
+  "provider": { "@type": "Organization", "name": "mono.create" },
+  "areaServed": "JP",
+  "description": "在籍動画編集者を必要なスキル・本数・期間だけ派遣。YouTube長尺・縦型ショート・企業VP対応。"
+}
+</script>
+<style>
+  :root{
+    --brand:#1a56db;
+    --brand-dark:#123a99;
+    --ink:#111827;
+    --sub:#4b5563;
+    --bg:#f7f8fb;
+    --line:#e5e7eb;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    color:var(--ink);background:var(--bg);line-height:1.75;
+  }
+  a{color:inherit;}
+  img{max-width:100%;display:block;}
+  .ph{
+    background:linear-gradient(135deg,#dbe4ff,#eef1fb);
+    display:flex;align-items:center;justify-content:center;
+    color:#7b8bb8;font-size:12px;text-align:center;border-radius:8px;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+
+  header{
+    position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid var(--line);
+  }
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;max-width:1080px;margin:0 auto;}
+  .logo{font-weight:800;font-size:18px;letter-spacing:.02em;}
+  .logo span{color:var(--brand);}
+  nav ul{list-style:none;display:flex;gap:26px;font-size:13.5px;}
+  nav a{text-decoration:none;color:var(--sub);}
+  nav a:hover{color:var(--brand);}
+  .nav-cta{
+    background:var(--brand);color:#fff;padding:9px 20px;border-radius:6px;font-size:13.5px;
+    font-weight:700;text-decoration:none;
+  }
+
+  .hero{
+    padding:80px 24px 60px;text-align:center;
+    background:linear-gradient(180deg,#fff,#eef2ff);
+  }
+  .hero .badge{
+    display:inline-block;background:#e0e9ff;color:var(--brand-dark);font-size:12.5px;
+    font-weight:700;padding:6px 16px;border-radius:20px;margin-bottom:22px;
+  }
+  .hero h1{font-size:clamp(28px,5vw,46px);font-weight:800;letter-spacing:-.01em;margin-bottom:20px;}
+  .hero h1 em{color:var(--brand);font-style:normal;}
+  .hero p{color:var(--sub);font-size:15.5px;max-width:600px;margin:0 auto 34px;}
+  .hero-cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+  .btn{padding:14px 30px;border-radius:8px;font-weight:700;font-size:14.5px;text-decoration:none;display:inline-block;}
+  .btn-primary{background:var(--brand);color:#fff;}
+  .btn-primary:hover{background:var(--brand-dark);}
+  .btn-outline{border:1.5px solid var(--line);color:var(--ink);background:#fff;}
+  .btn-outline:hover{border-color:var(--brand);color:var(--brand);}
+
+  .stats{
+    background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:36px 24px;
+  }
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;text-align:center;}
+  .stat-num{font-size:30px;font-weight:800;color:var(--brand);}
+  .stat-label{font-size:12.5px;color:var(--sub);margin-top:4px;}
+
+  section{padding:80px 24px;}
+  .sec-head{text-align:center;margin-bottom:48px;}
+  .sec-head .eyebrow{color:var(--brand);font-size:12.5px;font-weight:700;letter-spacing:.1em;display:block;margin-bottom:10px;}
+  .sec-head h2{font-size:clamp(22px,4vw,30px);font-weight:800;}
+  .sec-head p{color:var(--sub);font-size:14px;margin-top:12px;}
+
+  /* 派遣フロー */
+  .flow{background:#fff;}
+  .flow-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;}
+  .flow-card{
+    background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:26px 20px;position:relative;
+  }
+  .flow-card .num{
+    width:32px;height:32px;border-radius:50%;background:var(--brand);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;margin-bottom:14px;
+  }
+  .flow-card h4{font-size:14.5px;margin-bottom:8px;}
+  .flow-card p{font-size:12.5px;color:var(--sub);}
+
+  /* 編集者一覧 */
+  .creators{background:var(--bg);}
+  .filter-tags{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:40px;}
+  .filter-tags span{
+    font-size:12.5px;padding:7px 16px;border-radius:20px;background:#fff;border:1px solid var(--line);color:var(--sub);
+  }
+  .creator-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .creator-card{
+    background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;
+    transition:.2s ease;
+  }
+  .creator-card:hover{box-shadow:0 8px 24px rgba(17,24,39,.08);transform:translateY(-2px);}
+  .creator-card .ph{height:150px;border-radius:0;}
+  .creator-body{padding:20px;}
+  .creator-body .name-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+  .creator-body h4{font-size:16px;}
+  .creator-body .avail{
+    font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px;
+  }
+  .avail-ok{background:#dcfce7;color:#166534;}
+  .avail-soon{background:#fef3c7;color:#92400e;}
+  .tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+  .tags span{font-size:11px;background:#eef1fb;color:var(--brand-dark);padding:4px 10px;border-radius:8px;}
+  .creator-body .desc{font-size:12.5px;color:var(--sub);margin-bottom:10px;}
+  .creator-body .meta{font-size:11.5px;color:#9ca3af;}
+
+  .more-note{
+    text-align:center;margin-top:30px;font-size:13px;color:var(--sub);
+  }
+
+  /* 選択機能 */
+  .creator-card{position:relative;}
+  .select-check{
+    position:absolute;top:14px;right:14px;z-index:5;
+    width:26px;height:26px;border-radius:6px;background:#fff;
+    border:2px solid var(--line);display:flex;align-items:center;justify-content:center;
+    cursor:pointer;font-size:15px;color:transparent;transition:.15s ease;
+  }
+  .creator-card.selected .select-check{background:var(--brand);border-color:var(--brand);color:#fff;}
+  .creator-card.selected{outline:2px solid var(--brand);}
+  .creator-label{cursor:pointer;display:block;}
+
+  .selection-bar{
+    position:sticky;bottom:0;left:0;right:0;z-index:90;
+    background:var(--ink);color:#fff;padding:14px 24px;
+    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
+    box-shadow:0 -4px 16px rgba(0,0,0,.15);
+  }
+  .selection-bar .info{font-size:13.5px;}
+  .selection-bar .info strong{color:#93c5fd;}
+  .selection-bar a{
+    background:var(--brand);color:#fff;padding:10px 22px;border-radius:8px;
+    font-size:13.5px;font-weight:700;text-decoration:none;
+  }
+  .selection-bar.hidden{display:none;}
+
+  /* 選ばれる理由 */
+  .why{background:#fff;}
+  .why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;}
+  .why-card{text-align:center;}
+  .why-card .icon{
+    width:56px;height:56px;border-radius:14px;background:#eef1fb;color:var(--brand);
+    display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 16px;
+  }
+  .why-card h4{font-size:15.5px;margin-bottom:8px;}
+  .why-card p{font-size:13px;color:var(--sub);}
+
+  /* 派遣依頼フォーム */
+  .request{background:var(--bg);}
+  .form-card{
+    background:#fff;border:1px solid var(--line);border-radius:16px;padding:40px;max-width:680px;margin:0 auto;
+  }
+  .form-row{margin-bottom:20px;}
+  .form-row label{display:block;font-size:13px;font-weight:700;margin-bottom:6px;}
+  .form-row input,.form-row select,.form-row textarea{
+    width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:8px;font-size:14px;
+    font-family:inherit;background:#fff;
+  }
+  .form-row textarea{resize:vertical;min-height:100px;}
+  .form-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .form-submit{
+    width:100%;padding:15px;background:var(--brand);color:#fff;border:none;border-radius:8px;
+    font-size:15px;font-weight:700;cursor:pointer;
+  }
+  .form-submit:hover{background:var(--brand-dark);}
+  .form-note{font-size:11.5px;color:#9ca3af;margin-top:14px;text-align:center;}
+
+  footer{
+    background:var(--ink);color:#9ca3af;text-align:center;padding:40px 24px;font-size:12px;
+  }
+  footer .fname{color:#fff;font-size:15px;margin-bottom:10px;font-weight:700;}
+
+  @media (max-width:860px){
+    nav ul{display:none;}
+    .stats-grid{grid-template-columns:repeat(2,1fr);}
+    .flow-grid,.creator-grid,.why-grid{grid-template-columns:1fr;}
+    .form-cols{grid-template-columns:1fr;}
+    section{padding:56px 20px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-inner">
+    <div class="logo">mono<span>.create</span> Creators</div>
+    <nav>
+      <ul>
+        <li><a href="#flow">派遣の流れ</a></li>
+        <li><a href="#creators">編集者一覧</a></li>
+        <li><a href="#why">選ばれる理由</a></li>
+      </ul>
+    </nav>
+    <a class="nav-cta" href="#request">派遣を依頼する</a>
+  </div>
+</header>
+
+<!-- ヒーロー -->
+<section class="hero">
+  <span class="badge">動画編集者 即戦力派遣</span>
+  <h1>編集者が足りない。を、<br><em>今週中に</em>解消する。</h1>
+  <p>mono.create在籍の編集チームから、必要なスキル・本数・期間だけを選んで派遣。採用・教育コストをかけずに、すぐに制作ラインを補強できます。</p>
+  <div class="hero-cta">
+    <a class="btn btn-primary" href="#request">今すぐ派遣を依頼する</a>
+    <a class="btn btn-outline" href="#creators">編集者一覧を見る</a>
+  </div>
+</section>
+
+<!-- 実績 -->
+<div class="stats">
+  <div class="wrap stats-grid">
+    <div><div class="stat-num">20+</div><div class="stat-label">在籍編集者数</div></div>
+    <div><div class="stat-num">1,000本+</div><div class="stat-label">累計編集実績</div></div>
+    <div><div class="stat-num">最短3日</div><div class="stat-label">アサインまでの日数</div></div>
+    <div><div class="stat-num">98%</div><div class="stat-label">継続率</div></div>
+  </div>
+</div>
+
+<!-- 派遣の流れ -->
+<section class="flow" id="flow">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">HOW IT WORKS</span>
+      <h2>派遣までの流れ</h2>
+      <p>お問い合わせから最短3営業日でアサイン可能です。</p>
+    </div>
+    <div class="flow-grid">
+      <div class="flow-card">
+        <div class="num">1</div>
+        <h4>ご相談</h4>
+        <p>必要な編集スキル・本数・期間をヒアリングします。</p>
+      </div>
+      <div class="flow-card">
+        <div class="num">2</div>
+        <h4>編集者選定</h4>
+        <p>ご要望に合う編集者を在籍チームからマッチング。</p>
+      </div>
+      <div class="flow-card">
+        <div class="num">3</div>
+        <h4>トライアル</h4>
+        <p>1本お試し編集で相性・クオリティをご確認いただけます。</p>
+      </div>
+      <div class="flow-card">
+        <div class="num">4</div>
+        <h4>本稼働</h4>
+        <p>継続契約に移行。増減・交代もいつでも柔軟に対応します。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 編集者一覧 -->
+<section class="creators" id="creators">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">CREATORS</span>
+      <h2>在籍編集者 全<span id="creator-count">-</span>名</h2>
+      <p>掲載情報は編集者ご本人が登録したプロフィールです。気になる編集者にチェックを入れて、下部フォームからそのままご依頼いただけます。</p>
+    </div>
+    <div class="filter-tags">
+      <span>YouTube長尺</span><span>縦型ショート</span><span>Vlog</span><span>美容・コスメ</span>
+      <span>ゲーム実況</span><span>企業VP</span><span>Vtuber切り抜き</span>
+    </div>
+    <div class="creator-grid" id="creator-grid"></div>
+    <p class="more-note">
+      在籍編集者の方へ:
+      <a href="https://mono-create-group.github.io/lp/editor-self-register.html" target="_blank" rel="noopener" style="color:var(--brand);font-weight:700;">こちらからご自身のプロフィール・ポートフォリオを登録/更新できます →</a>
+    </p>
+  </div>
+</section>
+
+<div class="selection-bar hidden" id="selection-bar">
+  <div class="info">選択中: <strong id="selected-count">0</strong>名の編集者</div>
+  <a href="#request" id="selection-cta">この編集者で依頼へ進む</a>
+</div>
+
+<!-- 選ばれる理由 -->
+<section class="why" id="why">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">WHY US</span>
+      <h2>mono.createが選ばれる理由</h2>
+    </div>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="icon">⚡</div>
+        <h4>最短3営業日でアサイン</h4>
+        <p>採用・教育の手間なく、即戦力の編集者をすぐに現場投入できます。</p>
+      </div>
+      <div class="why-card">
+        <div class="icon">🔁</div>
+        <h4>柔軟な増減・交代</h4>
+        <p>繁忙期だけの増員や、相性が合わない場合の交代にも柔軟に対応します。</p>
+      </div>
+      <div class="why-card">
+        <div class="icon">✅</div>
+        <h4>品質管理体制あり</h4>
+        <p>社内ディレクターによる納品前チェックを経てからお渡しするため、品質のばらつきを抑えます。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 派遣依頼フォーム -->
+<section class="request" id="request">
+  <div class="sec-head">
+    <span class="eyebrow">REQUEST</span>
+    <h2>派遣のご依頼・お問い合わせ</h2>
+    <p>下記フォームよりご相談ください。1営業日以内にご連絡いたします。</p>
+  </div>
+  <form class="form-card" name="creator-dispatch-request" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+    <input type="hidden" name="form-name" value="creator-dispatch-request">
+    <input type="hidden" name="selected-editors" id="selected-editors-field" value="">
+    <p style="display:none;"><label>入力しないでください:<input name="bot-field"></label></p>
+
+    <div class="form-row" id="selected-editors-preview" style="display:none;">
+      <label>選択した編集者</label>
+      <div id="selected-editors-list" style="font-size:13px;color:var(--sub);"></div>
+    </div>
+
+    <div class="form-cols">
+      <div class="form-row">
+        <label for="company">会社名・屋号</label>
+        <input type="text" id="company" name="company" required>
+      </div>
+      <div class="form-row">
+        <label for="contact-name">ご担当者名</label>
+        <input type="text" id="contact-name" name="contact-name" required>
+      </div>
+    </div>
+    <div class="form-cols">
+      <div class="form-row">
+        <label for="email">メールアドレス</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <div class="form-row">
+        <label for="phone">電話番号</label>
+        <input type="tel" id="phone" name="phone">
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="genre">希望ジャンル</label>
+      <select id="genre" name="genre">
+        <option>YouTube長尺</option>
+        <option>縦型ショート(TikTok/Reels)</option>
+        <option>Vlog</option>
+        <option>美容・コスメ</option>
+        <option>ゲーム実況・切り抜き</option>
+        <option>企業VP・採用動画</option>
+        <option>その他</option>
+      </select>
+    </div>
+    <div class="form-cols">
+      <div class="form-row">
+        <label for="volume">希望本数(週あたり)</label>
+        <input type="text" id="volume" name="volume" placeholder="例:週5本">
+      </div>
+      <div class="form-row">
+        <label for="start">希望開始時期</label>
+        <input type="text" id="start" name="start" placeholder="例:今週中、来月から">
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="message">ご相談内容</label>
+      <textarea id="message" name="message" placeholder="現在の編集体制や、お困りごとをご記入ください"></textarea>
+    </div>
+    <button type="submit" class="form-submit">この内容で依頼する</button>
+    <p class="form-note">送信いただいた内容は派遣マッチングの目的のみに使用します。</p>
+  </form>
+</section>
+
+<footer>
+  <div class="fname">mono.create Creators</div>
+  <div>動画編集者派遣事業 ／ お問い合わせ:info@mono-create.example</div>
+  <div style="margin-top:16px;">© mono.create</div>
+</footer>
+
+<script>
+  // 本番のmono.create LP(https://mono-create-group.github.io/lp/)と同じGASバックエンドから
+  // 実際の在籍編集者データを取得する。編集者自身がeditor-self-register.htmlで登録した
+  // プロフィールがそのまま反映される(読み取り専用・公開エンドポイントのため安全)。
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
+  const SELF_REGISTER_URL = 'https://mono-create-group.github.io/lp/editor-self-register.html';
+
+  let EDITORS = [];
+  const selected = new Set();
+
+  function editorId(ed) { return 'row-' + ed.row; }
+
+  async function loadEditors() {
+    const grid = document.getElementById("creator-grid");
+    try {
+      const res = await fetch(`${GAS_URL}?action=editors`);
+      const json = await res.json();
+      EDITORS = json.data || [];
+    } catch (e) {
+      grid.innerHTML = `<p class="empty-note" style="grid-column:1/-1;">編集者一覧の取得に失敗しました。時間をおいて再度お試しください。</p>`;
+      return;
+    }
+    if (!EDITORS.length) {
+      grid.innerHTML = `<p class="empty-note" style="grid-column:1/-1;">現在登録済みの編集者がいません。</p>`;
+      document.getElementById("creator-count").textContent = 0;
+      return;
+    }
+    renderEditors();
+  }
+
+  function renderEditors() {
+    const grid = document.getElementById("creator-grid");
+    grid.innerHTML = EDITORS.map((ed) => {
+      const id = editorId(ed);
+      const tags = (ed.genres || "").split("、").filter(Boolean);
+      return `
+      <div class="creator-card" data-id="${id}">
+        <div class="select-check" data-toggle="${id}">✓</div>
+        <label class="creator-label" data-toggle="${id}">
+          ${ed.icon
+            ? `<img src="${ed.icon}" class="ph" style="height:150px;object-fit:cover;" onerror="this.outerHTML='<div class=&quot;ph&quot;>[ サムネイル未設定 ]</div>'">`
+            : `<div class="ph">[ サムネイル未設定 ]</div>`
+          }
+          <div class="creator-body">
+            <div class="name-row"><h4>${ed.name}</h4></div>
+            <div class="tags">${tags.map((t) => `<span>${t}</span>`).join("")}</div>
+            <div class="desc">${[ed.occupation, ed.experience].filter(Boolean).join(" / ")}</div>
+            <div class="desc">${ed.comment || ""}</div>
+            <div class="meta">${[ed.monthly_capacity ? `月間目安:${ed.monthly_capacity}` : "", ed.work_hours ? `稼働:${ed.work_hours}` : ""].filter(Boolean).join(" ／ ")}</div>
+          </div>
+        </label>
+      </div>
+    `;
+    }).join("");
+    document.getElementById("creator-count").textContent = EDITORS.length;
+  }
+
+  function updateSelectionUI() {
+    const bar = document.getElementById("selection-bar");
+    const count = document.getElementById("selected-count");
+    const field = document.getElementById("selected-editors-field");
+    const preview = document.getElementById("selected-editors-preview");
+    const list = document.getElementById("selected-editors-list");
+
+    const names = EDITORS.filter((e) => selected.has(editorId(e))).map((e) => e.name);
+    count.textContent = selected.size;
+    bar.classList.toggle("hidden", selected.size === 0);
+    field.value = names.join("、");
+    preview.style.display = names.length ? "block" : "none";
+    list.textContent = names.join("、") || "(未選択)";
+
+    EDITORS.forEach((ed) => {
+      const card = document.querySelector(`.creator-card[data-id="${editorId(ed)}"]`);
+      if (card) card.classList.toggle("selected", selected.has(editorId(ed)));
+    });
+  }
+
+  document.addEventListener("click", (e) => {
+    const toggle = e.target.closest("[data-toggle]");
+    if (!toggle) return;
+    e.preventDefault();
+    const id = toggle.getAttribute("data-toggle");
+    if (selected.has(id)) selected.delete(id);
+    else selected.add(id);
+    updateSelectionUI();
+  });
+
+  loadEditors();
+</script>
+
+</body>
+</html>
