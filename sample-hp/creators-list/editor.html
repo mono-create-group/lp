@@ -26,8 +26,10 @@
   .wrap{max-width:880px;margin:0 auto;padding:0 24px;}
   header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.8);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);}
   .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;max-width:1080px;margin:0 auto;}
-  .logo{font-weight:900;font-size:17px;text-decoration:none;}
-  .logo span{background:linear-gradient(90deg,var(--brand),var(--brand2));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:17px;text-decoration:none;}
+  .logo img{width:34px;height:34px;border-radius:9px;box-shadow:0 2px 8px rgba(15,23,42,.12);}
+  .logo .lg-name{line-height:1.2;}
+  .logo .lg-sub{display:block;font-size:9.5px;font-weight:700;color:var(--sub);letter-spacing:.12em;}
   .nav-client{font-size:12px;color:var(--sub);text-decoration:none;}
   .nav-client:hover{color:var(--brand);}
 
@@ -74,7 +76,10 @@
 
 <header>
   <div class="nav-inner">
-    <a class="logo" href="./">mono<span>.create</span> Creators</a>
+    <a class="logo" href="./">
+      <img src="favicon.svg" alt="クリエイターズリスト ロゴ">
+      <span class="lg-name">クリエイターズリスト<span class="lg-sub">動画編集者派遣 by mono.create</span></span>
+    </a>
   </div>
 </header>
 
@@ -122,7 +127,8 @@
 </section>
 
 <footer>
-  <div style="color:#fff;font-weight:800;font-size:15px;margin-bottom:10px;">mono.create Creators</div>
+  <img src="favicon.svg" alt="" style="width:44px;height:44px;border-radius:12px;margin:0 auto 12px;">
+  <div style="color:#fff;font-weight:800;font-size:15px;margin-bottom:10px;">クリエイターズリスト</div>
   <div style="margin-top:14px;">© mono.create</div>
 </footer>
 

@@ -21,7 +21,17 @@
   "serviceType": "動画編集者派遣・編集代行",
   "provider": { "@type": "Organization", "name": "mono.create" },
   "areaServed": "JP",
-  "description": "在籍動画編集者を必要なスキル・本数・期間だけ派遣。ショート・長尺・企業VP対応。"
+  "description": "在籍動画編集者を必要なスキル・本数・期間だけ派遣。ショート・長尺・企業VP対応。",
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "動画編集 料金",
+    "itemListElement": [
+      { "@type": "Offer", "name": "ショート動画編集", "priceSpecification": { "@type": "PriceSpecification", "price": "4000", "priceCurrency": "JPY", "description": "1本あたり ¥4,000〜" } },
+      { "@type": "Offer", "name": "長尺動画編集(10分)", "priceSpecification": { "@type": "PriceSpecification", "price": "10000", "priceCurrency": "JPY", "description": "1本あたり ¥10,000〜" } },
+      { "@type": "Offer", "name": "長尺動画編集(15分)", "priceSpecification": { "@type": "PriceSpecification", "price": "15000", "priceCurrency": "JPY", "description": "1本あたり ¥15,000〜" } },
+      { "@type": "Offer", "name": "長尺動画編集(20分)", "priceSpecification": { "@type": "PriceSpecification", "price": "20000", "priceCurrency": "JPY", "description": "1本あたり ¥20,000〜" } }
+    ]
+  }
 }
 </script>
 <style>
@@ -49,8 +59,10 @@
   /* ヘッダー */
   header{position:sticky;top:0;z-index:100;background:var(--glass);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);}
   .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;max-width:1080px;margin:0 auto;gap:10px;}
-  .logo{font-weight:900;font-size:17px;letter-spacing:.02em;white-space:nowrap;}
-  .logo span{background:linear-gradient(90deg,var(--brand),var(--brand2));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:17px;letter-spacing:.02em;white-space:nowrap;text-decoration:none;}
+  .logo img{width:34px;height:34px;border-radius:9px;box-shadow:0 2px 8px rgba(15,23,42,.12);}
+  .logo .lg-name{line-height:1.2;}
+  .logo .lg-sub{display:block;font-size:9.5px;font-weight:700;color:var(--sub);letter-spacing:.12em;}
   nav ul{list-style:none;display:flex;gap:24px;font-size:13.5px;}
   nav a{text-decoration:none;color:var(--sub);font-weight:600;}
   nav a:hover{color:var(--brand);}
@@ -148,6 +160,25 @@
   .m-send{width:100%;padding:13px;border:none;border-radius:99px;background:linear-gradient(90deg,var(--brand),#6d28d9);color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;}
   .m-note{font-size:10.5px;color:#94a3b8;margin-top:8px;text-align:center;}
 
+  /* 料金 */
+  .price-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;max-width:1080px;margin:0 auto;}
+  .price-card{position:relative;background:#fff;border:1px solid var(--line);border-radius:20px;padding:30px 22px 26px;text-align:center;transition:transform .2s ease,box-shadow .2s ease;}
+  .price-card:hover{transform:translateY(-4px);box-shadow:0 16px 34px rgba(15,23,42,.10);}
+  .price-card.hot{border:2px solid var(--brand);box-shadow:0 12px 30px rgba(79,70,229,.14);}
+  .price-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(90deg,var(--brand),#6d28d9);color:#fff;font-size:10.5px;font-weight:800;padding:4px 14px;border-radius:99px;letter-spacing:.06em;white-space:nowrap;}
+  .price-card .p-cat{font-size:11px;font-weight:800;color:var(--brand-dark);letter-spacing:.1em;margin-bottom:6px;}
+  .price-card h4{font-size:15.5px;font-weight:900;margin-bottom:14px;}
+  .price-card .p-num{font-size:30px;font-weight:900;letter-spacing:-.01em;background:linear-gradient(90deg,var(--brand),var(--brand2));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .price-card .p-num small{font-size:13px;font-weight:800;}
+  .price-card .p-unit{font-size:11px;color:var(--sub);font-weight:700;margin-top:2px;}
+  .price-card ul{list-style:none;margin-top:16px;border-top:1px solid var(--line);padding-top:14px;text-align:left;}
+  .price-card ul li{font-size:12px;color:var(--sub);padding:3px 0 3px 20px;position:relative;}
+  .price-card ul li::before{content:"✓";position:absolute;left:0;color:var(--brand);font-weight:900;}
+  .price-note{text-align:center;font-size:12px;color:var(--sub);margin-top:22px;line-height:2;}
+  .price-cta{text-align:center;margin-top:26px;}
+  @media (max-width:1020px){.price-grid{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:560px){.price-grid{grid-template-columns:1fr;max-width:360px;}}
+
   /* 選ばれる理由 */
   .why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1080px;margin:0 auto;}
   .why-card{text-align:center;background:#fff;border:1px solid var(--line);border-radius:20px;padding:34px 22px;transition:transform .2s ease,box-shadow .2s ease;}
@@ -192,10 +223,14 @@
 
 <header>
   <div class="nav-inner">
-    <a class="logo" href="./" style="text-decoration:none">mono<span>.create</span> Creators</a>
+    <a class="logo" href="./">
+      <img src="favicon.svg" alt="クリエイターズリスト ロゴ">
+      <span class="lg-name">クリエイターズリスト<span class="lg-sub">動画編集者派遣 by mono.create</span></span>
+    </a>
     <nav>
       <ul>
         <li><a href="#flow">派遣の流れ</a></li>
+        <li><a href="#price">料金</a></li>
         <li><a href="#creators">編集者一覧</a></li>
         <li><a href="#contact">お問い合わせ</a></li>
       </ul>
@@ -242,6 +277,66 @@
       <div class="flow-card rv"><div class="num">3</div><h4>トライアル</h4><p>1本お試し編集で、相性とクオリティをご確認いただけます。</p></div>
       <div class="flow-card rv"><div class="num">4</div><h4>本稼働</h4><p>継続契約に移行します。<br>増員・交代も柔軟に対応します。</p></div>
     </div>
+  </div>
+</section>
+
+<!-- 料金 -->
+<section id="price" style="background:#fff;">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="eyebrow">PRICING</span>
+      <h2>料金</h2>
+      <p>1本あたりの目安料金です。テロップ量・エフェクト量などの編集内容により変動します。</p>
+    </div>
+    <div class="price-grid">
+      <div class="price-card hot rv">
+        <div class="price-badge">まずはお試しに人気</div>
+        <div class="p-cat">SHORT</div>
+        <h4>ショート動画</h4>
+        <div class="p-num"><small>¥</small>4,000<small>〜</small></div>
+        <div class="p-unit">1本あたり</div>
+        <ul>
+          <li>TikTok / Reels / Shorts</li>
+          <li>テロップ・効果音・カット</li>
+          <li>縦型フォーマット最適化</li>
+        </ul>
+      </div>
+      <div class="price-card rv">
+        <div class="p-cat">LONG 10min</div>
+        <h4>長尺動画(10分)</h4>
+        <div class="p-num"><small>¥</small>10,000<small>〜</small></div>
+        <div class="p-unit">1本あたり</div>
+        <ul>
+          <li>YouTube本編・対談など</li>
+          <li>フルテロップ・BGM・効果音</li>
+          <li>サムネイル相談可</li>
+        </ul>
+      </div>
+      <div class="price-card rv">
+        <div class="p-cat">LONG 15min</div>
+        <h4>長尺動画(15分)</h4>
+        <div class="p-num"><small>¥</small>15,000<small>〜</small></div>
+        <div class="p-unit">1本あたり</div>
+        <ul>
+          <li>セミナー・解説動画など</li>
+          <li>フルテロップ・BGM・効果音</li>
+          <li>チャプター構成の整理</li>
+        </ul>
+      </div>
+      <div class="price-card rv">
+        <div class="p-cat">LONG 20min</div>
+        <h4>長尺動画(20分)</h4>
+        <div class="p-num"><small>¥</small>20,000<small>〜</small></div>
+        <div class="p-unit">1本あたり</div>
+        <ul>
+          <li>企業VP・長編コンテンツ</li>
+          <li>フルテロップ・BGM・効果音</li>
+          <li>構成のご相談も可能</li>
+        </ul>
+      </div>
+    </div>
+    <p class="price-note rv">継続本数・ご予算に応じたお見積りも承ります。<br>まずは1本のトライアルからお試しいただけます。</p>
+    <div class="price-cta rv"><a class="btn btn-primary" href="#contact">料金について相談する</a></div>
   </div>
 </section>
 
@@ -339,7 +434,8 @@
 </section>
 
 <footer>
-  <div class="fname">mono.create Creators</div>
+  <img src="favicon.svg" alt="" style="width:44px;height:44px;border-radius:12px;margin:0 auto 12px;">
+  <div class="fname">クリエイターズリスト</div>
   <div>動画編集者派遣事業</div>
   <div style="margin-top:14px;">© mono.create</div>
 </footer>
