@@ -91,6 +91,7 @@
     <button class="tab active" data-tab="requests">派遣依頼</button>
     <button class="tab" data-tab="payments">支払い管理</button>
     <button class="tab" data-tab="editors">編集者 稼働状況</button>
+    <button class="tab" data-tab="contracts">契約書</button>
     <div style="margin-left:auto;display:flex;gap:8px;">
       <button class="btn btn-sm btn-ghost" onclick="loadRequests()">🔄 更新</button>
       <button class="btn btn-sm btn-ghost" onclick="logout()">キー変更</button>
@@ -144,6 +145,36 @@
             <tr><th>名前</th><th>ジャンル</th><th>月の対応本数</th><th>稼働時間帯</th><th>担当中の案件</th><th>稼働判定</th></tr>
           </thead>
           <tbody id="editor-rows"><tr><td colspan="6" class="empty">読み込み中...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-contracts" class="hidden">
+    <div class="card">
+      <h3>業務委託契約書の発行</h3>
+      <p class="desc">氏名とメールを入力して発行すると、本人が氏名を確認して締結できる契約ページのURLが作られます。URLをメール・Chatworkでお送りください。</p>
+      <div style="display:grid;grid-template-columns:140px 1fr 1fr auto;gap:10px;align-items:end;max-width:820px;">
+        <div><label style="font-size:11.5px;font-weight:700;color:var(--sub);">契約の種類</label>
+          <select id="ct-type" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;">
+            <option value="editor">編集者(業務委託)</option>
+            <option value="client">クライアント(取引基本)</option>
+          </select></div>
+        <div><label style="font-size:11.5px;font-weight:700;color:var(--sub);">相手の氏名/会社名</label>
+          <input id="ct-name" type="text" placeholder="例: 山田太郎" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;"></div>
+        <div><label style="font-size:11.5px;font-weight:700;color:var(--sub);">メールアドレス</label>
+          <input id="ct-email" type="email" placeholder="例: taro@example.com" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;"></div>
+        <button onclick="issueContract()" id="ct-btn" style="padding:10px 22px;border:none;border-radius:8px;background:var(--brand);color:#fff;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;">発行する</button>
+      </div>
+      <div id="ct-result" style="margin-top:14px;"></div>
+    </div>
+    <div class="card">
+      <h3>締結済みの契約</h3>
+      <p class="desc">本人が契約ページで締結すると、ここに記録とPDFが並びます。</p>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>締結日</th><th>氏名</th><th>メール</th><th>種別</th><th>状態</th><th>PDF</th></tr></thead>
+          <tbody id="contract-rows"><tr><td colspan="6" class="empty">「契約書」タブを開くと読み込みます</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -248,6 +279,8 @@
     document.getElementById('tab-requests').classList.toggle('hidden',t.dataset.tab!=='requests');
     document.getElementById('tab-payments').classList.toggle('hidden',t.dataset.tab!=='payments');
     document.getElementById('tab-editors').classList.toggle('hidden',t.dataset.tab!=='editors');
+    document.getElementById('tab-contracts').classList.toggle('hidden',t.dataset.tab!=='contracts');
+    if(t.dataset.tab==='contracts')loadContracts();
     if(t.dataset.tab==='payments')renderPayments();
   }));
 
@@ -358,6 +391,50 @@
   if(KEY){
     document.getElementById('gate-key').value = KEY;
     unlock();
+  }
+
+  // ===== 契約書 =====
+  async function issueContract(){
+    const type = document.getElementById('ct-type').value;
+    const name = document.getElementById('ct-name').value.trim();
+    const email = document.getElementById('ct-email').value.trim();
+    const out = document.getElementById('ct-result');
+    if(!name || !email){ out.innerHTML = '<span style="color:var(--danger);font-size:12.5px;">氏名とメールを入力してください</span>'; return; }
+    const btn = document.getElementById('ct-btn');
+    btn.disabled = true; btn.textContent = '発行中...';
+    try{
+      const res = await fetch(`${GAS_URL}?action=create_contract_token&type=${encodeURIComponent(type)}&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}`);
+      const json = await res.json();
+      if(json.success && json.url){
+        out.innerHTML = `<div style="background:var(--ok-bg);border-radius:8px;padding:12px 14px;font-size:12.5px;">
+          ✅ 発行しました。以下のURLを <b>${esc(name)}</b> さん(${esc(email)})に送ってください。<br>
+          <input id="ct-url" value="${esc(json.url)}" readonly style="width:100%;margin-top:6px;padding:8px;border:1px solid var(--line);border-radius:6px;font-size:12px;background:#fff;">
+          <button onclick="navigator.clipboard.writeText(document.getElementById('ct-url').value).then(()=>this.textContent='コピーしました')" style="margin-top:6px;padding:6px 14px;border:1px solid var(--line);border-radius:6px;background:#fff;font-size:12px;cursor:pointer;">URLをコピー</button>
+        </div>`;
+      } else {
+        out.innerHTML = `<span style="color:var(--danger);font-size:12.5px;">発行に失敗しました: ${esc(json.error||'不明なエラー')}</span>`;
+      }
+    }catch(e){
+      out.innerHTML = '<span style="color:var(--danger);font-size:12.5px;">通信エラー。時間をおいて再度お試しください。</span>';
+    }
+    btn.disabled = false; btn.textContent = '発行する';
+  }
+  async function loadContracts(){
+    const tbody = document.getElementById('contract-rows');
+    tbody.innerHTML = '<tr><td colspan="6" class="empty">読み込み中...</td></tr>';
+    try{
+      const res = await fetch(`${GAS_URL}?action=contracts`);
+      const json = await res.json();
+      const list = json.data || [];
+      if(!list.length){ tbody.innerHTML = '<tr><td colspan="6" class="empty">締結済みの契約はまだありません</td></tr>'; return; }
+      tbody.innerHTML = list.map(c=>`<tr>
+        <td>${esc(String(c.date).slice(0,10))}</td><td>${esc(c.name)}</td><td>${esc(c.email)}</td>
+        <td>${esc(c.plan||c.ver||'')}</td><td>${esc(c.stage||'締結済み')}</td>
+        <td>${c.pdfUrl?`<a href="${esc(c.pdfUrl)}" target="_blank" rel="noopener" style="color:var(--brand);font-weight:700;">開く</a>`:'-'}</td>
+      </tr>`).join('');
+    }catch(e){
+      tbody.innerHTML = '<tr><td colspan="6" class="empty">読み込みに失敗しました</td></tr>';
+    }
   }
 </script>
 
