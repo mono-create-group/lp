@@ -227,7 +227,7 @@
 
 <section class="hero" id="top">
   <!-- hero.jpg(店舗写真 or AI生成画像)があれば背景表示。hero.mp4を置けば映像が優先される -->
-  <img class="hero-video" src="hero.jpg" alt="" style="display:block" onerror="this.remove()">
+  <img class="hero-video" src="hero.jpg" alt="" style="display:block" onerror="this.remove()" onload="var p=this.parentElement.querySelector('.ph');if(p)p.style.display='none';">
   <!-- 店舗写真から生成したAI映像(Seedance等)を hero.mp4 としてこのフォルダに置くと自動で背景再生されます -->
   <video class="hero-video" autoplay muted loop playsinline preload="metadata" onloadeddata="this.style.display='block'">
     <source src="hero.mp4" type="video/mp4">
