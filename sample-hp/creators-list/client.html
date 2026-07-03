@@ -160,6 +160,15 @@
   .m-send{width:100%;padding:13px;border:none;border-radius:99px;background:linear-gradient(90deg,var(--brand),#6d28d9);color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;}
   .m-note{font-size:10.5px;color:#94a3b8;margin-top:8px;text-align:center;}
 
+  /* 現場イメージ */
+  .studio{padding-top:0;}
+  .studio-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:20px;max-width:1080px;margin:0 auto;}
+  .studio-card{position:relative;border-radius:22px;overflow:hidden;box-shadow:0 18px 44px rgba(15,23,42,.14);}
+  .studio-card img{width:100%;height:100%;object-fit:cover;aspect-ratio:16/9;display:block;transition:transform .4s ease;}
+  .studio-card:hover img{transform:scale(1.03);}
+  .studio-card figcaption{position:absolute;left:0;right:0;bottom:0;padding:26px 22px 16px;background:linear-gradient(180deg,transparent,rgba(15,23,42,.72));color:#fff;font-size:13px;font-weight:800;letter-spacing:.02em;}
+  @media (max-width:860px){.studio-grid{grid-template-columns:1fr;}}
+
   /* 料金 */
   .price-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;max-width:1080px;margin:0 auto;}
   .price-card{position:relative;background:#fff;border:1px solid var(--line);border-radius:20px;padding:30px 22px 26px;text-align:center;transition:transform .2s ease,box-shadow .2s ease;}
@@ -277,6 +286,14 @@
       <div class="flow-card rv"><div class="num">3</div><h4>トライアル</h4><p>1本お試し編集で、相性とクオリティをご確認いただけます。</p></div>
       <div class="flow-card rv"><div class="num">4</div><h4>本稼働</h4><p>継続契約に移行します。<br>増員・交代も柔軟に対応します。</p></div>
     </div>
+  </div>
+</section>
+
+<!-- 現場イメージ -->
+<section class="studio">
+  <div class="studio-grid">
+    <figure class="studio-card rv"><img src="img/workspace.jpg" alt="動画編集者の制作ワークスペース" loading="lazy"><figcaption>🎬 プロの制作ラインを、そのまま貴社の戦力に</figcaption></figure>
+    <figure class="studio-card rv"><img src="img/handshake.jpg" alt="クライアントと編集チームの打ち合わせ" loading="lazy"><figcaption>🤝 担当ディレクターが継続的に伴走します</figcaption></figure>
   </div>
 </section>
 
