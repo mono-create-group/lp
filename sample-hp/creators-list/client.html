@@ -13,6 +13,9 @@
 <meta property="og:locale" content="ja_JP">
 <meta property="og:title" content="動画編集者派遣｜クリエイターズリスト｜mono.create">
 <meta property="og:description" content="編集者不足を最短3日で解消。プロフィールを見て指名できる動画編集者派遣。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -36,195 +39,248 @@
 </script>
 <style>
   :root{
-    --brand:#4f46e5;
-    --brand2:#06b6d4;
-    --brand-dark:#3730a3;
-    --ink:#0f172a;
-    --sub:#64748b;
-    --bg:#f8faff;
-    --line:#e2e8f0;
-    --glass:rgba(255,255,255,.72);
+    --coral:#e2704a;
+    --coral-2:#ef8f66;
+    --coral-soft:#fbe9df;
+    --amber:#f3b34c;
+    --amber-soft:#fdf3df;
+    --green:#7cab72;
+    --green-soft:#e9f2e5;
+    --blue:#6f92c9;
+    --blue-soft:#e8eef9;
+    --purple:#a48ad0;
+    --purple-soft:#f0eaf9;
+    --ink:#40403a;
+    --sub:#8a8778;
+    --bg:#fdfbf7;
+    --cream:#faf3e7;
+    --line:#efe8db;
+    --card:#ffffff;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
   html{scroll-behavior:smooth;}
   body{
     font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN",sans-serif;
-    color:var(--ink);background:var(--bg);line-height:1.85;
+    color:var(--ink);background:var(--bg);line-height:1.9;
     word-break:keep-all;overflow-wrap:anywhere;
   }
+  h1,h2,h3,h4,.logo,.btn{font-family:"Zen Maru Gothic","Noto Sans JP",sans-serif;}
   a{color:inherit;}
   img{max-width:100%;display:block;}
-  .wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 24px;}
 
-  /* ヘッダー */
-  header{position:sticky;top:0;z-index:100;background:var(--glass);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);}
-  .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;max-width:1080px;margin:0 auto;gap:10px;}
-  .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:17px;letter-spacing:.02em;white-space:nowrap;text-decoration:none;}
-  .logo img{width:34px;height:34px;border-radius:9px;box-shadow:0 2px 8px rgba(15,23,42,.12);}
+  /* ===== ヘッダー ===== */
+  header{position:sticky;top:0;z-index:100;background:rgba(253,251,247,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;max-width:1100px;margin:0 auto;gap:10px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:16.5px;white-space:nowrap;text-decoration:none;}
+  .logo img{width:36px;height:36px;border-radius:10px;}
   .logo .lg-name{line-height:1.2;}
-  .logo .lg-sub{display:block;font-size:9.5px;font-weight:700;color:var(--sub);letter-spacing:.12em;}
-  nav ul{list-style:none;display:flex;gap:24px;font-size:13.5px;}
+  .logo .lg-sub{display:block;font-size:9px;font-weight:700;color:var(--sub);letter-spacing:.18em;font-family:"Noto Sans JP",sans-serif;}
+  nav ul{list-style:none;display:flex;gap:22px;font-size:13px;}
   nav a{text-decoration:none;color:var(--sub);font-weight:600;}
-  nav a:hover{color:var(--brand);}
-  .nav-cta{background:linear-gradient(90deg,var(--brand),#6d28d9);color:#fff;padding:9px 20px;border-radius:99px;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap;box-shadow:0 4px 14px rgba(79,70,229,.35);}
-  .nav-editor{font-size:12px;color:var(--sub);text-decoration:none;white-space:nowrap;}
-  .nav-editor:hover{color:var(--brand);}
+  nav a:hover{color:var(--coral);}
+  .nav-cta{background:linear-gradient(90deg,var(--coral),var(--coral-2));color:#fff;padding:10px 22px;border-radius:99px;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap;box-shadow:0 6px 16px rgba(226,112,74,.3);}
 
-  /* ヒーロー */
-  .hero{position:relative;padding:96px 24px 72px;text-align:center;overflow:hidden;
-    background:
-      radial-gradient(600px 400px at 15% 10%,rgba(79,70,229,.16),transparent 60%),
-      radial-gradient(700px 500px at 85% 20%,rgba(6,182,212,.15),transparent 60%),
-      linear-gradient(180deg,#fff,#eef2ff);
-  }
-  .blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.5;animation:float 9s ease-in-out infinite;pointer-events:none;}
-  .blob1{width:340px;height:340px;background:#c7d2fe;top:-120px;left:-80px;}
-  .blob2{width:280px;height:280px;background:#a5f3fc;bottom:-100px;right:-60px;animation-delay:-4.5s;}
-  @keyframes float{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(26px) scale(1.06);}}
-  .hero .badge{display:inline-block;background:#fff;border:1px solid var(--line);color:var(--brand-dark);font-size:12.5px;font-weight:700;padding:7px 18px;border-radius:99px;margin-bottom:24px;box-shadow:0 2px 10px rgba(15,23,42,.05);}
-  .hero h1{font-size:clamp(30px,5.6vw,52px);font-weight:900;letter-spacing:.01em;line-height:1.35;margin-bottom:20px;}
-  .hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--brand),var(--brand2));-webkit-background-clip:text;background-clip:text;color:transparent;}
-  .hero p{color:var(--sub);font-size:15.5px;max-width:640px;margin:0 auto 34px;}
-  .hero-cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;position:relative;z-index:2;}
-  .btn{padding:15px 34px;border-radius:99px;font-weight:800;font-size:14.5px;text-decoration:none;display:inline-block;transition:transform .15s ease,box-shadow .15s ease;}
+  /* ===== ヒーロー ===== */
+  .hero{position:relative;overflow:hidden;}
+  .hero::before{content:"";position:absolute;width:520px;height:520px;border-radius:50%;background:radial-gradient(closest-side,rgba(111,146,201,.14),transparent);top:-140px;right:-80px;}
+  .hero::after{content:"";position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(closest-side,rgba(243,179,76,.16),transparent);bottom:-160px;left:-120px;}
+  .hero-inner{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:72px 24px 84px;display:grid;grid-template-columns:1.02fr .98fr;gap:44px;align-items:center;}
+  .hero h1{font-size:clamp(26px,4vw,40px);font-weight:900;line-height:1.55;letter-spacing:.02em;margin-bottom:18px;}
+  .hero h1 em{font-style:normal;color:var(--coral);}
+  .hero .lead{color:var(--sub);font-size:15px;margin-bottom:26px;}
+  .hero-badges{display:flex;gap:22px;flex-wrap:wrap;margin-bottom:30px;}
+  .hbadge{display:flex;align-items:center;gap:9px;}
+  .hbadge .ic{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .hbadge:nth-child(1) .ic{background:var(--coral-soft);color:var(--coral);}
+  .hbadge:nth-child(2) .ic{background:var(--amber-soft);color:#d9932c;}
+  .hbadge:nth-child(3) .ic{background:var(--green-soft);color:var(--green);}
+  .hbadge .tx{font-size:10.5px;color:var(--sub);font-weight:700;line-height:1.4;}
+  .hbadge .tx b{display:block;font-size:14.5px;color:var(--ink);font-weight:900;}
+  .btn{padding:15px 34px;border-radius:99px;font-weight:800;font-size:14.5px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:transform .15s ease,box-shadow .15s ease;}
   .btn:active{transform:scale(.97);}
-  .btn-primary{background:linear-gradient(90deg,var(--brand),#6d28d9);color:#fff;box-shadow:0 8px 24px rgba(79,70,229,.35);}
-  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(79,70,229,.45);}
-  .btn-outline{border:1.5px solid var(--line);color:var(--ink);background:#fff;}
-  .btn-outline:hover{border-color:var(--brand);color:var(--brand);}
+  .btn-primary{background:linear-gradient(90deg,var(--coral),var(--coral-2));color:#fff;box-shadow:0 10px 24px rgba(226,112,74,.32);}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(226,112,74,.4);}
+  .btn-outline{border:1.5px solid var(--coral);color:var(--coral);background:#fff;margin-left:10px;}
+  .btn-outline:hover{background:var(--coral-soft);}
+  .hero-note{font-size:11px;color:var(--sub);margin-top:12px;}
+  .hero-visual{position:relative;}
+  .hero-visual .ph-wrap{position:relative;border-radius:28px;overflow:hidden;box-shadow:0 24px 54px rgba(64,64,58,.16);}
+  .hero-visual img{aspect-ratio:16/11;object-fit:cover;width:100%;}
+  .hv-chip{position:absolute;background:#fff;border:1px solid var(--line);border-radius:14px;padding:9px 14px;font-size:11px;font-weight:800;box-shadow:0 10px 24px rgba(64,64,58,.12);display:flex;align-items:center;gap:8px;z-index:2;}
+  .hv-chip .dot{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;}
+  .hvc1{top:-12px;left:-12px;}
+  .hvc1 .dot{background:var(--blue-soft);}
+  .hvc2{bottom:-12px;right:-10px;}
+  .hvc2 .dot{background:var(--coral-soft);}
 
-  /* 実績 */
-  .stats{padding:0 24px;margin-top:-34px;position:relative;z-index:3;}
-  .stats-grid{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
-  .stat{background:var(--glass);backdrop-filter:blur(10px);border:1px solid #fff;border-radius:18px;padding:22px 12px;text-align:center;box-shadow:0 12px 30px rgba(15,23,42,.08);}
-  .stat-num{font-size:26px;font-weight:900;background:linear-gradient(90deg,var(--brand),var(--brand2));-webkit-background-clip:text;background-clip:text;color:transparent;}
-  .stat-label{font-size:12px;color:var(--sub);margin-top:2px;font-weight:600;}
-
-  section{padding:84px 24px;}
+  /* ===== セクション共通 ===== */
+  section{padding:80px 24px;position:relative;}
   .sec-head{text-align:center;margin-bottom:44px;}
-  .sec-head .eyebrow{color:var(--brand);font-size:12.5px;font-weight:800;letter-spacing:.14em;display:block;margin-bottom:10px;}
-  .sec-head h2{font-size:clamp(22px,4vw,32px);font-weight:900;}
-  .sec-head p{color:var(--sub);font-size:14px;margin-top:12px;}
+  .sec-head h2{font-size:clamp(21px,3.8vw,30px);font-weight:900;letter-spacing:.03em;}
+  .sec-head p{color:var(--sub);font-size:13.5px;margin-top:10px;}
+  .sec-head .deco{width:46px;height:5px;border-radius:99px;background:linear-gradient(90deg,var(--coral),var(--amber));margin:14px auto 0;}
 
-  /* 流れ */
-  .flow-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;max-width:1080px;margin:0 auto;}
-  .flow-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px 20px;transition:transform .2s ease,box-shadow .2s ease;}
-  .flow-card:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(15,23,42,.08);}
-  .flow-card .num{width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;margin-bottom:14px;}
-  .flow-card h4{font-size:15px;margin-bottom:8px;font-weight:800;}
-  .flow-card p{font-size:12.5px;color:var(--sub);}
+  /* ===== サービス6カード ===== */
+  .svc-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;max-width:1100px;margin:0 auto;}
+  .svc-card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:26px 12px;text-align:center;transition:transform .2s ease,box-shadow .2s ease;}
+  .svc-card:hover{transform:translateY(-5px);box-shadow:0 16px 32px rgba(64,64,58,.1);}
+  .svc-card .ic{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:23px;}
+  .svc-card:nth-child(1) .ic{background:var(--coral-soft);}
+  .svc-card:nth-child(2) .ic{background:var(--blue-soft);}
+  .svc-card:nth-child(3) .ic{background:var(--green-soft);}
+  .svc-card:nth-child(4) .ic{background:var(--coral-soft);}
+  .svc-card:nth-child(5) .ic{background:var(--purple-soft);}
+  .svc-card:nth-child(6) .ic{background:var(--amber-soft);}
+  .svc-card h4{font-size:13.5px;font-weight:800;margin-bottom:5px;}
+  .svc-card p{font-size:10px;color:var(--sub);line-height:1.7;}
 
-  /* 編集者一覧 */
-  .creators{background:linear-gradient(180deg,var(--bg),#eef2ff 130%);}
+  /* ===== 実績バンド ===== */
+  .stats-band{background:var(--cream);border-radius:0;padding:56px 24px;}
+  .stats-band h3{text-align:center;font-size:clamp(17px,3vw,22px);font-weight:900;margin-bottom:34px;font-family:"Zen Maru Gothic",sans-serif;}
+  .stats-grid{max-width:860px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .stat{display:flex;align-items:center;gap:14px;justify-content:center;}
+  .stat .ic{width:52px;height:52px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 6px 16px rgba(64,64,58,.08);flex-shrink:0;}
+  .stat .lb{font-size:11px;color:var(--sub);font-weight:700;}
+  .stat .num{font-size:26px;font-weight:900;font-family:"Zen Maru Gothic",sans-serif;line-height:1.3;}
+  .stat .num small{font-size:13px;}
+
+  /* ===== 編集者一覧 ===== */
   .fmt-tabs{display:flex;justify-content:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
-  .fmt-tab{padding:10px 26px;border-radius:99px;border:1.5px solid var(--line);background:#fff;font-size:13.5px;font-weight:800;color:var(--sub);cursor:pointer;transition:.15s;}
-  .fmt-tab.act{background:linear-gradient(90deg,var(--brand),#6d28d9);border-color:transparent;color:#fff;box-shadow:0 6px 16px rgba(79,70,229,.3);}
-  .genre-label{text-align:center;font-size:11.5px;color:var(--sub);font-weight:700;letter-spacing:.08em;margin:14px 0 8px;}
+  .fmt-tab{padding:10px 26px;border-radius:99px;border:1.5px solid var(--line);background:#fff;font-size:13px;font-weight:800;color:var(--sub);cursor:pointer;transition:.15s;font-family:"Zen Maru Gothic",sans-serif;}
+  .fmt-tab.act{background:linear-gradient(90deg,var(--coral),var(--coral-2));border-color:transparent;color:#fff;box-shadow:0 6px 16px rgba(226,112,74,.3);}
+  .genre-label{text-align:center;font-size:11px;color:var(--sub);font-weight:700;letter-spacing:.08em;margin:14px 0 8px;}
   .genre-tags{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:36px;}
   .genre-tag{font-size:12px;padding:7px 16px;border-radius:99px;background:#fff;border:1px solid var(--line);color:var(--sub);cursor:pointer;font-weight:600;transition:.15s;}
   .genre-tag.act{background:var(--ink);border-color:var(--ink);color:#fff;}
-  .creator-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;}
-  .creator-card{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease;position:relative;}
-  .creator-card:hover{transform:translateY(-5px);box-shadow:0 18px 40px rgba(15,23,42,.12);}
-  .creator-card .ph{height:170px;background:linear-gradient(135deg,#e0e7ff,#f0fdff);display:flex;align-items:center;justify-content:center;color:#93a3c8;font-size:12px;}
-  .creator-card img.ph-img{height:170px;width:100%;object-fit:cover;}
+  .creator-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:20px;}
+  .creator-card{background:#fff;border:1px solid var(--line);border-radius:22px;overflow:hidden;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease;position:relative;}
+  .creator-card:hover{transform:translateY(-5px);box-shadow:0 18px 40px rgba(64,64,58,.13);}
+  .creator-card .ph{height:180px;background:linear-gradient(135deg,var(--blue-soft),var(--cream));display:flex;align-items:center;justify-content:center;color:#b5ad9b;font-size:12px;}
+  .creator-card img.ph-img{height:180px;width:100%;object-fit:cover;}
   .creator-body{padding:18px 20px 20px;}
-  .creator-body h4{font-size:16.5px;font-weight:800;}
-  .creator-body .role{font-size:12px;color:var(--sub);margin-bottom:10px;}
+  .creator-body h4{font-size:16px;font-weight:800;}
+  .creator-body .role{font-size:11.5px;color:var(--sub);margin-bottom:10px;}
   .tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
-  .tags span{font-size:10.5px;background:#eef2ff;color:var(--brand-dark);padding:4px 10px;border-radius:8px;font-weight:700;}
-  .creator-body .meta{font-size:11.5px;color:#94a3b8;}
-  .card-more{margin-top:12px;font-size:12.5px;font-weight:800;color:var(--brand);}
+  .tags span{font-size:10.5px;background:var(--blue-soft);color:#54719f;padding:4px 10px;border-radius:8px;font-weight:700;}
+  .creator-body .meta{font-size:11px;color:#b5ad9b;}
+  .card-more{margin-top:12px;font-size:12px;font-weight:800;color:var(--coral);}
   .empty-note{grid-column:1/-1;text-align:center;color:var(--sub);font-size:13px;padding:40px 0;}
 
-  /* 詳細モーダル */
-  .modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(4px);z-index:200;display:none;align-items:flex-start;justify-content:center;padding:30px 16px;overflow-y:auto;}
+  /* ===== 詳細モーダル ===== */
+  .modal-bg{position:fixed;inset:0;background:rgba(64,64,58,.5);backdrop-filter:blur(4px);z-index:200;display:none;align-items:flex-start;justify-content:center;padding:30px 16px;overflow-y:auto;}
   .modal-bg.open{display:flex;}
-  .modal{background:#fff;border-radius:22px;max-width:560px;width:100%;overflow:hidden;animation:pop .22s ease;}
+  .modal{background:#fff;border-radius:24px;max-width:560px;width:100%;overflow:hidden;animation:pop .22s ease;}
   @keyframes pop{from{opacity:0;transform:translateY(14px) scale(.98);}to{opacity:1;transform:none;}}
   .modal .m-head{position:relative;}
   .modal .m-head img{width:100%;height:220px;object-fit:cover;}
-  .modal .m-head .ph{height:220px;background:linear-gradient(135deg,#e0e7ff,#f0fdff);display:flex;align-items:center;justify-content:center;color:#93a3c8;}
-  .m-close{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;background:rgba(15,23,42,.55);color:#fff;border:none;font-size:16px;cursor:pointer;}
+  .modal .m-head .ph{height:220px;background:linear-gradient(135deg,var(--blue-soft),var(--cream));display:flex;align-items:center;justify-content:center;color:#b5ad9b;}
+  .m-close{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;background:rgba(64,64,58,.55);color:#fff;border:none;font-size:16px;cursor:pointer;}
   .m-body{padding:24px 26px 28px;}
   .m-body h3{font-size:20px;font-weight:900;}
   .m-sub{font-size:12.5px;color:var(--sub);margin-bottom:14px;}
   .m-row{display:flex;gap:10px;padding:9px 0;border-top:1px solid var(--line);font-size:13px;}
   .m-row .k{width:110px;flex-shrink:0;color:var(--sub);font-weight:700;font-size:12px;padding-top:1px;}
   .m-row .v{min-width:0;flex:1;}
-  .m-row .v a{color:var(--brand);font-weight:700;word-break:break-all;}
-  .m-contact{margin-top:18px;background:#f8faff;border:1px solid var(--line);border-radius:16px;padding:18px;}
+  .m-row .v a{color:var(--coral);font-weight:700;word-break:break-all;}
+  .m-contact{margin-top:18px;background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:18px;}
   .m-contact h5{font-size:13.5px;font-weight:800;margin-bottom:10px;}
   .m-contact input,.m-contact textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font-size:13.5px;font-family:inherit;margin-bottom:8px;background:#fff;}
   .m-contact textarea{min-height:70px;resize:vertical;}
-  .m-send{width:100%;padding:13px;border:none;border-radius:99px;background:linear-gradient(90deg,var(--brand),#6d28d9);color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;}
-  .m-note{font-size:10.5px;color:#94a3b8;margin-top:8px;text-align:center;}
+  .m-send{width:100%;padding:13px;border:none;border-radius:99px;background:linear-gradient(90deg,var(--coral),var(--coral-2));color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;}
+  .m-note{font-size:10.5px;color:#b5ad9b;margin-top:8px;text-align:center;}
 
-  /* 現場イメージ */
-  .studio{padding-top:0;}
-  .studio-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:20px;max-width:1080px;margin:0 auto;}
-  .studio-card{position:relative;border-radius:22px;overflow:hidden;box-shadow:0 18px 44px rgba(15,23,42,.14);}
-  .studio-card img{width:100%;height:100%;object-fit:cover;aspect-ratio:16/9;display:block;transition:transform .4s ease;}
-  .studio-card:hover img{transform:scale(1.03);}
-  .studio-card figcaption{position:absolute;left:0;right:0;bottom:0;padding:26px 22px 16px;background:linear-gradient(180deg,transparent,rgba(15,23,42,.72));color:#fff;font-size:13px;font-weight:800;letter-spacing:.02em;}
-  @media (max-width:860px){.studio-grid{grid-template-columns:1fr;}}
+  /* ===== ご利用の流れ ===== */
+  .flow-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-width:1020px;margin:0 auto;position:relative;}
+  .flow-grid::before{content:"";position:absolute;top:36px;left:9%;right:9%;border-top:2px dashed #e5d9c4;}
+  .flow-card{text-align:center;padding:0 8px;position:relative;}
+  .flow-card .f-ic{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 12px;position:relative;z-index:1;box-shadow:0 0 0 8px var(--bg);}
+  .flow-card:nth-child(1) .f-ic{background:var(--coral-soft);}
+  .flow-card:nth-child(2) .f-ic{background:var(--amber-soft);}
+  .flow-card:nth-child(3) .f-ic{background:var(--green-soft);}
+  .flow-card:nth-child(4) .f-ic{background:var(--blue-soft);}
+  .flow-card:nth-child(5) .f-ic{background:var(--purple-soft);}
+  .flow-card .n{width:22px;height:22px;border-radius:50%;color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;margin:-24px auto 10px;position:relative;z-index:2;transform:translateX(28px);}
+  .flow-card:nth-child(1) .n{background:var(--coral);}
+  .flow-card:nth-child(2) .n{background:var(--amber);}
+  .flow-card:nth-child(3) .n{background:var(--green);}
+  .flow-card:nth-child(4) .n{background:var(--blue);}
+  .flow-card:nth-child(5) .n{background:var(--purple);}
+  .flow-card h4{font-size:14px;font-weight:800;margin-bottom:5px;}
+  .flow-card p{font-size:11px;color:var(--sub);line-height:1.7;}
 
-  /* 料金 */
-  .price-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;max-width:1080px;margin:0 auto;}
-  .price-card{position:relative;background:#fff;border:1px solid var(--line);border-radius:20px;padding:30px 22px 26px;text-align:center;transition:transform .2s ease,box-shadow .2s ease;}
-  .price-card:hover{transform:translateY(-4px);box-shadow:0 16px 34px rgba(15,23,42,.10);}
-  .price-card.hot{border:2px solid var(--brand);box-shadow:0 12px 30px rgba(79,70,229,.14);}
-  .price-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(90deg,var(--brand),#6d28d9);color:#fff;font-size:10.5px;font-weight:800;padding:4px 14px;border-radius:99px;letter-spacing:.06em;white-space:nowrap;}
-  .price-card .p-cat{font-size:11px;font-weight:800;color:var(--brand-dark);letter-spacing:.1em;margin-bottom:6px;}
-  .price-card h4{font-size:15.5px;font-weight:900;margin-bottom:14px;}
-  .price-card .p-num{font-size:30px;font-weight:900;letter-spacing:-.01em;background:linear-gradient(90deg,var(--brand),var(--brand2));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  /* ===== 料金 ===== */
+  .price-sec{background:var(--cream);}
+  .price-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;max-width:1100px;margin:0 auto;}
+  .price-card{position:relative;background:#fff;border:1px solid var(--line);border-radius:22px;padding:28px 20px 24px;text-align:center;transition:transform .2s ease,box-shadow .2s ease;}
+  .price-card:hover{transform:translateY(-4px);box-shadow:0 16px 34px rgba(64,64,58,.1);}
+  .price-card.hot{border:2px solid var(--coral);}
+  .price-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(90deg,var(--coral),var(--coral-2));color:#fff;font-size:10.5px;font-weight:800;padding:4px 14px;border-radius:99px;white-space:nowrap;}
+  .price-card .p-cat{font-size:10.5px;font-weight:800;color:var(--coral);letter-spacing:.1em;margin-bottom:6px;}
+  .price-card h4{font-size:15px;font-weight:900;margin-bottom:12px;}
+  .price-card .p-num{font-size:28px;font-weight:900;color:var(--coral);font-family:"Zen Maru Gothic",sans-serif;}
   .price-card .p-num small{font-size:13px;font-weight:800;}
-  .price-card .p-unit{font-size:11px;color:var(--sub);font-weight:700;margin-top:2px;}
-  .price-card ul{list-style:none;margin-top:16px;border-top:1px solid var(--line);padding-top:14px;text-align:left;}
-  .price-card ul li{font-size:12px;color:var(--sub);padding:3px 0 3px 20px;position:relative;}
-  .price-card ul li::before{content:"✓";position:absolute;left:0;color:var(--brand);font-weight:900;}
-  .price-note{text-align:center;font-size:12px;color:var(--sub);margin-top:22px;line-height:2;}
-  .price-cta{text-align:center;margin-top:26px;}
-  @media (max-width:1020px){.price-grid{grid-template-columns:repeat(2,1fr);}}
-  @media (max-width:560px){.price-grid{grid-template-columns:1fr;max-width:360px;}}
+  .price-card .p-unit{font-size:10.5px;color:var(--sub);font-weight:700;margin-top:2px;}
+  .price-card ul{list-style:none;margin-top:14px;border-top:1px dashed var(--line);padding-top:12px;text-align:left;}
+  .price-card ul li{font-size:11.5px;color:var(--sub);padding:3px 0 3px 20px;position:relative;}
+  .price-card ul li::before{content:"✓";position:absolute;left:2px;color:var(--green);font-weight:900;}
+  .price-note{text-align:center;font-size:11.5px;color:var(--sub);margin-top:20px;line-height:2;}
+  .price-cta{text-align:center;margin-top:24px;}
 
-  /* 選ばれる理由 */
-  .why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1080px;margin:0 auto;}
-  .why-card{text-align:center;background:#fff;border:1px solid var(--line);border-radius:20px;padding:34px 22px;transition:transform .2s ease,box-shadow .2s ease;}
-  .why-card:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(15,23,42,.08);}
-  .why-card .icon{width:60px;height:60px;border-radius:18px;background:linear-gradient(135deg,#eef2ff,#ecfeff);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 16px;}
-  .why-card h4{font-size:15.5px;margin-bottom:8px;font-weight:800;}
-  .why-card p{font-size:13px;color:var(--sub);}
-
-  /* お問い合わせ */
-  .request{background:linear-gradient(180deg,#eef2ff -20%,var(--bg));}
-  .form-card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:40px;max-width:680px;margin:0 auto;box-shadow:0 18px 40px rgba(15,23,42,.07);}
+  /* ===== お問い合わせ ===== */
+  .form-card{background:#fff;border:1px solid var(--line);border-radius:26px;padding:40px;max-width:680px;margin:0 auto;box-shadow:0 18px 40px rgba(64,64,58,.07);}
   .form-row{margin-bottom:18px;}
   .form-row label{display:block;font-size:13px;font-weight:800;margin-bottom:6px;}
-  .form-row input,.form-row select,.form-row textarea{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:12px;font-size:14px;font-family:inherit;background:#fff;}
-  .form-row input:focus,.form-row select:focus,.form-row textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(79,70,229,.12);}
+  .form-row input,.form-row select,.form-row textarea{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:14px;font-size:14px;font-family:inherit;background:var(--bg);}
+  .form-row input:focus,.form-row select:focus,.form-row textarea:focus{outline:none;border-color:var(--coral);background:#fff;box-shadow:0 0 0 3px rgba(226,112,74,.12);}
   .form-row textarea{resize:vertical;min-height:100px;}
   .form-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-  .form-submit{width:100%;padding:16px;background:linear-gradient(90deg,var(--brand),#6d28d9);color:#fff;border:none;border-radius:99px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 8px 24px rgba(79,70,229,.35);}
+  .form-submit{width:100%;padding:16px;background:linear-gradient(90deg,var(--coral),var(--coral-2));color:#fff;border:none;border-radius:99px;font-size:15px;font-weight:800;cursor:pointer;font-family:"Zen Maru Gothic",sans-serif;box-shadow:0 10px 24px rgba(226,112,74,.3);}
   .form-submit:hover{transform:translateY(-1px);}
-  .form-note{font-size:11.5px;color:#94a3b8;margin-top:14px;text-align:center;}
+  .form-note{font-size:11px;color:#b5ad9b;margin-top:14px;text-align:center;}
 
-  footer{background:var(--ink);color:#94a3b8;text-align:center;padding:44px 24px;font-size:12px;}
-  footer .fname{color:#fff;font-size:15px;margin-bottom:10px;font-weight:800;}
-  footer a{color:#a5b4fc;font-weight:700;text-decoration:none;}
+  /* ===== 最終CTA ===== */
+  .final-cta{background:var(--cream);overflow:hidden;position:relative;}
+  .final-cta::before{content:"";position:absolute;width:380px;height:380px;border-radius:50%;background:radial-gradient(closest-side,rgba(226,112,74,.1),transparent);bottom:-140px;left:-100px;}
+  .final-inner{position:relative;max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;}
+  .final-inner h2{font-size:clamp(24px,4vw,36px);font-weight:900;line-height:1.6;margin-bottom:12px;}
+  .final-inner .fp{color:var(--sub);font-size:14px;margin-bottom:26px;}
+  .final-visual{position:relative;}
+  .final-visual img{border-radius:26px;box-shadow:0 20px 48px rgba(64,64,58,.16);aspect-ratio:16/10;object-fit:cover;}
+  .leaf{position:absolute;font-size:40px;opacity:.55;}
+  .leaf1{bottom:-8px;left:-34px;transform:rotate(-16deg);}
 
-  /* スクロール出現 */
+  footer{background:#fdfbf7;border-top:1px solid var(--line);padding:52px 24px 34px;font-size:12.5px;color:var(--sub);}
+  .foot-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:30px;}
+  .foot-brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:15px;color:var(--ink);margin-bottom:12px;font-family:"Zen Maru Gothic",sans-serif;}
+  .foot-brand img{width:36px;height:36px;border-radius:10px;}
+  footer h5{color:var(--ink);font-size:12.5px;font-weight:800;margin-bottom:12px;}
+  footer ul{list-style:none;}
+  footer li{padding:4px 0;}
+  footer a{text-decoration:none;}
+  footer a:hover{color:var(--coral);}
+  .foot-copy{max-width:1100px;margin:34px auto 0;padding-top:18px;border-top:1px solid var(--line);text-align:center;color:#b5ad9b;font-size:11px;}
+
   .rv{opacity:0;transform:translateY(18px);transition:opacity .5s ease,transform .5s ease;}
   .rv.in{opacity:1;transform:none;}
 
-  @media (max-width:860px){
+  @media (max-width:960px){
     nav ul{display:none;}
-    .flow-grid{grid-template-columns:repeat(2,1fr);}
-    .why-grid{grid-template-columns:1fr;}
-    .form-cols{grid-template-columns:1fr;}
-    .stats-grid{grid-template-columns:repeat(3,1fr);gap:8px;}
-    .stat-num{font-size:19px;}
+    .hero-inner{grid-template-columns:1fr;padding:48px 24px 64px;gap:36px;}
+    .svc-grid{grid-template-columns:repeat(3,1fr);}
+    .flow-grid{grid-template-columns:repeat(2,1fr);gap:26px 8px;}
+    .flow-grid::before{display:none;}
+    .price-grid{grid-template-columns:repeat(2,1fr);}
+    .final-inner{grid-template-columns:1fr;}
+    .foot-inner{grid-template-columns:1fr 1fr;}
     section{padding:60px 20px;}
+  }
+  @media (max-width:560px){
+    .svc-grid{grid-template-columns:repeat(2,1fr);}
+    .price-grid{grid-template-columns:1fr;max-width:340px;}
+    .form-cols{grid-template-columns:1fr;}
+    .stats-grid{grid-template-columns:1fr;gap:14px;}
+    .btn-outline{margin-left:0;margin-top:10px;}
   }
 </style>
 </head>
@@ -234,76 +290,122 @@
   <div class="nav-inner">
     <a class="logo" href="./">
       <img src="favicon.svg" alt="クリエイターズリスト ロゴ">
-      <span class="lg-name">クリエイターズリスト<span class="lg-sub">動画編集者派遣 by mono.create</span></span>
+      <span class="lg-name">クリエイターズリスト<span class="lg-sub">CREATORS LIST</span></span>
     </a>
     <nav>
       <ul>
-        <li><a href="#flow">派遣の流れ</a></li>
-        <li><a href="#price">料金</a></li>
+        <li><a href="#service">サービス</a></li>
         <li><a href="#creators">編集者一覧</a></li>
-        <li><a href="#contact">お問い合わせ</a></li>
+        <li><a href="#flow">ご利用の流れ</a></li>
+        <li><a href="#price">料金</a></li>
       </ul>
     </nav>
-    <div style="display:flex;align-items:center;gap:14px;">
-      <a class="nav-cta" href="#contact">お問い合わせ</a>
-    </div>
+    <a class="nav-cta" href="#contact">無料で相談する</a>
   </div>
 </header>
 
 <!-- ヒーロー -->
-<section class="hero">
-  <div class="blob blob1"></div>
-  <div class="blob blob2"></div>
-  <span class="badge">🎬 動画編集者派遣サービス</span>
-  <h1>編集者不足を<br><em>最短3日</em>で解消！</h1>
-  <p>mono.create在籍の編集チームから、必要なスキル・本数・期間だけを選んで派遣。<br>採用の手間をかけずに、制作ラインをすぐ補強できます。</p>
-  <div class="hero-cta">
-    <a class="btn btn-primary" href="#contact">お問い合わせ</a>
-    <a class="btn btn-outline" href="#creators">編集者一覧を見る</a>
+<section class="hero" style="padding:0;">
+  <div class="hero-inner">
+    <div>
+      <h1><span style="white-space:nowrap">あなたのプロジェクトに、</span><br><em>最高のクリエイター</em>を。</h1>
+      <p class="lead">クリエイターズリストは、動画編集者と企業をつなぐ編集者派遣サービスです。必要なスキル・本数・期間だけ選んで、最短3日でチームに迎えられます。</p>
+      <div class="hero-badges">
+        <div class="hbadge"><div class="ic">🎬</div><div class="tx">累計編集実績<b>1,000本+</b></div></div>
+        <div class="hbadge"><div class="ic">⚡</div><div class="tx">アサインまで<b>最短3日</b></div></div>
+        <div class="hbadge"><div class="ic">🤝</div><div class="tx">継続率<b>96%</b></div></div>
+      </div>
+      <div>
+        <a class="btn btn-primary" href="#contact">無料で相談してみる <span>›</span></a>
+      </div>
+      <p class="hero-note">1分で完了します</p>
+    </div>
+    <div class="hero-visual rv in">
+      <div class="ph-wrap"><img src="img/workspace.jpg" alt="動画編集の制作現場" loading="eager"></div>
+      <div class="hv-chip hvc1"><span class="dot">🖼</span>プロの制作ライン</div>
+      <div class="hv-chip hvc2"><span class="dot">💬</span>ディレクターが伴走</div>
+    </div>
   </div>
 </section>
 
-<!-- 実績 -->
-<div class="stats">
+<!-- サービス -->
+<section id="service">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <h2>対応可能な編集業務</h2>
+      <p>さまざまなジャンルの編集に対応しています。</p>
+      <div class="deco"></div>
+    </div>
+    <div class="svc-grid">
+      <div class="svc-card rv"><div class="ic">✂️</div><h4>動画編集</h4><p>YouTube・広告・企業VPなど幅広く対応</p></div>
+      <div class="svc-card rv"><div class="ic">🖼</div><h4>サムネイル制作</h4><p>クリックされるサムネイルを制作</p></div>
+      <div class="svc-card rv"><div class="ic">🎬</div><h4>ディレクション</h4><p>企画から納品まで一貫してサポート</p></div>
+      <div class="svc-card rv"><div class="ic">▶️</div><h4>YouTube運用</h4><p>チャンネル運用・分析・改善提案</p></div>
+      <div class="svc-card rv"><div class="ic">📱</div><h4>ショート動画</h4><p>TikTok・Instagram Reelsなどに最適化</p></div>
+      <div class="svc-card rv"><div class="ic">✨</div><h4>AI活用</h4><p>AIを活用した効率的な編集・提案</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 実績バンド -->
+<div class="stats-band">
+  <h3 class="rv">選ばれ続けるサービスです</h3>
   <div class="stats-grid">
-    <div class="stat"><div class="stat-num">1,000本+</div><div class="stat-label">累計編集実績</div></div>
-    <div class="stat"><div class="stat-num">最短3日</div><div class="stat-label">アサインまで</div></div>
-    <div class="stat"><div class="stat-num">96%</div><div class="stat-label">継続率</div></div>
+    <div class="stat rv"><div class="ic">🎞</div><div><div class="lb">累計編集実績</div><div class="num">1,000<small>本以上</small></div></div></div>
+    <div class="stat rv"><div class="ic">⚡</div><div><div class="lb">アサインまで</div><div class="num">最短3日</div></div></div>
+    <div class="stat rv"><div class="ic">🤝</div><div><div class="lb">継続率</div><div class="num">96<small>%</small></div></div></div>
   </div>
 </div>
 
-<!-- 派遣の流れ -->
-<section id="flow">
+<!-- 編集者一覧 -->
+<section id="creators">
   <div class="wrap">
     <div class="sec-head rv">
-      <span class="eyebrow">HOW IT WORKS</span>
-      <h2>派遣までの流れ</h2>
-      <p>お問い合わせから最短3営業日でアサインできます。</p>
+      <h2>登録編集者の一例</h2>
+      <p>経験豊富なプロフェッショナルが多数在籍しています。<br>カードをタップすると、詳細の確認とその場でのお問い合わせができます。</p>
+      <div class="deco"></div>
     </div>
-    <div class="flow-grid">
-      <div class="flow-card rv"><div class="num">1</div><h4>ご相談</h4><p>必要な編集スキル・本数・期間を伺います。</p></div>
-      <div class="flow-card rv"><div class="num">2</div><h4>編集者選定</h4><p>ご要望に合う編集者を在籍チームからご提案します。</p></div>
-      <div class="flow-card rv"><div class="num">3</div><h4>トライアル</h4><p>1本お試し編集で、相性とクオリティをご確認いただけます。</p></div>
-      <div class="flow-card rv"><div class="num">4</div><h4>本稼働</h4><p>継続契約に移行します。<br>増員・交代も柔軟に対応します。</p></div>
+    <div class="fmt-tabs rv">
+      <div class="fmt-tab act" data-fmt="all">すべて</div>
+      <div class="fmt-tab" data-fmt="short">📱 ショート動画</div>
+      <div class="fmt-tab" data-fmt="long">🎬 長尺動画</div>
     </div>
+    <div class="genre-label">— ジャンル別一覧 —</div>
+    <div class="genre-tags" id="genre-tags"></div>
+    <div class="creator-grid" id="creator-grid"><p class="empty-note">読み込み中...</p></div>
   </div>
 </section>
 
-<!-- 現場イメージ -->
-<section class="studio">
-  <div class="studio-grid">
-    <figure class="studio-card rv"><img src="img/workspace.jpg" alt="動画編集者の制作ワークスペース" loading="lazy"><figcaption>🎬 プロの制作ラインを、そのまま貴社の戦力に</figcaption></figure>
-    <figure class="studio-card rv"><img src="img/handshake.jpg" alt="クライアントと編集チームの打ち合わせ" loading="lazy"><figcaption>🤝 担当ディレクターが継続的に伴走します</figcaption></figure>
+<!-- 詳細モーダル -->
+<div class="modal-bg" id="modal-bg" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal"></div>
+</div>
+
+<!-- ご利用の流れ -->
+<section id="flow">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <h2>ご利用の流れ</h2>
+      <p>最短3営業日で、最適な編集者をご紹介します。</p>
+      <div class="deco"></div>
+    </div>
+    <div class="flow-grid">
+      <div class="flow-card rv"><div class="f-ic">✉️</div><div class="n">1</div><h4>お問い合わせ</h4><p>フォームからお気軽にご連絡ください</p></div>
+      <div class="flow-card rv"><div class="f-ic">💬</div><div class="n">2</div><h4>ヒアリング</h4><p>ご要望や課題を詳しくお伺いします</p></div>
+      <div class="flow-card rv"><div class="f-ic">👥</div><div class="n">3</div><h4>人材選定</h4><p>最適な編集者を選定し、ご提案します</p></div>
+      <div class="flow-card rv"><div class="f-ic">🎯</div><div class="n">4</div><h4>トライアル</h4><p>1本お試しで相性と品質を確認します</p></div>
+      <div class="flow-card rv"><div class="f-ic">▶️</div><div class="n">5</div><h4>稼働開始</h4><p>プロジェクトを開始し、成果を創出します</p></div>
+    </div>
   </div>
 </section>
 
 <!-- 料金 -->
-<section id="price" style="background:#fff;">
+<section class="price-sec" id="price">
   <div class="wrap">
     <div class="sec-head rv">
-      <span class="eyebrow">PRICING</span>
       <h2>料金</h2>
       <p>1本あたりの目安料金です。テロップ量・エフェクト量などの編集内容により変動します。</p>
+      <div class="deco"></div>
     </div>
     <div class="price-grid">
       <div class="price-card hot rv">
@@ -352,60 +454,27 @@
         </ul>
       </div>
     </div>
-    <p class="price-note rv">継続本数・ご予算に応じたお見積りも承ります。<br>まずは1本のトライアルからお試しいただけます。</p>
+    <p class="price-note rv">継続本数・ご予算に応じたお見積りも承ります。まずは1本のトライアルからお試しいただけます。</p>
     <div class="price-cta rv"><a class="btn btn-primary" href="#contact">料金について相談する</a></div>
   </div>
 </section>
 
-<!-- 編集者一覧 -->
-<section class="creators" id="creators">
-  <div class="wrap">
-    <div class="sec-head rv">
-      <span class="eyebrow">CREATORS</span>
-      <h2>在籍編集者</h2>
-      <p>掲載情報は編集者ご本人が登録したプロフィールです。<br>カードをタップすると、詳細の確認とその場でのお問い合わせができます。</p>
-    </div>
-    <div class="fmt-tabs rv">
-      <div class="fmt-tab act" data-fmt="all">すべて</div>
-      <div class="fmt-tab" data-fmt="short">📱 ショート動画</div>
-      <div class="fmt-tab" data-fmt="long">🎬 長尺動画</div>
-    </div>
-    <div class="genre-label">— ジャンル別一覧 —</div>
-    <div class="genre-tags" id="genre-tags"></div>
-    <div class="creator-grid" id="creator-grid"><p class="empty-note">読み込み中...</p></div>
-  </div>
-</section>
-
-<!-- 詳細モーダル -->
-<div class="modal-bg" id="modal-bg" onclick="if(event.target===this)closeModal()">
-  <div class="modal" id="modal"></div>
-</div>
-
-<!-- 選ばれる理由 -->
-<section id="why">
-  <div class="wrap">
-    <div class="sec-head rv">
-      <span class="eyebrow">WHY US</span>
-      <h2>mono.createが選ばれる理由</h2>
-    </div>
-    <div class="why-grid">
-      <div class="why-card rv"><div class="icon">⚡</div><h4>最短3営業日でアサイン</h4><p>採用の手間なく、即戦力の編集者をすぐ現場に迎えられます。</p></div>
-      <div class="why-card rv"><div class="icon">🔁</div><h4>増員・交代に柔軟対応</h4><p>繁忙期だけの増員や、相性が合わない場合の交代にも対応します。</p></div>
-      <div class="why-card rv"><div class="icon">📁</div><h4>プロフィールを見て指名できる</h4><p>実績・得意ジャンル・ポートフォリオを確認してから選べます。</p></div>
-    </div>
-  </div>
-</section>
+<!--
+  導入企業様の声セクション(デザイン案準拠・実データ受領後に有効化)
+  ※実在しないお客様の声は掲載しない方針のため、最初の導入企業の許可取得後にコメントアウトを外す
+-->
 
 <!-- お問い合わせ -->
-<section class="request" id="contact">
+<section id="contact">
   <div class="sec-head rv">
-    <span class="eyebrow">CONTACT</span>
     <h2>お問い合わせ</h2>
+    <p>1分で完了します。しつこい営業は一切しません。</p>
+    <div class="deco"></div>
   </div>
   <form class="form-card rv" id="contact-form">
     <div class="form-row" id="named-editor-row" style="display:none;">
       <label>指名編集者</label>
-      <input type="text" id="named-editor" readonly style="background:#f8faff;font-weight:700;">
+      <input type="text" id="named-editor" readonly style="background:var(--cream);font-weight:700;">
     </div>
     <div class="form-cols">
       <div class="form-row"><label for="company">会社名・屋号</label><input type="text" id="company" required></div>
@@ -450,11 +519,55 @@
   </form>
 </section>
 
+<!-- 最終CTA -->
+<section class="final-cta">
+  <div class="final-inner">
+    <div class="rv">
+      <h2>あなたのチームに、<br>最高のクリエイターを。</h2>
+      <p class="fp">まずは無料でご相談ください。</p>
+      <a class="btn btn-primary" href="#contact">無料で相談する <span>›</span></a>
+      <p class="hero-note">1分で完了します</p>
+    </div>
+    <div class="final-visual rv">
+      <img src="img/handshake.jpg" alt="クライアントと編集チームの握手" loading="lazy">
+      <span class="leaf leaf1">🌿</span>
+    </div>
+  </div>
+</section>
+
 <footer>
-  <img src="favicon.svg" alt="" style="width:44px;height:44px;border-radius:12px;margin:0 auto 12px;">
-  <div class="fname">クリエイターズリスト</div>
-  <div>動画編集者派遣事業</div>
-  <div style="margin-top:14px;">© mono.create</div>
+  <div class="foot-inner">
+    <div>
+      <div class="foot-brand"><img src="favicon.svg" alt=""><span>クリエイターズリスト</span></div>
+      <p>編集者と企業をつなぐ、<br>編集者派遣サービス。</p>
+    </div>
+    <div>
+      <h5>サービス</h5>
+      <ul>
+        <li><a href="#service">動画編集</a></li>
+        <li><a href="#service">サムネイル制作</a></li>
+        <li><a href="#service">ディレクション</a></li>
+        <li><a href="#service">YouTube運用</a></li>
+        <li><a href="#service">ショート動画</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>編集者一覧</h5>
+      <ul>
+        <li><a href="#creators">すべての編集者</a></li>
+        <li><a href="#creators">得意ジャンルから探す</a></li>
+        <li><a href="#price">料金</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>お問い合わせ</h5>
+      <ul>
+        <li><a href="#contact">無料相談</a></li>
+        <li><a href="editor.html">編集者として働きたい方</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-copy">© mono.create ／ クリエイターズリスト(動画編集者派遣)</div>
 </footer>
 
 <script>
