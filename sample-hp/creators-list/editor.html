@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>編集者として働く｜クリエイターズリスト｜mono.create</title>
+<meta name="description" content="営業ゼロで動画編集の仕事が届く。mono.createの編集者チームに登録して、あなたのスキルに合った案件を受け取りましょう。">
+<meta name="robots" content="index,follow">
+<style>
+  :root{
+    --brand:#0ea5a3;
+    --brand2:#4f46e5;
+    --ink:#0f172a;
+    --sub:#64748b;
+    --bg:#f7fbfa;
+    --line:#e2e8f0;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN",sans-serif;color:var(--ink);background:var(--bg);line-height:1.85;word-break:keep-all;overflow-wrap:anywhere;}
+  a{color:inherit;}
+  .wrap{max-width:880px;margin:0 auto;padding:0 24px;}
+  header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.8);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;max-width:1080px;margin:0 auto;}
+  .logo{font-weight:900;font-size:17px;text-decoration:none;}
+  .logo span{background:linear-gradient(90deg,var(--brand),var(--brand2));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .nav-client{font-size:12px;color:var(--sub);text-decoration:none;}
+  .nav-client:hover{color:var(--brand);}
+
+  .hero{position:relative;padding:90px 24px 66px;text-align:center;overflow:hidden;
+    background:
+      radial-gradient(600px 400px at 20% 0%,rgba(14,165,163,.14),transparent 60%),
+      radial-gradient(600px 420px at 85% 30%,rgba(79,70,229,.10),transparent 60%),
+      linear-gradient(180deg,#fff,#ecfdf9);
+  }
+  .hero .badge{display:inline-block;background:#fff;border:1px solid var(--line);color:#0f766e;font-size:12.5px;font-weight:700;padding:7px 18px;border-radius:99px;margin-bottom:22px;}
+  .hero h1{font-size:clamp(28px,5.4vw,46px);font-weight:900;line-height:1.4;margin-bottom:18px;}
+  .hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--brand),var(--brand2));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .hero p{color:var(--sub);font-size:15px;max-width:600px;margin:0 auto 32px;}
+  .btn{padding:15px 36px;border-radius:99px;font-weight:800;font-size:14.5px;text-decoration:none;display:inline-block;transition:.15s;}
+  .btn-primary{background:linear-gradient(90deg,var(--brand),#0f766e);color:#fff;box-shadow:0 8px 24px rgba(14,165,163,.35);}
+  .btn-primary:hover{transform:translateY(-2px);}
+  .btn-outline{border:1.5px solid var(--line);color:var(--ink);background:#fff;margin-left:10px;}
+
+  section{padding:70px 24px;}
+  h2{font-size:clamp(20px,3.6vw,28px);font-weight:900;text-align:center;margin-bottom:36px;}
+  .step{display:flex;gap:16px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px 24px;margin-bottom:12px;align-items:flex-start;}
+  .step .n{width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;flex-shrink:0;}
+  .step h4{font-size:15px;font-weight:800;margin-bottom:4px;}
+  .step p{font-size:13px;color:var(--sub);}
+
+  .merits{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  .merit{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px 20px;text-align:center;}
+  .merit .ic{font-size:30px;margin-bottom:10px;}
+  .merit h4{font-size:14.5px;font-weight:800;margin-bottom:6px;}
+  .merit p{font-size:12.5px;color:var(--sub);}
+
+  .cta-box{background:linear-gradient(135deg,#0f766e,#134e4a);border-radius:24px;padding:48px 28px;text-align:center;color:#fff;}
+  .cta-box h3{font-size:clamp(19px,3.4vw,26px);font-weight:900;margin-bottom:10px;}
+  .cta-box p{font-size:13.5px;color:#bae6dc;margin-bottom:26px;}
+  .cta-box .btn-primary{background:#fff;color:#0f766e;box-shadow:none;}
+  .note{font-size:11.5px;color:#94a3b8;text-align:center;margin-top:14px;}
+
+  footer{background:var(--ink);color:#94a3b8;text-align:center;padding:40px 24px;font-size:12px;}
+  footer a{color:#7dd3c8;font-weight:700;text-decoration:none;}
+  @media(max-width:720px){.merits{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-inner">
+    <a class="logo" href="./">mono<span>.create</span> Creators</a>
+    <a class="nav-client" href="client.html">編集を依頼したい方はこちら →</a>
+  </div>
+</header>
+
+<section class="hero">
+  <span class="badge">🎬 編集者メンバー募集</span>
+  <h1>営業ゼロで、<br><em>編集の仕事</em>が届く。</h1>
+  <p>mono.createの編集者チームに登録すると、あなたのスキルに合った案件のご案内が届きます。<br>営業・単価交渉・請求まわりはこちらで巻き取ります。</p>
+  <div>
+    <a class="btn btn-primary" href="https://mono-create-group.github.io/lp/editor-recruit.html" target="_blank" rel="noopener">編集者として応募する</a>
+    <a class="btn btn-outline" href="#flow">仕組みを見る</a>
+  </div>
+</section>
+
+<section id="flow">
+  <div class="wrap">
+    <h2>お仕事までの流れ</h2>
+    <div class="step"><div class="n">1</div><div><h4>応募</h4><p>応募フォームからポートフォリオを添えてご応募ください。</p></div></div>
+    <div class="step"><div class="n">2</div><div><h4>選考・面談</h4><p>実績を拝見し、担当ディレクターが面談します。</p></div></div>
+    <div class="step"><div class="n">3</div><div><h4>プロフィール登録</h4><p>採用後、専用フォームでプロフィールを登録すると編集者一覧に掲載されます。<br>クライアントから指名が入ることもあります。</p></div></div>
+    <div class="step"><div class="n">4</div><div><h4>案件受注・納品</h4><p>案件のご案内はChatworkで届きます。<br>受けたい案件だけ受けてOKです。</p></div></div>
+  </div>
+</section>
+
+<section style="background:#fff;">
+  <div class="wrap">
+    <h2>登録のメリット</h2>
+    <div class="merits">
+      <div class="merit"><div class="ic">📥</div><h4>営業不要</h4><p>案件はこちらから届きます。<br>DM営業や単価交渉は不要です。</p></div>
+      <div class="merit"><div class="ic">🪪</div><h4>指名される</h4><p>プロフィールとポートフォリオが掲載され、クライアントから直接指名が入ります。</p></div>
+      <div class="merit"><div class="ic">💸</div><h4>報酬まわりも安心</h4><p>請求・入金管理はmono.create側で行います。<br>制作に集中できます。</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="cta-box">
+      <h3>まずはポートフォリオを見せてください</h3>
+      <p>経験年数は問いません。作品で判断します。</p>
+      <a class="btn btn-primary" href="https://mono-create-group.github.io/lp/editor-recruit.html" target="_blank" rel="noopener">編集者として応募する</a>
+      <p class="note" style="color:#8fd8cc;">すでに在籍している方: 採用時にお送りしたリンクからプロフィールを登録・更新できます。</p>
+    </div>
+    <p class="note">Googleアカウントでのログイン機能は現在準備中です。<br>当面は応募フォーム・登録フォームをご利用ください。</p>
+  </div>
+</section>
+
+<footer>
+  <div style="color:#fff;font-weight:800;font-size:15px;margin-bottom:10px;">mono.create Creators</div>
+  <div><a href="client.html">編集を依頼したい方はこちら →</a></div>
+  <div style="margin-top:14px;">© mono.create</div>
+</footer>
+
+</body>
+</html>
