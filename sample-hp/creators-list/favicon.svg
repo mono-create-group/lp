@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- クリエイターズリスト ロゴ: 編集者(紺・書類)とクライアント(金・ビル)の握手 -->
+  <rect width="512" height="512" rx="96" fill="#ffffff"/>
+  <g>
+    <!-- 左: 編集者(紺) -->
+    <circle cx="150" cy="128" r="42" fill="#1e3a68"/>
+    <path d="M108 190 q-10 0 -10 14 v150 q0 12 12 12 h34 q12 0 12 -12 v-84 q22 26 58 44 l52 26 q26 12 38 -12 q10 -24 -14 -36 l-64 -32 q-34 -18 -52 -52 q-12 -18 -30 -18 z" fill="#1e3a68"/>
+    <!-- 書類の線 -->
+    <rect x="168" y="238" width="92" height="16" rx="8" fill="#1e3a68"/>
+    <rect x="168" y="272" width="92" height="16" rx="8" fill="#1e3a68"/>
+    <rect x="168" y="306" width="92" height="16" rx="8" fill="#1e3a68"/>
+    <!-- 右: クライアント(金) -->
+    <circle cx="362" cy="128" r="42" fill="#c8a055"/>
+    <path d="M404 190 q10 0 10 14 v60 h-44 v-14 q-22 30 -60 48 l-50 26 q-26 12 -38 -12 q-10 -24 14 -36 l62 -32 q34 -18 52 -52 q12 -18 30 -18 z" fill="#c8a055"/>
+    <!-- ビル -->
+    <rect x="352" y="252" width="82" height="128" fill="#c8a055"/>
+    <rect x="320" y="292" width="32" height="88" fill="#c8a055"/>
+    <g fill="#ffffff">
+      <rect x="366" y="268" width="14" height="14"/>
+      <rect x="392" y="268" width="14" height="14"/>
+      <rect x="366" y="296" width="14" height="14"/>
+      <rect x="392" y="296" width="14" height="14"/>
+      <rect x="366" y="324" width="14" height="14"/>
+      <rect x="392" y="324" width="14" height="14"/>
+    </g>
+    <!-- 握手の重なり(中央) -->
+    <path d="M236 296 q16 -14 34 -6 q18 8 16 26 q-2 16 -20 20 q-16 4 -28 -8 q-12 -14 -2 -32 z" fill="#1e3a68"/>
+  </g>
+</svg>

@@ -5423,18 +5423,24 @@ function updateInvoiceStatus(invNum, status) {
 // ================================================================
 // 派遣依頼管理(2026-07-03 会長承認・GAS改修提案.md)
 // ================================================================
-// dispatch_requests シート:
-// 受付日時|会社名|担当者|メール|電話|希望ジャンル|希望本数|開始時期|指名編集者|相談内容|ステータス|担当編集者|メモ
+// dispatch_requests シート(19列):
+// 1受付日時|2会社名|3担当者|4メール|5電話|6希望ジャンル|7希望本数|8開始時期|9指名編集者|10相談内容
+// |11ステータス|12担当編集者|13メモ|14請求額|15支払条件|16入金状況|17入金日|18編集者報酬|19編集者支払状況
 function getOrCreateDispatchSheet() {
   var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   var sheet = ss.getSheetByName('dispatch_requests');
+  var HEADERS = ['受付日時','会社名','担当者','メール','電話',
+      '希望ジャンル','希望本数','開始時期','指名編集者','相談内容',
+      'ステータス','担当編集者','メモ',
+      '請求額','支払条件','入金状況','入金日','編集者報酬','編集者支払状況'];
   if (!sheet) {
     sheet = ss.insertSheet('dispatch_requests');
-    sheet.appendRow(['受付日時','会社名','担当者','メール','電話',
-      '希望ジャンル','希望本数','開始時期','指名編集者','相談内容',
-      'ステータス','担当編集者','メモ']);
+    sheet.appendRow(HEADERS);
     sheet.setFrozenRows(1);
-    sheet.getRange(1,1,1,13).setFontWeight('bold');
+    sheet.getRange(1,1,1,HEADERS.length).setFontWeight('bold');
+  } else if (sheet.getLastColumn() < HEADERS.length) {
+    // 既存シートに支払い列を追記(2026-07-03 支払いシステム追加)
+    sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]).setFontWeight('bold');
   }
   return sheet;
 }
@@ -5502,7 +5508,10 @@ function listDispatchRequests() {
       email: r[3] || '', phone: r[4] || '', genre: r[5] || '',
       volume: r[6] || '', start: r[7] || '', selected_editors: r[8] || '',
       message: r[9] || '', status: r[10] || '新規受付',
-      assigned_editors: r[11] || '', memo: r[12] || ''
+      assigned_editors: r[11] || '', memo: r[12] || '',
+      invoice_amount: r[13] || '', pay_terms: r[14] || '',
+      pay_status: r[15] || '', paid_date: r[16] || '',
+      editor_fee: r[17] || '', editor_pay_status: r[18] || ''
     });
   }
   data.reverse(); // 新しい順
@@ -5519,6 +5528,13 @@ function updateDispatchRequest(data) {
   if (data.status !== undefined)           sheet.getRange(row, 11).setValue(data.status);
   if (data.assigned_editors !== undefined) sheet.getRange(row, 12).setValue(data.assigned_editors);
   if (data.memo !== undefined)             sheet.getRange(row, 13).setValue(data.memo);
+  // 支払い管理(2026-07-03追加)
+  if (data.invoice_amount !== undefined)    sheet.getRange(row, 14).setValue(data.invoice_amount);
+  if (data.pay_terms !== undefined)         sheet.getRange(row, 15).setValue(data.pay_terms);
+  if (data.pay_status !== undefined)        sheet.getRange(row, 16).setValue(data.pay_status);
+  if (data.paid_date !== undefined)         sheet.getRange(row, 17).setValue(data.paid_date);
+  if (data.editor_fee !== undefined)        sheet.getRange(row, 18).setValue(data.editor_fee);
+  if (data.editor_pay_status !== undefined) sheet.getRange(row, 19).setValue(data.editor_pay_status);
   return jsonResponse({ ok: true });
 }
 

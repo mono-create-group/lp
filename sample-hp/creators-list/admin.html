@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
 <title>派遣管理｜mono.create Creators 管理画面</title>
 <meta name="robots" content="noindex,nofollow">
 <style>
@@ -85,6 +89,7 @@
   <div class="stat-row" id="stats"></div>
   <div class="tabs">
     <button class="tab active" data-tab="requests">派遣依頼</button>
+    <button class="tab" data-tab="payments">支払い管理</button>
     <button class="tab" data-tab="editors">編集者 稼働状況</button>
     <div style="margin-left:auto;display:flex;gap:8px;">
       <button class="btn btn-sm btn-ghost" onclick="loadRequests()">🔄 更新</button>
@@ -102,6 +107,28 @@
             <tr><th>受付日時</th><th>クライアント</th><th>希望内容</th><th>指名/担当編集者</th><th>ステータス</th><th>メモ</th></tr>
           </thead>
           <tbody id="request-rows"><tr><td colspan="6" class="empty">読み込み中...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-payments" class="hidden">
+    <div class="card">
+      <h3>支払いルール(標準)</h3>
+      <p class="desc">
+        クライアント: <b>前払いが標準</b>(入金確認後に着手)。法人の稟議があるお客様のみ翌月末払いに応じる。<br>
+        編集者への支払い: <b>月末締め・翌月末払い</b>。詳細は 営業/派遣事業_支払い設計.md 参照。
+      </p>
+    </div>
+    <div class="card">
+      <h3>案件ごとの請求・入金・編集者支払い</h3>
+      <p class="desc">変更すると自動保存されます。対象はトライアル以降の案件です。</p>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>クライアント</th><th>請求額(円)</th><th>支払条件</th><th>入金状況</th><th>入金日</th><th>編集者報酬(円)</th><th>編集者支払</th></tr>
+          </thead>
+          <tbody id="payment-rows"><tr><td colspan="7" class="empty">読み込み中...</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -219,7 +246,9 @@
     document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
     t.classList.add('active');
     document.getElementById('tab-requests').classList.toggle('hidden',t.dataset.tab!=='requests');
+    document.getElementById('tab-payments').classList.toggle('hidden',t.dataset.tab!=='payments');
     document.getElementById('tab-editors').classList.toggle('hidden',t.dataset.tab!=='editors');
+    if(t.dataset.tab==='payments')renderPayments();
   }));
 
   function renderRequests(){
@@ -272,6 +301,47 @@
     }).join('');
   }
 
+  const PAY_TERMS = ['前払い(標準)','翌月末払い','当月払い','都度払い'];
+  const PAY_STATUS = ['未請求','請求済','入金済'];
+  const EDITOR_PAY = ['未払い','支払済'];
+
+  // 編集者支払予定日 = 翌月末
+  function nextMonthEnd(){
+    const d = new Date();
+    const e = new Date(d.getFullYear(), d.getMonth() + 2, 0);
+    return `${e.getFullYear()}/${e.getMonth()+1}/${e.getDate()}`;
+  }
+
+  async function setPayField(row, field, value){
+    const r = requests.find(x=>x.row===row); if(!r) return;
+    r[field] = value;
+    renderStats();
+    await updateReq(row, {[field]: value});
+  }
+
+  function payTargets(){
+    return requests.filter(r=>['トライアル','本稼働','契約終了'].includes(r.status||''));
+  }
+
+  function renderPayments(){
+    const tbody = document.getElementById('payment-rows');
+    const list = payTargets();
+    if(!list.length){tbody.innerHTML='<tr><td colspan="7" class="empty">トライアル以降の案件がまだありません。<br>「派遣依頼」タブでステータスを進めると表示されます。</td></tr>';return;}
+    tbody.innerHTML = list.map(r=>`
+      <tr>
+        <td><strong>${esc(r.company)}</strong><br><span class="muted">${esc(r.status)} / ${esc(r.assigned_editors||r.selected_editors)||'担当未定'}</span></td>
+        <td><input type="number" value="${esc(String(r.invoice_amount||''))}" placeholder="0" style="width:96px" onchange="setPayField(${r.row},'invoice_amount',this.value)"></td>
+        <td><select onchange="setPayField(${r.row},'pay_terms',this.value)">${PAY_TERMS.map(p=>`<option ${p===(r.pay_terms||'前払い(標準)')?'selected':''}>${p}</option>`).join('')}</select></td>
+        <td><select onchange="setPayField(${r.row},'pay_status',this.value)">${PAY_STATUS.map(p=>`<option ${p===(r.pay_status||'未請求')?'selected':''}>${p}</option>`).join('')}</select></td>
+        <td><input type="date" value="${esc(r.paid_date||'')}" onchange="setPayField(${r.row},'paid_date',this.value)"></td>
+        <td><input type="number" value="${esc(String(r.editor_fee||''))}" placeholder="0" style="width:96px" onchange="setPayField(${r.row},'editor_fee',this.value)"></td>
+        <td>
+          <select onchange="setPayField(${r.row},'editor_pay_status',this.value)">${EDITOR_PAY.map(p=>`<option ${p===(r.editor_pay_status||'未払い')?'selected':''}>${p}</option>`).join('')}</select>
+          <div class="muted" style="font-size:10.5px">予定: ${nextMonthEnd()}</div>
+        </td>
+      </tr>`).join('');
+  }
+
   function renderStats(){
     const by = s=>requests.filter(r=>r.status===s).length;
     const open = requests.filter(r=>['新規受付','ヒアリング','マッチング中','トライアル'].includes(r.status||'新規受付')).length;
@@ -279,6 +349,8 @@
       <div class="stat-chip"><div class="label">対応中の依頼</div><div class="value">${open}<small>件</small></div></div>
       <div class="stat-chip"><div class="label">新規受付</div><div class="value">${by('新規受付')+requests.filter(r=>!r.status).length}<small>件</small></div></div>
       <div class="stat-chip"><div class="label">本稼働</div><div class="value">${by('本稼働')}<small>件</small></div></div>
+      <div class="stat-chip"><div class="label">未入金(請求済)</div><div class="value">¥${payTargets().filter(r=>r.pay_status==='請求済').reduce((a,r)=>a+(Number(r.invoice_amount)||0),0).toLocaleString()}</div></div>
+      <div class="stat-chip"><div class="label">編集者未払い</div><div class="value">¥${payTargets().filter(r=>(r.editor_pay_status||'未払い')==='未払い'&&Number(r.editor_fee)>0).reduce((a,r)=>a+(Number(r.editor_fee)||0),0).toLocaleString()}</div></div>
       <div class="stat-chip"><div class="label">在籍編集者</div><div class="value">${editors.length}<small>名</small></div></div>`;
   }
 
