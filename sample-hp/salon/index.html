@@ -263,6 +263,19 @@
     .gallery-grid{grid-template-columns:repeat(2,1fr);}
     section{padding:64px 20px;}
   }
+
+  /* ===== ヒーロー映像・電話予約・SNS(2026-07-03追加) ===== */
+  /* hero.mp4(店舗写真から生成したAI映像)を同フォルダに置くと自動で背景再生されます */
+  .hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;}
+  .btn-tel{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#1f2937;font-weight:700;border:1.5px solid rgba(255,255,255,.6);}
+  .btn-tel:hover{opacity:.88;}
+  .cta-tel{display:inline-block;margin-top:18px;color:#fff;font-size:15px;text-decoration:none;font-weight:700;letter-spacing:.04em;}
+  .cta-tel small{display:block;font-size:11px;opacity:.7;font-weight:400;margin-top:2px;}
+  .float-tel{position:fixed;right:20px;bottom:86px;z-index:90;background:#fff;color:#1f2937;text-decoration:none;font-weight:700;font-size:14px;padding:13px 20px;border-radius:50px;box-shadow:0 6px 18px rgba(0,0,0,.25);display:inline-flex;align-items:center;gap:8px;}
+  .sns-row{display:flex;gap:12px;justify-content:center;margin-top:18px;}
+  .sns-row a{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;color:#fff;transition:.2s;}
+  .sns-row a:hover{background:rgba(255,255,255,.28);}
+  .sns-row svg{width:18px;height:18px;}
 </style>
 </head>
 <body>
@@ -285,6 +298,11 @@
 
 <!-- ヒーロー -->
 <section class="hero" id="top">
+  <!-- 店舗写真から生成したAI映像(Seedance等)を hero.mp4 としてこのフォルダに置くと自動で背景再生されます -->
+  <video class="hero-video" autoplay muted loop playsinline preload="metadata" onloadeddata="this.style.display='block'">
+    <source src="hero.mp4" type="video/mp4">
+  </video>
+
   <div class="ph">[ サロン内観・スタイリング写真 差し替え ]</div>
   <div class="hero-content">
     <span class="eyebrow">Asahikawa Hair Salon</span>
@@ -297,6 +315,7 @@
         <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor;"><path d="M12 2C6.48 2 2 5.94 2 10.7c0 3.03 2.02 5.7 5.06 7.24-.16.62-.85 3.1-.87 3.3 0 0-.02.18.1.24.11.06.24 0 .24 0 .34-.05 3.7-2.44 4.3-2.87.4.06.8.09 1.17.09 5.52 0 10-3.94 10-8.7C22 5.94 17.52 2 12 2z"/></svg>
         LINEでかんたん予約
       </a>
+      <a href="tel:0166-00-0000" class="btn btn-tel">📞 電話で予約</a>
     </div>
   </div>
 </section>
@@ -466,6 +485,7 @@
       <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.94 2 10.7c0 3.03 2.02 5.7 5.06 7.24-.16.62-.85 3.1-.87 3.3 0 0-.02.18.1.24.11.06.24 0 .24 0 .34-.05 3.7-2.44 4.3-2.87.4.06.8.09 1.17.09 5.52 0 10-3.94 10-8.7C22 5.94 17.52 2 12 2z"/></svg>
       LINEで予約する
     </a>
+    <a class="cta-tel" href="tel:0166-00-0000">📞 お電話でのご予約 0166-00-0000<small>営業時間内にお気軽にお電話ください</small></a>
   </div>
 </section>
 
@@ -477,10 +497,16 @@
     <a href="#reserve" style="color:#06C755;font-weight:700;text-decoration:none;">LINE友だち追加でご予約・最新情報を受け取る →</a>
   </div>
   <div style="margin-top:16px;">© mono.create — Site by mono.create</div>
+  <div class="sns-row"><!-- SNS開設後にhrefを実URLへ差し替え -->
+    <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1.3" fill="currentColor"/></svg></a>
+    <a href="#" aria-label="X"><svg viewBox="0 0 24 24"><path d="M4 4l7.2 8.8L4.4 20h2.5l5.4-6 4.9 6H20l-7.5-9.2L18.9 4h-2.5l-4.7 5.4L7.3 4z" fill="currentColor"/></svg></a>
+    <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24"><path d="M21.6 7.2a2.6 2.6 0 0 0-1.8-1.9C18.2 5 12 5 12 5s-6.2 0-7.8.3a2.6 2.6 0 0 0-1.8 1.9A27 27 0 0 0 2 12a27 27 0 0 0 .4 4.8 2.6 2.6 0 0 0 1.8 1.9c1.6.3 7.8.3 7.8.3s6.2 0 7.8-.3a2.6 2.6 0 0 0 1.8-1.9A27 27 0 0 0 22 12a27 27 0 0 0-.4-4.8zM10 15.2V8.8l5.2 3.2z" fill="currentColor"/></svg></a>
+  </div>
 </footer>
 
 <!-- フローティングLINEボタン -->
 <!-- LINE公式アカウント開設後、href を https://lin.ee/XXXX に差し替え -->
+<a class="float-tel" href="tel:0166-00-0000" aria-label="電話で予約">📞 電話予約</a>
 <a class="float-line" href="#reserve" aria-label="LINEで予約">
   <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.94 2 10.7c0 3.03 2.02 5.7 5.06 7.24-.16.62-.85 3.1-.87 3.3 0 0-.02.18.1.24.11.06.24 0 .24 0 .34-.05 3.7-2.44 4.3-2.87.4.06.8.09 1.17.09 5.52 0 10-3.94 10-8.7C22 5.94 17.52 2 12 2z"/></svg>
   LINE予約
