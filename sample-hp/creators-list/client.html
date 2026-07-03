@@ -240,7 +240,7 @@
   .final-visual img{width:100%;height:auto;}
 
   footer{background:#fdfbf7;border-top:1px solid var(--line);padding:52px 24px 34px;font-size:12.5px;color:var(--sub);}
-  .foot-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:30px;}
+  .foot-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:30px;}
   .foot-brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:15px;color:var(--ink);margin-bottom:12px;font-family:"Zen Maru Gothic",sans-serif;}
   .foot-brand img{width:36px;height:36px;border-radius:10px;}
   footer h5{color:var(--ink);font-size:12.5px;font-weight:800;margin-bottom:12px;}
@@ -250,6 +250,12 @@
   footer a:hover{color:var(--coral);}
   .foot-copy{max-width:1100px;margin:34px auto 0;padding-top:18px;border-top:1px solid var(--line);text-align:center;color:#b5ad9b;font-size:11px;}
 
+  .flow-card .f-ic img{width:82%;height:82%;object-fit:contain;}
+  .p-illust{height:64px;display:flex;align-items:flex-end;justify-content:center;margin-bottom:10px;}
+  .p-illust img{height:64px;width:auto;}
+  .contact-illust{width:230px;margin:0 auto 20px;display:block;}
+  .creators-deco{position:absolute;top:18px;right:4%;width:110px;opacity:.95;pointer-events:none;}
+  @media(max-width:960px){.creators-deco{display:none;}}
   .rv{opacity:0;transform:translateY(18px);transition:opacity .5s ease,transform .5s ease;}
   .rv.in{opacity:1;transform:none;}
 
@@ -283,7 +289,6 @@
     </a>
     <nav>
       <ul>
-        <li><a href="#service">サービス</a></li>
         <li><a href="#creators">編集者一覧</a></li>
         <li><a href="#flow">ご利用の流れ</a></li>
         <li><a href="#price">料金</a></li>
@@ -297,17 +302,15 @@
 <section class="hero" style="padding:0;">
   <div class="hero-inner">
     <div>
-      <h1><span style="white-space:nowrap">あなたのプロジェクトに、</span><br>最高のクリエイターを。</h1>
+      <h1>編集者不足を、<br>一瞬で解決。</h1>
       <p class="lead">クリエイターズリストは、動画編集者と企業をつなぐ<br>編集者派遣サービスです。</p>
       <div class="hero-badges">
-        <div class="hbadge"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e2704a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></div><div class="tx">登録編集者数<b>500名以上</b></div></div>
         <div class="hbadge"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d9932c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg></div><div class="tx">最短<b>24時間でご紹介</b></div></div>
         <div class="hbadge"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7cab72" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div><div class="tx">継続率<b>92%以上</b></div></div>
       </div>
       <div>
         <a class="btn btn-primary" href="#contact">無料で相談してみる <span>›</span></a>
       </div>
-      <p class="hero-note">1分で完了します</p>
     </div>
     <div class="hero-visual rv in">
       <img src="img/hero-illust.png" alt="動画編集チームが共同作業しているイラスト" loading="eager">
@@ -315,37 +318,9 @@
   </div>
 </section>
 
-<!-- サービス -->
-<section id="service">
-  <div class="wrap">
-    <div class="sec-head rv">
-      <h2>対応可能な編集業務</h2>
-      <p>さまざまなジャンルの編集に対応しています。</p>
-      <div class="deco"></div>
-    </div>
-    <div class="svc-grid">
-      <div class="svc-card rv"><div class="ic">✂️</div><h4>動画編集</h4><p>YouTube・広告・企業VPなど幅広く対応</p></div>
-      <div class="svc-card rv"><div class="ic">🖼</div><h4>サムネイル制作</h4><p>クリックされるサムネイルを制作</p></div>
-      <div class="svc-card rv"><div class="ic">🎬</div><h4>ディレクション</h4><p>企画から納品まで一貫してサポート</p></div>
-      <div class="svc-card rv"><div class="ic">▶️</div><h4>YouTube運用</h4><p>チャンネル運用・分析・改善提案</p></div>
-      <div class="svc-card rv"><div class="ic">📱</div><h4>ショート動画</h4><p>TikTok・Instagram Reelsなどに最適化</p></div>
-      <div class="svc-card rv"><div class="ic">✨</div><h4>AI活用</h4><p>AIを活用した効率的な編集・提案</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- 実績バンド -->
-<div class="stats-band">
-  <h3 class="rv">選ばれ続けるサービスです</h3>
-  <div class="stats-grid">
-    <div class="stat rv"><div class="ic">🎞</div><div><div class="lb">累計編集実績</div><div class="num">1,000<small>本以上</small></div></div></div>
-    <div class="stat rv"><div class="ic">⚡</div><div><div class="lb">アサインまで</div><div class="num">最短3日</div></div></div>
-    <div class="stat rv"><div class="ic">🤝</div><div><div class="lb">継続率</div><div class="num">96<small>%</small></div></div></div>
-  </div>
-</div>
-
 <!-- 編集者一覧 -->
 <section id="creators">
+  <img class="creators-deco" src="img/illust/plant-lamp.png" alt="">
   <div class="wrap">
     <div class="sec-head rv">
       <h2>登録編集者の一例</h2>
@@ -377,11 +352,11 @@
       <div class="deco"></div>
     </div>
     <div class="flow-grid">
-      <div class="flow-card rv"><div class="f-ic">✉️</div><div class="n">1</div><h4>お問い合わせ</h4><p>フォームからお気軽にご連絡ください</p></div>
-      <div class="flow-card rv"><div class="f-ic">💬</div><div class="n">2</div><h4>ヒアリング</h4><p>ご要望や課題を詳しくお伺いします</p></div>
-      <div class="flow-card rv"><div class="f-ic">👥</div><div class="n">3</div><h4>人材選定</h4><p>最適な編集者を選定し、ご提案します</p></div>
-      <div class="flow-card rv"><div class="f-ic">🎯</div><div class="n">4</div><h4>トライアル</h4><p>1本お試しで相性と品質を確認します</p></div>
-      <div class="flow-card rv"><div class="f-ic">▶️</div><div class="n">5</div><h4>稼働開始</h4><p>プロジェクトを開始し、成果を創出します</p></div>
+      <div class="flow-card rv"><div class="f-ic"><img src="img/illust/send-mail.png" alt="お問い合わせ"></div><div class="n">1</div><h4>お問い合わせ</h4><p style="white-space:nowrap">フォームからお気軽にご連絡ください</p></div>
+      <div class="flow-card rv"><div class="f-ic"><img src="img/illust/meeting.png" alt="ヒアリング"></div><div class="n">2</div><h4>ヒアリング</h4><p>ご要望や課題を詳しくお伺いします</p></div>
+      <div class="flow-card rv"><div class="f-ic"><img src="img/illust/edit-laptop.png" alt="人材選定"></div><div class="n">3</div><h4>人材選定</h4><p>最適な編集者を選定し、ご提案します</p></div>
+      <div class="flow-card rv"><div class="f-ic"><img src="img/illust/long-monitor.png" alt="トライアル"></div><div class="n">4</div><h4>トライアル</h4><p style="white-space:nowrap">1本お試しで相性と品質を確認します</p></div>
+      <div class="flow-card rv"><div class="f-ic"><img src="img/illust/team-joy.png" alt="稼働開始"></div><div class="n">5</div><h4>稼働開始</h4><p>プロジェクトを開始し、成果を創出します</p></div>
     </div>
   </div>
 </section>
@@ -397,6 +372,7 @@
     <div class="price-grid">
       <div class="price-card hot rv">
         <div class="price-badge">まずはお試しに人気</div>
+        <div class="p-illust"><img src="img/illust/short-phone.png" alt="ショート動画"></div>
         <div class="p-cat">SHORT</div>
         <h4>ショート動画</h4>
         <div class="p-num"><small>¥</small>4,000<small>〜</small></div>
@@ -408,6 +384,7 @@
         </ul>
       </div>
       <div class="price-card rv">
+        <div class="p-illust"><img src="img/illust/audio-edit.png" alt="長尺動画の編集"></div>
         <div class="p-cat">LONG 10min</div>
         <h4>長尺動画(10分)</h4>
         <div class="p-num"><small>¥</small>10,000<small>〜</small></div>
@@ -455,9 +432,9 @@
 <section id="contact">
   <div class="sec-head rv">
     <h2>お問い合わせ</h2>
-    <p>1分で完了します。しつこい営業は一切しません。</p>
     <div class="deco"></div>
   </div>
+  <img class="contact-illust rv" src="img/illust/handshake.png" alt="握手するクライアントと編集者">
   <form class="form-card rv" id="contact-form">
     <div class="form-row" id="named-editor-row" style="display:none;">
       <label>指名編集者</label>
@@ -506,36 +483,11 @@
   </form>
 </section>
 
-<!-- 最終CTA -->
-<section class="final-cta">
-  <div class="final-inner">
-    <div class="rv">
-      <h2>あなたのチームに、<br>最高のクリエイターを。</h2>
-      <p class="fp">まずは無料でご相談ください。</p>
-      <a class="btn btn-primary" href="#contact">無料で相談する <span>›</span></a>
-      <p class="hero-note">1分で完了します</p>
-    </div>
-    <div class="final-visual rv">
-      <img src="img/handshake-illust.png" alt="クライアントと編集者が握手しているイラスト" loading="lazy">
-    </div>
-  </div>
-</section>
-
 <footer>
   <div class="foot-inner">
     <div>
       <div class="foot-brand"><img src="favicon.svg" alt=""><span>クリエイターズリスト</span></div>
       <p>編集者と企業をつなぐ、<br>編集者派遣サービス。</p>
-    </div>
-    <div>
-      <h5>サービス</h5>
-      <ul>
-        <li><a href="#service">動画編集</a></li>
-        <li><a href="#service">サムネイル制作</a></li>
-        <li><a href="#service">ディレクション</a></li>
-        <li><a href="#service">YouTube運用</a></li>
-        <li><a href="#service">ショート動画</a></li>
-      </ul>
     </div>
     <div>
       <h5>編集者一覧</h5>
