@@ -1099,6 +1099,21 @@ function doGet(e) {
   }
 
   // ヒアリング案内メールを送信（問い合わせ一覧から）
+  // 納品メール送信（追加発注タブ / 納品モーダルからメール送信時）
+  if (data.action === 'send_delivery') {
+    var toEmail  = data.email   || '';
+    var toName   = data.name    || 'お客様';
+    var subject  = data.subject || '【mono.create】納品のご連絡';
+    var text     = data.text    || '';
+    if (!toEmail || toEmail.indexOf('@') === -1) return jsonResponse({ error: 'email_required' });
+    var lines = text.split('\n');
+    // 先頭の「お客様 様」行と空行はsendAutoReplyが付加するためスキップ
+    var skipName = toName + '様';
+    while (lines.length && (lines[0].trim() === skipName || lines[0].trim() === '')) lines.shift();
+    sendAutoReply(toEmail, toName, subject, lines);
+    return jsonResponse({ success: true, channel: 'メール', to: toEmail });
+  }
+
   if (action === 'send_hearing_link') {
     return sendHearingLink(
       e.parameter.email   || '',
