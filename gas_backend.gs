@@ -296,6 +296,22 @@ function doPost(e) {
       return saveEditor(data);
     }
 
+    // 派遣依頼 受付（クリエイターズリスト・認証不要）
+    if (data.action === 'creator_dispatch_request') {
+      return creatorDispatchRequest(data);
+    }
+
+    // 派遣依頼 更新（admin用・管理者キー必須）
+    if (data.action === 'dispatch_update') {
+      if (data.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+      return updateDispatchRequest(data);
+    }
+
+    // HPオーナーからの更新依頼（オーナー管理画面・認証不要）
+    if (data.action === 'hp_owner_request') {
+      return hpOwnerRequest(data);
+    }
+
     // 編集者 公開応募フォーム（認証不要）
     if (data.action === 'editor_apply') {
       return applyEditor(data);
@@ -525,6 +541,12 @@ function doGet(e) {
   // 編集者一覧（LP側からも呼ばれるため認証不要）
   if (action === 'editors') {
     return listEditors();
+  }
+
+  // 派遣依頼 一覧（admin用・管理者キー必須）
+  if (action === 'dispatch_list') {
+    if (key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
+    return listDispatchRequests();
   }
 
   // Google DriveファイルのURL→名前取得（管理者キー必須）
@@ -5396,4 +5418,146 @@ function updateInvoiceStatus(invNum, status) {
     }
   }
   return jsonResponse({ error: 'not_found' });
+}
+
+// ================================================================
+// 派遣依頼管理(2026-07-03 会長承認・GAS改修提案.md)
+// ================================================================
+// dispatch_requests シート:
+// 受付日時|会社名|担当者|メール|電話|希望ジャンル|希望本数|開始時期|指名編集者|相談内容|ステータス|担当編集者|メモ
+function getOrCreateDispatchSheet() {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName('dispatch_requests');
+  if (!sheet) {
+    sheet = ss.insertSheet('dispatch_requests');
+    sheet.appendRow(['受付日時','会社名','担当者','メール','電話',
+      '希望ジャンル','希望本数','開始時期','指名編集者','相談内容',
+      'ステータス','担当編集者','メモ']);
+    sheet.setFrozenRows(1);
+    sheet.getRange(1,1,1,13).setFontWeight('bold');
+  }
+  return sheet;
+}
+
+// ── 派遣依頼 受付(公開フォームから・認証不要) ──────────────
+function creatorDispatchRequest(data) {
+  var sheet = getOrCreateDispatchSheet();
+  var now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
+  sheet.appendRow([
+    now,
+    data.company        || '',
+    data.contact_name   || '',
+    data.email          || '',
+    data.phone          || '',
+    data.genre          || '',
+    data.volume         || '',
+    data.start          || '',
+    data.selected_editors || '',
+    data.message        || '',
+    '新規受付',
+    '',
+    ''
+  ]);
+
+  // Chatwork通知(editor_apply と同じルーム・メンション方式を踏襲)
+  var roomId = EDITOR_ROOM_ID || CHATWORK_ROOM_ID;
+  if (roomId) {
+    var msg = '[To:' + CHATWORK_MENTION + '] 中村航汰\n\n' +
+      '━━━━━━━━━━━━━━━━━━━━\n' +
+      '🚀 新規 派遣依頼 — クリエイターズリスト\n' +
+      '━━━━━━━━━━━━━━━━━━━━\n' +
+      '受付日時: ' + now + '\n' +
+      '会社    : ' + (data.company || '') + '\n' +
+      '担当者  : ' + (data.contact_name || '') + '\n' +
+      'メール  : ' + (data.email || '') + '\n' +
+      '電話    : ' + (data.phone || 'なし') + '\n' +
+      'ジャンル: ' + (data.genre || '') + '\n' +
+      '本数    : ' + (data.volume || '') + ' / 開始: ' + (data.start || '') + '\n' +
+      '指名    : ' + (data.selected_editors || 'なし') + '\n' +
+      '━━━━━━━━━━━━━━━━━━━━\n' +
+      (data.message ? '【相談内容】\n' + data.message + '\n━━━━━━━━━━━━━━━━━━━━\n' : '');
+    try {
+      UrlFetchApp.fetch('https://api.chatwork.com/v2/rooms/' + roomId + '/messages', {
+        method: 'POST',
+        headers: { 'X-ChatWorkToken': CHATWORK_TOKEN },
+        payload: 'body=' + encodeURIComponent(msg)
+      });
+    } catch(e) {}
+  }
+
+  return jsonResponse({ ok: true });
+}
+
+// ── 派遣依頼 一覧(admin用・ADMIN_KEY必須) ──────────────
+function listDispatchRequests() {
+  var sheet = getOrCreateDispatchSheet();
+  var values = sheet.getDataRange().getValues();
+  var data = [];
+  for (var i = 1; i < values.length; i++) {
+    var r = values[i];
+    if (!r[1]) continue;
+    data.push({
+      row: i + 1,
+      date: r[0] || '', company: r[1] || '', contact: r[2] || '',
+      email: r[3] || '', phone: r[4] || '', genre: r[5] || '',
+      volume: r[6] || '', start: r[7] || '', selected_editors: r[8] || '',
+      message: r[9] || '', status: r[10] || '新規受付',
+      assigned_editors: r[11] || '', memo: r[12] || ''
+    });
+  }
+  data.reverse(); // 新しい順
+  return jsonResponse({ data: data });
+}
+
+// ── 派遣依頼 更新(admin用・ADMIN_KEY必須) ──────────────
+function updateDispatchRequest(data) {
+  var sheet = getOrCreateDispatchSheet();
+  var row = Number(data.row);
+  if (!row || row < 2 || row > sheet.getLastRow()) {
+    return jsonResponse({ error: 'invalid row' });
+  }
+  if (data.status !== undefined)           sheet.getRange(row, 11).setValue(data.status);
+  if (data.assigned_editors !== undefined) sheet.getRange(row, 12).setValue(data.assigned_editors);
+  if (data.memo !== undefined)             sheet.getRange(row, 13).setValue(data.memo);
+  return jsonResponse({ ok: true });
+}
+
+
+// ── HPオーナー更新依頼(オーナー管理画面から・認証不要) ──────────────
+// owner_requests シート: 受付日時|店舗名|お名前|メール|種別|内容|ステータス
+function hpOwnerRequest(data) {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName('owner_requests');
+  if (!sheet) {
+    sheet = ss.insertSheet('owner_requests');
+    sheet.appendRow(['受付日時','店舗名','お名前','メール','種別','内容','ステータス']);
+    sheet.setFrozenRows(1);
+    sheet.getRange(1,1,1,7).setFontWeight('bold');
+  }
+  var now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
+  sheet.appendRow([now, data.shop || '', data.name || '', data.email || '',
+    data.kind || '', data.message || '', '未対応']);
+
+  var roomId = EDITOR_ROOM_ID || CHATWORK_ROOM_ID;
+  if (roomId) {
+    var msg = '[To:' + CHATWORK_MENTION + '] 中村航汰\n\n' +
+      '━━━━━━━━━━━━━━━━━━━━\n' +
+      '🏠 HPオーナーから更新依頼\n' +
+      '━━━━━━━━━━━━━━━━━━━━\n' +
+      '受付日時: ' + now + '\n' +
+      '店舗    : ' + (data.shop || '') + '\n' +
+      'お名前  : ' + (data.name || '') + '\n' +
+      'メール  : ' + (data.email || '') + '\n' +
+      '種別    : ' + (data.kind || '') + '\n' +
+      '━━━━━━━━━━━━━━━━━━━━\n' +
+      (data.message ? '【内容】\n' + data.message + '\n' : '');
+    try {
+      UrlFetchApp.fetch('https://api.chatwork.com/v2/rooms/' + roomId + '/messages', {
+        method: 'POST',
+        headers: { 'X-ChatWorkToken': CHATWORK_TOKEN },
+        payload: 'body=' + encodeURIComponent(msg)
+      });
+    } catch(e) {}
+  }
+  return jsonResponse({ ok: true });
 }

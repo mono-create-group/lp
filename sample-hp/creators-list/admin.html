@@ -7,56 +7,35 @@
 <meta name="robots" content="noindex,nofollow">
 <style>
   :root{
-    --brand:#1a56db;
-    --brand-dark:#123a99;
-    --ink:#111827;
-    --sub:#4b5563;
-    --bg:#f7f8fb;
-    --line:#e5e7eb;
-    --ok:#166534;--ok-bg:#dcfce7;
-    --warn:#92400e;--warn-bg:#fef3c7;
+    --brand:#1a56db;--brand-dark:#123a99;--ink:#111827;--sub:#4b5563;
+    --bg:#f7f8fb;--line:#e5e7eb;
+    --ok:#166534;--ok-bg:#dcfce7;--warn:#92400e;--warn-bg:#fef3c7;
     --danger:#b91c1c;--danger-bg:#fee2e2;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{
-    font-family:"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
-    color:var(--ink);background:var(--bg);line-height:1.7;font-size:14px;
-  }
+  body{font-family:"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;color:var(--ink);background:var(--bg);line-height:1.7;font-size:14px;}
   a{color:inherit;}
-  header{
-    position:sticky;top:0;z-index:50;background:var(--ink);color:#fff;
-  }
+  header{position:sticky;top:0;z-index:50;background:var(--ink);color:#fff;}
   .head-inner{max-width:1160px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
   .head-inner .logo{font-weight:800;font-size:15px;}
   .head-inner .logo span{color:#93c5fd;}
   .head-inner .note{font-size:11.5px;color:#9ca3af;}
   .wrap{max-width:1160px;margin:0 auto;padding:24px;}
-
   .tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
-  .tab{
-    padding:9px 20px;border-radius:8px;border:1px solid var(--line);background:#fff;
-    font-size:13.5px;font-weight:700;cursor:pointer;color:var(--sub);
-  }
+  .tab{padding:9px 20px;border-radius:8px;border:1px solid var(--line);background:#fff;font-size:13.5px;font-weight:700;cursor:pointer;color:var(--sub);}
   .tab.active{background:var(--brand);border-color:var(--brand);color:#fff;}
-
   .stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px;}
   .stat-chip{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;}
   .stat-chip .label{font-size:11.5px;color:var(--sub);font-weight:600;}
   .stat-chip .value{font-size:24px;font-weight:800;}
   .stat-chip .value small{font-size:12px;color:var(--sub);font-weight:600;}
-
   .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px;}
   .card h3{font-size:15px;margin-bottom:12px;}
   .card .desc{font-size:12.5px;color:var(--sub);margin-bottom:14px;}
-
   table{width:100%;border-collapse:collapse;font-size:13px;}
-  th{
-    text-align:left;font-size:11.5px;color:var(--sub);font-weight:700;
-    border-bottom:2px solid var(--line);padding:8px 10px;white-space:nowrap;
-  }
+  th{text-align:left;font-size:11.5px;color:var(--sub);font-weight:700;border-bottom:2px solid var(--line);padding:8px 10px;white-space:nowrap;}
   td{border-bottom:1px solid var(--line);padding:10px;vertical-align:top;}
   tr:last-child td{border-bottom:none;}
-
   .badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px;white-space:nowrap;}
   .b-new{background:#e0e9ff;color:var(--brand-dark);}
   .b-hearing{background:#f3e8ff;color:#6b21a8;}
@@ -68,130 +47,70 @@
   .b-ok{background:var(--ok-bg);color:var(--ok);}
   .b-warn{background:var(--warn-bg);color:var(--warn);}
   .b-full{background:var(--danger-bg);color:var(--danger);}
-
-  .btn{
-    display:inline-flex;align-items:center;gap:6px;background:var(--brand);color:#fff;
-    border:none;border-radius:8px;padding:10px 20px;font-size:13.5px;font-weight:700;cursor:pointer;
-    font-family:inherit;text-decoration:none;
-  }
+  .btn{display:inline-flex;align-items:center;gap:6px;background:var(--brand);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit;text-decoration:none;}
   .btn:hover{background:var(--brand-dark);}
   .btn-sm{padding:5px 12px;font-size:12px;border-radius:6px;}
-  .btn-outline{background:#fff;color:var(--brand);border:1.5px solid var(--brand);}
   .btn-ghost{background:#fff;color:var(--sub);border:1px solid var(--line);}
-
-  select,input,textarea{
-    font-family:inherit;font-size:13px;padding:8px 10px;border:1px solid var(--line);
-    border-radius:8px;background:#fff;color:var(--ink);
-  }
-  select:focus,input:focus,textarea:focus{outline:none;border-color:var(--brand);}
-
-  .form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:12px;}
-  .form-grid label{display:block;font-size:11.5px;font-weight:700;color:var(--sub);margin-bottom:4px;}
-  .form-grid input,.form-grid select,.form-grid textarea{width:100%;}
-  .full{grid-column:1/-1;}
-
+  select,input,textarea{font-family:inherit;font-size:13px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);}
   .empty{color:var(--sub);font-size:13px;text-align:center;padding:28px 0;}
-  .notice{
-    background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px 16px;
-    font-size:12.5px;color:#92400e;margin-bottom:20px;
-  }
   .hidden{display:none;}
-  .gate{
-    max-width:380px;margin:80px auto;background:#fff;border:1px solid var(--line);
-    border-radius:14px;padding:32px;text-align:center;
-  }
+  .gate{max-width:400px;margin:80px auto;background:#fff;border:1px solid var(--line);border-radius:14px;padding:32px;text-align:center;}
   .gate h2{font-size:17px;margin-bottom:8px;}
   .gate p{font-size:12.5px;color:var(--sub);margin-bottom:18px;}
   .gate input{width:100%;margin-bottom:12px;text-align:center;}
   .muted{color:var(--sub);font-size:12px;}
-
-  @media(max-width:760px){
-    .form-grid{grid-template-columns:1fr;}
-    table{font-size:12px;}
-    .table-scroll{overflow-x:auto;}
-  }
+  .err{color:var(--danger);font-size:12.5px;margin-bottom:10px;}
+  @media(max-width:760px){table{font-size:12px;}.table-scroll{overflow-x:auto;}}
 </style>
 </head>
 <body>
 
-<!-- 簡易ゲート(本格認証は本番GAS連携時にADMIN_KEY方式へ移行) -->
 <div class="gate" id="gate">
   <h2>派遣管理画面</h2>
-  <p>管理用パスコードを入力してください。</p>
-  <input type="password" id="gate-pass" placeholder="パスコード" autocomplete="current-password">
+  <p>管理者キーを入力してください。<br>(本番LPの管理画面と同じキーです)</p>
+  <p class="err hidden" id="gate-err">キーが違うか、通信に失敗しました</p>
+  <input type="password" id="gate-key" placeholder="管理者キー" autocomplete="current-password">
   <button class="btn" style="width:100%;" onclick="unlock()">開く</button>
-  <p class="muted" style="margin-top:12px;">初期パスコード: monocreate2026(初回入力後に変更可)</p>
 </div>
 
 <div id="app" class="hidden">
 <header>
   <div class="head-inner">
     <div class="logo">mono<span>.create</span> Creators — 派遣管理</div>
-    <div class="note">編集者データ: 本番LP(読み取り専用) ／ 依頼データ: このブラウザ保存</div>
+    <div class="note">データ: 本番GAS(Google Sheets共有・全端末同期)</div>
   </div>
 </header>
 
 <div class="wrap">
-
-  <div class="notice">
-    ⚠️ 派遣依頼データは現在このブラウザ(localStorage)にのみ保存されます。フォーム送信の自動取り込み・LINE通知・複数端末共有には本番GASバックエンドへの
-    <strong>creator_dispatch_request</strong> アクション追加が必要です(本番改修のため会長承認待ち。提案書: GAS改修提案.md)。
-    バックアップは右上の「書き出し」から定期的に行ってください。
-  </div>
-
   <div class="stat-row" id="stats"></div>
-
   <div class="tabs">
     <button class="tab active" data-tab="requests">派遣依頼</button>
     <button class="tab" data-tab="editors">編集者 稼働状況</button>
     <div style="margin-left:auto;display:flex;gap:8px;">
-      <button class="btn btn-sm btn-ghost" onclick="exportData()">書き出し</button>
-      <button class="btn btn-sm btn-ghost" onclick="document.getElementById('import-file').click()">読み込み</button>
-      <input type="file" id="import-file" accept=".json" class="hidden" onchange="importData(event)">
+      <button class="btn btn-sm btn-ghost" onclick="loadRequests()">🔄 更新</button>
+      <button class="btn btn-sm btn-ghost" onclick="logout()">キー変更</button>
     </div>
   </div>
 
-  <!-- ===== 派遣依頼タブ ===== -->
   <div id="tab-requests">
     <div class="card">
-      <h3>依頼を追加(フォーム受信メールから転記)</h3>
-      <p class="desc">Netlifyフォームの通知メールを受信したら、ここに転記して進捗管理します。GAS連携後は自動で取り込まれます。</p>
-      <div class="form-grid">
-        <div><label>会社名・屋号 *</label><input id="f-company"></div>
-        <div><label>ご担当者名</label><input id="f-contact"></div>
-        <div><label>メールアドレス</label><input id="f-email" type="email"></div>
-        <div><label>電話番号</label><input id="f-phone"></div>
-        <div><label>希望ジャンル</label><input id="f-genre" placeholder="例: 縦型ショート"></div>
-        <div><label>希望本数/開始時期</label><input id="f-volume" placeholder="例: 週5本・今週中"></div>
-        <div class="full"><label>指名編集者(カンマ区切り)</label><input id="f-editors" placeholder="例: 豊岡将也、清水光俊"></div>
-        <div class="full"><label>相談内容メモ</label><textarea id="f-memo" rows="2"></textarea></div>
-      </div>
-      <button class="btn" onclick="addRequest()">この依頼を登録</button>
-    </div>
-
-    <div class="card">
       <h3>受付状況・マッチング進捗</h3>
+      <p class="desc">クリエイターズリストのお問い合わせフォームから自動で届きます(Chatworkにも通知)。</p>
       <div class="table-scroll">
         <table>
           <thead>
-            <tr><th>受付日</th><th>クライアント</th><th>希望内容</th><th>指名/担当編集者</th><th>ステータス</th><th>メモ</th><th></th></tr>
+            <tr><th>受付日時</th><th>クライアント</th><th>希望内容</th><th>指名/担当編集者</th><th>ステータス</th><th>メモ</th></tr>
           </thead>
-          <tbody id="request-rows"></tbody>
+          <tbody id="request-rows"><tr><td colspan="6" class="empty">読み込み中...</td></tr></tbody>
         </table>
       </div>
-      <p class="empty hidden" id="request-empty">まだ派遣依頼がありません。</p>
     </div>
   </div>
 
-  <!-- ===== 編集者稼働状況タブ ===== -->
   <div id="tab-editors" class="hidden">
     <div class="card">
       <h3>在籍編集者と稼働状況</h3>
-      <p class="desc">
-        プロフィールは本番LPと同じデータ(編集者の自己登録)を読み取り専用で表示。
-        「本稼働」ステータスの依頼に担当としてアサインされている件数から稼働率を自動判定します。
-        プロフィール修正は本番の<a href="https://mono-create-group.github.io/lp/admin.html" target="_blank" rel="noopener" style="color:var(--brand);font-weight:700;">本番管理画面(編集者タブ)</a>で行ってください。
-      </p>
+      <p class="desc">プロフィールは編集者の自己登録データ。「本稼働・トライアル」の担当件数から稼働を判定します。</p>
       <div class="table-scroll">
         <table>
           <thead>
@@ -202,249 +121,171 @@
       </div>
     </div>
   </div>
-
 </div>
 </div>
 
 <script>
-  // ===== 設定 =====
-  // 本番LP(chatwork/lp)と同じGAS。読み取り専用のeditorsアクションのみ使用(本番への書き込みなし)
   const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
-  const STORE_KEY = 'creators_dispatch_requests_v1';
-  const PASS_KEY = 'creators_admin_pass';
-  const DEFAULT_PASS = 'monocreate2026';
+  const KEY_STORE = 'creators_admin_gas_key';
+  const STATUSES = ['新規受付','ヒアリング','マッチング中','トライアル','本稼働','契約終了','失注'];
+  const SCLS = {'新規受付':'b-new','ヒアリング':'b-hearing','マッチング中':'b-matching','トライアル':'b-trial','本稼働':'b-active','契約終了':'b-closed','失注':'b-lost'};
 
-  const STATUSES = [
-    { id: 'new',      label: '新規受付',     cls: 'b-new' },
-    { id: 'hearing',  label: 'ヒアリング',   cls: 'b-hearing' },
-    { id: 'matching', label: 'マッチング中', cls: 'b-matching' },
-    { id: 'trial',    label: 'トライアル',   cls: 'b-trial' },
-    { id: 'active',   label: '本稼働',       cls: 'b-active' },
-    { id: 'closed',   label: '契約終了',     cls: 'b-closed' },
-    { id: 'lost',     label: '失注',         cls: 'b-lost' },
-  ];
-
+  let KEY = localStorage.getItem(KEY_STORE) || '';
   let requests = [];
   let editors = [];
 
-  // ===== ゲート =====
-  function unlock() {
-    const input = document.getElementById('gate-pass').value;
-    const saved = localStorage.getItem(PASS_KEY) || DEFAULT_PASS;
-    if (input !== saved) { alert('パスコードが違います'); return; }
-    sessionStorage.setItem('creators_admin_ok', '1');
-    document.getElementById('gate').classList.add('hidden');
-    document.getElementById('app').classList.remove('hidden');
-    init();
-  }
-  document.getElementById('gate-pass').addEventListener('keydown', (e) => { if (e.key === 'Enter') unlock(); });
-  if (sessionStorage.getItem('creators_admin_ok') === '1') {
-    document.getElementById('gate').classList.add('hidden');
-    document.getElementById('app').classList.remove('hidden');
-    init();
-  }
+  function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 
-  // ===== 初期化 =====
-  function init() {
-    requests = JSON.parse(localStorage.getItem(STORE_KEY) || '[]');
-    renderAll();
+  async function unlock(){
+    const k = document.getElementById('gate-key').value.trim();
+    if(!k) return;
+    document.getElementById('gate-err').classList.add('hidden');
+    try{
+      const res = await fetch(`${GAS_URL}?action=dispatch_list&key=${encodeURIComponent(k)}`);
+      const json = await res.json();
+      if(json.error){document.getElementById('gate-err').classList.remove('hidden');return;}
+      KEY = k;
+      localStorage.setItem(KEY_STORE, k);
+      requests = json.data || [];
+      enter();
+    }catch(e){
+      document.getElementById('gate-err').classList.remove('hidden');
+    }
+  }
+  document.getElementById('gate-key').addEventListener('keydown',e=>{if(e.key==='Enter')unlock();});
+
+  function logout(){localStorage.removeItem(KEY_STORE);location.reload();}
+
+  function enter(){
+    document.getElementById('gate').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    renderRequests();
     loadEditors();
   }
 
-  async function loadEditors() {
-    try {
+  async function loadRequests(){
+    try{
+      const res = await fetch(`${GAS_URL}?action=dispatch_list&key=${encodeURIComponent(KEY)}`);
+      const json = await res.json();
+      if(!json.error){requests = json.data || [];renderRequests();renderEditors();}
+    }catch(e){}
+  }
+
+  async function loadEditors(){
+    try{
       const res = await fetch(`${GAS_URL}?action=editors`);
       const json = await res.json();
       editors = json.data || [];
-    } catch (e) {
-      document.getElementById('editor-rows').innerHTML =
-        '<tr><td colspan="6" class="empty">編集者一覧の取得に失敗しました(オフライン?)</td></tr>';
+    }catch(e){
+      document.getElementById('editor-rows').innerHTML = '<tr><td colspan="6" class="empty">取得に失敗しました</td></tr>';
       return;
     }
     renderEditors();
     renderStats();
   }
 
-  // ===== タブ =====
-  document.querySelectorAll('.tab').forEach((t) => {
-    t.addEventListener('click', () => {
-      document.querySelectorAll('.tab').forEach((x) => x.classList.remove('active'));
-      t.classList.add('active');
-      document.getElementById('tab-requests').classList.toggle('hidden', t.dataset.tab !== 'requests');
-      document.getElementById('tab-editors').classList.toggle('hidden', t.dataset.tab !== 'editors');
-    });
-  });
-
-  // ===== 依頼CRUD =====
-  function save() {
-    localStorage.setItem(STORE_KEY, JSON.stringify(requests));
-    renderAll();
+  async function updateReq(row, fields){
+    const body = Object.assign({action:'dispatch_update', key:KEY, row}, fields);
+    try{
+      const res = await fetch(GAS_URL, {method:'POST', headers:{'Content-Type':'text/plain'}, body:JSON.stringify(body)});
+      const json = await res.json();
+      if(json.error){alert('更新に失敗: '+json.error);return false;}
+      return true;
+    }catch(e){alert('通信エラーで更新できませんでした');return false;}
   }
 
-  function addRequest() {
-    const company = document.getElementById('f-company').value.trim();
-    if (!company) { alert('会社名・屋号を入力してください'); return; }
-    requests.unshift({
-      id: 'req_' + Date.now(),
-      date: new Date().toLocaleDateString('ja-JP'),
-      company,
-      contact: document.getElementById('f-contact').value.trim(),
-      email: document.getElementById('f-email').value.trim(),
-      phone: document.getElementById('f-phone').value.trim(),
-      genre: document.getElementById('f-genre').value.trim(),
-      volume: document.getElementById('f-volume').value.trim(),
-      editors: document.getElementById('f-editors').value.trim(),
-      memo: document.getElementById('f-memo').value.trim(),
-      status: 'new',
-    });
-    ['f-company','f-contact','f-email','f-phone','f-genre','f-volume','f-editors','f-memo']
-      .forEach((id) => (document.getElementById(id).value = ''));
-    save();
+  async function setStatus(row, status){
+    const r = requests.find(x=>x.row===row);
+    if(!r) return;
+    const old = r.status; r.status = status; renderRequests(); renderEditors(); renderStats();
+    if(!await updateReq(row,{status})){r.status=old;renderRequests();}
+  }
+  async function setEditors(row){
+    const r = requests.find(x=>x.row===row); if(!r)return;
+    const val = prompt('担当編集者(読点区切り)', r.assigned_editors || r.selected_editors || '');
+    if(val===null)return;
+    r.assigned_editors = val; renderRequests(); renderEditors();
+    await updateReq(row,{assigned_editors:val});
+  }
+  async function setMemo(row){
+    const r = requests.find(x=>x.row===row); if(!r)return;
+    const val = prompt('メモ', r.memo || '');
+    if(val===null)return;
+    r.memo = val; renderRequests();
+    await updateReq(row,{memo:val});
   }
 
-  function setStatus(id, status) {
-    const r = requests.find((x) => x.id === id);
-    if (r) { r.status = status; save(); renderEditors(); }
-  }
+  document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('tab-requests').classList.toggle('hidden',t.dataset.tab!=='requests');
+    document.getElementById('tab-editors').classList.toggle('hidden',t.dataset.tab!=='editors');
+  }));
 
-  function setMemo(id) {
-    const r = requests.find((x) => x.id === id);
-    if (!r) return;
-    const memo = prompt('メモを編集', r.memo || '');
-    if (memo !== null) { r.memo = memo; save(); }
-  }
-
-  function setEditors(id) {
-    const r = requests.find((x) => x.id === id);
-    if (!r) return;
-    const val = prompt('担当編集者(カンマ・読点区切り)', r.editors || '');
-    if (val !== null) { r.editors = val; save(); renderEditors(); }
-  }
-
-  function removeRequest(id) {
-    if (!confirm('この依頼を削除しますか?')) return;
-    requests = requests.filter((x) => x.id !== id);
-    save();
-    renderEditors();
-  }
-
-  // ===== 描画 =====
-  function renderAll() {
-    renderRequests();
-    renderStats();
-  }
-
-  function statusBadge(r) {
-    const s = STATUSES.find((x) => x.id === r.status) || STATUSES[0];
-    return `<span class="badge ${s.cls}">${s.label}</span>`;
-  }
-
-  function renderRequests() {
+  function renderRequests(){
     const tbody = document.getElementById('request-rows');
-    document.getElementById('request-empty').classList.toggle('hidden', requests.length > 0);
-    tbody.innerHTML = requests.map((r) => `
+    if(!requests.length){tbody.innerHTML='<tr><td colspan="6" class="empty">まだ派遣依頼がありません。</td></tr>';return;}
+    tbody.innerHTML = requests.map(r=>`
       <tr>
-        <td>${r.date}</td>
-        <td><strong>${esc(r.company)}</strong><br><span class="muted">${esc(r.contact)}${r.email ? ' / ' + esc(r.email) : ''}${r.phone ? ' / ' + esc(r.phone) : ''}</span></td>
-        <td>${esc(r.genre)}${r.volume ? '<br><span class="muted">' + esc(r.volume) + '</span>' : ''}</td>
-        <td>${esc(r.editors) || '<span class="muted">未定</span>'} <button class="btn btn-sm btn-ghost" onclick="setEditors('${r.id}')">変更</button></td>
+        <td style="white-space:nowrap">${esc(r.date)}</td>
+        <td><strong>${esc(r.company)}</strong><br><span class="muted">${esc(r.contact)}${r.email?' / '+esc(r.email):''}${r.phone?' / '+esc(r.phone):''}</span></td>
+        <td>${esc(r.genre)}${r.volume?'<br><span class="muted">'+esc(r.volume)+' / '+esc(r.start)+'</span>':''}</td>
+        <td>${esc(r.assigned_editors||r.selected_editors)||'<span class="muted">未定</span>'} <button class="btn btn-sm btn-ghost" onclick="setEditors(${r.row})">変更</button></td>
         <td>
-          ${statusBadge(r)}<br>
-          <select onchange="setStatus('${r.id}', this.value)" style="margin-top:6px;">
-            ${STATUSES.map((s) => `<option value="${s.id}" ${s.id === r.status ? 'selected' : ''}>${s.label}</option>`).join('')}
+          <span class="badge ${SCLS[r.status]||'b-new'}">${esc(r.status||'新規受付')}</span><br>
+          <select onchange="setStatus(${r.row},this.value)" style="margin-top:6px;">
+            ${STATUSES.map(s=>`<option ${s===r.status?'selected':''}>${s}</option>`).join('')}
           </select>
         </td>
-        <td style="max-width:180px;">${esc(r.memo) || ''} <button class="btn btn-sm btn-ghost" onclick="setMemo('${r.id}')">✎</button></td>
-        <td><button class="btn btn-sm btn-ghost" onclick="removeRequest('${r.id}')">削除</button></td>
-      </tr>
-    `).join('');
+        <td style="max-width:200px;">${esc(r.memo)||''}${r.message?'<div class="muted" style="font-size:11px;">相談: '+esc(r.message.slice(0,60))+'</div>':''} <button class="btn btn-sm btn-ghost" onclick="setMemo(${r.row})">✎</button></td>
+      </tr>`).join('');
+    renderStats();
   }
 
-  // 名前照合は全空白を無視(本番データ「豊岡 将也」と入力「豊岡将也」を同一視)
-  function normName(s) {
-    return String(s || '').replace(/[\s　]/g, '');
-  }
-
-  function activeCountFor(name) {
-    const target = normName(name);
-    return requests.filter((r) =>
-      (r.status === 'active' || r.status === 'trial') &&
-      (r.editors || '').split(/[、,]/).map(normName).includes(target)
+  function normName(s){return String(s||'').replace(/[\s　]/g,'');}
+  function activeCountFor(name){
+    const t = normName(name);
+    return requests.filter(r=>
+      (r.status==='本稼働'||r.status==='トライアル') &&
+      String(r.assigned_editors||r.selected_editors||'').split(/[、,]/).map(normName).includes(t)
     ).length;
   }
+  function capacityOf(ed){const m=String(ed.monthly_capacity||'').match(/\d+/);return m?Number(m[0]):null;}
 
-  function capacityOf(ed) {
-    const m = String(ed.monthly_capacity || '').match(/\d+/);
-    return m ? Number(m[0]) : null;
-  }
-
-  function renderEditors() {
+  function renderEditors(){
     const tbody = document.getElementById('editor-rows');
-    if (!editors.length) {
-      tbody.innerHTML = '<tr><td colspan="6" class="empty">登録済みの編集者がいません。</td></tr>';
-      return;
-    }
-    tbody.innerHTML = editors.map((ed) => {
+    if(!editors.length){tbody.innerHTML='<tr><td colspan="6" class="empty">登録済みの編集者がいません。</td></tr>';return;}
+    tbody.innerHTML = editors.map(ed=>{
       const active = activeCountFor(ed.name);
       const cap = capacityOf(ed);
       let badge = '<span class="badge b-ok">空きあり</span>';
-      if (cap !== null && active >= cap) badge = '<span class="badge b-full">満枠</span>';
-      else if (cap !== null && active >= cap * 0.7) badge = '<span class="badge b-warn">残りわずか</span>';
-      return `
-        <tr>
-          <td><strong>${esc(ed.name)}</strong><br><span class="muted">${esc(ed.occupation)}${ed.experience ? ' / ' + esc(ed.experience) : ''}</span></td>
-          <td>${esc(ed.genres)}</td>
-          <td>${esc(String(ed.monthly_capacity || '-'))}</td>
-          <td>${esc(ed.work_hours || '-')}</td>
-          <td>${active}件</td>
-          <td>${badge}</td>
-        </tr>
-      `;
+      if(cap!==null&&active>=cap)badge='<span class="badge b-full">満枠</span>';
+      else if(cap!==null&&active>=cap*0.7)badge='<span class="badge b-warn">残りわずか</span>';
+      return `<tr>
+        <td><strong>${esc(ed.name)}</strong><br><span class="muted">${esc(ed.occupation)}${ed.experience?' / '+esc(ed.experience):''}</span></td>
+        <td>${esc(ed.genres)}</td>
+        <td>${esc(String(ed.monthly_capacity||'-'))}</td>
+        <td>${esc(ed.work_hours||'-')}</td>
+        <td>${active}件</td>
+        <td>${badge}</td>
+      </tr>`;
     }).join('');
   }
 
-  function renderStats() {
-    const by = (s) => requests.filter((r) => r.status === s).length;
-    const open = requests.filter((r) => ['new','hearing','matching','trial'].includes(r.status)).length;
+  function renderStats(){
+    const by = s=>requests.filter(r=>r.status===s).length;
+    const open = requests.filter(r=>['新規受付','ヒアリング','マッチング中','トライアル'].includes(r.status||'新規受付')).length;
     document.getElementById('stats').innerHTML = `
       <div class="stat-chip"><div class="label">対応中の依頼</div><div class="value">${open}<small>件</small></div></div>
-      <div class="stat-chip"><div class="label">新規受付</div><div class="value">${by('new')}<small>件</small></div></div>
-      <div class="stat-chip"><div class="label">本稼働</div><div class="value">${by('active')}<small>件</small></div></div>
-      <div class="stat-chip"><div class="label">在籍編集者</div><div class="value">${editors.length}<small>名</small></div></div>
-    `;
+      <div class="stat-chip"><div class="label">新規受付</div><div class="value">${by('新規受付')+requests.filter(r=>!r.status).length}<small>件</small></div></div>
+      <div class="stat-chip"><div class="label">本稼働</div><div class="value">${by('本稼働')}<small>件</small></div></div>
+      <div class="stat-chip"><div class="label">在籍編集者</div><div class="value">${editors.length}<small>名</small></div></div>`;
   }
 
-  // ===== 入出力 =====
-  function exportData() {
-    const blob = new Blob([JSON.stringify({ requests, exportedAt: new Date().toISOString() }, null, 2)], { type: 'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `派遣依頼_バックアップ_${new Date().toISOString().slice(0, 10)}.json`;
-    a.click();
-  }
-
-  function importData(ev) {
-    const file = ev.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      try {
-        const data = JSON.parse(reader.result);
-        if (!Array.isArray(data.requests)) throw new Error('形式が不正です');
-        if (!confirm(`${data.requests.length}件の依頼データを読み込み、現在のデータを置き換えますか?`)) return;
-        requests = data.requests;
-        save();
-        renderEditors();
-      } catch (e) {
-        alert('読み込みに失敗しました: ' + e.message);
-      }
-    };
-    reader.readAsText(file);
-    ev.target.value = '';
-  }
-
-  function esc(s) {
-    return String(s || '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  // 保存済みキーがあれば自動ログイン
+  if(KEY){
+    document.getElementById('gate-key').value = KEY;
+    unlock();
   }
 </script>
 

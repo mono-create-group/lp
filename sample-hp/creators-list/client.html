@@ -331,7 +331,7 @@
       <textarea id="message" placeholder="現在の編集体制や、お困りごとをご記入ください"></textarea>
     </div>
     <button type="submit" class="form-submit">この内容でお問い合わせする</button>
-    <p class="form-note">送信ボタンでメールが作成されます。内容はお問い合わせ対応の目的のみに使用します。</p>
+    <p class="form-note">送信内容は自動で受け付けられ、担当者からメールでご連絡します。お問い合わせ対応の目的のみに使用します。</p>
   </form>
 </section>
 
@@ -475,13 +475,38 @@
     location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   }
 
-  function sendModalContact(editorName){
+  // GASへ自動受付(失敗時はメール作成にフォールバック)
+  async function submitInquiry(payload){
+    try{
+      const res = await fetch(GAS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(Object.assign({ action: 'creator_dispatch_request' }, payload)),
+      });
+      const json = await res.json();
+      return !!json.ok;
+    }catch(e){
+      return false;
+    }
+  }
+
+  async function sendModalContact(editorName){
     const name = document.getElementById('mc-name').value.trim();
     const email = document.getElementById('mc-email').value.trim();
     const msg = document.getElementById('mc-msg').value.trim();
     if(!name||!email){alert('お名前とメールアドレスを入力してください');return;}
-    const body = `【編集者派遣のお問い合わせ】\n指名編集者: ${editorName}\nお名前・会社名: ${name}\n連絡先メール: ${email}\n\nご相談内容:\n${msg}`;
-    mailtoSend(`【クリエイターズリスト】${editorName}さんへのお問い合わせ`, body);
+    const btn = document.querySelector('.m-send');
+    btn.disabled = true; btn.textContent = '送信中...';
+    const ok = await submitInquiry({ company: name, contact_name: name, email, selected_editors: editorName, message: msg });
+    if(ok){
+      btn.textContent = '✅ 送信しました。担当者からご連絡します';
+      btn.style.background = '#16a34a';
+    }else{
+      btn.disabled = false; btn.textContent = 'この編集者についてお問い合わせする';
+      alert('自動送信に失敗したため、メール作成画面を開きます。');
+      mailtoSend(`【クリエイターズリスト】${editorName}さんへのお問い合わせ`,
+        `指名編集者: ${editorName}\nお名前・会社名: ${name}\n連絡先メール: ${email}\n\nご相談内容:\n${msg}`);
+    }
   }
 
   function syncGenreSelect(){
@@ -491,15 +516,33 @@
   }
   syncGenreSelect();
 
-  document.getElementById('contact-form').addEventListener('submit',e=>{
+  document.getElementById('contact-form').addEventListener('submit',async e=>{
     e.preventDefault();
     const v = id=>document.getElementById(id).value.trim();
     const named = document.getElementById('named-editor-row').style.display!=='none'?v('named-editor'):'';
-    const body = `【編集者派遣のお問い合わせ】\n`+
-      (named?`指名編集者: ${named}\n`:'')+
-      `会社名・屋号: ${v('company')}\nご担当者名: ${v('contact-name')}\nメール: ${v('email')}\n電話: ${v('phone')||'なし'}\n`+
-      `形式: ${document.getElementById('fmt').selectedOptions[0].textContent}\nジャンル: ${v('genre')}\n希望本数: ${v('volume')||'未記入'}\n開始時期: ${v('start')}\n\nご相談内容:\n${v('message')}`;
-    mailtoSend('【クリエイターズリスト】派遣のお問い合わせ', body);
+    const fmtLabel = document.getElementById('fmt').selectedOptions[0].textContent;
+    const btn = document.querySelector('.form-submit');
+    btn.disabled = true; btn.textContent = '送信中...';
+    const ok = await submitInquiry({
+      company: v('company'), contact_name: v('contact-name'), email: v('email'), phone: v('phone'),
+      genre: `${fmtLabel} / ${v('genre')}`, volume: v('volume'), start: v('start'),
+      selected_editors: named, message: v('message'),
+    });
+    if(ok){
+      document.getElementById('contact-form').innerHTML =
+        `<div style="text-align:center;padding:30px 10px;">
+          <div style="font-size:40px;margin-bottom:10px;">🎉</div>
+          <div style="font-weight:900;font-size:18px;margin-bottom:8px;">お問い合わせを受け付けました</div>
+          <div style="font-size:13.5px;color:var(--sub);">担当者より1〜2営業日以内にメールでご連絡します。<br>お急ぎの場合はその旨をお書き添えのうえ再送ください。</div>
+        </div>`;
+    }else{
+      btn.disabled = false; btn.textContent = 'この内容でお問い合わせする';
+      alert('自動送信に失敗したため、メール作成画面を開きます。');
+      mailtoSend('【クリエイターズリスト】派遣のお問い合わせ',
+        (named?`指名編集者: ${named}\n`:'')+
+        `会社名・屋号: ${v('company')}\nご担当者名: ${v('contact-name')}\nメール: ${v('email')}\n電話: ${v('phone')||'なし'}\n`+
+        `形式: ${fmtLabel}\nジャンル: ${v('genre')}\n希望本数: ${v('volume')||'未記入'}\n開始時期: ${v('start')}\n\nご相談内容:\n${v('message')}`);
+    }
   });
 
   // スクロール出現

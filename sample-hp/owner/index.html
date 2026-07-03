@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>オーナーさま専用ページ｜mono.create HP管理</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+  :root{
+    --brand:#0e7a5f;--brand-dark:#0a5c47;--ink:#17232c;--sub:#64748b;
+    --bg:#f3f6f5;--line:#e4e9e7;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN",sans-serif;color:var(--ink);background:var(--bg);line-height:1.85;word-break:keep-all;overflow-wrap:anywhere;}
+  .topbar{background:linear-gradient(135deg,var(--brand),#23a57f);color:#fff;padding:16px 20px;}
+  .topbar .inner{max-width:720px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;}
+  .topbar .t{font-weight:800;font-size:16px;}
+  .topbar .s{font-size:11px;opacity:.85;}
+  .wrap{max-width:720px;margin:0 auto;padding:24px 16px 60px;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:16px;box-shadow:0 1px 2px rgba(23,35,44,.05);}
+  .card h3{font-size:15px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+  .card h3::before{content:"";width:4px;height:16px;border-radius:2px;background:var(--brand);}
+  .desc{font-size:12.5px;color:var(--sub);margin-bottom:14px;}
+  label{display:block;font-size:13px;font-weight:800;margin:12px 0 6px;}
+  input,select,textarea{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:10px;font-size:14px;font-family:inherit;background:#fff;}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(14,122,95,.12);}
+  textarea{min-height:100px;resize:vertical;}
+  .btn{width:100%;margin-top:16px;padding:15px;background:var(--brand);color:#fff;border:none;border-radius:99px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;}
+  .btn:hover{background:var(--brand-dark);}
+  .btn:disabled{opacity:.6;}
+  .note{font-size:11.5px;color:#94a3b8;margin-top:10px;text-align:center;}
+  .faq dt{font-weight:800;font-size:13.5px;margin-top:12px;}
+  .faq dd{font-size:13px;color:var(--sub);margin-left:0;}
+  .ok-box{text-align:center;padding:26px 8px;}
+  .ok-box .ic{font-size:40px;margin-bottom:8px;}
+  .ok-box .t{font-weight:900;font-size:17px;margin-bottom:6px;}
+  .ok-box .d{font-size:13px;color:var(--sub);}
+  footer{text-align:center;font-size:11.5px;color:var(--sub);padding:10px 0 30px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="inner">
+    <div>
+      <div class="t">オーナーさま専用ページ</div>
+      <div class="s">mono.create HP管理サポート</div>
+    </div>
+    <div style="font-size:22px;">🏠</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="card">
+    <h3>更新のご依頼</h3>
+    <p class="desc">営業時間・メニュー・写真の差し替えなど、サイトの更新をこちらから依頼できます。<br>月2回まで管理費内で対応します(それ以上は別途お見積り)。</p>
+    <form id="req-form">
+      <label>店舗名</label>
+      <input type="text" id="shop" required placeholder="例: 旬彩居酒屋 花いち">
+      <label>お名前</label>
+      <input type="text" id="name" required>
+      <label>メールアドレス</label>
+      <input type="email" id="email" required>
+      <label>ご依頼の種別</label>
+      <select id="kind">
+        <option>営業時間・定休日の変更</option>
+        <option>メニュー・料金の変更</option>
+        <option>写真の差し替え・追加</option>
+        <option>お知らせ・キャンペーン掲載</option>
+        <option>表示の不具合報告</option>
+        <option>その他・相談</option>
+      </select>
+      <label>内容</label>
+      <textarea id="message" required placeholder="例: 7月から日曜も営業します。営業時間の表記を「無休」に変更してください。"></textarea>
+      <button type="submit" class="btn" id="req-btn">この内容で依頼する</button>
+      <p class="note">通常1〜2営業日以内に対応し、完了をメールでご連絡します。</p>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>月次レポート</h3>
+    <p class="desc">サイトの閲覧数・LINEボタンのタップ数などを毎月お届けします。<br>レポートはメールで送付します(このページでの閲覧機能は準備中)。</p>
+  </div>
+
+  <div class="card">
+    <h3>よくあるご質問</h3>
+    <dl class="faq">
+      <dt>Q. 更新は何回まで無料ですか?</dt>
+      <dd>月額管理費内で月2回まで対応します。大きなデザイン変更やページ追加は別途お見積りです。</dd>
+      <dt>Q. 解約したらサイトはどうなりますか?</dt>
+      <dd>サイトデータ一式を無償でお渡しします。ドメインもオーナーさま名義のため、そのままお使いいただけます。</dd>
+      <dt>Q. 急ぎの修正をお願いしたい</dt>
+      <dd>依頼内容に「急ぎ」とお書きください。営業時間の誤表記など、お客様に影響する内容は最優先で対応します。</dd>
+    </dl>
+  </div>
+
+</div>
+
+<footer>© mono.create — HP制作・管理サポート</footer>
+
+<script>
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
+  document.getElementById('req-form').addEventListener('submit', async e=>{
+    e.preventDefault();
+    const v = id=>document.getElementById(id).value.trim();
+    const btn = document.getElementById('req-btn');
+    btn.disabled = true; btn.textContent = '送信中...';
+    try{
+      const res = await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},
+        body: JSON.stringify({action:'hp_owner_request',shop:v('shop'),name:v('name'),email:v('email'),kind:v('kind'),message:v('message')})});
+      const json = await res.json();
+      if(!json.ok) throw new Error();
+      document.getElementById('req-form').outerHTML =
+        `<div class="ok-box"><div class="ic">✅</div><div class="t">ご依頼を受け付けました</div>
+         <div class="d">1〜2営業日以内に対応し、完了をメールでご連絡します。</div></div>`;
+    }catch(err){
+      btn.disabled = false; btn.textContent = 'この内容で依頼する';
+      alert('送信に失敗しました。お手数ですが mono.create.group@gmail.com へ直接ご連絡ください。');
+    }
+  });
+</script>
+
+</body>
+</html>
