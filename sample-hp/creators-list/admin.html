@@ -19,23 +19,23 @@
 html { font-size: 16px; }
 body {
   font-family: 'Noto Sans JP', sans-serif;
-  background: #04080F;
-  color: #E8EDF5;
+  background: #f5f7fb;
+  color: #1e293b;
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
 }
 :root {
-  --bg:     #04080F;
-  --bg2:    #0B1220;
-  --bg3:    #111C2E;
+  --bg:     #f5f7fb;
+  --bg2:    #ffffff;
+  --bg3:    #eef2f8;
   --accent: #2563EB;
-  --lt:     #3B82F6;
-  --green:  #10B981;
-  --yellow: #F59E0B;
-  --red:    #EF4444;
-  --sub:    #94A3B8;
-  --border: rgba(255,255,255,0.08);
+  --lt:     #1d4ed8;
+  --green:  #059669;
+  --yellow: #b45309;
+  --red:    #dc2626;
+  --sub:    #64748b;
+  --border: rgba(15,23,42,0.12);
 }
 a { color: inherit; text-decoration: none; }
 button { cursor: pointer; font-family: inherit; }
@@ -83,7 +83,7 @@ button { cursor: pointer; font-family: inherit; }
 
 /* ── Header ── */
 .header {
-  background: rgba(4,8,15,0.9);
+  background: rgba(255,255,255,0.92);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
   padding: 14px 24px;
@@ -248,7 +248,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
 }
 .spinner {
   display: inline-block; width: 20px; height: 20px;
-  border: 2px solid rgba(255,255,255,0.1);
+  border: 2px solid rgba(15,23,42,0.08);
   border-top-color: var(--lt);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
@@ -403,7 +403,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
 .dpz header{position:sticky;top:0;z-index:50;background:var(--ink);color:#fff;}
 .dpz .head-inner{max-width:1160px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
 .dpz .head-inner .logo{font-weight:800;font-size:15px;}
-.dpz .head-inner .logo span{color:#93c5fd;}
+.dpz .head-inner .logo span{color:#1d4ed8;}
 .dpz .head-inner .note{font-size:11.5px;color:#9ca3af;}
 .dpz .wrap{max-width:1160px;margin:0 auto;padding:24px;}
 .dpz .tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
@@ -447,6 +447,10 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
 .dpz .err{color:var(--danger);font-size:12.5px;margin-bottom:10px;}
 .dpz @media(max-width:760px){table{font-size:12px;}
 .dpz .table-scroll{overflow-x:auto;}
+
+/* ライトテーマ最終オーバーライド */
+#app select, #app input, #app textarea, .modal select, .modal input, .modal textarea { color:#1e293b !important; }
+#app select option { color:#1e293b; background:#fff; }
 </style>
 </head>
 <body>
@@ -649,7 +653,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
           <input id="dp-pay-name" type="text" placeholder="山田太郎" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;"></div>
         <div><label style="font-size:11.5px;font-weight:700;color:var(--sub);">金額(円)</label>
           <input id="dp-pay-amount" type="number" placeholder="40000" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;"></div>
-        <button class="btn" style="padding:10px 16px;border:none;border-radius:8px;background:var(--brand);color:#fff;font-weight:700;font-size:12.5px;cursor:pointer;" onclick="dpSendInvoiceMail()">💰 振込のご案内(クライアント宛)</button>
+        <button class="btn" style="padding:10px 16px;border:none;border-radius:8px;background:var(--brand);color:#1e293b;font-weight:700;font-size:12.5px;cursor:pointer;" onclick="dpSendInvoiceMail()">💰 振込のご案内(クライアント宛)</button>
         <button class="btn" style="padding:10px 16px;border:1px solid var(--line);border-radius:8px;background:#fff;font-weight:700;font-size:12.5px;cursor:pointer;" onclick="dpSendPayNotice()">📤 支払通知(編集者宛)</button>
       </div>
       <div style="margin-top:10px;">
@@ -707,7 +711,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
           <input id="dp-ct-name" type="text" placeholder="例: 山田太郎" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;"></div>
         <div><label style="font-size:11.5px;font-weight:700;color:var(--sub);">メールアドレス</label>
           <input id="dp-ct-email" type="email" placeholder="例: taro@example.com" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;"></div>
-        <button onclick="dpIssueContract()" id="dp-ct-btn" style="padding:10px 22px;border:none;border-radius:8px;background:var(--brand);color:#fff;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;">発行する</button>
+        <button onclick="dpIssueContract()" id="dp-ct-btn" style="padding:10px 22px;border:none;border-radius:8px;background:var(--brand);color:#1e293b;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;">発行する</button>
       </div>
       <div id="dp-ct-result" style="margin-top:14px;"></div>
     </div>
@@ -771,7 +775,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         更新
       </button>
       <button class="export-btn" onclick="exportCSV()">CSV出力</button>
-      <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="clearAllRecords('inquiries','お問い合わせ',loadData)">🗑 全件削除</button>
+      <button class="action-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;" onclick="clearAllRecords('inquiries','お問い合わせ',loadData)">🗑 全件削除</button>
     </div>
 
     <!-- Table -->
@@ -803,7 +807,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         <h2 style="font-size:1rem;font-weight:700;">💳 振込確認・売上自動記帳</h2>
         <div style="display:flex;gap:10px;">
           <button onclick="loadPayments()" style="padding:7px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--sub);font-size:0.8rem;font-family:inherit;cursor:pointer;">更新</button>
-          <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="clearAllRecords('payments','振込確認記録',loadPayments)">🗑 全件削除</button>
+          <button class="action-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;" onclick="clearAllRecords('payments','振込確認記録',loadPayments)">🗑 全件削除</button>
         </div>
       </div>
       <p style="font-size:0.78rem;color:var(--sub);margin-bottom:20px;line-height:1.7;">
@@ -834,7 +838,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         <h2 style="font-size:1rem;font-weight:700;">📤 振込依頼履歴</h2>
         <div style="display:flex;gap:10px;">
           <button onclick="loadPaymentRequests()" style="padding:7px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--sub);font-size:0.8rem;font-family:inherit;cursor:pointer;">更新</button>
-          <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="clearAllRecords('payment_requests','振込依頼履歴',loadPaymentRequests)">🗑 全件削除</button>
+          <button class="action-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;" onclick="clearAllRecords('payment_requests','振込依頼履歴',loadPaymentRequests)">🗑 全件削除</button>
         </div>
       </div>
       <p style="font-size:0.78rem;color:var(--sub);margin-bottom:20px;line-height:1.7;">
@@ -896,11 +900,11 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:20px;">
         <label style="display:block;font-size:0.78rem;color:var(--sub);margin-bottom:5px;">画像URL <span style="color:#f87171;">*</span></label>
         <input type="url" id="ts-url" placeholder="https://drive.google.com/file/d/.../view など"
-          style="width:100%;padding:10px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;margin-bottom:12px;">
+          style="width:100%;padding:10px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#1e293b;font-size:0.88rem;font-family:inherit;outline:none;margin-bottom:12px;">
         <label style="display:block;font-size:0.78rem;color:var(--sub);margin-bottom:5px;">キャプション（任意）</label>
         <input type="text" id="ts-caption" placeholder="例：株式会社〇〇 様 / リール編集"
-          style="width:100%;padding:10px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;margin-bottom:14px;">
-        <button class="action-btn" style="background:#1a3a2a;color:#4ade80;border:1px solid #166534;font-weight:700;padding:9px 20px;" onclick="addTestimonial()">＋ 追加して掲載</button>
+          style="width:100%;padding:10px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#1e293b;font-size:0.88rem;font-family:inherit;outline:none;margin-bottom:14px;">
+        <button class="action-btn" style="background:#ecfdf5;color:#059669;border:1px solid #a7f3d0;font-weight:700;padding:9px 20px;" onclick="addTestimonial()">＋ 追加して掲載</button>
       </div>
       <div id="testimonials-admin-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;">
         <p style="color:var(--sub);font-size:0.82rem;"><span class="spinner"></span></p>
@@ -943,12 +947,12 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       </p>
       <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:18px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;">
         <div><label style="display:block;font-size:0.74rem;color:var(--sub);margin-bottom:4px;">クライアント名</label>
-          <input type="text" id="pg-client" placeholder="横井 美和" style="padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:#fff;font-size:0.85rem;font-family:inherit;"></div>
+          <input type="text" id="pg-client" placeholder="横井 美和" style="padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:#1e293b;font-size:0.85rem;font-family:inherit;"></div>
         <div><label style="display:block;font-size:0.74rem;color:var(--sub);margin-bottom:4px;">プラン</label>
-          <input type="text" id="pg-plan" placeholder="まとめて編集 ショート" style="padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:#fff;font-size:0.85rem;font-family:inherit;"></div>
+          <input type="text" id="pg-plan" placeholder="まとめて編集 ショート" style="padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:#1e293b;font-size:0.85rem;font-family:inherit;"></div>
         <div><label style="display:block;font-size:0.74rem;color:var(--sub);margin-bottom:4px;">合計本数</label>
-          <input type="number" id="pg-total" min="1" placeholder="13" style="width:90px;padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:#fff;font-size:0.85rem;font-family:inherit;"></div>
-        <button class="action-btn" style="background:#1a3a2a;color:#4ade80;border:1px solid #166534;font-weight:700;padding:9px 18px;" onclick="addProgress()">＋ 登録</button>
+          <input type="number" id="pg-total" min="1" placeholder="13" style="width:90px;padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:#1e293b;font-size:0.85rem;font-family:inherit;"></div>
+        <button class="action-btn" style="background:#ecfdf5;color:#059669;border:1px solid #a7f3d0;font-weight:700;padding:9px 18px;" onclick="addProgress()">＋ 登録</button>
       </div>
       <div class="table-wrap">
         <table>
@@ -968,7 +972,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         <div style="display:flex;gap:10px;">
           <button class="refresh-btn" onclick="loadContracts()">更新</button>
           <button class="export-btn" onclick="exportContractsCSV()">CSV出力</button>
-          <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="clearAllRecords('contracts','契約同意記録',loadContracts)">🗑 全件削除</button>
+          <button class="action-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;" onclick="clearAllRecords('contracts','契約同意記録',loadContracts)">🗑 全件削除</button>
         </div>
       </div>
       <div class="table-wrap">
@@ -990,7 +994,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         <div style="display:flex;gap:10px;">
           <button class="refresh-btn" onclick="loadHearings()">更新</button>
           <button class="export-btn" onclick="exportHearingsCSV()">CSV出力</button>
-          <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="clearAllRecords('hearings','ヒアリング回答',loadHearings)">🗑 全件削除</button>
+          <button class="action-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;" onclick="clearAllRecords('hearings','ヒアリング回答',loadHearings)">🗑 全件削除</button>
         </div>
       </div>
       <!-- 手動見積もり送信 -->
@@ -1048,7 +1052,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
           <h3 style="font-size:0.95rem;font-weight:700;">📊 月次収支サマリー</h3>
           <div style="display:flex;gap:8px;align-items:center;">
-            <input type="month" id="summary-month" style="padding:6px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:#fff;font-size:0.82rem;font-family:inherit;" onchange="loadMonthlySummary()">
+            <input type="month" id="summary-month" style="padding:6px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:#1e293b;font-size:0.82rem;font-family:inherit;" onchange="loadMonthlySummary()">
             <button class="refresh-btn" onclick="loadMonthlySummary()">更新</button>
           </div>
         </div>
@@ -1079,27 +1083,27 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;">
           <div>
             <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">取引日 *</label>
-            <input type="date" id="sl-date" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;">
+            <input type="date" id="sl-date" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#1e293b;font-size:0.85rem;font-family:inherit;outline:none;">
           </div>
           <div>
             <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">取引先名 *</label>
-            <input type="text" id="sl-client" placeholder="山田太郎 様" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;">
+            <input type="text" id="sl-client" placeholder="山田太郎 様" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#1e293b;font-size:0.85rem;font-family:inherit;outline:none;">
           </div>
           <div>
             <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">売上金額（税込） *</label>
-            <input type="number" id="sl-amount" placeholder="49800" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;">
+            <input type="number" id="sl-amount" placeholder="49800" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#1e293b;font-size:0.85rem;font-family:inherit;outline:none;">
           </div>
           <div>
             <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">プラン（摘要）</label>
-            <input type="text" id="sl-plan" placeholder="ショート動画編集 10本パック" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;">
+            <input type="text" id="sl-plan" placeholder="ショート動画編集 10本パック" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#1e293b;font-size:0.85rem;font-family:inherit;outline:none;">
           </div>
           <div>
             <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">入金日</label>
-            <input type="date" id="sl-paydate" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;">
+            <input type="date" id="sl-paydate" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#1e293b;font-size:0.85rem;font-family:inherit;outline:none;">
           </div>
           <div>
             <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">備考</label>
-            <input type="text" id="sl-note" placeholder="振込確認済み" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;">
+            <input type="text" id="sl-note" placeholder="振込確認済み" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#1e293b;font-size:0.85rem;font-family:inherit;outline:none;">
           </div>
         </div>
         <div style="display:flex;gap:10px;align-items:center;">
@@ -1114,7 +1118,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
           <span style="font-size:0.75rem;color:var(--sub);margin-left:8px;">（税抜 <span id="sales-total-exc">—</span>）</span>
         </div>
         <button class="export-btn" onclick="exportSalesCSV()">青色申告用CSV出力</button>
-          <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="clearAllRecords('sales','売上帳',loadSales)">🗑 全件削除</button>
+          <button class="action-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;" onclick="clearAllRecords('sales','売上帳',loadSales)">🗑 全件削除</button>
       </div>
       <div class="table-wrap">
         <table>
@@ -1136,15 +1140,15 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:12px;">
           <div>
             <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">取引日 *</label>
-            <input type="date" id="ex-date" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;">
+            <input type="date" id="ex-date" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#1e293b;font-size:0.85rem;font-family:inherit;outline:none;">
           </div>
           <div>
             <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">相手先名 *</label>
-            <input type="text" id="ex-name" placeholder="田中太郎（編集者）" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;">
+            <input type="text" id="ex-name" placeholder="田中太郎（編集者）" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#1e293b;font-size:0.85rem;font-family:inherit;outline:none;">
           </div>
           <div>
             <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">経費種別 *</label>
-            <select id="ex-category" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;">
+            <select id="ex-category" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#1e293b;font-size:0.85rem;font-family:inherit;outline:none;">
               <option>外注費（編集者）</option>
               <option>パートナー報酬</option>
               <option>広告宣伝費</option>
@@ -1155,11 +1159,11 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
           </div>
           <div>
             <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">金額 *</label>
-            <input type="number" id="ex-amount" placeholder="2000" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;">
+            <input type="number" id="ex-amount" placeholder="2000" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#1e293b;font-size:0.85rem;font-family:inherit;outline:none;">
           </div>
           <div>
             <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">支払方法</label>
-            <select id="ex-method" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;">
+            <select id="ex-method" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#1e293b;font-size:0.85rem;font-family:inherit;outline:none;">
               <option selected>銀行振込</option>
               <option>クレジットカード</option>
               <option>現金</option>
@@ -1168,7 +1172,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
           </div>
           <div>
             <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">摘要</label>
-            <input type="text" id="ex-summary" placeholder="ショート動画編集 3本" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;">
+            <input type="text" id="ex-summary" placeholder="ショート動画編集 3本" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#1e293b;font-size:0.85rem;font-family:inherit;outline:none;">
           </div>
         </div>
         <div style="display:flex;gap:10px;align-items:center;">
@@ -1185,7 +1189,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         </div>
         <div style="display:flex;gap:8px;">
           <button class="export-btn" onclick="exportExpenseCSV()">経費CSV出力</button>
-          <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="clearAllRecords('expenses','経費帳',loadExpenses)">🗑 全件削除</button>
+          <button class="action-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;" onclick="clearAllRecords('expenses','経費帳',loadExpenses)">🗑 全件削除</button>
         </div>
       </div>
       <div class="table-wrap">
@@ -1218,32 +1222,32 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
           <div>
             <label style="font-size:0.72rem;color:var(--sub);display:block;margin-bottom:4px;">クライアント名 *</label>
             <input type="text" id="sch-client" placeholder="陸斗様" list="sch-client-list"
-              style="width:100%;padding:8px 10px;background:var(--bg3);border:1.5px solid var(--border);border-radius:6px;color:#fff;font-size:0.85rem;">
+              style="width:100%;padding:8px 10px;background:var(--bg3);border:1.5px solid var(--border);border-radius:6px;color:#1e293b;font-size:0.85rem;">
             <datalist id="sch-client-list"></datalist>
           </div>
           <div>
             <label style="font-size:0.72rem;color:var(--sub);display:block;margin-bottom:4px;">素材／動画タイトル *</label>
             <input type="text" id="sch-title" placeholder="姫の本音と建前"
-              style="width:100%;padding:8px 10px;background:var(--bg3);border:1.5px solid var(--border);border-radius:6px;color:#fff;font-size:0.85rem;">
+              style="width:100%;padding:8px 10px;background:var(--bg3);border:1.5px solid var(--border);border-radius:6px;color:#1e293b;font-size:0.85rem;">
           </div>
           <div>
             <label style="font-size:0.72rem;color:var(--sub);display:block;margin-bottom:4px;">初稿納期 *</label>
             <input type="date" id="sch-deadline-draft"
-              style="width:100%;padding:8px 10px;background:var(--bg3);border:1.5px solid var(--border);border-radius:6px;color:#fff;font-size:0.85rem;">
+              style="width:100%;padding:8px 10px;background:var(--bg3);border:1.5px solid var(--border);border-radius:6px;color:#1e293b;font-size:0.85rem;">
           </div>
           <div>
             <label style="font-size:0.72rem;color:var(--sub);display:block;margin-bottom:4px;">最終納品予定</label>
             <input type="date" id="sch-deadline-final"
-              style="width:100%;padding:8px 10px;background:var(--bg3);border:1.5px solid var(--border);border-radius:6px;color:#fff;font-size:0.85rem;">
+              style="width:100%;padding:8px 10px;background:var(--bg3);border:1.5px solid var(--border);border-radius:6px;color:#1e293b;font-size:0.85rem;">
           </div>
           <div>
             <label style="font-size:0.72rem;color:var(--sub);display:block;margin-bottom:4px;">担当者</label>
             <input type="text" id="sch-assignee" placeholder="中村航汰"
-              style="width:100%;padding:8px 10px;background:var(--bg3);border:1.5px solid var(--border);border-radius:6px;color:#fff;font-size:0.85rem;">
+              style="width:100%;padding:8px 10px;background:var(--bg3);border:1.5px solid var(--border);border-radius:6px;color:#1e293b;font-size:0.85rem;">
           </div>
           <div>
             <label style="font-size:0.72rem;color:var(--sub);display:block;margin-bottom:4px;">ステータス</label>
-            <select id="sch-status" style="width:100%;padding:8px 10px;background:var(--bg3);border:1.5px solid var(--border);border-radius:6px;color:#fff;font-size:0.85rem;">
+            <select id="sch-status" style="width:100%;padding:8px 10px;background:var(--bg3);border:1.5px solid var(--border);border-radius:6px;color:#1e293b;font-size:0.85rem;">
               <option value="未着手">未着手</option>
               <option value="編集中">編集中</option>
               <option value="初稿納品済">初稿納品済</option>
@@ -1254,7 +1258,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
           <div style="grid-column:1 / -1;">
             <label style="font-size:0.72rem;color:var(--sub);display:block;margin-bottom:4px;">Driveフォルダ／メモ</label>
             <input type="text" id="sch-note" placeholder="例：Drive https://drive.google.com/... / 編集ソフトはPremiere"
-              style="width:100%;padding:8px 10px;background:var(--bg3);border:1.5px solid var(--border);border-radius:6px;color:#fff;font-size:0.85rem;">
+              style="width:100%;padding:8px 10px;background:var(--bg3);border:1.5px solid var(--border);border-radius:6px;color:#1e293b;font-size:0.85rem;">
           </div>
         </div>
         <button onclick="addScheduleItem()"
@@ -1281,20 +1285,20 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;" id="portfolio-form-grid">
           <div>
             <label style="font-size:0.78rem;color:var(--sub);display:block;margin-bottom:4px;">動画URL（YouTube / Google Drive） <span style="color:#EF4444;">*</span></label>
-            <input type="url" id="pf-url" placeholder="https://www.youtube.com/watch?v=... または https://drive.google.com/..." style="width:100%;padding:10px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;" onblur="autoFillDriveTitle(this.value)">
+            <input type="url" id="pf-url" placeholder="https://www.youtube.com/watch?v=... または https://drive.google.com/..." style="width:100%;padding:10px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#1e293b;font-size:0.88rem;font-family:inherit;outline:none;" onblur="autoFillDriveTitle(this.value)">
             <p style="font-size:0.72rem;color:#60A5FA;margin-top:4px;">💡 GoogleドライブURLを入力するとファイル名が自動でタイトルに入ります</p>
           </div>
           <div>
             <label style="font-size:0.78rem;color:var(--sub);display:block;margin-bottom:4px;">タイトル <span id="pf-title-fetching" style="font-size:0.7rem;color:#F59E0B;display:none;">取得中...</span></label>
-            <input type="text" id="pf-title" placeholder="例：ビジネス系チャンネル編集" style="width:100%;padding:10px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;">
+            <input type="text" id="pf-title" placeholder="例：ビジネス系チャンネル編集" style="width:100%;padding:10px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#1e293b;font-size:0.88rem;font-family:inherit;outline:none;">
           </div>
           <div>
             <label style="font-size:0.78rem;color:var(--sub);display:block;margin-bottom:4px;">ジャンル</label>
-            <input type="text" id="pf-genre" placeholder="例：ビジネス系 / ナイト業界" style="width:100%;padding:10px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;">
+            <input type="text" id="pf-genre" placeholder="例：ビジネス系 / ナイト業界" style="width:100%;padding:10px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#1e293b;font-size:0.88rem;font-family:inherit;outline:none;">
           </div>
           <div>
             <label style="font-size:0.78rem;color:var(--sub);display:block;margin-bottom:4px;">タイプ</label>
-            <select id="pf-type" style="width:100%;padding:10px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:0.88rem;font-family:inherit;outline:none;">
+            <select id="pf-type" style="width:100%;padding:10px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#1e293b;font-size:0.88rem;font-family:inherit;outline:none;">
               <option value="ショート">ショート動画</option>
               <option value="長尺">長尺動画</option>
             </select>
@@ -1321,7 +1325,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
     <div id="tab-editors" style="display:none;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
         <h2 style="font-size:1rem;font-weight:700;">👥 編集者管理</h2>
-        <button class="action-btn" style="background:#1a3a2a;color:#4ade80;border:1px solid #166534;font-size:0.85rem;padding:8px 18px;" onclick="openEditorModal(null)">＋ 編集者を追加</button>
+        <button class="action-btn" style="background:#ecfdf5;color:#059669;border:1px solid #a7f3d0;font-size:0.85rem;padding:8px 18px;" onclick="openEditorModal(null)">＋ 編集者を追加</button>
       </div>
       <div id="editors-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
         <div style="text-align:center;padding:40px;color:var(--sub);"><span class="spinner"></span></div>
@@ -1405,7 +1409,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         </div>
 
         <div style="display:flex;gap:10px;margin-top:24px;">
-          <button onclick="saveEditorForm()" style="flex:1;padding:12px;background:var(--gold);color:#fff;border:none;border-radius:8px;font-size:0.88rem;font-weight:700;cursor:pointer;font-family:inherit;">保存</button>
+          <button onclick="saveEditorForm()" style="flex:1;padding:12px;background:var(--gold);color:#1e293b;border:none;border-radius:8px;font-size:0.88rem;font-weight:700;cursor:pointer;font-family:inherit;">保存</button>
           <button onclick="closeEditorModal()" style="padding:12px 20px;background:var(--bg3);color:var(--sub);border:1px solid var(--border);border-radius:8px;font-size:0.88rem;cursor:pointer;font-family:inherit;">キャンセル</button>
         </div>
       </div>
@@ -1484,7 +1488,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
           <div style="display:flex;gap:8px;align-items:center;">
             <input type="number" id="pf-max-slots" min="1" max="100" value="5" style="width:80px;padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--lt);font-family:inherit;font-size:0.88rem;">
             <span style="font-size:0.82rem;color:var(--sub);">名</span>
-            <button onclick="savePFMaxSlots()" style="padding:8px 16px;background:#1a3a2a;color:#4ade80;border:1px solid #166534;border-radius:6px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">保存</button>
+            <button onclick="savePFMaxSlots()" style="padding:8px 16px;background:#ecfdf5;color:#059669;border:1px solid #a7f3d0;border-radius:6px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">保存</button>
           </div>
         </div>
 
@@ -1759,7 +1763,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         <div style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px;max-width:400px;width:90%;">
           <h3 style="font-weight:800;margin-bottom:16px;">💰 報酬確定メール送信</h3>
           <p style="font-size:0.82rem;color:var(--sub);margin-bottom:16px;">パートナーへ報酬確定の連絡メールを送信します。</p>
-          <input id="reward-amount" type="number" placeholder="報酬金額（例：500）" style="width:100%;padding:10px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:#fff;font-size:0.9rem;margin-bottom:16px;font-family:inherit;">
+          <input id="reward-amount" type="number" placeholder="報酬金額（例：500）" style="width:100%;padding:10px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:#1e293b;font-size:0.9rem;margin-bottom:16px;font-family:inherit;">
           <div style="display:flex;gap:10px;">
             <button onclick="submitRewardEmail()" style="flex:1;padding:10px;background:var(--yellow);color:#000;border:none;border-radius:8px;font-weight:800;cursor:pointer;">送信する</button>
             <button onclick="closeRewardModal()" style="flex:1;padding:10px;background:var(--bg3);color:var(--sub);border:1px solid var(--border);border-radius:8px;cursor:pointer;">キャンセル</button>
@@ -1837,8 +1841,8 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
             <p id="pl-url" style="font-size:0.78rem;color:#60A5FA;font-family:monospace;line-height:1.6;"></p>
           </div>
           <div style="display:flex;gap:8px;margin-top:10px;">
-            <button onclick="copyPLUrl()" style="flex:1;padding:10px;background:#059669;color:#fff;border:none;border-radius:8px;font-size:0.85rem;font-weight:700;cursor:pointer;">📋 URLをコピー</button>
-            <button onclick="openPLUrl()" style="flex:1;padding:10px;background:#6B7280;color:#fff;border:none;border-radius:8px;font-size:0.85rem;font-weight:700;cursor:pointer;">🔗 ブラウザで確認</button>
+            <button onclick="copyPLUrl()" style="flex:1;padding:10px;background:#059669;color:#1e293b;border:none;border-radius:8px;font-size:0.85rem;font-weight:700;cursor:pointer;">📋 URLをコピー</button>
+            <button onclick="openPLUrl()" style="flex:1;padding:10px;background:#6B7280;color:#1e293b;border:none;border-radius:8px;font-size:0.85rem;font-weight:700;cursor:pointer;">🔗 ブラウザで確認</button>
           </div>
         </div>
       </div>
@@ -1966,7 +1970,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       <div style="background:#00b900;border-radius:12px;padding:14px 20px;margin-bottom:24px;display:flex;align-items:center;gap:14px;">
         <span style="font-size:1.5rem;">💚</span>
         <div>
-          <p style="font-size:0.9rem;font-weight:700;color:#fff;margin-bottom:2px;">LINE Official Account Manager</p>
+          <p style="font-size:0.9rem;font-weight:700;color:#1e293b;margin-bottom:2px;">LINE Official Account Manager</p>
           <a href="https://manager.line.biz/" target="_blank"
             style="color:#d4ffdf;font-size:0.82rem;word-break:break-all;">https://manager.line.biz/</a>
         </div>
@@ -2039,7 +2043,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
 
           <div style="margin-top:12px;display:flex;gap:10px;align-items:center;">
             <button onclick="sendLinePush()" id="line-push-btn"
-              style="flex:1;padding:12px;background:#00b900;color:#fff;border:none;border-radius:10px;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;">
+              style="flex:1;padding:12px;background:#00b900;color:#1e293b;border:none;border-radius:10px;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;">
               💬 LINEで送信
             </button>
             <button onclick="previewLinePush()"
@@ -2083,7 +2087,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
           </div>
           <!-- LINEバブル風 -->
           <div style="background:#00b900;border-radius:12px;padding:14px 16px;max-width:320px;margin:0 auto 16px auto;">
-            <p id="line-preview-text" style="color:#fff;font-size:0.88rem;line-height:1.75;white-space:pre-wrap;word-break:break-word;margin:0;"></p>
+            <p id="line-preview-text" style="color:#1e293b;font-size:0.88rem;line-height:1.75;white-space:pre-wrap;word-break:break-word;margin:0;"></p>
           </div>
           <p id="line-preview-uid" style="font-size:0.78rem;color:var(--sub);text-align:center;margin-bottom:16px;"></p>
           <div style="display:flex;gap:10px;">
@@ -2092,7 +2096,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
               キャンセル
             </button>
             <button onclick="confirmLinePush()"
-              style="flex:1;padding:11px;background:#00b900;color:#fff;border:none;border-radius:8px;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;">
+              style="flex:1;padding:11px;background:#00b900;color:#1e293b;border:none;border-radius:8px;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;">
               この内容で送信
             </button>
           </div>
@@ -2158,7 +2162,7 @@ function renderPLItems() {
   list.innerHTML = _plItems.map(function(item, i) {
     return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">'
       + '<span style="flex:1;font-size:0.82rem;color:#374151;background:#F3F4F6;padding:6px 10px;border-radius:6px;">' + item + '</span>'
-      + '<button onclick="removePLItem(' + i + ')" style="background:#EF4444;color:#fff;border:none;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:0.75rem;">✕</button>'
+      + '<button onclick="removePLItem(' + i + ')" style="background:#EF4444;color:#1e293b;border:none;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:0.75rem;">✕</button>'
       + '</div>';
   }).join('');
 }
@@ -2219,7 +2223,7 @@ function renderPLHistory() {
       + '<p style="font-size:0.7rem;color:#94A3B8;">' + h.ts + '</p>'
       + '</div>'
       + '<button onclick="navigator.clipboard.writeText(\'' + h.url.replace(/'/g, "\\'") + '\').then(function(){alert(\'コピーしました\')})" '
-      + 'style="padding:6px 12px;background:#1E40AF;color:#fff;border:none;border-radius:6px;font-size:0.75rem;cursor:pointer;white-space:nowrap;margin-left:10px;">コピー</button>'
+      + 'style="padding:6px 12px;background:#1E40AF;color:#1e293b;border:none;border-radius:6px;font-size:0.75rem;cursor:pointer;white-space:nowrap;margin-left:10px;">コピー</button>'
       + '</div>'
       + '</div>';
   }).join('');
@@ -2349,7 +2353,7 @@ function renderPrivateLinks(data) {
       + '</div>'
       + '</div>'
       + '<div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;">'
-      + '<button onclick="navigator.clipboard.writeText(\'' + url.replace(/'/g, "\\'") + '\').then(function(){alert(\'コピーしました\')})" style="padding:5px 10px;background:#1E40AF;color:#fff;border:none;border-radius:5px;font-size:0.72rem;cursor:pointer;white-space:nowrap;">📋 コピー</button>'
+      + '<button onclick="navigator.clipboard.writeText(\'' + url.replace(/'/g, "\\'") + '\').then(function(){alert(\'コピーしました\')})" style="padding:5px 10px;background:#1E40AF;color:#1e293b;border:none;border-radius:5px;font-size:0.72rem;cursor:pointer;white-space:nowrap;">📋 コピー</button>'
       + '<button onclick="if(confirm(\'このリンクを削除しますか？\'))deletePrivateLink(\'' + d.token + '\')" style="padding:5px 10px;background:rgba(239,68,68,0.15);color:#F87171;border:1px solid rgba(239,68,68,0.3);border-radius:5px;font-size:0.72rem;cursor:pointer;">🗑 削除</button>'
       + '</div>'
       + '</div>'
@@ -2661,7 +2665,7 @@ function applyClientMasterToPaymentModal(name) {
           <button type="button" onclick="addOption('市場分析',5000)" style="padding:5px 10px;border-radius:6px;font-size:0.75rem;border:1px solid var(--border);background:var(--bg2);color:#a78bfa;cursor:pointer;">📊市場分析 +¥5,000</button>
         </div>
         <!-- 追加内訳リスト -->
-        <div id="pm-options-list" style="display:none;margin-bottom:8px;padding:8px 12px;background:rgba(255,255,255,0.04);border-radius:6px;border:1px solid var(--border);">
+        <div id="pm-options-list" style="display:none;margin-bottom:8px;padding:8px 12px;background:rgba(15,23,42,0.03);border-radius:6px;border:1px solid var(--border);">
           <p style="font-size:0.75rem;color:var(--sub);margin-bottom:6px;">追加内訳：</p>
           <ul id="pm-options-items" style="list-style:none;padding:0;font-size:0.78rem;color:var(--text);"></ul>
           <button type="button" onclick="clearOptions()" style="margin-top:6px;font-size:0.72rem;color:#f87171;background:none;border:none;cursor:pointer;padding:0;">✕ 追加をリセット</button>
@@ -3184,10 +3188,10 @@ function renderTable() {
           <button class="action-btn btn-mail" onclick="openMail('${esc(i.email)}','${esc(i.name)}','${esc(i.plan)}')">✉ メール</button>
           ${(extractLineUid(i) || i.email) ? `<button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${i.row},'inquiries')">${extractLineUid(i) ? '💬 LINE返信' : '✉ 返信・納品'}</button>` : ''}
           <button class="action-btn btn-expand" onclick="openModal(${i.row})">詳細</button>
-          ${(i.email || extractLineUid(i)) ? `<button class="action-btn" style="background:#1a3a2a;color:#4ade80;border:1px solid #166534;" onclick="openHearingLinkModal(${i.row})">📋 ヒアリング案内</button>` : ''}
+          ${(i.email || extractLineUid(i)) ? `<button class="action-btn" style="background:#ecfdf5;color:#059669;border:1px solid #a7f3d0;" onclick="openHearingLinkModal(${i.row})">📋 ヒアリング案内</button>` : ''}
           ${(i.email || extractLineUid(i)) ? `<button class="action-btn" style="background:#1a2a3a;color:#60a5fa;border:1px solid #1d4ed8;" onclick="openManualPaymentFromInquiry(${i.row})">💳 振込依頼</button>` : ''}
           ${(i.email && !extractLineUid(i)) ? `<button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;" onclick="sendLineInviteAdmin('${esc(i.email)}','${esc(i.name)}')">📨 LINE案内</button>` : ''}
-          <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="deleteInquiry(${i.row}, '${esc(i.name)}')">🗑 削除</button>
+          <button class="action-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;" onclick="deleteInquiry(${i.row}, '${esc(i.name)}')">🗑 削除</button>
         </div>
       </td>
     </tr>
@@ -3379,7 +3383,7 @@ function renderModal(row) {
     <div class="modal-actions">
       ${i.chatwork_id ? `<button class="modal-btn cw" onclick="openCW('${esc(i.chatwork_id)}')">💬 Chatworkで返信</button>` : ''}
       <button class="modal-btn mail" onclick="openMail('${esc(i.email)}','${esc(i.name)}','${esc(i.plan)}')">✉ メール返信</button>
-      <button class="modal-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;margin-left:auto;" onclick="deleteInquiry(${i.row}, '${esc(i.name)}')">🗑 削除</button>
+      <button class="modal-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;margin-left:auto;" onclick="deleteInquiry(${i.row}, '${esc(i.name)}')">🗑 削除</button>
     </div>
   `;
 }
@@ -3676,7 +3680,7 @@ function renderSchedule() {
   statsBar.innerHTML = Object.entries(counts).map(([st,n]) => `
     <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 16px;text-align:center;">
       <p style="font-size:0.7rem;color:var(--sub);">${st}</p>
-      <p style="font-size:1.4rem;font-weight:900;color:#fff;">${n}</p>
+      <p style="font-size:1.4rem;font-weight:900;color:#1e293b;">${n}</p>
     </div>`).join('');
   // 残日数で並び替え
   const today = new Date(); today.setHours(0,0,0,0);
@@ -3794,12 +3798,12 @@ function renderPayments() {
     const statusColor = isPending ? '#F59E0B' : '#10B981';
     const btn = isPending
       ? `<button onclick="approvePayment(${p.row})"
-           style="padding:6px 14px;background:#10B981;color:#fff;border:none;border-radius:6px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">
+           style="padding:6px 14px;background:#10B981;color:#1e293b;border:none;border-radius:6px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">
            ✅ 承認・記帳
          </button>`
       : `<span style="font-size:0.75rem;color:#10B981;font-weight:700;">記帳済み</span>`;
     const delBtn = `<button onclick="deletePayment(${p.row},${JSON.stringify(p.name||'')})"
-      style="padding:5px 10px;background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;margin-left:6px;">
+      style="padding:5px 10px;background:#fef2f2;color:#dc2626;border:1px solid #fecaca;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;margin-left:6px;">
       🗑
     </button>`;
     const lineBtn = extractLineUid(p)
@@ -3856,7 +3860,7 @@ function renderPaymentRequests() {
       <td style="font-size:0.78rem;">${esc(p.channels)}</td>
       <td style="white-space:nowrap;">
         <button onclick="deletePaymentRequest(${p.row}, ${JSON.stringify(p.name||'')})"
-          style="padding:5px 10px;background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;">🗑</button>
+          style="padding:5px 10px;background:#fef2f2;color:#dc2626;border:1px solid #fecaca;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;">🗑</button>
       </td>
     </tr>`;
   }).join('');
@@ -3903,7 +3907,7 @@ function renderTrash() {
       <td style="font-size:0.8rem;color:var(--sub);">${esc(t.preview)}</td>
       <td style="white-space:nowrap;">
         <button onclick="restoreTrash('${esc(t.id)}')" style="padding:5px 12px;background:#06371f;color:#4ade80;border:1px solid #166534;border-radius:6px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;margin-right:6px;">↩ 復元</button>
-        <button onclick="purgeTrash('${esc(t.id)}')" style="padding:5px 10px;background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;border-radius:6px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">完全削除</button>
+        <button onclick="purgeTrash('${esc(t.id)}')" style="padding:5px 10px;background:#fef2f2;color:#dc2626;border:1px solid #fecaca;border-radius:6px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;">完全削除</button>
       </td>
     </tr>`;
   }).join('');
@@ -4236,7 +4240,7 @@ function renderContracts() {
       <td>${pdfCell}</td>
       <td><button class="action-btn btn-mail" onclick="openMail('${esc(c.email)}','${esc(c.name)}','${esc(c.plan)}','contract')">✉ メール</button></td>
       <td><button onclick="deleteContract(${c.row},'${esc(c.name).replace(/'/g,'\\\'')}')"
-        style="padding:4px 9px;background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;">🗑</button></td>
+        style="padding:4px 9px;background:#fef2f2;color:#dc2626;border:1px solid #fecaca;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;">🗑</button></td>
     </tr>`;
   }).join('');
 }
@@ -4288,7 +4292,7 @@ function renderHearings() {
             : `<button class="action-btn btn-mail" onclick="openMail('${esc(h.email)}','${esc(h.name)}','${esc(h.plan)}','hearing')">✉ メール</button>`
           }
           ${!isTrial(h) && h.email ? `<button class="action-btn" style="background:#1a2a3a;color:#60a5fa;border:1px solid #1d4ed8;" onclick="openPaymentRequestModal(${h.row})">💳 振込依頼</button>` : ''}
-          <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="deleteHearing(${h.row},'${esc(h.name).replace(/'/g,'\\\'').replace(/`/g,'\\`')}')">🗑</button>
+          <button class="action-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;" onclick="deleteHearing(${h.row},'${esc(h.name).replace(/'/g,'\\\'').replace(/`/g,'\\`')}')">🗑</button>
         </div>
       </td>
     </tr>`).join('');
@@ -4380,7 +4384,7 @@ function _renderHearingItem(k, v) {
       ? `<span style="white-space:pre-wrap;word-break:break-word;">${esc(v)}</span>`
       : esc(v);
   return `
-    <div style="display:grid;grid-template-columns:160px 1fr auto;gap:10px;padding:8px 14px;border-bottom:1px dashed rgba(255,255,255,0.06);align-items:start;">
+    <div style="display:grid;grid-template-columns:160px 1fr auto;gap:10px;padding:8px 14px;border-bottom:1px dashed rgba(15,23,42,0.05);align-items:start;">
       <div style="font-size:0.75rem;color:var(--sub);padding-top:2px;">${esc(k)}</div>
       <div style="font-size:0.86rem;color:var(--text);line-height:1.5;">${valHtml}</div>
       <button data-copy="${esc(String(v))}" onclick="navigator.clipboard.writeText(this.dataset.copy).then(()=>showToast('📋 コピーしました'))" title="コピー"
@@ -4409,7 +4413,7 @@ function openHearingDetail(row) {
       <button class="modal-btn mail" onclick="openMail('${esc(h.email)}','${esc(h.name)}','${esc(h.plan)}','hearing')">✉ メール返信</button>
       <button class="modal-btn" style="background:rgba(96,165,250,0.15);color:#60a5fa;border:1px solid #1d4ed8;"
         onclick="closeModal();openPaymentRequestModal(${row})">💳 振込依頼へ</button>
-      <button class="modal-btn" style="background:rgba(255,255,255,0.06);color:var(--sub);border:1px solid var(--border);"
+      <button class="modal-btn" style="background:rgba(15,23,42,0.05);color:var(--sub);border:1px solid var(--border);"
         data-copy="${esc(allText)}" onclick='navigator.clipboard.writeText(this.dataset.copy).then(()=>showToast("📋 全項目をコピーしました"))'>📋 全文コピー</button>
     </div>`;
   document.getElementById('modal-overlay').classList.add('open');
@@ -4892,7 +4896,7 @@ function renderSales() {
       <td class="td-date">${esc(s.payDate)}</td>
       <td><span class="status-badge ${s.confirmed==='確認済み'?'status-完了':'status-未対応'}">${esc(s.confirmed)}</span></td>
       <td><button onclick="deleteSalesRecord(${s.row},'${esc(s.client).replace(/'/g,'\\\'')}')"
-        style="padding:4px 9px;background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;">
+        style="padding:4px 9px;background:#fef2f2;color:#dc2626;border:1px solid #fecaca;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;">
         🗑
       </button></td>
     </tr>`).join('');
@@ -5122,7 +5126,7 @@ function renderEditors() {
       ${ed.portfolios && ed.portfolios.length ? `<div style="margin-bottom:10px;">${ed.portfolios.map((u,i)=>`<a href="${esc(u)}" target="_blank" rel="noopener" style="font-size:0.72rem;color:#60a5fa;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">🔗 ポートフォリオ${i+1}</a>`).join('')}</div>` : ''}
       <div style="display:flex;gap:8px;margin-top:8px;">
         <button class="action-btn btn-expand" style="flex:1;" onclick="openEditorModal(${ed.row})">✏️ 編集</button>
-        <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="deleteEditorRow(${ed.row},'${esc(ed.name).replace(/'/g,"\\'")}')">🗑</button>
+        <button class="action-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;" onclick="deleteEditorRow(${ed.row},'${esc(ed.name).replace(/'/g,"\\'")}')">🗑</button>
       </div>
     </div>
   `).join('');
@@ -5164,7 +5168,7 @@ function addPortfolioUrlField(val) {
   div.style.cssText = 'display:flex;gap:6px;margin-bottom:8px;';
   div.innerHTML = `
     <input class="form-input" placeholder="https://..." value="${esc(val||'')}" style="flex:1;">
-    <button onclick="this.parentElement.remove()" style="padding:6px 10px;background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;border-radius:6px;cursor:pointer;font-family:inherit;">✕</button>
+    <button onclick="this.parentElement.remove()" style="padding:6px 10px;background:#fef2f2;color:#dc2626;border:1px solid #fecaca;border-radius:6px;cursor:pointer;font-family:inherit;">✕</button>
   `;
   wrap.appendChild(div);
 }
@@ -5323,7 +5327,7 @@ function renderPFGenresAdmin() {
       <span style="flex:1;font-size:0.83rem;color:${g.active?'var(--lt)':'var(--sub)'};">${esc(g.name)}</span>
       <span style="font-size:0.72rem;color:var(--sub);">申込: ${g.count||0}/${g.max||1}</span>
       <input type="number" value="${g.max||1}" min="1" max="99" style="width:48px;padding:4px 6px;background:var(--bg2);border:1px solid var(--border);border-radius:4px;color:var(--lt);font-family:inherit;font-size:0.78rem;" onchange="setPFGenreMax(${idx},this.value)">
-      <button onclick="removePFGenre(${idx})" style="padding:3px 8px;background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;border-radius:4px;font-size:0.72rem;cursor:pointer;font-family:inherit;">削除</button>
+      <button onclick="removePFGenre(${idx})" style="padding:3px 8px;background:#fef2f2;color:#dc2626;border:1px solid #fecaca;border-radius:4px;font-size:0.72rem;cursor:pointer;font-family:inherit;">削除</button>
     </div>
   `).join('');
 }
@@ -5406,7 +5410,7 @@ async function loadPFInquiriesAdmin() {
           <td style="padding:8px;color:#60a5fa;">${esc(i.email)}</td>
           <td style="padding:8px;"><span style="background:rgba(217,119,6,0.1);color:#D97706;border:1px solid rgba(217,119,6,0.3);padding:2px 8px;border-radius:10px;font-size:0.72rem;font-weight:700;">${esc(i.genre)}</span></td>
           <td style="padding:8px;"><span class="status-badge status-${esc(i.status)}" style="cursor:pointer;" onclick="cyclePFStatus(${i.row}, '${esc(i.status)}')">${statusDot(i.status)} ${esc(i.status)}</span></td>
-          <td style="padding:8px;"><button onclick="deletePFItem(${i.row},'${esc(i.name).replace(/'/g,'\\\'')}')" style="padding:3px 8px;background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;border-radius:4px;font-size:0.72rem;cursor:pointer;font-family:inherit;">🗑</button></td>
+          <td style="padding:8px;"><button onclick="deletePFItem(${i.row},'${esc(i.name).replace(/'/g,'\\\'')}')" style="padding:3px 8px;background:#fef2f2;color:#dc2626;border:1px solid #fecaca;border-radius:4px;font-size:0.72rem;cursor:pointer;font-family:inherit;">🗑</button></td>
         </tr>
       `).join('')}
     </table>`;
@@ -5580,7 +5584,7 @@ function renderSalesApps() {
               : ''}
             <button class="action-btn btn-mail" onclick="openSalesAppMail('${esc(a.email)}','${esc(a.name)}')">✉ メール</button>
             <button class="action-btn btn-expand" onclick="openSalesAppDetail(${a.row})">詳細</button>
-            <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="deleteSalesApp(${a.row},'${esc(a.name).replace(/'/g,"\\'")}')">🗑</button>
+            <button class="action-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;" onclick="deleteSalesApp(${a.row},'${esc(a.name).replace(/'/g,"\\'")}')">🗑</button>
           </div>
         </td>
       </tr>`;
@@ -5659,7 +5663,7 @@ function openSalesAppDetail(row) {
     ${a.message ? `<div class="modal-row"><p class="modal-label">志望動機・PR</p><p class="modal-val modal-message">${esc(a.message)}</p></div>` : ''}
     <div class="modal-actions" style="margin-top:16px;">
       <button class="modal-btn mail" onclick="openSalesAppMail('${esc(a.email)}','${esc(a.name)}')">✉ メール返信</button>
-      <button class="modal-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;margin-left:auto;" onclick="deleteSalesApp(${a.row},'${esc(a.name).replace(/'/g,"\\'")}')" >🗑 削除</button>
+      <button class="modal-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;margin-left:auto;" onclick="deleteSalesApp(${a.row},'${esc(a.name).replace(/'/g,"\\'")}')" >🗑 削除</button>
     </div>`;
   document.getElementById('modal-overlay').style.display = 'flex';
 }
@@ -5764,7 +5768,7 @@ function renderEditorApps() {
             ${a.dispatch === '希望する'
               ? `<button class="action-btn" style="background:rgba(168,85,247,0.1);color:#c084fc;border:1px solid rgba(168,85,247,0.3);" onclick="addEditorFromApp(${a.row})">👥 登録</button>`
               : ''}
-            <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="deleteEditorApp(${a.row},'${esc(a.name).replace(/'/g,"\\'")}')">🗑</button>
+            <button class="action-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;" onclick="deleteEditorApp(${a.row},'${esc(a.name).replace(/'/g,"\\'")}')">🗑</button>
           </div>
         </td>
       </tr>`;
@@ -5892,7 +5896,7 @@ function openEditorAppDetail(row) {
       ${a.dispatch === '希望する'
         ? `<button class="modal-btn" style="background:rgba(168,85,247,0.15);color:#c084fc;border:1px solid rgba(168,85,247,0.3);" onclick="closeModal();addEditorFromApp(${a.row})">👥 編集者として登録</button>`
         : ''}
-      <button class="modal-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;margin-left:auto;" onclick="deleteEditorApp(${a.row},'${esc(a.name).replace(/'/g,"\\'")}')" >🗑 削除</button>
+      <button class="modal-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;margin-left:auto;" onclick="deleteEditorApp(${a.row},'${esc(a.name).replace(/'/g,"\\'")}')" >🗑 削除</button>
     </div>`;
   document.getElementById('modal-overlay').classList.add('open');
 }
@@ -6095,7 +6099,7 @@ function renderPartnerApps() {
               ? `<button class="action-btn" style="background:rgba(245,158,11,0.12);color:#FCD34D;border:1px solid rgba(245,158,11,0.3);font-size:0.7rem;" onclick="openRewardModal(${a.row},'${esc(a.name).replace(/'/g,"\\'")}')">💰 報酬</button>`
               : `<button class="action-btn btn-mail" onclick="approvePartner(${a.row},'${esc(a.name).replace(/'/g,"\\'")}')">✅ 承認</button>`}
             <button class="action-btn" onclick="openPartnerDetail(${a.row})">詳細</button>
-            <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="deletePartnerApp(${a.row},'${esc(a.name).replace(/'/g,"\\'")}')">🗑</button>
+            <button class="action-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;" onclick="deletePartnerApp(${a.row},'${esc(a.name).replace(/'/g,"\\'")}')">🗑</button>
           </div>
         </td>
       </tr>`;
@@ -6536,7 +6540,7 @@ async function loadInvoiceList() {
       var toggleBtn = inv.status !== '支払済'
         ? '<button onclick="markInvoicePaid(\'' + esc(inv.inv_num) + '\')" style="padding:4px 8px;background:rgba(16,185,129,0.12);color:#10b981;border:1px solid rgba(16,185,129,0.3);border-radius:5px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">✅ 支払済</button>'
         : '<button onclick="markInvoiceUnpaid(\'' + esc(inv.inv_num) + '\')" style="padding:4px 8px;background:rgba(107,114,128,0.1);color:var(--sub);border:1px solid var(--border);border-radius:5px;font-size:0.72rem;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;">↩ 未払いに戻す</button>';
-      var delBtn = '<button onclick="deleteInvoice(\'' + esc(inv.inv_num) + '\',\'' + esc((inv.client||'').replace(/\x27/g,"")) + '\')" style="padding:4px 8px;background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;border-radius:5px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">🗑 削除</button>';
+      var delBtn = '<button onclick="deleteInvoice(\'' + esc(inv.inv_num) + '\',\'' + esc((inv.client||'').replace(/\x27/g,"")) + '\')" style="padding:4px 8px;background:#fef2f2;color:#dc2626;border:1px solid #fecaca;border-radius:5px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">🗑 削除</button>';
       return '<tr style="border-top:1px solid var(--border);">'
         + '<td style="padding:12px 14px;font-weight:700;color:var(--text);">' + esc(inv.inv_num) + '</td>'
         + '<td style="padding:12px 14px;color:var(--text);">' + esc(inv.client) + '</td>'
@@ -7295,7 +7299,7 @@ function renderOrders() {
         <button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${o.row},'orders')">${extractLineUid(o) ? '💬 LINE返信' : '✉ 返信・納品'}</button>
         ${matBtns}
         ${o.email ? `<button class="action-btn btn-mail" onclick="openMail('${esc(o.email)}','${esc(o.name)}','${esc(o.plan)}')">✉ メール</button>` : ''}
-        <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="deleteOrder(${o.row}, '${esc(o.name||'').replace(/'/g,"\\'").replace(/`/g,'\\`')}')">🗑 削除</button>
+        <button class="action-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;" onclick="deleteOrder(${o.row}, '${esc(o.name||'').replace(/'/g,"\\'").replace(/`/g,'\\`')}')">🗑 削除</button>
       </div></td>
     </tr>`;
   }).join('');
@@ -7427,7 +7431,7 @@ function renderRevisions() {
         <button class="action-btn" style="background:#1e293b;color:#93c5fd;border:1px solid #334155;font-weight:700;" onclick="copyEditorFbLink(${f.row})">🔗 編集者リンク</button>
         ${(extractLineUid(f) || f.email) ? `<button class="action-btn" style="background:#06371f;color:#4ade80;border:1px solid #00b900;font-weight:700;" onclick="openQuickLine(${f.row},'revisions')">${extractLineUid(f) ? '💬 LINE返信' : '✉ 返信・納品'}</button>` : ''}
         ${f.email ? `<button class="action-btn btn-mail" onclick="openMail('${esc(f.email)}','${esc(f.client_name)}','修正対応')">✉ メール</button>` : ''}
-        <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;" onclick="deleteFeedback(${f.row}, '${esc(f.client_name)}')">🗑 削除</button>
+        <button class="action-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;" onclick="deleteFeedback(${f.row}, '${esc(f.client_name)}')">🗑 削除</button>
       </div></td>
     </tr>`).join('');
 }
@@ -7536,7 +7540,7 @@ function renderProgress() {
       <td style="white-space:nowrap;">
         <button onclick="bumpProgress(${p.row},${p.delivered + 1},${p.total})" ${done?'disabled':''} style="padding:5px 10px;background:#06371f;color:#4ade80;border:1px solid #166534;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:${done?'not-allowed':'pointer'};font-family:inherit;opacity:${done?0.5:1};">＋1納品</button>
         <button onclick="bumpProgress(${p.row},${Math.max(0,p.delivered - 1)},${p.total})" style="padding:5px 8px;background:var(--bg3);color:var(--sub);border:1px solid var(--border);border-radius:6px;font-size:0.75rem;cursor:pointer;font-family:inherit;margin-left:4px;">−1</button>
-        <button onclick="deleteProgress(${p.row},'${esc(p.client).replace(/'/g,"\\'")}')" style="padding:5px 8px;background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;border-radius:6px;font-size:0.75rem;cursor:pointer;font-family:inherit;margin-left:4px;">🗑</button>
+        <button onclick="deleteProgress(${p.row},'${esc(p.client).replace(/'/g,"\\'")}')" style="padding:5px 8px;background:#fef2f2;color:#dc2626;border:1px solid #fecaca;border-radius:6px;font-size:0.75rem;cursor:pointer;font-family:inherit;margin-left:4px;">🗑</button>
       </td>
     </tr>`;
   }).join('');
@@ -7582,7 +7586,7 @@ async function loadTestimonialsAdmin() {
         <img src="${tsImgSrc(t.url)}" style="width:100%;display:block;background:#0f172a;" onerror="this.style.opacity=0.3;this.alt='画像を表示できません';">
         ${t.caption ? `<div style="padding:6px 10px;font-size:0.74rem;color:var(--sub);">${esc(t.caption)}</div>` : ''}
         <div style="padding:8px 10px;border-top:1px solid var(--border);">
-          <button class="action-btn" style="background:#2a1a1a;color:#f87171;border:1px solid #7f1d1d;width:100%;" onclick="deleteTestimonial(${t.row})">🗑 削除</button>
+          <button class="action-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;width:100%;" onclick="deleteTestimonial(${t.row})">🗑 削除</button>
         </div>
       </div>`).join('');
   } catch(e) {
@@ -8050,7 +8054,7 @@ function dpTab(){
     <label style="font-size:0.74rem;color:var(--sub);display:block;margin-bottom:4px;">プレビュー</label>
     <pre id="dlv-preview" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:11px 13px;color:var(--lt);font-size:0.78rem;line-height:1.7;white-space:pre-wrap;word-break:break-all;max-height:200px;overflow:auto;font-family:inherit;margin-bottom:14px;"></pre>
 
-    <button id="dlv-send-btn" onclick="sendDelivery()" style="width:100%;padding:13px;background:#00b900;color:#fff;border:none;border-radius:10px;font-size:0.95rem;font-weight:700;cursor:pointer;font-family:inherit;">📤 この内容で納品する</button>
+    <button id="dlv-send-btn" onclick="sendDelivery()" style="width:100%;padding:13px;background:#00b900;color:#1e293b;border:none;border-radius:10px;font-size:0.95rem;font-weight:700;cursor:pointer;font-family:inherit;">📤 この内容で納品する</button>
   </div>
 </div>
 
