@@ -257,6 +257,7 @@ function doPost(e) {
     var data = JSON.parse(rawBody);
 
 
+
     // LP コンテンツ更新
     if (data.action === 'content_update') {
       if (data.key !== ADMIN_KEY) return jsonResponse({ error: 'unauthorized' });
@@ -539,6 +540,7 @@ function doPost(e) {
 function doGet(e) {
   var action = (e.parameter.action || '').toLowerCase();
   var key    = e.parameter.key || '';
+
 
   // ── 認証不要の公開エンドポイント ──────────────────────────────
   // LPからkeyなしで呼ばれるポートフォリオ一覧は公開
@@ -5561,4 +5563,5 @@ function hpOwnerRequest(data) {
   }
   return jsonResponse({ ok: true });
 }
+
 

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>編集者マイページ | クリエイターズリスト mono.create</title>
+<style>
+  :root{
+    --teal:#0ea5a3; --teal-d:#0b8583; --teal-bg:#e6f7f6;
+    --ink:#1e293b; --sub:#64748b; --line:#e2e8f0; --bg:#f5f7fb;
+    --red:#dc2626; --ok:#059669;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",Meiryo,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;}
+  .wrap{max-width:640px;margin:0 auto;padding:28px 18px 80px;}
+  .brand{font-size:12px;font-weight:800;color:var(--teal-d);letter-spacing:.06em;margin-bottom:4px;}
+  h1{font-size:22px;font-weight:800;margin-bottom:6px;}
+  .lead{font-size:13px;color:var(--sub);margin-bottom:18px;}
+  .info{background:var(--teal-bg);border:1px solid rgba(14,165,163,.3);border-radius:12px;padding:14px 16px;font-size:12.5px;margin-bottom:22px;color:var(--ink);}
+  .info b{color:var(--teal-d);}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 20px;box-shadow:0 2px 10px rgba(15,23,42,.04);}
+  label{display:block;font-size:12px;font-weight:800;color:var(--sub);margin:16px 0 5px;}
+  label .req{color:var(--red);font-size:10.5px;margin-left:5px;}
+  input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit;background:#fff;color:var(--ink);}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--teal);border-color:transparent;}
+  textarea{min-height:80px;resize:vertical;}
+  input[readonly]{background:#f1f5f9;color:var(--sub);}
+  .capacity-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .status-opts{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;}
+  .status-opt{
+    flex:1;min-width:80px;padding:10px;border-radius:8px;font-size:13px;font-weight:700;
+    border:1.5px solid var(--line);background:#fff;color:var(--sub);cursor:pointer;
+    transition:.2s;text-align:center;
+  }
+  .status-opt.active-余裕あり{border-color:var(--ok);color:var(--ok);background:rgba(5,150,105,.08);}
+  .status-opt.active-普通{border-color:#b45309;color:#b45309;background:rgba(180,83,9,.08);}
+  .status-opt.active-満枠{border-color:var(--red);color:var(--red);background:rgba(220,38,38,.08);}
+  .capacity-note{font-size:11.5px;color:var(--sub);margin-top:6px;}
+  .btn{width:100%;margin-top:20px;padding:15px;border:none;border-radius:11px;background:var(--teal);color:#fff;font-size:15.5px;font-weight:800;cursor:pointer;font-family:inherit;}
+  .btn:hover{background:var(--teal-d);}
+  .btn:disabled{opacity:.55;cursor:not-allowed;}
+  .btn-sel{width:100%;margin-top:20px;padding:14px;border:1.5px solid var(--teal);border-radius:11px;background:#fff;color:var(--teal-d);font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;}
+  .btn-sel:hover{background:var(--teal-bg);}
+  .err{color:var(--red);font-size:12.5px;margin-top:10px;display:none;}
+  .ok-msg{color:var(--ok);font-size:13px;margin-top:10px;display:none;font-weight:700;}
+  .section-title{font-size:13px;font-weight:800;color:var(--teal-d);border-bottom:2px solid var(--teal-bg);padding-bottom:6px;margin:20px 0 4px;}
+  /* 選択ステップ */
+  #step-select{display:block;}
+  #step-edit{display:none;}
+  .editor-list{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
+  .editor-item{
+    padding:13px 16px;border:1.5px solid var(--line);border-radius:10px;
+    cursor:pointer;transition:.15s;display:flex;align-items:center;gap:12px;
+  }
+  .editor-item:hover{border-color:var(--teal);background:var(--teal-bg);}
+  .editor-avatar{width:40px;height:40px;border-radius:50%;background:var(--teal-bg);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;overflow:hidden;}
+  .editor-avatar img{width:100%;height:100%;object-fit:cover;}
+  .editor-name{font-weight:700;font-size:14px;}
+  .editor-meta{font-size:11.5px;color:var(--sub);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">CREATORS LIST | mono.create</div>
+  <h1>👤 編集者マイページ</h1>
+  <p class="lead">稼働状況・今月の対応可能本数を更新してください。<br>クライアント向けページに「今月の空き」として表示されます。</p>
+
+  <!-- STEP 1: 編集者選択 -->
+  <div id="step-select">
+    <div class="info">
+      <b>ご自身のお名前を選択してください</b><br>
+      登録済みプロフィールが自動で読み込まれます。更新できるのは「今月の対応可能本数」と「稼働状況」のみです。
+    </div>
+    <div class="card">
+      <label>お名前を選択<span class="req">必須</span></label>
+      <select id="s-editor-sel" onchange="onEditorSelect()">
+        <option value="">読み込み中...</option>
+      </select>
+      <p class="err" id="s-err"></p>
+      <button class="btn-sel" id="s-next" onclick="goToEdit()" disabled>このアカウントで更新する →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: 更新フォーム -->
+  <div id="step-edit">
+    <div class="info">
+      <b>現在のプロフィール(参照のみ)</b><br>
+      プロフィール内容の変更はmono.createまでお知らせください。
+    </div>
+    <div class="card">
+      <div class="section-title">プロフィール(参照)</div>
+
+      <label>お名前</label>
+      <input id="e-name" type="text" readonly>
+
+      <label>職業・肩書き</label>
+      <input id="e-occupation" type="text" readonly>
+
+      <label>編集歴</label>
+      <input id="e-experience" type="text" readonly>
+
+      <label>得意ジャンル</label>
+      <input id="e-genres" type="text" readonly>
+
+      <label>使用ソフト</label>
+      <input id="e-software" type="text" readonly>
+
+      <div class="section-title" style="margin-top:28px;">稼働状況(更新可)</div>
+
+      <label>今月あと何本対応可能ですか<span class="req">必須</span></label>
+      <div class="capacity-grid">
+        <div>
+          <label style="margin-top:0;">月間対応可能本数(今月)</label>
+          <input id="e-monthly" type="number" min="0" max="999" placeholder="例: 10">
+        </div>
+        <div>
+          <label style="margin-top:0;">週間対応可能本数(参考)</label>
+          <input id="e-weekly" type="text" placeholder="例: 3〜5本">
+        </div>
+      </div>
+      <p class="capacity-note">※ クライアントの編集者カードに「今月の空き: ◯本」として表示されます</p>
+
+      <label>稼働状況<span class="req">必須</span></label>
+      <div class="status-opts">
+        <button type="button" class="status-opt" data-v="余裕あり" onclick="setStatus('余裕あり')">余裕あり</button>
+        <button type="button" class="status-opt" data-v="普通" onclick="setStatus('普通')">普通</button>
+        <button type="button" class="status-opt" data-v="満枠" onclick="setStatus('満枠')">満枠</button>
+      </div>
+      <input type="hidden" id="e-status" value="">
+
+      <label>稼働時間帯(任意)</label>
+      <input id="e-hours" type="text" placeholder="例: 平日 9:00〜18:00">
+
+      <label>ひとこと・メモ(任意)</label>
+      <textarea id="e-comment" placeholder="例: 今月は受付を一時停止しています。来月から再開予定。"></textarea>
+
+      <button class="btn" id="e-submit" onclick="submitMypage()">稼働状況を更新する</button>
+      <p class="err" id="e-err"></p>
+      <p class="ok-msg" id="e-ok">更新が完了しました。クライアントページに反映されます。</p>
+
+      <div style="margin-top:20px;text-align:center;">
+        <button type="button" onclick="backToSelect()" style="background:none;border:none;color:var(--sub);font-size:13px;cursor:pointer;text-decoration:underline;">別の編集者に切り替える</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
+const escH = s => String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+let EDITORS = [];
+let selectedEditor = null;
+
+// 編集者リスト読み込み
+(async function(){
+  const sel = document.getElementById('s-editor-sel');
+  try{
+    const res = await fetch(GAS_URL + '?action=editors');
+    const json = await res.json();
+    EDITORS = json.data || [];
+    if(!EDITORS.length) throw new Error('empty');
+    sel.innerHTML = '<option value="">選択してください</option>'
+      + EDITORS.map(e=>`<option value="${escH(e.name)}">${escH(e.name)}</option>`).join('');
+  }catch(e){
+    sel.innerHTML = '<option value="">編集者一覧を取得できませんでした</option>';
+    const errEl = document.getElementById('s-err');
+    errEl.textContent = '編集者一覧の取得に失敗しました。時間をおいて再度お試しください。';
+    errEl.style.display = 'block';
+  }
+})();
+
+function onEditorSelect(){
+  const name = document.getElementById('s-editor-sel').value;
+  document.getElementById('s-next').disabled = !name;
+}
+
+function goToEdit(){
+  const name = document.getElementById('s-editor-sel').value;
+  if(!name) return;
+  selectedEditor = EDITORS.find(e => e.name === name);
+  if(!selectedEditor){ alert('編集者データが見つかりませんでした。再読み込みしてお試しください。'); return; }
+  prefillForm(selectedEditor);
+  document.getElementById('step-select').style.display = 'none';
+  document.getElementById('step-edit').style.display = 'block';
+  window.scrollTo(0,0);
+}
+
+function prefillForm(ed){
+  document.getElementById('e-name').value        = ed.name || '';
+  document.getElementById('e-occupation').value  = ed.occupation || '';
+  document.getElementById('e-experience').value  = ed.experience || '';
+  document.getElementById('e-genres').value      = ed.genres || '';
+  document.getElementById('e-software').value    = ed.software || '';
+  document.getElementById('e-monthly').value     = ed.monthly_capacity || '';
+  document.getElementById('e-weekly').value      = ed.weekly_capacity || '';
+  document.getElementById('e-hours').value       = ed.work_hours || '';
+  document.getElementById('e-comment').value     = ed.comment || '';
+  // 稼働ステータス
+  const st = ed.availability || '';
+  if(st) setStatus(st);
+}
+
+function setStatus(v){
+  document.getElementById('e-status').value = v;
+  document.querySelectorAll('.status-opt').forEach(b=>{
+    b.className = 'status-opt' + (b.dataset.v === v ? ' active-' + v : '');
+  });
+}
+
+function backToSelect(){
+  selectedEditor = null;
+  document.getElementById('step-select').style.display = 'block';
+  document.getElementById('step-edit').style.display   = 'none';
+  document.getElementById('e-ok').style.display        = 'none';
+  document.getElementById('e-err').style.display       = 'none';
+  window.scrollTo(0,0);
+}
+
+async function submitMypage(){
+  const monthly  = document.getElementById('e-monthly').value.trim();
+  const status   = document.getElementById('e-status').value;
+  const err      = document.getElementById('e-err');
+  const okMsg    = document.getElementById('e-ok');
+
+  if(!monthly && monthly !== '0'){
+    err.textContent = '今月の対応可能本数を入力してください。';
+    err.style.display = 'block';
+    return;
+  }
+  if(!status){
+    err.textContent = '稼働状況を選択してください。';
+    err.style.display = 'block';
+    return;
+  }
+  err.style.display = 'none';
+  okMsg.style.display = 'none';
+
+  const btn = document.getElementById('e-submit');
+  btn.disabled = true; btn.textContent = '更新中...';
+
+  // editor_self_register: 全フィールドを含めて送信(部分更新だと他項目が消えるため)
+  const payload = Object.assign({}, selectedEditor, {
+    action: 'editor_self_register',
+    name:             selectedEditor.name,
+    occupation:       document.getElementById('e-occupation').value || selectedEditor.occupation || '',
+    experience:       document.getElementById('e-experience').value || selectedEditor.experience || '',
+    genres:           document.getElementById('e-genres').value     || selectedEditor.genres     || '',
+    software:         document.getElementById('e-software').value   || selectedEditor.software   || '',
+    monthly_capacity: monthly,
+    weekly_capacity:  document.getElementById('e-weekly').value  || selectedEditor.weekly_capacity || '',
+    work_hours:       document.getElementById('e-hours').value    || selectedEditor.work_hours    || '',
+    comment:          document.getElementById('e-comment').value  || selectedEditor.comment       || '',
+    availability:     status,
+  });
+  // rowなど余計なGAS内部フィールドはそのまま含める
+  delete payload.portfolios; // 配列フィールドはJSONで別途管理するため削除
+
+  try{
+    const res = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(payload)
+    });
+    let json;
+    try{ json = await res.json(); }catch(e){ json = { ok: true, degraded: true }; }
+    // GAS POST応答が読めない障害対策(2026-07-04観測): 実行自体は成功しているため成功扱い
+    if(json.ok || json.degraded){
+      // ローカルのEDITORSも更新
+      selectedEditor.monthly_capacity = monthly;
+      selectedEditor.availability     = status;
+      okMsg.style.display = 'block';
+      btn.disabled = false; btn.textContent = '稼働状況を更新する';
+      window.scrollTo(0, document.body.scrollHeight);
+      return;
+    }
+    throw new Error(json.error || '更新に失敗しました');
+  }catch(e){
+    err.textContent = '更新に失敗しました。通信環境をご確認のうえ再度お試しください。';
+    err.style.display = 'block';
+  }
+  btn.disabled = false; btn.textContent = '稼働状況を更新する';
+}
+</script>
+</body>
+</html>

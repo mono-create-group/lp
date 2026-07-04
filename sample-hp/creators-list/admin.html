@@ -776,6 +776,22 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         </table>
       </div>
     </div>
+
+    <!-- ===== 口コミ一覧カード ===== -->
+    <div class="card" id="dp-review-card">
+      <h3>⭐ 口コミ一覧(review.htmlから投稿)</h3>
+      <p class="desc">クライアントからの口コミです。各行の「公開」チェックを入れた上で「ランク集計を公開」ボタンを押してください。編集者ランク・⭐平均・公開口コミが client.html に反映されます。</p>
+      <div style="margin-bottom:12px;">
+        <button onclick="dpPublishRanks()" style="padding:10px 22px;border:none;border-radius:8px;background:#1a56db;color:#fff;font-weight:700;font-size:13.5px;cursor:pointer;font-family:inherit;">ランク集計を公開</button>
+        <span id="dp-rank-publish-msg" style="font-size:12.5px;margin-left:10px;"></span>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>日時</th><th>編集者</th><th>星</th><th>会社名</th><th>コメント</th><th>公開</th></tr></thead>
+          <tbody id="dp-review-rows"><tr><td colspan="6" class="empty">読み込み中...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -7744,9 +7760,105 @@ async function deleteFeedback(row, name) {
   let DPKEY = "";
   let dpRequests = [];
   let dpEditors = [];
-  const dpIsJob = r => String(r.genre||'').indexOf('案件シート') !== -1 || String(r.company||'').indexOf('[案件報告]') === 0;
-  const dpReqOnly = () => dpRequests.filter(r=>!dpIsJob(r));
-  const dpJobs = () => dpRequests.filter(dpIsJob);
+  const dpIsJob    = r => String(r.genre||'').indexOf('案件シート') !== -1 || String(r.company||'').indexOf('[案件報告]') === 0;
+  const dpIsReview = r => String(r.genre||'').indexOf('⭐口コミ') !== -1 || String(r.company||'').indexOf('[口コミ]') === 0;
+  const dpReqOnly  = () => dpRequests.filter(r => !dpIsJob(r) && !dpIsReview(r));
+  const dpJobs     = () => dpRequests.filter(dpIsJob);
+  const dpReviews  = () => dpRequests.filter(dpIsReview);
+
+  // 公開フラグをメモリ上で管理 { row: bool }
+  const dpReviewPublic = {};
+
+  function dpRenderReviews(){
+    const tbody = document.getElementById('dp-review-rows');
+    if(!tbody) return;
+    const list = dpReviews();
+    if(!list.length){ tbody.innerHTML='<tr><td colspan="6" class="empty">口コミがまだありません。review.html のURLを納品完了メールに添付してください。</td></tr>'; return; }
+    tbody.innerHTML = list.map(r=>{
+      const msg = String(r.message||'');
+      // メッセージから会社名・コメントをパース
+      const co  = msg.match(/会社名: ([^\n]*)/)?.[1] || String(r.company||'').replace(/^\[口コミ\]\s*/,'');
+      const cmt = msg.match(/コメント: ([\s\S]*)/)?.[1] || '';
+      const stars = Number(r.volume||0);
+      const isOn  = !!dpReviewPublic[r.row];
+      return `<tr>
+        <td class="td-date">${dpEsc(r.date||'')}</td>
+        <td class="td-name">${dpEsc(r.contact_name||r.contact||'')}</td>
+        <td style="white-space:nowrap;color:#f59e0b;">${'★'.repeat(Math.min(5,stars))}${'☆'.repeat(Math.max(0,5-stars))} <span style="color:var(--sub);font-size:11px;">(${stars})</span></td>
+        <td class="td-company">${dpEsc(co)}</td>
+        <td class="td-message" style="max-width:260px;">${dpEsc(cmt)}</td>
+        <td style="text-align:center;"><input type="checkbox" ${isOn?'checked':''} onchange="dpReviewPublic[${r.row}]=this.checked" title="公開する"></td>
+      </tr>`;
+    }).join('');
+  }
+
+  async function dpPublishRanks(){
+    const msg = document.getElementById('dp-rank-publish-msg');
+    msg.style.color='var(--sub)'; msg.textContent='集計中...';
+
+    // 案件シートから編集者別の納品本数を集計
+    const deliveryCounts = {};
+    dpJobs().forEach(r=>{
+      const name = String(r.contact_name||r.contact||r.selected_editors||'').trim();
+      if(!name) return;
+      deliveryCounts[name] = (deliveryCounts[name]||0) + Math.max(1, Number(r.volume||1));
+    });
+
+    // 公開口コミから編集者別に集計
+    const reviewMap = {};
+    dpReviews().forEach(r=>{
+      if(!dpReviewPublic[r.row]) return;
+      const name  = String(r.contact_name||r.contact||'').trim();
+      const stars = Number(r.volume||0);
+      const msg2  = String(r.message||'');
+      const co    = msg2.match(/会社名: ([^\n]*)/)?.[1] || '';
+      const cmt   = msg2.match(/コメント: ([\s\S]*)/)?.[1] || '';
+      if(!name||stars<1||stars>5) return;
+      if(!reviewMap[name]) reviewMap[name] = [];
+      reviewMap[name].push({ stars, comment: cmt.trim(), company: co.trim() });
+    });
+
+    // ランク算出
+    function calcRank(deliveries, rating){
+      if(deliveries >= 30 && rating >= 4.5) return 'S';
+      if(deliveries >= 15 && rating >= 4.0) return 'A';
+      if(deliveries >=  5 && rating >= 3.5) return 'B';
+      return 'Rookie';
+    }
+
+    const editor_ranks = {};
+    // 全編集者(案件シート登場者 + 口コミ登場者)をまとめる
+    const allNames = new Set([...Object.keys(deliveryCounts), ...Object.keys(reviewMap)]);
+    allNames.forEach(name=>{
+      const deliveries   = deliveryCounts[name] || 0;
+      const reviews      = reviewMap[name]       || [];
+      const reviewCount  = reviews.length;
+      const rating       = reviewCount
+        ? Math.round((reviews.reduce((s,rv)=>s+rv.stars,0)/reviewCount)*10)/10
+        : 0;
+      const rank = calcRank(deliveries, rating);
+      editor_ranks[name] = { rank, deliveries, rating, reviewCount, reviews };
+    });
+
+    // content_update で公開
+    try{
+      const res = await fetch(GAS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ action:'content_update', key: getAdminPw(), content:{ editor_ranks } })
+      });
+      let json; try{ json=await res.json(); }catch(e){ json={ok:true,degraded:true}; }
+      if(json.ok||json.degraded){
+        msg.style.color='var(--green)';
+        msg.textContent='公開しました('+Object.keys(editor_ranks).length+'名分)。client.htmlに反映されます。';
+      } else {
+        throw new Error(json.error||'失敗');
+      }
+    }catch(e){
+      msg.style.color='var(--red)';
+      msg.textContent='公開に失敗しました: '+e.message;
+    }
+  }
 
   function dpEsc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 
@@ -7757,7 +7869,7 @@ async function deleteFeedback(row, name) {
       const res = await fetch(`${GAS_URL}?action=dispatch_list&key=${encodeURIComponent(DPKEY)}`);
       const json = await res.json();
       // 【テスト】/E2Eテストの行はローンチ運用画面に出さない(シートには残存)
-      if(!json.error){dpRequests = (json.data || []).filter(r=>!/【テスト】|E2Eテスト/.test(String(r.company||'')+String(r.contact||'')));dpRenderRequests();dpRenderEditors();}
+      if(!json.error){dpRequests = (json.data || []).filter(r=>!/【テスト】|E2Eテスト/.test(String(r.company||'')+String(r.contact||'')));dpRenderRequests();dpRenderEditors();dpRenderReviews();}
     }catch(e){}
   }
 
@@ -8214,13 +8326,13 @@ async function dpDelClient(i){
 function dpJobsTab(){
   DPKEY = getAdminPw();
   if(dpClients === null) dpLoadClients();
-  if(!dpRequests.length){ dpLoadRequests().then(()=>dpRenderJobs()); }
-  else dpRenderJobs();
+  if(!dpRequests.length){ dpLoadRequests().then(()=>{ dpRenderJobs(); dpRenderReviews(); }); }
+  else { dpRenderJobs(); dpRenderReviews(); }
 }
 
 function dpTab(){
   DPKEY = getAdminPw();
-  const done = ()=>{ try{dpRenderRequests();}catch(e){} try{dpRenderPayments();}catch(e){} try{dpRenderEditors();}catch(e){} try{dpRenderStats();}catch(e){} };
+  const done = ()=>{ try{dpRenderRequests();}catch(e){} try{dpRenderPayments();}catch(e){} try{dpRenderEditors();}catch(e){} try{dpRenderStats();}catch(e){} try{dpRenderReviews();}catch(e){} };
   if(!dpRequests.length || !dpEditors.length){ Promise.all([dpLoadRequests(), dpLoadEditors()]).then(done); }
   else done();
 }

@@ -170,6 +170,18 @@
   .tags span{font-size:10.5px;background:var(--blue-soft);color:#54719f;padding:4px 10px;border-radius:8px;font-weight:700;}
   .creator-body .meta{font-size:11px;color:#b5ad9b;}
   .card-more{margin-top:12px;font-size:12px;font-weight:800;color:var(--coral);}
+  /* ランク・空きバッジ */
+  .rank-badge{display:inline-block;font-size:10.5px;font-weight:800;padding:2px 9px;border-radius:6px;margin-right:6px;vertical-align:middle;}
+  .rank-S{background:#fef3c7;color:#92400e;}
+  .rank-A{background:#e0f2fe;color:#075985;}
+  .rank-B{background:#f0fdf4;color:#166534;}
+  .rank-Rookie{background:#f5f3ff;color:#5b21b6;}
+  .avail-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;vertical-align:middle;}
+  .avail-余裕あり{background:#dcfce7;color:#166534;}
+  .avail-普通{background:#fef9c3;color:#713f12;}
+  .avail-満枠{background:#fee2e2;color:#991b1b;}
+  .star-score{color:#f59e0b;font-size:11px;font-weight:700;margin-right:4px;}
+  .capacity-note{font-size:10.5px;color:#6b7280;margin-top:2px;}
   .empty-note{grid-column:1/-1;text-align:center;color:var(--sub);font-size:13px;padding:40px 0;}
 
   /* ===== 詳細モーダル ===== */
@@ -550,6 +562,7 @@
   };
 
   let EDITORS = [];
+  let EDITOR_RANKS = {}; // content_get から取得した editor_ranks
   let curFmt = 'all';
   let curGenre = 'all';
 
@@ -567,15 +580,31 @@
   async function loadEditors(){
     const grid = document.getElementById('creator-grid');
     try{
-      const res = await fetch(GAS_URL + '?action=editors');
-      const json = await res.json();
-      EDITORS = json.data || [];
+      // editors API と content_get(editor_ranks) を並行取得
+      const [edRes, rankRes] = await Promise.all([
+        fetch(GAS_URL + '?action=editors'),
+        fetch(GAS_URL + '?action=content_get').catch(()=>null)
+      ]);
+      const edJson = await edRes.json();
+      EDITORS = edJson.data || [];
+      if(rankRes){
+        try{
+          const rankJson = await rankRes.json();
+          EDITOR_RANKS = (rankJson.content && rankJson.content.editor_ranks) || {};
+        }catch(e){ EDITOR_RANKS = {}; }
+      }
     }catch(e){
       grid.innerHTML = '<p class="empty-note">編集者一覧の取得に失敗しました。<br>時間をおいて再度お試しください。</p>';
       return;
     }
     buildGenreTags();
     renderEditors();
+  }
+
+  // ランクラベル(emoji付き)
+  const RANK_LABEL = { S:'🏆 S', A:'🥇 A', B:'🥈 B', Rookie:'🌱 Rookie' };
+  function getRankInfo(name){
+    return EDITOR_RANKS[name] || null;
   }
 
   function buildGenreTags(){
@@ -612,13 +641,28 @@
     }
     grid.innerHTML = list.map(ed=>{
       const tags = genreList(ed).slice(0,4);
+      const ri = getRankInfo(ed.name);
+      const rankHtml = ri
+        ? `<span class="rank-badge rank-${esc(ri.rank)}">${esc(RANK_LABEL[ri.rank]||ri.rank)}</span>`
+        : '';
+      const starHtml = ri && ri.rating
+        ? `<span class="star-score">★${ri.rating.toFixed(1)} (${ri.reviewCount}件)</span>`
+        : '';
+      const availBadge = ed.availability
+        ? `<span class="avail-badge avail-${esc(ed.availability)}">${esc(ed.availability)}</span>`
+        : '';
+      const capacityNote = ed.monthly_capacity
+        ? `<div class="capacity-note">今月の空き: ${esc(String(ed.monthly_capacity))}本</div>`
+        : '';
       return `<div class="creator-card" onclick="openModal(${ed.row})">
         ${ed.icon?`<img class="ph-img" src="${esc(ed.icon)}" loading="lazy" onerror="this.outerHTML='<div class=&quot;ph&quot;>NO PHOTO</div>'">`:'<div class="ph">NO PHOTO</div>'}
         <div class="creator-body">
+          <div style="margin-bottom:5px;">${rankHtml}${starHtml}${availBadge}</div>
           <h4>${esc(ed.name)}</h4>
           <div class="role">${esc([ed.occupation,ed.experience].filter(Boolean).join(' ／ '))}</div>
           <div class="tags">${tags.map(t=>`<span>${esc(t)}</span>`).join('')}</div>
-          <div class="meta">${esc([ed.monthly_capacity?`月間目安 ${ed.monthly_capacity}`:'',ed.software?`使用ソフト ${ed.software}`:''].filter(Boolean).join(' ／ '))}</div>
+          ${capacityNote}
+          <div class="meta">${esc(ed.software?`使用ソフト ${ed.software}`:'')}</div>
           <div class="card-more">タップで詳細・お問い合わせ →</div>
         </div>
       </div>`;
@@ -628,13 +672,16 @@
   function openModal(row){
     const ed = EDITORS.find(e=>e.row===row);
     if(!ed) return;
+    const ri = getRankInfo(ed.name);
     const rows = [
       ['職業・肩書き', ed.occupation],
       ['編集歴', ed.experience],
       ['得意ジャンル', ed.genres],
       ['得意スタイル', ed.style],
       ['使用ソフト', ed.software],
-      ['月の対応本数', ed.monthly_capacity],
+      ['ランク', ri ? `${RANK_LABEL[ri.rank]||ri.rank}  ★${ri.rating.toFixed(1)} (${ri.reviewCount}件の口コミ)  納品実績: ${ri.deliveries}本` : null],
+      ['稼働状況', ed.availability],
+      ['今月の空き', ed.monthly_capacity ? ed.monthly_capacity + '本' : null],
       ['週の対応本数', ed.weekly_capacity],
       ['稼働時間帯', ed.work_hours],
     ].filter(([,v])=>v);
