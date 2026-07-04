@@ -203,17 +203,18 @@ function sendAutoReply(toEmail, name, subject, bodyLines) {
   });
 }
 
-// オーナーへ通知（LINE優先 → LINE未設定時のみメール）
+// オーナーへ通知（メール+LINEの両方に送る / 2026-07-04 会長指示）
 function notifyOwnerEmail(subject, lines) {
   var body = lines.join('\n');
-  if (OWNER_LINE_UID) {
-    // LINE を主チャネルとして送信
-    var text = subject + '\n\n' + lines.filter(function(l){ return !!l; }).join('\n');
-    if (text.length > 2000) text = text.substring(0, 1997) + '…';
-    pushToLine(OWNER_LINE_UID, [{ type: 'text', text: text }]);
-  } else {
-    // LINE UID 未設定時はメールをフォールバック
+  try {
     MailApp.sendEmail({ to: OWNER_EMAIL, subject: subject, body: body, name: 'mono.create LP' });
+  } catch(e) { Logger.log('owner mail error: ' + e); }
+  if (OWNER_LINE_UID) {
+    try {
+      var text = subject + '\n\n' + lines.filter(function(l){ return !!l; }).join('\n');
+      if (text.length > 2000) text = text.substring(0, 1997) + '…';
+      pushToLine(OWNER_LINE_UID, [{ type: 'text', text: text }]);
+    } catch(e) { Logger.log('owner line error: ' + e); }
   }
 }
 
@@ -254,6 +255,7 @@ function doPost(e) {
     }
 
     var data = JSON.parse(rawBody);
+
 
     // LP コンテンツ更新
     if (data.action === 'content_update') {
@@ -1784,34 +1786,7 @@ function applyEditor(data) {
     '未対応'
   ]);
 
-  // Chatwork通知（編集者募集専用ルームへ / メンション付きで通知音＆バッジ表示）
-  var editorRoomId = EDITOR_ROOM_ID || CHATWORK_ROOM_ID;
-  if (editorRoomId) {
-    var dispatchLine = (data.dispatch && data.dispatch !== 'なし') ? '✅ 派遣登録希望あり\n' : '';
-    var msg = '[To:' + CHATWORK_MENTION + '] 中村航汰\n\n' +
-      '━━━━━━━━━━━━━━━━━━━━\n' +
-      '🎬 新規 編集者応募 — mono.create\n' +
-      '━━━━━━━━━━━━━━━━━━━━\n' +
-      '受信日時: ' + now + '\n' +
-      '名前    : ' + (data.name || '') + '（' + (data.age || '') + ' / ' + (data.gender || '') + '）\n' +
-      'メール  : ' + (data.email || '') + '\n' +
-      '希望案件: ' + (data.case_type || '') + '\n' +
-      '対応本数: ' + (data.weekly_monthly_vol || '') + '\n' +
-      '得意分野: ' + (data.specialty || '') + '\n' +
-      '長期契約: ' + (data.long_term || '') + '\n' +
-      dispatchLine +
-      'PF URL  : ' + (data.portfolio || 'なし') + '\n' +
-      '━━━━━━━━━━━━━━━━━━━━\n' +
-      (data.message ? '【メッセージ】\n' + data.message + '\n━━━━━━━━━━━━━━━━━━━━\n' : '') +
-      '▶ 管理画面: ' + LP_BASE_URL + 'admin.html';
-    try {
-      UrlFetchApp.fetch('https://api.chatwork.com/v2/rooms/' + editorRoomId + '/messages', {
-        method: 'POST',
-        headers: { 'X-ChatWorkToken': CHATWORK_TOKEN },
-        payload: 'body=' + encodeURIComponent(msg)
-      });
-    } catch(e) {}
-  }
+  // (2026-07-04 会長指示: Chatwork通知廃止 → 下のnotifyOwnerEmailがメール+LINE両方に通知)
 
   // 応募者への自動返信
   if (data.email && data.email.indexOf('@') !== -1) {
@@ -5481,31 +5456,24 @@ function creatorDispatchRequest(data) {
     ''
   ]);
 
-  // Chatwork通知(editor_apply と同じルーム・メンション方式を踏襲)
-  var roomId = EDITOR_ROOM_ID || CHATWORK_ROOM_ID;
-  if (roomId) {
-    var msg = '[To:' + CHATWORK_MENTION + '] 中村航汰\n\n' +
-      '━━━━━━━━━━━━━━━━━━━━\n' +
-      '🚀 新規 派遣依頼 — クリエイターズリスト\n' +
-      '━━━━━━━━━━━━━━━━━━━━\n' +
-      '受付日時: ' + now + '\n' +
-      '会社    : ' + (data.company || '') + '\n' +
-      '担当者  : ' + (data.contact_name || '') + '\n' +
-      'メール  : ' + (data.email || '') + '\n' +
-      '電話    : ' + (data.phone || 'なし') + '\n' +
-      'ジャンル: ' + (data.genre || '') + '\n' +
-      '本数    : ' + (data.volume || '') + ' / 開始: ' + (data.start || '') + '\n' +
-      '指名    : ' + (data.selected_editors || 'なし') + '\n' +
-      '━━━━━━━━━━━━━━━━━━━━\n' +
-      (data.message ? '【相談内容】\n' + data.message + '\n━━━━━━━━━━━━━━━━━━━━\n' : '');
-    try {
-      UrlFetchApp.fetch('https://api.chatwork.com/v2/rooms/' + roomId + '/messages', {
-        method: 'POST',
-        headers: { 'X-ChatWorkToken': CHATWORK_TOKEN },
-        payload: 'body=' + encodeURIComponent(msg)
-      });
-    } catch(e) {}
-  }
+  // メール+LINE通知(2026-07-04 会長指示: Chatwork廃止、本家LPと同方式)
+  notifyOwnerEmail(
+    '🚀【派遣依頼】' + (data.company || '会社名なし') + ' — ' + (data.contact_name || ''),
+    [
+      '受付日時: ' + now,
+      '会社    : ' + (data.company || ''),
+      '担当者  : ' + (data.contact_name || ''),
+      'メール  : ' + (data.email || ''),
+      '電話    : ' + (data.phone || 'なし'),
+      'ジャンル: ' + (data.genre || ''),
+      '本数    : ' + (data.volume || '') + ' / 開始: ' + (data.start || ''),
+      '指名    : ' + (data.selected_editors || 'なし'),
+      '',
+      data.message ? '【相談内容】\n' + data.message : '',
+      '',
+      '▶ 派遣管理画面: ' + LP_BASE_URL + 'sample-hp/creators-list/admin.html',
+    ]
+  );
 
   return jsonResponse({ ok: true });
 }
@@ -5593,3 +5561,4 @@ function hpOwnerRequest(data) {
   }
   return jsonResponse({ ok: true });
 }
+
