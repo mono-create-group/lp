@@ -3023,12 +3023,26 @@ async function doLogin() {
   const val = document.getElementById('pw-input').value.trim()
     .replace(/[ー−–—―]/g,'-').replace(/\s+/g,'').toLowerCase();
   if (!val) return;
-  let ok = false;
-  try {
-    const r = await gasFetch(`${GAS_URL}?action=dispatch_list&key=${encodeURIComponent(val)}`);
-    const j = await r.json();
-    ok = !j.error;
-  } catch(e) { ok = false; }
+  let ok = false, reached = false;
+  // GAS応答の瞬断(HTML 404が混ざる事象・2026-07-04観測)をパスワード誤りと区別する: 最大3回リトライ
+  for (let i = 0; i < 3 && !ok; i++) {
+    try {
+      const r = await gasFetch(`${GAS_URL}?action=dispatch_list&key=${encodeURIComponent(val)}&_r=${Date.now()}`);
+      const t = await r.text();
+      try {
+        const j = JSON.parse(t);
+        reached = true;
+        ok = !j.error;
+        if (j.error) break; // JSONでerror = キー違い確定。リトライ不要
+      } catch(pe) { /* HTML応答(GAS瞬断) → リトライ */ }
+    } catch(e) { /* ネットワークエラー → リトライ */ }
+    if (!ok && i < 2) await new Promise(s => setTimeout(s, 900));
+  }
+  if (!ok && !reached) {
+    document.getElementById('login-error').style.display = 'block';
+    document.getElementById('login-error').textContent = '⚠️ サーバー応答が不安定です(Google側)。数秒おいてもう一度お試しください。失敗回数には数えません。';
+    return;
+  }
   if (ok) {
     localStorage.setItem(PW_STORE_KEY, val);
     clearLoginFails();
