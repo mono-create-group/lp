@@ -214,7 +214,9 @@
   function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 
   async function unlock(){
-    const k = document.getElementById('gate-key').value.trim();
+    // 全角ハイフン・空白・大文字の揺れを吸収(会長のコピペ/IME対策)
+    const k = document.getElementById('gate-key').value.trim()
+      .replace(/[ー−–—―]/g,'-').replace(/\s+/g,'').toLowerCase();
     if(!k) return;
     document.getElementById('gate-err').classList.add('hidden');
     try{

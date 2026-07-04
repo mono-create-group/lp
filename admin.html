@@ -419,6 +419,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
     <button class="login-btn" onclick="doLogin()">ログイン</button>
     <p class="login-error" id="login-error">パスワードが正しくありません。</p>
     <p id="lockout-msg" style="display:none;font-size:0.78rem;color:#F59E0B;margin-top:8px;text-align:center;"></p>
+    <p style="margin-top:16px;text-align:center;"><a href="#" onclick="resetLocalPw();return false;" style="font-size:0.75rem;color:#94A3B8;">パスワードを忘れた場合（この端末で再設定）</a></p>
   </div>
 </div>
 
@@ -2825,6 +2826,15 @@ function doLogin() {
 function doLogout() {
   // セッションを終了してページ再読み込み
   // → パスワードはlocalStorageに残るため次回入力不要
+  sessionStorage.removeItem(SESSION_KEY);
+  location.reload();
+}
+
+// パスワードを忘れた場合：この端末の保存パスワード・ロック状態を消して初回セットアップへ戻す
+function resetLocalPw() {
+  if (!confirm('この端末に保存されたパスワードを削除して、新しいパスワードを設定し直します。\nよろしいですか？')) return;
+  localStorage.removeItem(PW_STORE_KEY);
+  localStorage.removeItem(LOCK_KEY);
   sessionStorage.removeItem(SESSION_KEY);
   location.reload();
 }
