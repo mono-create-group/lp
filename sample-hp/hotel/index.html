@@ -203,6 +203,10 @@
   .walk-scene{position:absolute;inset:0;opacity:0;}
   .walk-scene img{width:100%;height:100%;object-fit:cover;transform:scale(1.08);will-change:transform,opacity;}
   .walk-scene::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,18,16,.35),transparent 30%,transparent 65%,rgba(13,18,16,.55));}
+  .walk-video{display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  .walk-sticky.video-on .walk-video{display:block;}
+  .walk-sticky.video-on .walk-scene{display:none;}
+  .walk-sticky.video-on::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(13,18,16,.35),transparent 30%,transparent 65%,rgba(13,18,16,.55));}
   .walk-head{position:absolute;top:9%;left:0;right:0;text-align:center;z-index:3;color:#fff;padding:0 20px;}
   .walk-head .eyebrow{font-family:"Noto Sans JP",sans-serif;font-size:12px;letter-spacing:.3em;color:#bcd0b8;font-weight:700;}
   .walk-head h2{font-size:clamp(22px,4vw,34px);margin-top:8px;text-shadow:0 2px 18px rgba(0,0,0,.5);}
@@ -465,11 +469,35 @@
 (function(){
   const walk = document.getElementById('walk');
   if(!walk) return;
+  const sticky = walk.querySelector('.walk-sticky');
   const scenes = walk.querySelectorAll('.walk-scene');
   const caps = walk.querySelectorAll('.walk-caption .cap');
   const dots = walk.querySelectorAll('.walk-dots span');
   const n = scenes.length;
-  let ticking = false;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // walk/walk.mp4(1本撮りのウォークスルー動画)があればスクロール=再生位置のスクラブ再生に自動切替。
+  // なければ従来の静止画クロスフェードで動く(動画は後から置くだけでよい)。
+  const video = document.createElement('video');
+  let videoMode = false, vDur = 0;
+  if(!reduced){
+    video.muted = true; video.playsInline = true; video.preload = 'auto';
+    video.setAttribute('muted',''); video.setAttribute('playsinline','');
+    video.className = 'walk-video';
+    video.addEventListener('loadedmetadata', ()=>{ vDur = video.duration; videoMode = true; sticky.classList.add('video-on'); update(); });
+    video.addEventListener('error', ()=>{ videoMode = false; sticky.classList.remove('video-on'); });
+    video.src = 'walk/walk.mp4';
+    sticky.insertBefore(video, sticky.firstChild);
+  }
+  let ticking = false, target = 0, raf = null;
+  function seekLoop(){
+    raf = null;
+    if(!videoMode) return;
+    const diff = target - video.currentTime;
+    if(Math.abs(diff) > 0.02){
+      video.currentTime = video.currentTime + diff * 0.22;
+      raf = requestAnimationFrame(seekLoop);
+    }
+  }
   function update(){
     ticking = false;
     const rect = walk.getBoundingClientRect();
@@ -477,15 +505,21 @@
     let p = -rect.top / total;
     p = Math.max(0, Math.min(1, p));
     const f = p * (n - 1);
-    scenes.forEach((sc,i)=>{
-      const d = Math.abs(f - i);
-      const op = Math.max(0, 1 - d*1.2);
-      sc.style.opacity = op;
-      sc.style.zIndex = op > .5 ? 2 : 1;
-      const img = sc.querySelector('img');
-      const local = Math.max(-1, Math.min(1, f - i));
-      img.style.transform = 'scale(' + (1.06 + 0.10*Math.min(1,Math.max(0,local+1)/1)) + ') translateY(' + (local*-14) + 'px)';
-    });
+    if(videoMode && vDur){
+      target = p * Math.max(0, vDur - 0.05);
+      if(Math.abs(target - video.currentTime) > 0.6) video.currentTime = target;
+      if(!raf) raf = requestAnimationFrame(seekLoop);
+    }else{
+      scenes.forEach((sc,i)=>{
+        const d = Math.abs(f - i);
+        const op = Math.max(0, 1 - d*1.2);
+        sc.style.opacity = op;
+        sc.style.zIndex = op > .5 ? 2 : 1;
+        const img = sc.querySelector('img');
+        const local = Math.max(-1, Math.min(1, f - i));
+        img.style.transform = 'scale(' + (1.06 + 0.10*Math.min(1,Math.max(0,local+1)/1)) + ') translateY(' + (local*-14) + 'px)';
+      });
+    }
     const idx = Math.round(f);
     caps.forEach((c,i)=>c.classList.toggle('on', i===idx));
     dots.forEach((d,i)=>d.classList.toggle('on', i===idx));
