@@ -29,7 +29,19 @@
   }
 }
 </script>
+<link rel="icon" href="../sample-hp/creators-list/favicon.svg" type="image/svg+xml">
 <style>
+  .btn-line{background:#06C755;color:#fff;box-shadow:0 8px 24px rgba(6,199,85,.35);margin-left:10px;}
+  .btn-line:hover{transform:translateY(-2px);}
+  .line-float{position:fixed;right:18px;bottom:18px;z-index:200;background:#06C755;color:#fff;border-radius:99px;padding:13px 22px;font-size:13.5px;font-weight:800;text-decoration:none;box-shadow:0 10px 28px rgba(6,199,85,.45);display:flex;align-items:center;gap:8px;}
+  .form-card{max-width:640px;margin:34px auto 0;background:#fff;border-radius:20px;padding:28px 26px;text-align:left;color:var(--ink);}
+  .form-card label{display:block;font-size:12px;font-weight:800;color:var(--sub);margin:14px 0 5px;}
+  .form-card label .req{color:#dc2626;font-size:10.5px;margin-left:5px;}
+  .form-card input,.form-card select,.form-card textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit;}
+  .form-card textarea{min-height:80px;resize:vertical;}
+  .form-card .send{width:100%;margin-top:18px;padding:14px;border:none;border-radius:11px;background:linear-gradient(90deg,var(--brand),#115e59);color:#fff;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;}
+  .form-card .send:disabled{opacity:.55;}
+  .form-msg{font-size:12.5px;margin-top:10px;display:none;}
   :root{
     --brand:#0f766e;
     --brand2:#4f46e5;
@@ -189,6 +201,7 @@
       </div>
       <div>
         <a class="btn btn-primary" href="#contact">無料で相談する</a>
+        <a class="btn btn-line" href="https://line.me/ti/p/@229dbicf" target="_blank" rel="noopener">💬 LINEで相談</a>
         <a class="btn btn-outline" href="#works">制作事例を見る</a>
       </div>
     </div>
@@ -319,8 +332,25 @@
   <div class="cta-box rv">
     <h3>まずは30分、お店の話を聞かせてください</h3>
     <p>「うちに合うか知りたい」だけでも歓迎です。しつこい営業は一切しません。</p>
-    <a class="btn btn-primary" href="mailto:mono.create.group@gmail.com?subject=%E3%80%90HP%E5%88%B6%E4%BD%9C%E3%80%91%E7%84%A1%E6%96%99%E7%9B%B8%E8%AB%87%E5%B8%8C%E6%9C%9B&body=%E5%BA%97%E8%88%97%E5%90%8D%EF%BC%9A%0A%E3%81%94%E6%8B%85%E5%BD%93%E8%80%85%E5%90%8D%EF%BC%9A%0A%E3%81%94%E9%80%A3%E7%B5%A1%E5%85%88%EF%BC%88%E9%9B%BB%E8%A9%B1%E3%81%BE%E3%81%9F%E3%81%AF%E3%83%A1%E3%83%BC%E3%83%AB%EF%BC%89%EF%BC%9A%0A%E6%A5%AD%E7%A8%AE%EF%BC%9A%0A%E3%81%94%E7%9B%B8%E8%AB%87%E5%86%85%E5%AE%B9%EF%BC%9A">📩 無料相談を申し込む</a>
-    <p class="cta-mail">メール: <a href="mailto:mono.create.group@gmail.com">mono.create.group@gmail.com</a></p>
+    <a class="btn btn-line" style="margin-left:0;" href="https://line.me/ti/p/@229dbicf" target="_blank" rel="noopener">💬 LINEで気軽に相談する</a>
+    <div class="form-card" id="hp-form">
+      <label>店舗名<span class="req">必須</span></label>
+      <input id="hp-shop" type="text" placeholder="例: 炭火と肴 花いち">
+      <label>ご担当者名<span class="req">必須</span></label>
+      <input id="hp-name" type="text" placeholder="例: 山田太郎">
+      <label>ご連絡先(メール)<span class="req">必須</span></label>
+      <input id="hp-email" type="email" placeholder="例: taro@example.com">
+      <label>電話番号(任意)</label>
+      <input id="hp-tel" type="tel" placeholder="例: 0166-XX-XXXX">
+      <label>業種</label>
+      <select id="hp-genre"><option>飲食店</option><option>宿泊・旅館</option><option>美容室・サロン</option><option>その他</option></select>
+      <label>ご相談内容(任意)</label>
+      <textarea id="hp-msg" placeholder="例: 今のHPが古いので作り直したい / まだHPがない など"></textarea>
+      <button class="send" id="hp-send" onclick="hpSubmit()">📩 無料相談を申し込む</button>
+      <p class="form-msg" id="hp-ok" style="color:#059669;">✅ 送信しました。1営業日以内にご連絡します(自動返信メールをご確認ください)。</p>
+      <p class="form-msg" id="hp-ng" style="color:#dc2626;"></p>
+    </div>
+    <p class="cta-mail">メールの場合: <a href="mailto:mono.create.group@gmail.com">mono.create.group@gmail.com</a></p>
   </div>
 </section>
 
@@ -328,10 +358,38 @@
   <div class="fname">mono.create Web制作</div>
   <div>旭川の店舗ホームページ制作・運用管理</div>
   <div style="margin-top:10px;"><a href="../sample-hp/owner/">HPオーナーさま向けページ</a> ／ <a href="../sample-hp/creators-list/">動画編集者派遣(クリエイターズリスト)</a></div>
+  <div style="margin-top:10px;"><a href="https://line.me/ti/p/@229dbicf" target="_blank" rel="noopener">公式LINEで相談する</a></div>
   <div style="margin-top:14px;">© mono.create</div>
 </footer>
 
+<a class="line-float" href="https://line.me/ti/p/@229dbicf" target="_blank" rel="noopener">💬 LINEで無料相談</a>
+
 <script>
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
+  async function hpSubmit(){
+    const shop = document.getElementById('hp-shop').value.trim();
+    const name = document.getElementById('hp-name').value.trim();
+    const email = document.getElementById('hp-email').value.trim();
+    const tel = document.getElementById('hp-tel').value.trim();
+    const genre = document.getElementById('hp-genre').value;
+    const msg = document.getElementById('hp-msg').value.trim();
+    const ng = document.getElementById('hp-ng');
+    ng.style.display='none';
+    if(!shop || !name || !email){ ng.textContent='店舗名・ご担当者名・メールは必須です。'; ng.style.display='block'; return; }
+    const btn = document.getElementById('hp-send');
+    btn.disabled = true; btn.textContent = '送信中...';
+    try{
+      const res = await fetch(GAS_URL, { method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify({
+        name: name, company: shop, email: email, plan: 'HP制作(¥49,800)',
+        message: '【HP制作の無料相談】\n業種: ' + genre + (tel ? '\n電話: ' + tel : '') + (msg ? '\n相談内容: ' + msg : '')
+      })});
+      // GAS応答が読めない場合も実行は成功している(2026-07-04観測の echo 障害対策)
+      let ok = true; try { const j = await res.json(); ok = !!(j.success || j.ok); } catch(e) { ok = true; }
+      if(ok){ document.getElementById('hp-form').style.display='none'; document.getElementById('hp-ok').style.display='block'; document.querySelector('.cta-box').appendChild(document.getElementById('hp-ok')); return; }
+      throw new Error('送信に失敗しました');
+    }catch(e){ ng.textContent='送信に失敗しました。お手数ですが下のメールかLINEでご連絡ください。'; ng.style.display='block'; }
+    btn.disabled = false; btn.textContent = '📩 無料相談を申し込む';
+  }
   const io = new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target);}}),{threshold:.12});
   document.querySelectorAll('.rv').forEach(el=>io.observe(el));
 </script>

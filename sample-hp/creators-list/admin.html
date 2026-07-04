@@ -7737,7 +7737,8 @@ async function deleteFeedback(row, name) {
     try{
       const res = await fetch(`${GAS_URL}?action=dispatch_list&key=${encodeURIComponent(DPKEY)}`);
       const json = await res.json();
-      if(!json.error){dpRequests = json.data || [];dpRenderRequests();dpRenderEditors();}
+      // 【テスト】/E2Eテストの行はローンチ運用画面に出さない(シートには残存)
+      if(!json.error){dpRequests = (json.data || []).filter(r=>!/【テスト】|E2Eテスト/.test(String(r.company||'')+String(r.contact||'')));dpRenderRequests();dpRenderEditors();}
     }catch(e){}
   }
 
