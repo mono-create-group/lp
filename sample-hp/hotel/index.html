@@ -196,6 +196,24 @@
   /* ===== ヒーロー映像・電話予約・SNS(2026-07-03追加) ===== */
   /* hero.mp4(店舗写真から生成したAI映像)を同フォルダに置くと自動で背景再生されます */
   .hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;}
+
+  /* ===== 館内を歩く(スクロール追体験) ===== */
+  .walk{position:relative;height:420vh;background:#0d1210;}
+  .walk-sticky{position:sticky;top:0;height:100vh;overflow:hidden;}
+  .walk-scene{position:absolute;inset:0;opacity:0;}
+  .walk-scene img{width:100%;height:100%;object-fit:cover;transform:scale(1.08);will-change:transform,opacity;}
+  .walk-scene::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,18,16,.35),transparent 30%,transparent 65%,rgba(13,18,16,.55));}
+  .walk-head{position:absolute;top:9%;left:0;right:0;text-align:center;z-index:3;color:#fff;padding:0 20px;}
+  .walk-head .eyebrow{font-family:"Noto Sans JP",sans-serif;font-size:12px;letter-spacing:.3em;color:#bcd0b8;font-weight:700;}
+  .walk-head h2{font-size:clamp(22px,4vw,34px);margin-top:8px;text-shadow:0 2px 18px rgba(0,0,0,.5);}
+  .walk-caption{position:absolute;left:0;right:0;bottom:12%;text-align:center;z-index:3;color:#fff;padding:0 20px;}
+  .walk-caption .cap{font-size:clamp(18px,3.2vw,26px);text-shadow:0 2px 16px rgba(0,0,0,.6);opacity:0;transition:opacity .4s ease;position:absolute;left:0;right:0;bottom:26px;}
+  .walk-caption .cap.on{opacity:1;}
+  .walk-dots{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:3;}
+  .walk-dots span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.35);transition:.3s;}
+  .walk-dots span.on{background:#bcd0b8;transform:scale(1.3);}
+  .walk-hint{position:absolute;top:50%;transform:translateY(-50%);right:18px;color:rgba(255,255,255,.7);font-family:"Noto Sans JP",sans-serif;font-size:11px;letter-spacing:.14em;z-index:3;writing-mode:vertical-rl;}
+  @media (prefers-reduced-motion: reduce){.walk{height:auto;}.walk-sticky{position:static;height:auto;}.walk-scene{position:static;opacity:1;height:56vw;}}
   .btn-tel{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#1f2937;font-weight:700;border:1.5px solid rgba(255,255,255,.6);}
   .btn-tel:hover{opacity:.88;}
   .cta-tel{display:inline-block;margin-top:18px;color:#fff;font-size:15px;text-decoration:none;font-weight:700;letter-spacing:.04em;}
@@ -247,6 +265,26 @@
       </a>
       <a href="tel:0166-00-0000" class="btn btn-tel">📞 電話で予約</a>
     </div>
+  </div>
+</section>
+
+<!-- 館内を歩く(スクロールで追体験) walk/walk1-3.jpg差し替えで任意の宿に流用可 -->
+<section class="walk" id="walk" aria-label="館内を歩く">
+  <div class="walk-sticky">
+    <div class="walk-scene"><img src="walk/walk1.jpg" alt="木の温もりのロビー"></div>
+    <div class="walk-scene"><img src="walk/walk2.jpg" alt="雪見の露天風呂"></div>
+    <div class="walk-scene"><img src="walk/walk3.jpg" alt="和室の客室"></div>
+    <div class="walk-head">
+      <span class="eyebrow">WALK THROUGH</span>
+      <h2>館内を、歩いてみる。</h2>
+    </div>
+    <div class="walk-caption">
+      <div class="cap">木の香りに、迎えられる。</div>
+      <div class="cap">雪を眺めて、湯に浸かる。</div>
+      <div class="cap">静かな和室で、旅の夜を。</div>
+    </div>
+    <div class="walk-dots"><span></span><span></span><span></span></div>
+    <div class="walk-hint">スクロールで館内へ</div>
   </div>
 </section>
 
@@ -423,5 +461,39 @@
   LINEで予約
 </a>
 
+<script>
+(function(){
+  const walk = document.getElementById('walk');
+  if(!walk) return;
+  const scenes = walk.querySelectorAll('.walk-scene');
+  const caps = walk.querySelectorAll('.walk-caption .cap');
+  const dots = walk.querySelectorAll('.walk-dots span');
+  const n = scenes.length;
+  let ticking = false;
+  function update(){
+    ticking = false;
+    const rect = walk.getBoundingClientRect();
+    const total = walk.offsetHeight - window.innerHeight;
+    let p = -rect.top / total;
+    p = Math.max(0, Math.min(1, p));
+    const f = p * (n - 1);
+    scenes.forEach((sc,i)=>{
+      const d = Math.abs(f - i);
+      const op = Math.max(0, 1 - d*1.2);
+      sc.style.opacity = op;
+      sc.style.zIndex = op > .5 ? 2 : 1;
+      const img = sc.querySelector('img');
+      const local = Math.max(-1, Math.min(1, f - i));
+      img.style.transform = 'scale(' + (1.06 + 0.10*Math.min(1,Math.max(0,local+1)/1)) + ') translateY(' + (local*-14) + 'px)';
+    });
+    const idx = Math.round(f);
+    caps.forEach((c,i)=>c.classList.toggle('on', i===idx));
+    dots.forEach((d,i)=>d.classList.toggle('on', i===idx));
+  }
+  addEventListener('scroll', ()=>{ if(!ticking){ ticking=true; requestAnimationFrame(update); } }, {passive:true});
+  addEventListener('resize', update);
+  update();
+})();
+</script>
 </body>
 </html>
