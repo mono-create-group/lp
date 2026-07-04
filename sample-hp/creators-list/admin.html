@@ -744,7 +744,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
     </div>
     <div class="card">
       <h3>クライアント登録(単価の正はここ・編集者は変更不可)</h3>
-      <p class="desc">ここに登録した単価が編集者の報告シートに自動適用されます(不正防止)。手数料は<b>ショート500円/本・長尺1,000円/本</b>で固定。運営の売上=手数料、編集者受取=単価−手数料。</p>
+      <p class="desc">登録単価が編集者の報告シートに<b>既定値として自動適用</b>されます。案件ごとの単価変更は可能ですが、変更・未登録の報告には<b>「要確認」バッジ</b>が付き、クライアント請求と突合してから確定します。手数料は<b>ショート500円/本・長尺1,000円/本</b>で固定(操作不能)。</p>
       <div style="display:grid;grid-template-columns:1fr 140px 140px auto;gap:10px;align-items:end;max-width:760px;">
         <div><label style="font-size:11.5px;font-weight:700;color:var(--sub);">クライアント名</label>
           <input id="dp-cl-name" type="text" placeholder="例: 株式会社◯◯" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;"></div>
@@ -8068,7 +8068,8 @@ function dpJobParse(r){
   return { count:count, content:content, note:note, titles:titles, workdate:workdate, client:client,
     feePer:feePer, feeTotal:feeTotal, clientTotal:clientTotal, editorPay:editorPay,
     grossSuggest: gross || cu*count,
-    registered: msg.indexOf('(登録単価)') !== -1 };
+    registered: msg.indexOf('(登録単価)') !== -1,
+    priceChanged: /登録単価[\d,]+円から変更/.test(msg) };
 }
 function dpMonthEnd(y,m){ const e=new Date(y,m+1,0); return `${e.getFullYear()}/${e.getMonth()+1}/${e.getDate()}`; }
 function dpEditorPayDue(ds){
@@ -8102,7 +8103,7 @@ function dpRenderJobs(){
     return `<tr>
       <td style="white-space:nowrap">${dpEsc(j.workdate)}</td>
       <td><strong>${dpEsc(r.contact)}</strong></td>
-      <td>${dpEsc(j.client)}${j.registered?'':' <span class="badge b-warn" style="font-size:10px">未登録単価</span>'}${j.note&&j.note!=='なし'?'<div class="muted" style="font-size:11px;">'+dpEsc(j.note.slice(0,60))+'</div>':''}</td>
+      <td>${dpEsc(j.client)}${j.registered?'':' <span class="badge b-warn" style="font-size:10px">未登録単価</span>'}${j.priceChanged?' <span class="badge b-warn" style="font-size:10px">単価変更・要確認</span>':''}${j.note&&j.note!=='なし'?'<div class="muted" style="font-size:11px;">'+dpEsc(j.note.slice(0,60))+'</div>':''}</td>
       <td>${dpEsc(j.content)}${j.titles?'<div class="muted" style="font-size:10.5px;white-space:pre-line;max-width:220px;">'+dpEsc(j.titles.slice(0,150))+'</div>':''}</td>
       <td style="text-align:center">${j.count}本</td>
       <td style="white-space:nowrap"><input id="dp-job-inv-${r.row}" type="number" value="${dpEsc(String(r.invoice_amount||''))}" placeholder="${j.grossSuggest||0}" style="width:92px" onchange="dpJobSet(${r.row},'invoice_amount',this.value)">

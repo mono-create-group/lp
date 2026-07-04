@@ -97,7 +97,7 @@
 
     <label>クライアント単価(円/本)</label>
     <input id="f-unit" type="number" min="0" value="4000">
-    <p style="font-size:11px;color:var(--sub);margin-top:4px;" id="f-unit-note">登録クライアントを選ぶと自動で入ります(変更不可)。</p>
+    <p style="font-size:11px;color:var(--sub);margin-top:4px;" id="f-unit-note">登録クライアントを選ぶと自動で入ります。案件により異なる場合は変更できます。</p>
 
     <label>備考(案件の詳細・クライアントとの取り決めなど)</label>
     <textarea id="f-note" placeholder="例: TikTok用60秒、テロップフル、7/20依頼分"></textarea>
@@ -158,27 +158,26 @@ const escH = s => String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','
     + CLIENTS.map((c,i)=>`<option value="${i}">${escH(c.name)}</option>`).join('')
     + '<option value="__free__">リストにない(未登録クライアント)</option>';
 })();
+let registeredUnit = null; // 選択時の登録単価(変更検知用)
 document.getElementById('f-client-sel').addEventListener('change', e=>{
   const free = e.target.value === '__free__';
   document.getElementById('f-client').classList.toggle('hidden', !free);
-  const unit = document.getElementById('f-unit');
-  unit.readOnly = !free;
-  unit.style.background = free ? '#fff' : '#eef2f8';
   document.getElementById('f-unit-note').textContent = free
     ? '未登録のため単価を入力してください(運営がクライアントと確認します)。'
-    : '登録クライアントの単価が自動で入ります(変更不可)。';
+    : '登録単価が自動で入ります。案件により異なる場合は変更できます(変更分は運営が請求時に確認します)。';
   applyUnit(); recalc();
 });
 document.getElementById('f-type').addEventListener('change', ()=>{ applyUnit(); recalc(); });
 function applyUnit(){
   const v = document.getElementById('f-client-sel').value;
-  if(v === '' || v === '__free__') return;
+  if(v === '' || v === '__free__'){ registeredUnit = null; return; }
   const c = CLIENTS[Number(v)]; if(!c) return;
   const type = document.getElementById('f-type').value;
   const isLong = type.indexOf('長尺') === 0;
   let u = isLong ? (c.price_long||0) : (c.price_short||0);
   if(type==='長尺動画(15分)' && c.price_long15) u = c.price_long15;
   if(type==='長尺動画(20分)' && c.price_long20) u = c.price_long20;
+  registeredUnit = u;
   document.getElementById('f-unit').value = u;
 }
 document.getElementById('f-editor').addEventListener('change', e=>{
@@ -256,7 +255,12 @@ async function submitJob(){
       + '内容: ' + type + '\n'
       + '本数: ' + count + '本\n'
       + '動画タイトル:\n' + titles.map((t,i)=>'  ' + (i+1) + ') ' + t).join('\n') + '\n'
-      + 'クライアント単価: ' + unit + '円/本' + (registered ? '(登録単価)' : '(未登録・要確認)') + '\n'
+      + 'クライアント単価: ' + unit + '円/本'
+      + (registered
+          ? (registeredUnit !== null && unit !== registeredUnit
+              ? '(登録単価' + registeredUnit + '円から変更・要確認)'
+              : '(登録単価)')
+          : '(未登録・要確認)') + '\n'
       + 'クライアント請求額: ' + gross + '円\n'
       + '手数料: ' + fee + '円/本 = ' + (fee*count) + '円\n'
       + '編集者受取額: ' + payout + '円\n'
