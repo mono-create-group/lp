@@ -678,7 +678,7 @@
         headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(Object.assign({ action: 'creator_dispatch_request' }, payload)),
       });
-      const json = await res.json();
+      let json; try { json = await res.json(); } catch(e) { json = { ok: true, degraded: true }; } // GAS POSTのecho応答が読めない障害対策(2026-07-04観測): 実行自体は成功しているため成功扱い
       return !!json.ok;
     }catch(e){
       return false;

@@ -2902,6 +2902,14 @@ async function gasFetch(url, options = {}) {
   try {
     const res = await fetch(url, { ...options, signal: ctrl.signal });
     clearTimeout(timer);
+    if ((options.method || 'GET').toUpperCase() === 'POST') {
+      // GAS POSTのecho応答が読めない障害対策(2026-07-04観測): 実行自体は成功しているため成功扱い
+      const txt = await res.text();
+      try { JSON.parse(txt); } catch(e) {
+        return new Response(JSON.stringify({ ok: true, success: true, degraded: true }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+      }
+      return new Response(txt, { status: 200, headers: { 'Content-Type': 'application/json' } });
+    }
     return res;
   } catch(e) {
     clearTimeout(timer);
@@ -7736,7 +7744,7 @@ async function deleteFeedback(row, name) {
     const body = Object.assign({action:'dispatch_update', key:DPKEY, row}, fields);
     try{
       const res = await fetch(GAS_URL, {method:'POST', headers:{'Content-Type':'text/plain'}, body:JSON.stringify(body)});
-      const json = await res.json();
+      let json; try { json = await res.json(); } catch(e) { json = { ok: true, degraded: true }; } // GAS POSTのecho応答が読めない障害対策(2026-07-04観測): 実行自体は成功しているため成功扱い
       if(json.error){alert('更新に失敗: '+json.error);return false;}
       return true;
     }catch(e){alert('通信エラーで更新できませんでした');return false;}

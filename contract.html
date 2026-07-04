@@ -350,7 +350,16 @@ async function submitSign() {
   try {
     const payload = { action: 'sign_contract', token, signed_name: signedName, user_agent: navigator.userAgent };
     const res = await fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) });
-    const json = await res.json();
+    let json;
+    try { json = await res.json(); }
+    catch(e) {
+      // GAS POSTのecho応答が読めない障害対策(2026-07-04観測): 締結状態をGETで実確認する
+      try {
+        const vr = await fetch(GAS_URL + '?action=get_contract&t=' + encodeURIComponent(token));
+        const vj = await vr.json();
+        json = (vj.status === 'signed') ? { success: true } : { error: vj.error || 'unknown' };
+      } catch(e2) { json = { error: 'network' }; }
+    }
 
     if (json.success) {
       const now = new Date();
