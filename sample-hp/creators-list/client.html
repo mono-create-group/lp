@@ -103,7 +103,21 @@
   .btn-outline:hover{background:var(--coral-soft);}
   .hero-note{font-size:11px;color:var(--sub);margin-top:12px;}
   .hero-visual{position:relative;}
-  .hero-visual img{width:100%;height:auto;}
+  .hero-visual img{width:116%;max-width:none;height:auto;margin-left:-8%;}
+
+  /* ===== 4ステップ帯(サービスの流れ・ファーストビュー直下) ===== */
+  .steps-band{background:var(--cream);padding:56px 24px 62px;}
+  .steps-band h3{text-align:center;font-size:clamp(17px,3vw,22px);font-weight:900;margin-bottom:8px;font-family:"Zen Maru Gothic",sans-serif;}
+  .steps-band .sub{text-align:center;color:var(--sub);font-size:12.5px;margin-bottom:36px;}
+  .steps-grid{max-width:1020px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:18px;position:relative;}
+  .step-card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:26px 16px 22px;text-align:center;position:relative;transition:transform .2s ease,box-shadow .2s ease;}
+  .step-card:hover{transform:translateY(-5px);box-shadow:0 16px 32px rgba(64,64,58,.1);}
+  .step-card .no{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:linear-gradient(90deg,var(--coral),var(--coral-2));color:#fff;font-size:11.5px;font-weight:800;padding:5px 16px;border-radius:99px;white-space:nowrap;box-shadow:0 6px 14px rgba(226,112,74,.3);}
+  .step-card .il{height:130px;display:flex;align-items:flex-end;justify-content:center;margin-bottom:14px;}
+  .step-card .il img{max-height:130px;max-width:88%;width:auto;}
+  .step-card h4{font-size:14.5px;font-weight:800;margin-bottom:6px;}
+  .step-card p{font-size:11px;color:var(--sub);line-height:1.8;}
+  .step-arrow{position:absolute;top:50%;transform:translateY(-50%);font-size:18px;color:var(--coral);font-weight:900;}
 
   /* ===== セクション共通 ===== */
   section{padding:80px 24px;position:relative;}
@@ -262,6 +276,8 @@
   @media (max-width:960px){
     nav ul{display:none;}
     .hero-inner{grid-template-columns:1fr;padding:48px 24px 64px;gap:36px;}
+    .hero-visual img{width:100%;margin-left:0;}
+    .steps-grid{grid-template-columns:repeat(2,1fr);gap:26px 14px;}
     .svc-grid{grid-template-columns:repeat(3,1fr);}
     .flow-grid{grid-template-columns:repeat(2,1fr);gap:26px 8px;}
     .flow-grid::before{display:none;}
@@ -275,6 +291,7 @@
     .price-grid{grid-template-columns:1fr;max-width:340px;}
     .form-cols{grid-template-columns:1fr;}
     .stats-grid{grid-template-columns:1fr;gap:14px;}
+    .steps-grid{grid-template-columns:1fr;max-width:320px;}
     .btn-outline{margin-left:0;margin-top:10px;}
   }
 </style>
@@ -317,6 +334,38 @@
     </div>
   </div>
 </section>
+
+<!-- 4ステップ(編集者派遣サービスであることを一目で伝える) 出典: ソコスト(商用可) -->
+<div class="steps-band">
+  <h3>クリエイターズリストは「編集者派遣」サービスです</h3>
+  <p class="sub">動画を作る会社ではなく、あなたのチームに合う編集者をお繋ぎします。</p>
+  <div class="steps-grid rv in">
+    <div class="step-card">
+      <div class="no">STEP 1</div>
+      <div class="il"><img src="img/steps/step1.svg" alt="虫眼鏡で編集者を探すイラスト" loading="lazy"></div>
+      <h4>編集者を探す</h4>
+      <p>ご要望をヒアリングし、<br>登録編集者から候補を選定します。</p>
+    </div>
+    <div class="step-card">
+      <div class="no">STEP 2</div>
+      <div class="il"><img src="img/steps/step2.svg" alt="プロフィールを画面で確認するイラスト" loading="lazy"></div>
+      <h4>プロフィール比較</h4>
+      <p>実績・得意ジャンル・単価を<br>見比べて検討できます。</p>
+    </div>
+    <div class="step-card">
+      <div class="no">STEP 3</div>
+      <div class="il"><img src="img/steps/step3.svg" alt="握手してマッチング成立するイラスト" loading="lazy"></div>
+      <h4>マッチング成立</h4>
+      <p>お試し1本で相性を確認してから<br>スタートできます。</p>
+    </div>
+    <div class="step-card">
+      <div class="no">STEP 4</div>
+      <div class="il"><img src="img/steps/step4.svg" alt="打ち合わせを重ねる長期パートナーのイラスト" loading="lazy"></div>
+      <h4>長期パートナー</h4>
+      <p>継続発注も編集者の交代も、<br>窓口ひとつで完結します。</p>
+    </div>
+  </div>
+</div>
 
 <!-- 編集者一覧 -->
 <section id="creators">
