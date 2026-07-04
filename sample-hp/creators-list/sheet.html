@@ -45,14 +45,15 @@
 <div class="wrap">
   <div class="brand">CREATORS LIST | mono.create</div>
   <h1>📋 案件報告シート(編集者用)</h1>
-  <p class="lead">クライアントから直接お受けした案件を、納品のたびに(または月末にまとめて)ご報告ください。ご提出いただく請求書との照合に使用します。</p>
+  <p class="lead">クライアントから直接お受けした案件を、納品のたびに(または月末にまとめて)ご報告ください。<br>ご提出いただく請求書との照合に使用します。</p>
 
   <div class="rules">
     <b>お支払いルール</b>
     <ul>
       <li><b>25日締め・翌月末払い</b>(例: 7/25納品分→8/31払い、7/26〜8/25納品分→9/30払い)</li>
-      <li>請求書(1本あたり500円)は毎月25日までにメールでご提出ください</li>
-      <li>この報告と請求書の内容を照合してお支払いします</li>
+      <li>あなたの受取額 = クライアント単価 − 派遣手数料(<b>ショート500円/本・長尺1,000円/本</b>)</li>
+      <li>毎月25日までに、その月の報告分の請求書(受取額)をメールでご提出ください</li>
+      <li>単価は運営がクライアントごとに登録した金額が自動で適用されます</li>
     </ul>
   </div>
 
@@ -64,8 +65,9 @@
     <label>メールアドレス</label>
     <input id="f-email" type="email" placeholder="you@example.com">
 
-    <label>クライアント名(会社名・お名前)<span class="req">必須</span></label>
-    <input id="f-client" type="text" placeholder="例: 株式会社◯◯ / ◯◯様">
+    <label>クライアント<span class="req">必須</span></label>
+    <select id="f-client-sel"><option value="">読み込み中...</option></select>
+    <input id="f-client" class="hidden" type="text" placeholder="クライアント名を入力(未登録の場合)" style="margin-top:8px;">
 
     <div class="row2">
       <div>
@@ -73,10 +75,16 @@
         <input id="f-date" type="date">
       </div>
       <div>
-        <label>本数<span class="req">必須</span></label>
-        <input id="f-count" type="number" min="1" value="1">
+        <label>本数(タイトル数で自動)</label>
+        <input id="f-count" type="number" min="1" value="1" readonly style="background:#eef2f8;">
       </div>
     </div>
+
+    <label>動画タイトル<span class="req">必須</span></label>
+    <div id="f-titles">
+      <input class="f-title" type="text" placeholder="例: 【1本目】新メニュー紹介リール" style="margin-bottom:8px;">
+    </div>
+    <button type="button" onclick="addTitleRow()" style="padding:9px 16px;border:1.5px dashed var(--teal);border-radius:9px;background:var(--teal-bg);color:var(--teal-d);font-weight:800;font-size:13px;cursor:pointer;font-family:inherit;">＋ 動画を追加</button>
 
     <label>内容<span class="req">必須</span></label>
     <select id="f-type">
@@ -87,13 +95,18 @@
       <option>その他</option>
     </select>
 
-    <label>単価(あなたの請求単価・円/本)</label>
-    <input id="f-unit" type="number" min="0" value="500">
+    <label>クライアント単価(円/本)</label>
+    <input id="f-unit" type="number" min="0" value="4000">
+    <p style="font-size:11px;color:var(--sub);margin-top:4px;" id="f-unit-note">登録クライアントを選ぶと自動で入ります(変更不可)。</p>
 
     <label>備考(案件の詳細・クライアントとの取り決めなど)</label>
     <textarea id="f-note" placeholder="例: TikTok用60秒、テロップフル、7/20依頼分"></textarea>
 
-    <div class="total"><span>ご請求額(自動計算)</span><span class="amt" id="f-total">¥500</span></div>
+    <div class="total" style="display:block;">
+      <div style="display:flex;justify-content:space-between;"><span>クライアント請求額</span><span id="f-gross" style="font-weight:800;">¥4,000</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:12.5px;color:var(--sub);"><span>派遣手数料(運営)</span><span id="f-fee">−¥500</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;border-top:1px dashed var(--line);margin-top:8px;padding-top:8px;"><span>あなたの受取額</span><span class="amt" id="f-total">¥3,500</span></div>
+    </div>
 
     <button class="btn" id="f-submit" onclick="submitJob()">この内容で報告する</button>
     <p class="err" id="f-err"></p>
@@ -113,6 +126,10 @@ const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtk
 // 納品日デフォルト=今日
 document.getElementById('f-date').value = new Date().toLocaleDateString('sv-SE');
 
+const FEE = { 'ショート動画': 500, '長尺動画(10分)': 1000, '長尺動画(15分)': 1000, '長尺動画(20分)': 1000, 'その他': 500 };
+let CLIENTS = [];
+const escH = s => String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
 // 編集者リスト読み込み(認証不要API)
 (async function(){
   const sel = document.getElementById('f-editor');
@@ -121,22 +138,79 @@ document.getElementById('f-date').value = new Date().toLocaleDateString('sv-SE')
     const json = await res.json();
     const names = (json.data||[]).map(e=>e.name).filter(Boolean);
     sel.innerHTML = '<option value="">選択してください</option>'
-      + names.map(n=>`<option>${String(n).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}</option>`).join('')
+      + names.map(n=>`<option>${escH(n)}</option>`).join('')
       + '<option value="__free__">リストにない(手入力)</option>';
   }catch(e){
     sel.innerHTML = '<option value="__free__">手入力してください</option>';
     document.getElementById('f-editor-free').classList.remove('hidden');
   }
 })();
+
+// クライアント台帳(運営登録・単価固定)読み込み
+(async function(){
+  const sel = document.getElementById('f-client-sel');
+  try{
+    const res = await fetch(GAS_URL + '?action=content_get');
+    const json = await res.json();
+    CLIENTS = (json.content && json.content.dispatch_clients) || [];
+  }catch(e){ CLIENTS = []; }
+  sel.innerHTML = '<option value="">選択してください</option>'
+    + CLIENTS.map((c,i)=>`<option value="${i}">${escH(c.name)}</option>`).join('')
+    + '<option value="__free__">リストにない(未登録クライアント)</option>';
+})();
+document.getElementById('f-client-sel').addEventListener('change', e=>{
+  const free = e.target.value === '__free__';
+  document.getElementById('f-client').classList.toggle('hidden', !free);
+  const unit = document.getElementById('f-unit');
+  unit.readOnly = !free;
+  unit.style.background = free ? '#fff' : '#eef2f8';
+  document.getElementById('f-unit-note').textContent = free
+    ? '未登録のため単価を入力してください(運営がクライアントと確認します)。'
+    : '登録クライアントの単価が自動で入ります(変更不可)。';
+  applyUnit(); recalc();
+});
+document.getElementById('f-type').addEventListener('change', ()=>{ applyUnit(); recalc(); });
+function applyUnit(){
+  const v = document.getElementById('f-client-sel').value;
+  if(v === '' || v === '__free__') return;
+  const c = CLIENTS[Number(v)]; if(!c) return;
+  const type = document.getElementById('f-type').value;
+  const isLong = type.indexOf('長尺') === 0;
+  let u = isLong ? (c.price_long||0) : (c.price_short||0);
+  if(type==='長尺動画(15分)' && c.price_long15) u = c.price_long15;
+  if(type==='長尺動画(20分)' && c.price_long20) u = c.price_long20;
+  document.getElementById('f-unit').value = u;
+}
 document.getElementById('f-editor').addEventListener('change', e=>{
   document.getElementById('f-editor-free').classList.toggle('hidden', e.target.value !== '__free__');
 });
 
-// 合計自動計算
+// 動画タイトル行の追加・削除(本数はタイトル行数に連動)
+function addTitleRow(){
+  const box = document.getElementById('f-titles');
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'display:flex;gap:8px;margin-bottom:8px;';
+  wrap.innerHTML = '<input class="f-title" type="text" placeholder="例: 【'+(box.querySelectorAll('.f-title').length+1)+'本目】動画タイトル" style="flex:1;">'
+    + '<button type="button" style="padding:0 14px;border:1px solid var(--line);border-radius:9px;background:#fff;color:#dc2626;font-weight:800;cursor:pointer;font-family:inherit;">✕</button>';
+  wrap.querySelector('button').onclick = ()=>{ wrap.remove(); syncCount(); };
+  box.appendChild(wrap);
+  syncCount();
+}
+function getTitles(){ return [...document.querySelectorAll('.f-title')].map(i=>i.value.trim()).filter(Boolean); }
+function syncCount(){
+  document.getElementById('f-count').value = Math.max(1, document.querySelectorAll('.f-title').length);
+  recalc();
+}
+document.getElementById('f-titles').addEventListener('input', recalc);
+
+// 合計自動計算(受取額 = クライアント単価 − 手数料)
 function recalc(){
-  const c = Number(document.getElementById('f-count').value)||0;
+  const n = Number(document.getElementById('f-count').value)||0;
   const u = Number(document.getElementById('f-unit').value)||0;
-  document.getElementById('f-total').textContent = '¥' + (c*u).toLocaleString();
+  const fee = FEE[document.getElementById('f-type').value] || 500;
+  document.getElementById('f-gross').textContent = '¥' + (n*u).toLocaleString();
+  document.getElementById('f-fee').textContent = '−¥' + (n*fee).toLocaleString();
+  document.getElementById('f-total').textContent = '¥' + Math.max(0,(n*(u-fee))).toLocaleString();
 }
 document.getElementById('f-count').addEventListener('input', recalc);
 document.getElementById('f-unit').addEventListener('input', recalc);
@@ -145,16 +219,19 @@ async function submitJob(){
   const selVal = document.getElementById('f-editor').value;
   const editor = selVal === '__free__' ? document.getElementById('f-editor-free').value.trim() : selVal;
   const email  = document.getElementById('f-email').value.trim();
-  const client = document.getElementById('f-client').value.trim();
+  const cSel = document.getElementById('f-client-sel').value;
+  const registered = cSel !== '' && cSel !== '__free__';
+  const client = registered ? (CLIENTS[Number(cSel)]||{}).name || '' : document.getElementById('f-client').value.trim();
   const date   = document.getElementById('f-date').value;
-  const count  = Number(document.getElementById('f-count').value)||0;
+  const titles = getTitles();
+  const count  = titles.length;
   const type   = document.getElementById('f-type').value;
   const unit   = Number(document.getElementById('f-unit').value)||0;
   const note   = document.getElementById('f-note').value.trim();
   const err    = document.getElementById('f-err');
 
   if(!editor || !client || !date || count < 1){
-    err.textContent = 'お名前・クライアント名・納品日・本数は必須です。';
+    err.textContent = 'お名前・クライアント・納品日・動画タイトル(1本以上)は必須です。';
     err.style.display = 'block';
     return;
   }
@@ -162,7 +239,9 @@ async function submitJob(){
   const btn = document.getElementById('f-submit');
   btn.disabled = true; btn.textContent = '送信中...';
 
-  const total = count * unit;
+  const fee = FEE[type] || 500;
+  const gross = count * unit;
+  const payout = Math.max(0, count * (unit - fee));
   const payload = {
     action: 'creator_dispatch_request',
     company: '[案件報告] ' + client,
@@ -176,8 +255,11 @@ async function submitJob(){
       + '納品日: ' + date + '\n'
       + '内容: ' + type + '\n'
       + '本数: ' + count + '本\n'
-      + '編集者単価: ' + unit + '円/本\n'
-      + '編集者請求額: ' + total + '円\n'
+      + '動画タイトル:\n' + titles.map((t,i)=>'  ' + (i+1) + ') ' + t).join('\n') + '\n'
+      + 'クライアント単価: ' + unit + '円/本' + (registered ? '(登録単価)' : '(未登録・要確認)') + '\n'
+      + 'クライアント請求額: ' + gross + '円\n'
+      + '手数料: ' + fee + '円/本 = ' + (fee*count) + '円\n'
+      + '編集者受取額: ' + payout + '円\n'
       + '備考: ' + (note || 'なし')
   };
   try{

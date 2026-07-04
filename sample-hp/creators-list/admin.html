@@ -743,17 +743,36 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       </div>
     </div>
     <div class="card">
-      <h3>月次サマリー(売上・支払い・粗利)</h3>
-      <p class="desc">クライアント請求: <b>月末締め・翌月末払い</b> / 編集者支払: <b>25日締め・翌月末払い</b>(例: 7/25納品→8/31払い、7/26〜8/25納品→9/30払い)</p>
+      <h3>クライアント登録(単価の正はここ・編集者は変更不可)</h3>
+      <p class="desc">ここに登録した単価が編集者の報告シートに自動適用されます(不正防止)。手数料は<b>ショート500円/本・長尺1,000円/本</b>で固定。運営の売上=手数料、編集者受取=単価−手数料。</p>
+      <div style="display:grid;grid-template-columns:1fr 140px 140px auto;gap:10px;align-items:end;max-width:760px;">
+        <div><label style="font-size:11.5px;font-weight:700;color:var(--sub);">クライアント名</label>
+          <input id="dp-cl-name" type="text" placeholder="例: 株式会社◯◯" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;"></div>
+        <div><label style="font-size:11.5px;font-weight:700;color:var(--sub);">ショート単価(円)</label>
+          <input id="dp-cl-short" type="number" value="4000" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;"></div>
+        <div><label style="font-size:11.5px;font-weight:700;color:var(--sub);">長尺単価(円)</label>
+          <input id="dp-cl-long" type="number" value="10000" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;"></div>
+        <button onclick="dpAddClient()" style="padding:10px 20px;border:none;border-radius:8px;background:var(--accent);color:#fff;font-weight:700;font-size:13px;cursor:pointer;">登録</button>
+      </div>
+      <div class="table-scroll" style="margin-top:14px;">
+        <table>
+          <thead><tr><th>クライアント</th><th>ショート単価</th><th>長尺単価</th><th>編集者の受取(ショート/長尺)</th><th></th></tr></thead>
+          <tbody id="dp-client-rows"><tr><td colspan="5" class="empty">読み込み中...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <h3>月次サマリー(手数料売上・入出金)</h3>
+      <p class="desc">運営の売上=手数料(ショート500円/長尺1,000円×本数)。クライアント請求: <b>月末締め・翌月末払い</b> / 編集者支払: <b>25日締め・翌月末払い</b>(例: 7/25納品→8/31払い、7/26〜8/25納品→9/30払い)</p>
       <div id="dp-jobs-summary"></div>
     </div>
     <div class="card">
       <h3>案件一覧(編集者からの報告)</h3>
-      <p class="desc">「自動」ボタンでサイト料金(ショート¥4,000/長尺¥10,000〜)×本数のクライアント請求額が入ります。金額・状況は変更すると自動保存されます。</p>
+      <p class="desc">「自動」ボタンで報告値(登録単価×本数)がクライアント請求に入ります。金額・状況は変更すると自動保存されます。「未登録単価」バッジの行はクライアントと単価を確認してください。</p>
       <div class="table-scroll">
         <table>
-          <thead><tr><th>納品日</th><th>編集者</th><th>クライアント</th><th>内容</th><th>本数</th><th>編集者請求</th><th>クライアント請求(円)</th><th>請求状況</th><th>編集者支払</th></tr></thead>
-          <tbody id="dp-jobs-rows"><tr><td colspan="9" class="empty">読み込み中...</td></tr></tbody>
+          <thead><tr><th>納品日</th><th>編集者</th><th>クライアント</th><th>内容・タイトル</th><th>本数</th><th>クライアント請求(円)</th><th>手数料(売上)</th><th>編集者支払</th><th>請求状況</th><th>編集者支払状況</th></tr></thead>
+          <tbody id="dp-jobs-rows"><tr><td colspan="10" class="empty">読み込み中...</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -8032,16 +8051,24 @@ const DP_CLIENT_UNIT = [[/ショート/,4000],[/10分/,10000],[/15分/,15000],[/
 function dpJobParse(r){
   const msg = String(r.message||'');
   const count = Number(r.volume)||Number((msg.match(/本数[::]\s*(\d+)/)||[])[1])||0;
-  const unit = Number(String((msg.match(/編集者単価[::]\s*([\d,]+)/)||[])[1]||'500').replace(/,/g,''));
   const content = ((msg.match(/内容[::]\s*([^\n]+)/)||[])[1]||'').trim();
   const note = ((msg.match(/備考[::]\s*([\s\S]+)/)||[])[1]||'').trim();
+  const titles = ((msg.match(/動画タイトル[::]\s*\n([\s\S]*?)(?=\nクライアント単価|\n備考|$)/)||[])[1]||'').trim();
   const workdate = String(r.start || r.date).slice(0,10);
   const client = String(r.company||'').replace(/^\[案件報告\]\s*/,'');
+  const num = re => Number(String((msg.match(re)||[])[1]||'').replace(/,/g,''))||0;
+  // 手数料: ショート500/長尺1000(報告に明記があればそれを採用)
+  const feePer = num(/手数料[::]\s*([\d,]+)円\/本/) || (content.indexOf('長尺')===0 ? 1000 : 500);
+  const gross = num(/クライアント請求額[::]\s*([\d,]+)/);
+  const payout = num(/編集者受取額[::]\s*([\d,]+)/);
   let cu = 0; DP_CLIENT_UNIT.forEach(p=>{ if(p[0].test(content)) cu = cu||p[1]; });
-  return { count:count, unit:unit, content:content, note:note, workdate:workdate, client:client,
-    editorTotal: Number(r.editor_fee)||count*unit,
-    clientSuggest: cu*count,
-    clientTotal: Number(r.invoice_amount)||cu*count };
+  const clientTotal = Number(r.invoice_amount) || gross || cu*count;
+  const feeTotal = feePer*count;
+  const editorPay = Number(r.editor_fee) || payout || Math.max(0, clientTotal - feeTotal);
+  return { count:count, content:content, note:note, titles:titles, workdate:workdate, client:client,
+    feePer:feePer, feeTotal:feeTotal, clientTotal:clientTotal, editorPay:editorPay,
+    grossSuggest: gross || cu*count,
+    registered: msg.indexOf('(登録単価)') !== -1 };
 }
 function dpMonthEnd(y,m){ const e=new Date(y,m+1,0); return `${e.getFullYear()}/${e.getMonth()+1}/${e.getDate()}`; }
 function dpEditorPayDue(ds){
@@ -8061,27 +8088,28 @@ async function dpJobSet(row, field, value){
 function dpJobAutoInvoice(row){
   const r = dpRequests.find(x=>x.row===row); if(!r) return;
   const j = dpJobParse(r);
-  const v = j.clientSuggest || j.editorTotal;
+  const v = j.grossSuggest;
   const inp = document.getElementById('dp-job-inv-'+row); if(inp) inp.value = v;
   dpJobSet(row,'invoice_amount',String(v));
-  if(!Number(r.editor_fee)) dpJobSet(row,'editor_fee',String(j.count*j.unit));
+  dpJobSet(row,'editor_fee',String(Math.max(0, v - j.feeTotal)));
 }
 function dpRenderJobs(){
   const tbody = document.getElementById('dp-jobs-rows'); if(!tbody) return;
   const jobs = dpJobs().slice().sort((a,b)=>String(dpJobParse(b).workdate).localeCompare(String(dpJobParse(a).workdate)));
-  if(!jobs.length){ tbody.innerHTML='<tr><td colspan="9" class="empty">まだ報告がありません。編集者に上のURLを共有してください。</td></tr>'; dpRenderJobsSummary(); return; }
+  if(!jobs.length){ tbody.innerHTML='<tr><td colspan="10" class="empty">まだ報告がありません。編集者に上のURLを共有してください。</td></tr>'; dpRenderJobsSummary(); return; }
   tbody.innerHTML = jobs.map(r=>{
     const j = dpJobParse(r);
     return `<tr>
       <td style="white-space:nowrap">${dpEsc(j.workdate)}</td>
       <td><strong>${dpEsc(r.contact)}</strong></td>
-      <td>${dpEsc(j.client)}${j.note&&j.note!=='なし'?'<div class="muted" style="font-size:11px;">'+dpEsc(j.note.slice(0,60))+'</div>':''}</td>
-      <td>${dpEsc(j.content)}</td>
+      <td>${dpEsc(j.client)}${j.registered?'':' <span class="badge b-warn" style="font-size:10px">未登録単価</span>'}${j.note&&j.note!=='なし'?'<div class="muted" style="font-size:11px;">'+dpEsc(j.note.slice(0,60))+'</div>':''}</td>
+      <td>${dpEsc(j.content)}${j.titles?'<div class="muted" style="font-size:10.5px;white-space:pre-line;max-width:220px;">'+dpEsc(j.titles.slice(0,150))+'</div>':''}</td>
       <td style="text-align:center">${j.count}本</td>
-      <td style="white-space:nowrap">¥${j.editorTotal.toLocaleString()}<div class="muted" style="font-size:10.5px">${j.unit}円/本・支払 ${dpEditorPayDue(j.workdate)}</div></td>
-      <td style="white-space:nowrap"><input id="dp-job-inv-${r.row}" type="number" value="${dpEsc(String(r.invoice_amount||''))}" placeholder="${j.clientSuggest||0}" style="width:92px" onchange="dpJobSet(${r.row},'invoice_amount',this.value)">
-        <button class="btn btn-sm btn-ghost" onclick="dpJobAutoInvoice(${r.row})" title="サイト料金×本数で自動計算">自動</button>
+      <td style="white-space:nowrap"><input id="dp-job-inv-${r.row}" type="number" value="${dpEsc(String(r.invoice_amount||''))}" placeholder="${j.grossSuggest||0}" style="width:92px" onchange="dpJobSet(${r.row},'invoice_amount',this.value)">
+        <button class="btn btn-sm btn-ghost" onclick="dpJobAutoInvoice(${r.row})" title="報告値(登録単価×本数)を反映">自動</button>
         <div class="muted" style="font-size:10.5px">入金期日 ${dpClientPayDue(j.workdate)}</div></td>
+      <td style="white-space:nowrap;font-weight:800;color:var(--green)">¥${j.feeTotal.toLocaleString()}<div class="muted" style="font-size:10.5px;font-weight:400">${j.feePer}円/本</div></td>
+      <td style="white-space:nowrap">¥${j.editorPay.toLocaleString()}<div class="muted" style="font-size:10.5px">支払 ${dpEditorPayDue(j.workdate)}</div></td>
       <td><select onchange="dpJobSet(${r.row},'pay_status',this.value)">${DP_JOB_PAY.map(p=>`<option ${p===(r.pay_status||'未請求')?'selected':''}>${p}</option>`).join('')}</select></td>
       <td><select onchange="dpJobSet(${r.row},'editor_pay_status',this.value)">${DP_JOB_EDPAY.map(p=>`<option ${p===(r.editor_pay_status||'未払い')?'selected':''}>${p}</option>`).join('')}</select></td>
     </tr>`;
@@ -8094,21 +8122,22 @@ function dpRenderJobsSummary(){
   dpJobs().forEach(r=>{
     const j = dpJobParse(r);
     const m = String(j.workdate).slice(0,7).replace('-','/');
-    months[m] = months[m]||{sales:0,cost:0,unpaid:0,edUnpaid:0};
-    months[m].sales += j.clientTotal;
-    months[m].cost  += j.editorTotal;
+    months[m] = months[m]||{gross:0,fee:0,payout:0,unpaid:0,edUnpaid:0};
+    months[m].gross += j.clientTotal;
+    months[m].fee += j.feeTotal;
+    months[m].payout += j.editorPay;
     if((r.pay_status||'未請求')!=='入金済') months[m].unpaid += j.clientTotal;
-    if((r.editor_pay_status||'未払い')!=='支払済') months[m].edUnpaid += j.editorTotal;
+    if((r.editor_pay_status||'未払い')!=='支払済') months[m].edUnpaid += j.editorPay;
   });
   const keys = Object.keys(months).sort().reverse();
-  if(!keys.length){ box.innerHTML = '<p class="desc">報告が入ると月ごとの売上・支払い・粗利がここに表示されます。</p>'; dpRenderJobsStats(); return; }
+  if(!keys.length){ box.innerHTML = '<p class="desc">報告が入ると月ごとの手数料売上・入出金がここに表示されます。</p>'; dpRenderJobsStats(); return; }
   box.innerHTML = `<div class="table-scroll"><table>
-    <thead><tr><th>月(納品ベース)</th><th>売上(クライアント請求)</th><th>編集者支払</th><th>粗利</th><th>未入金</th><th>編集者未払い</th></tr></thead>
+    <thead><tr><th>月(納品ベース)</th><th>クライアント請求</th><th>手数料(運営の売上)</th><th>編集者支払</th><th>未入金</th><th>編集者未払い</th></tr></thead>
     <tbody>${keys.map(m=>{const v=months[m];return `<tr>
       <td><strong>${m}</strong></td>
-      <td>¥${v.sales.toLocaleString()}</td>
-      <td>¥${v.cost.toLocaleString()}</td>
-      <td style="font-weight:800;color:${v.sales-v.cost>=0?'var(--green)':'var(--red)'}">¥${(v.sales-v.cost).toLocaleString()}</td>
+      <td>¥${v.gross.toLocaleString()}</td>
+      <td style="font-weight:800;color:var(--green)">¥${v.fee.toLocaleString()}</td>
+      <td>¥${v.payout.toLocaleString()}</td>
       <td>¥${v.unpaid.toLocaleString()}</td>
       <td>¥${v.edUnpaid.toLocaleString()}</td>
     </tr>`;}).join('')}</tbody></table></div>`;
@@ -8118,23 +8147,72 @@ function dpRenderJobsStats(){
   const el = document.getElementById('dp-jobs-stats'); if(!el) return;
   const now = new Date();
   const cm = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}`;
-  let sales=0,cost=0,unpaid=0,edUnpaid=0;
+  let fee=0,gross=0,payout=0,unpaid=0,edUnpaid=0;
   dpJobs().forEach(r=>{
     const j=dpJobParse(r);
     const m=String(j.workdate).slice(0,7).replace('-','/');
-    if(m===cm){sales+=j.clientTotal;cost+=j.editorTotal;}
+    if(m===cm){fee+=j.feeTotal;gross+=j.clientTotal;payout+=j.editorPay;}
     if((r.pay_status||'未請求')!=='入金済') unpaid+=j.clientTotal;
-    if((r.editor_pay_status||'未払い')!=='支払済') edUnpaid+=j.editorTotal;
+    if((r.editor_pay_status||'未払い')!=='支払済') edUnpaid+=j.editorPay;
   });
   el.innerHTML = `
-    <div class="stat-chip"><div class="label">今月の売上(納品ベース)</div><div class="value">¥${sales.toLocaleString()}</div></div>
-    <div class="stat-chip"><div class="label">今月の編集者支払</div><div class="value">¥${cost.toLocaleString()}</div></div>
-    <div class="stat-chip"><div class="label">今月の粗利</div><div class="value">¥${(sales-cost).toLocaleString()}</div></div>
+    <div class="stat-chip"><div class="label">今月の手数料売上</div><div class="value">¥${fee.toLocaleString()}</div></div>
+    <div class="stat-chip"><div class="label">今月のクライアント請求</div><div class="value">¥${gross.toLocaleString()}</div></div>
+    <div class="stat-chip"><div class="label">今月の編集者支払</div><div class="value">¥${payout.toLocaleString()}</div></div>
     <div class="stat-chip"><div class="label">未入金合計</div><div class="value">¥${unpaid.toLocaleString()}</div></div>
     <div class="stat-chip"><div class="label">編集者未払い合計</div><div class="value">¥${edUnpaid.toLocaleString()}</div></div>`;
 }
+let dpClients = null;
+async function dpLoadClients(){
+  try{
+    const res = await fetch(`${GAS_URL}?action=content_get&_=${Date.now()}`);
+    const json = await res.json();
+    dpClients = (json.content && json.content.dispatch_clients) || [];
+  }catch(e){ dpClients = dpClients || []; }
+  dpRenderClients();
+}
+function dpRenderClients(){
+  const tbody = document.getElementById('dp-client-rows'); if(!tbody) return;
+  const list = dpClients || [];
+  if(!list.length){ tbody.innerHTML = '<tr><td colspan="5" class="empty">まだ登録がありません。依頼が来たクライアントをここに登録してください。</td></tr>'; return; }
+  tbody.innerHTML = list.map((c,i)=>`<tr>
+    <td><strong>${dpEsc(c.name)}</strong></td>
+    <td>¥${Number(c.price_short||0).toLocaleString()}/本</td>
+    <td>¥${Number(c.price_long||0).toLocaleString()}/本</td>
+    <td class="muted">¥${Math.max(0,Number(c.price_short||0)-500).toLocaleString()} / ¥${Math.max(0,Number(c.price_long||0)-1000).toLocaleString()}</td>
+    <td><button class="btn btn-sm btn-ghost" onclick="dpDelClient(${i})">削除</button></td>
+  </tr>`).join('');
+}
+async function dpSaveClients(){
+  try{
+    const res = await gasFetch(GAS_URL, {method:'POST', headers:{'Content-Type':'text/plain'},
+      body: JSON.stringify({action:'content_update', key: DPKEY, content: { dispatch_clients: dpClients }})});
+    const j = await res.json();
+    if(j.error){ alert('保存に失敗: '+j.error); return false; }
+    return true;
+  }catch(e){ alert('通信エラーで保存できませんでした'); return false; }
+}
+async function dpAddClient(){
+  const name = document.getElementById('dp-cl-name').value.trim();
+  const ps = Number(document.getElementById('dp-cl-short').value)||0;
+  const pl = Number(document.getElementById('dp-cl-long').value)||0;
+  if(!name){ alert('クライアント名を入力してください'); return; }
+  if(dpClients === null) await dpLoadClients();
+  const ex = dpClients.findIndex(c=>c.name===name);
+  if(ex >= 0) dpClients[ex] = {name:name, price_short:ps, price_long:pl};
+  else dpClients.push({name:name, price_short:ps, price_long:pl});
+  dpRenderClients();
+  if(await dpSaveClients()){ document.getElementById('dp-cl-name').value=''; showToast ? showToast('登録しました') : null; }
+}
+async function dpDelClient(i){
+  if(!confirm((dpClients[i]||{}).name + ' を削除しますか?(過去の報告はそのまま残ります)')) return;
+  dpClients.splice(i,1);
+  dpRenderClients();
+  await dpSaveClients();
+}
 function dpJobsTab(){
   DPKEY = getAdminPw();
+  if(dpClients === null) dpLoadClients();
   if(!dpRequests.length){ dpLoadRequests().then(()=>dpRenderJobs()); }
   else dpRenderJobs();
 }
