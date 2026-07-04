@@ -522,6 +522,10 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
         📜 契約書発行
       </button>
+      <button id="tab-dispatch-jobs-btn" onclick="switchAdminTab('dispatch-jobs')"
+        style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
+        📊 案件シート・売上
+      </button>
       <button id="tab-inquiries-btn" onclick="switchAdminTab('inquiries')"
         style="padding:10px 16px;border:none;background:none;color:var(--lt);font-weight:700;font-size:0.85rem;border-bottom:2px solid var(--lt);cursor:pointer;font-family:inherit;">
         📩 問い合わせ管理
@@ -630,7 +634,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
     <div class="stat-row" id="dp-stats" style="margin-bottom:14px;"></div>
     <div class="card">
       <h3>受付状況・マッチング進捗</h3>
-      <p class="desc">クリエイターズリストのお問い合わせフォームから自動で届きます(Chatworkにも通知)。</p>
+      <p class="desc">クリエイターズリストのお問い合わせフォームから自動で届きます(メール+LINEに通知)。</p>
       <div class="table-scroll">
         <table>
           <thead>
@@ -664,8 +668,9 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
     <div class="card">
       <h3>支払いルール(標準)</h3>
       <p class="desc">
-        クライアント: <b>前払いが標準</b>(入金確認後に着手)。法人の稟議があるお客様のみ翌月末払いに応じる。<br>
-        編集者への支払い: <b>月末締め・翌月末払い</b>。詳細は 営業/派遣事業_支払い設計.md 参照。
+        クライアント: <b>翌月末払い</b>(月末締めで請求書を送付 → 翌月末までに銀行振込)。<br>
+        編集者への支払い: <b>25日締め・翌月末払い</b>(例: 7/25納品分→8/31払い、7/26〜8/25納品分→9/30払い)。<br>
+        ※「すべてのご依頼をお受けできない場合がある」ことはヒアリングメールでクライアントへ事前にお伝えする。
       </p>
     </div>
     <div class="card">
@@ -700,7 +705,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
   <div id="tab-dispatch-contracts" style="display:none;">
     <div class="card">
       <h3>業務委託契約書の発行</h3>
-      <p class="desc">氏名とメールを入力して発行すると、本人が氏名を確認して締結できる契約ページのURLが作られます。URLをメール・Chatworkでお送りください。</p>
+      <p class="desc">氏名とメールを入力して発行すると、本人が氏名を確認して締結できる契約ページのURLが作られます。発行後に「📧 メールで送る」ボタンからそのまま送付できます。</p>
       <div style="display:grid;grid-template-columns:140px 1fr 1fr auto;gap:10px;align-items:end;max-width:820px;">
         <div><label style="font-size:11.5px;font-weight:700;color:var(--sub);">契約の種類</label>
           <select id="dp-ct-type" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;">
@@ -722,6 +727,33 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         <table>
           <thead><tr><th>締結日</th><th>氏名</th><th>メール</th><th>種別</th><th>状態</th><th>PDF</th></tr></thead>
           <tbody id="dp-contract-rows"><tr><td colspan="6" class="empty">「契約書」タブを開くと読み込みます</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-dispatch-jobs" style="display:none;">
+    <div class="stat-row" id="dp-jobs-stats" style="margin-bottom:14px;"></div>
+    <div class="card">
+      <h3>編集者用 案件報告ページ(共有用URL)</h3>
+      <p class="desc">編集者はこのページから納品した案件を報告します。報告が届くとメール+LINEに通知されます。毎月25日までに届く請求書(1本500円)とここの内容を照合してください。</p>
+      <div style="display:flex;gap:8px;max-width:720px;">
+        <input id="dp-jobs-url" readonly value="https://mono-create-group.github.io/lp/sample-hp/creators-list/sheet.html" style="flex:1;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:12.5px;background:#fff;">
+        <button class="btn" style="padding:9px 16px;border:1px solid var(--line);border-radius:8px;background:#fff;font-weight:700;font-size:12.5px;cursor:pointer;" onclick="navigator.clipboard.writeText(document.getElementById('dp-jobs-url').value).then(()=>this.textContent='コピーしました')">URLをコピー</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>月次サマリー(売上・支払い・粗利)</h3>
+      <p class="desc">クライアント請求: <b>月末締め・翌月末払い</b> / 編集者支払: <b>25日締め・翌月末払い</b>(例: 7/25納品→8/31払い、7/26〜8/25納品→9/30払い)</p>
+      <div id="dp-jobs-summary"></div>
+    </div>
+    <div class="card">
+      <h3>案件一覧(編集者からの報告)</h3>
+      <p class="desc">「自動」ボタンでサイト料金(ショート¥4,000/長尺¥10,000〜)×本数のクライアント請求額が入ります。金額・状況は変更すると自動保存されます。</p>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>納品日</th><th>編集者</th><th>クライアント</th><th>内容</th><th>本数</th><th>編集者請求</th><th>クライアント請求(円)</th><th>請求状況</th><th>編集者支払</th></tr></thead>
+          <tbody id="dp-jobs-rows"><tr><td colspan="9" class="empty">読み込み中...</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -3478,7 +3510,7 @@ function exportCSV() {
 }
 
 // ── Tab switch ──
-const ADMIN_TABS = ['dispatch','dispatch-pay','dispatch-editors','dispatch-contracts','inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps','sales-apps','partner-apps','private-link','client-master','invoices','line','orders','revisions','payment-requests','trash','testimonials','line-followers','progress'];
+const ADMIN_TABS = ['dispatch','dispatch-pay','dispatch-editors','dispatch-contracts','dispatch-jobs','inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps','sales-apps','partner-apps','private-link','client-master','invoices','line','orders','revisions','payment-requests','trash','testimonials','line-followers','progress'];
 function switchAdminTab(tab) {
   ADMIN_TABS.forEach(t => {
     document.getElementById('tab-' + t).style.display = t === tab ? '' : 'none';
@@ -3488,6 +3520,7 @@ function switchAdminTab(tab) {
   });
   if (tab === 'dispatch' || tab === 'dispatch-pay' || tab === 'dispatch-editors') dpTab();
   if (tab === 'dispatch-contracts') { DPKEY = getAdminPw(); dpLoadContracts(); }
+  if (tab === 'dispatch-jobs') dpJobsTab();
   if (tab === 'portfolio') loadPortfolioAdmin();
   if (tab === 'editors')   loadEditors();
   if (tab === 'payments')  loadPayments();
@@ -7670,6 +7703,9 @@ async function deleteFeedback(row, name) {
   let DPKEY = "";
   let dpRequests = [];
   let dpEditors = [];
+  const dpIsJob = r => String(r.genre||'').indexOf('案件シート') !== -1 || String(r.company||'').indexOf('[案件報告]') === 0;
+  const dpReqOnly = () => dpRequests.filter(r=>!dpIsJob(r));
+  const dpJobs = () => dpRequests.filter(dpIsJob);
 
   function dpEsc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 
@@ -7741,8 +7777,9 @@ async function deleteFeedback(row, name) {
 
   function dpRenderRequests(){
     const tbody = document.getElementById('dp-request-rows');
-    if(!dpRequests.length){tbody.innerHTML='<tr><td colspan="6" class="empty">まだ派遣依頼がありません。</td></tr>';return;}
-    tbody.innerHTML = dpRequests.map(r=>`
+    const dpList = dpReqOnly();
+    if(!dpList.length){tbody.innerHTML='<tr><td colspan="6" class="empty">まだ派遣依頼がありません。</td></tr>';return;}
+    tbody.innerHTML = dpList.map(r=>`
       <tr>
         <td style="white-space:nowrap">${dpEsc(r.date)}</td>
         <td><strong>${dpEsc(r.company)}</strong><br><span class="muted">${dpEsc(r.contact)}${r.email?' / '+dpEsc(r.email):''}${r.phone?' / '+dpEsc(r.phone):''}</span></td>
@@ -7789,7 +7826,7 @@ async function deleteFeedback(row, name) {
     }).join('');
   }
 
-  const DP_PAY_TERMS = ['前払い(標準)','翌月末払い','当月払い','都度払い'];
+  const DP_PAY_TERMS = ['翌月末払い(標準)','前払い','当月払い','都度払い'];
   const DP_PAY_STATUS = ['未請求','請求済','入金済'];
   const DP_EDITOR_PAY = ['未払い','支払済'];
 
@@ -7808,7 +7845,7 @@ async function deleteFeedback(row, name) {
   }
 
   function dpPayTargets(){
-    return dpRequests.filter(r=>['トライアル','本稼働','契約終了'].includes(r.status||''));
+    return dpRequests.filter(r=>!dpIsJob(r) && ['トライアル','本稼働','契約終了'].includes(r.status||''));
   }
 
   function dpRenderPayments(){
@@ -7819,23 +7856,24 @@ async function deleteFeedback(row, name) {
       <tr>
         <td><strong>${dpEsc(r.company)}</strong><br><span class="muted">${dpEsc(r.status)} / ${dpEsc(r.assigned_editors||r.selected_editors)||'担当未定'}</span></td>
         <td><input type="number" value="${dpEsc(String(r.invoice_amount||''))}" placeholder="0" style="width:96px" onchange="dpSetPayField(${r.row},'invoice_amount',this.value)"></td>
-        <td><select onchange="dpSetPayField(${r.row},'pay_terms',this.value)">${DP_PAY_TERMS.map(p=>`<option ${p===(r.pay_terms||'前払い(標準)')?'selected':''}>${p}</option>`).join('')}</select></td>
+        <td><select onchange="dpSetPayField(${r.row},'pay_terms',this.value)">${DP_PAY_TERMS.map(p=>`<option ${p===(r.pay_terms||'翌月末払い(標準)')?'selected':''}>${p}</option>`).join('')}</select></td>
         <td><select onchange="dpSetPayField(${r.row},'pay_status',this.value)">${DP_PAY_STATUS.map(p=>`<option ${p===(r.pay_status||'未請求')?'selected':''}>${p}</option>`).join('')}</select></td>
         <td><input type="date" value="${dpEsc(r.paid_date||'')}" onchange="dpSetPayField(${r.row},'paid_date',this.value)"></td>
         <td><input type="number" value="${dpEsc(String(r.editor_fee||''))}" placeholder="0" style="width:96px" onchange="dpSetPayField(${r.row},'editor_fee',this.value)"></td>
         <td>
           <select onchange="dpSetPayField(${r.row},'editor_pay_status',this.value)">${DP_EDITOR_PAY.map(p=>`<option ${p===(r.editor_pay_status||'未払い')?'selected':''}>${p}</option>`).join('')}</select>
-          <div class="muted" style="font-size:10.5px">予定: ${dpNextMonthEnd()}</div>
+          <div class="muted" style="font-size:10.5px">25日締め・翌月末払い</div>
         </td>
       </tr>`).join('');
   }
 
   function dpRenderStats(){
-    const by = s=>dpRequests.filter(r=>r.status===s).length;
-    const open = dpRequests.filter(r=>['新規受付','ヒアリング','マッチング中','トライアル'].includes(r.status||'新規受付')).length;
+    const dpRO = dpReqOnly();
+    const by = s=>dpRO.filter(r=>r.status===s).length;
+    const open = dpRO.filter(r=>['新規受付','ヒアリング','マッチング中','トライアル'].includes(r.status||'新規受付')).length;
     document.getElementById('dp-stats').innerHTML = `
       <div class="stat-chip"><div class="label">対応中の依頼</div><div class="value">${open}<small>件</small></div></div>
-      <div class="stat-chip"><div class="label">新規受付</div><div class="value">${by('新規受付')+dpRequests.filter(r=>!r.status).length}<small>件</small></div></div>
+      <div class="stat-chip"><div class="label">新規受付</div><div class="value">${by('新規受付')+dpRO.filter(r=>!r.status).length}<small>件</small></div></div>
       <div class="stat-chip"><div class="label">本稼働</div><div class="value">${by('本稼働')}<small>件</small></div></div>
       <div class="stat-chip"><div class="label">未入金(請求済)</div><div class="value">¥${dpPayTargets().filter(r=>r.pay_status==='請求済').reduce((a,r)=>a+(Number(r.invoice_amount)||0),0).toLocaleString()}</div></div>
       <div class="stat-chip"><div class="label">編集者未払い</div><div class="value">¥${dpPayTargets().filter(r=>(r.editor_pay_status||'未払い')==='未払い'&&Number(r.editor_fee)>0).reduce((a,r)=>a+(Number(r.editor_fee)||0),0).toLocaleString()}</div></div>
@@ -7851,13 +7889,13 @@ async function deleteFeedback(row, name) {
   const DP_HEARING_URL = 'https://mono-create-group.github.io/lp/hearing/dispatch.html';
   document.addEventListener('DOMContentLoaded',()=>{const b=document.getElementById('dp-pay-bank');if(b)b.value=localStorage.getItem('cr_bank')||'';});
   function dpMailto(to, subject, body){
-    location.href = `dpMailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    location.href = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   }
   function dpSendHearing(email, name){
     if(!email){ alert('この依頼にはメールアドレスがありません'); return; }
     dpMailto(email,
       '【mono.create】ヒアリングシートのご案内',
-      `${name} 様\n\nこの度はお問い合わせありがとうございます。\nクリエイターズリスト(mono.create)の中村です。\n\n最適な編集者をご提案するため、下記ヒアリングシートのご記入をお願いいたします(3分ほどで完了します)。\n\n▼ヒアリングシート\n${DP_HEARING_URL}\n\nご記入後、1営業日以内に編集者のご提案とお見積りをお送りします。\nご不明点はこのメールへの返信でお気軽にどうぞ。\n\nmono.create 中村航汰`);
+      `${name} 様\n\nこの度はお問い合わせありがとうございます。\nクリエイターズリスト(mono.create)の中村です。\n\n最適な編集者をご提案するため、下記ヒアリングシートのご記入をお願いいたします(3分ほどで完了します)。\n\n▼ヒアリングシート\n${DP_HEARING_URL}\n\nご記入後、1営業日以内に編集者のご提案とお見積りをお送りします。\n※編集者の稼働状況により、すべてのご依頼をお受けできない場合がございます。あらかじめご了承ください。\nご不明点はこのメールへの返信でお気軽にどうぞ。\n\nmono.create 中村航汰`);
   }
   function dpSendInvoiceMail(){
     const to = document.getElementById('dp-pay-email').value.trim();
@@ -7867,7 +7905,7 @@ async function deleteFeedback(row, name) {
     if(!to||!name||!amt){ alert('宛先・お名前・金額を入力してください'); return; }
     dpMailto(to,
       '【mono.create】お振込のご案内',
-      `${name} 様\n\nお世話になっております。mono.createの中村です。\n\n下記のとおりお振込をお願いいたします。\n\n■ 金額: ¥${amt.toLocaleString()}(税込)\n■ 振込先: ${bank}\n■ 期日: ご入金確認後に制作へ着手いたします\n\n※振込手数料はご負担をお願いいたします。\nご入金確認後、すぐに着手のご連絡を差し上げます。\n\nmono.create 中村航汰`);
+      `${name} 様\n\nお世話になっております。mono.createの中村です。\n\n下記のとおりお振込をお願いいたします。\n\n■ 金額: ¥${amt.toLocaleString()}(税込)\n■ 振込先: ${bank}\n■ お支払い期日: 翌月末日まで\n\n※振込手数料はご負担をお願いいたします。\nご不明点はこのメールへの返信でお気軽にどうぞ。\n\nmono.create 中村航汰`);
   }
   function dpSendPayNotice(){
     const to = document.getElementById('dp-pay-email').value.trim();
@@ -7897,6 +7935,7 @@ async function deleteFeedback(row, name) {
           ✅ 発行しました。以下のURLを <b>${dpEsc(name)}</b> さん(${dpEsc(email)})に送ってください。<br>
           <input id="dp-ct-url" value="${dpEsc(json.url)}" readonly style="width:100%;margin-top:6px;padding:8px;border:1px solid var(--line);border-radius:6px;font-size:12px;background:#fff;">
           <button onclick="navigator.clipboard.writeText(document.getElementById('dp-ct-url').value).then(()=>this.textContent='コピーしました')" style="margin-top:6px;padding:6px 14px;border:1px solid var(--line);border-radius:6px;background:#fff;font-size:12px;cursor:pointer;">URLをコピー</button>
+          <button onclick="dpMailContractUrl(document.getElementById('dp-ct-name').value.trim(), document.getElementById('dp-ct-email').value.trim(), document.getElementById('dp-ct-url').value, document.getElementById('dp-ct-type').value)" style="margin-top:6px;margin-left:6px;padding:6px 14px;border:none;border-radius:6px;background:var(--accent);color:#fff;font-size:12px;font-weight:700;cursor:pointer;">📧 メールで送る</button>
         </div>`;
       } else {
         out.innerHTML = `<span style="color:var(--danger);font-size:12.5px;">発行に失敗しました: ${dpEsc(json.error||'不明なエラー')}</span>`;
@@ -7954,6 +7993,129 @@ async function dpApplyEditorPick(row){
   await dpUpdateReq(row, { assigned_editors: r.assigned_editors });
   dpRenderRequests(); dpRenderEditors();
 }
+function dpMailContractUrl(name, email, url, type){
+  if(!email || !url){ alert('メールアドレスと契約URLが必要です'); return; }
+  const isClient = type === 'client';
+  dpMailto(email,
+    '【mono.create】' + (isClient ? '取引基本契約書' : '業務委託契約書') + 'のご確認のお願い',
+    `${name} 様\n\nお世話になっております。mono.createの中村です。\n\n${isClient ? 'お取引にあたっての基本契約書' : '業務委託契約書'}をご用意しました。\n下記URLから内容をご確認のうえ、お名前をご入力いただくと締結が完了します(3分ほどで完了します)。\n\n▼契約書の確認・締結\n${url}\n\nご不明点はこのメールへの返信でお気軽にどうぞ。\n\nmono.create 中村航汰`);
+}
+
+/* ===== 案件シート(編集者の報告)・売上 ===== */
+const DP_JOB_PAY = ['未請求','請求済','入金済'];
+const DP_JOB_EDPAY = ['未払い','支払済'];
+const DP_CLIENT_UNIT = [[/ショート/,4000],[/10分/,10000],[/15分/,15000],[/20分/,20000]];
+
+function dpJobParse(r){
+  const msg = String(r.message||'');
+  const count = Number(r.volume)||Number((msg.match(/本数[::]\s*(\d+)/)||[])[1])||0;
+  const unit = Number(String((msg.match(/編集者単価[::]\s*([\d,]+)/)||[])[1]||'500').replace(/,/g,''));
+  const content = ((msg.match(/内容[::]\s*([^\n]+)/)||[])[1]||'').trim();
+  const note = ((msg.match(/備考[::]\s*([\s\S]+)/)||[])[1]||'').trim();
+  const workdate = r.start || String(r.date).slice(0,10);
+  const client = String(r.company||'').replace(/^\[案件報告\]\s*/,'');
+  let cu = 0; DP_CLIENT_UNIT.forEach(p=>{ if(p[0].test(content)) cu = cu||p[1]; });
+  return { count:count, unit:unit, content:content, note:note, workdate:workdate, client:client,
+    editorTotal: Number(r.editor_fee)||count*unit,
+    clientSuggest: cu*count,
+    clientTotal: Number(r.invoice_amount)||cu*count };
+}
+function dpMonthEnd(y,m){ const e=new Date(y,m+1,0); return `${e.getFullYear()}/${e.getMonth()+1}/${e.getDate()}`; }
+function dpEditorPayDue(ds){
+  const d = new Date(ds); if(isNaN(d)) return '-';
+  return dpMonthEnd(d.getFullYear(), d.getMonth() + (d.getDate()<=25 ? 1 : 2));
+}
+function dpClientPayDue(ds){
+  const d = new Date(ds); if(isNaN(d)) return '-';
+  return dpMonthEnd(d.getFullYear(), d.getMonth()+1);
+}
+async function dpJobSet(row, field, value){
+  const r = dpRequests.find(x=>x.row===row); if(!r) return;
+  r[field] = value;
+  await dpUpdateReq(row, {[field]: value});
+  dpRenderJobsSummary();
+}
+function dpJobAutoInvoice(row){
+  const r = dpRequests.find(x=>x.row===row); if(!r) return;
+  const j = dpJobParse(r);
+  const v = j.clientSuggest || j.editorTotal;
+  const inp = document.getElementById('dp-job-inv-'+row); if(inp) inp.value = v;
+  dpJobSet(row,'invoice_amount',String(v));
+  if(!Number(r.editor_fee)) dpJobSet(row,'editor_fee',String(j.count*j.unit));
+}
+function dpRenderJobs(){
+  const tbody = document.getElementById('dp-jobs-rows'); if(!tbody) return;
+  const jobs = dpJobs().slice().sort((a,b)=>String(dpJobParse(b).workdate).localeCompare(String(dpJobParse(a).workdate)));
+  if(!jobs.length){ tbody.innerHTML='<tr><td colspan="9" class="empty">まだ報告がありません。編集者に上のURLを共有してください。</td></tr>'; dpRenderJobsSummary(); return; }
+  tbody.innerHTML = jobs.map(r=>{
+    const j = dpJobParse(r);
+    return `<tr>
+      <td style="white-space:nowrap">${dpEsc(j.workdate)}</td>
+      <td><strong>${dpEsc(r.contact)}</strong></td>
+      <td>${dpEsc(j.client)}${j.note&&j.note!=='なし'?'<div class="muted" style="font-size:11px;">'+dpEsc(j.note.slice(0,60))+'</div>':''}</td>
+      <td>${dpEsc(j.content)}</td>
+      <td style="text-align:center">${j.count}本</td>
+      <td style="white-space:nowrap">¥${j.editorTotal.toLocaleString()}<div class="muted" style="font-size:10.5px">${j.unit}円/本・支払 ${dpEditorPayDue(j.workdate)}</div></td>
+      <td style="white-space:nowrap"><input id="dp-job-inv-${r.row}" type="number" value="${dpEsc(String(r.invoice_amount||''))}" placeholder="${j.clientSuggest||0}" style="width:92px" onchange="dpJobSet(${r.row},'invoice_amount',this.value)">
+        <button class="btn btn-sm btn-ghost" onclick="dpJobAutoInvoice(${r.row})" title="サイト料金×本数で自動計算">自動</button>
+        <div class="muted" style="font-size:10.5px">入金期日 ${dpClientPayDue(j.workdate)}</div></td>
+      <td><select onchange="dpJobSet(${r.row},'pay_status',this.value)">${DP_JOB_PAY.map(p=>`<option ${p===(r.pay_status||'未請求')?'selected':''}>${p}</option>`).join('')}</select></td>
+      <td><select onchange="dpJobSet(${r.row},'editor_pay_status',this.value)">${DP_JOB_EDPAY.map(p=>`<option ${p===(r.editor_pay_status||'未払い')?'selected':''}>${p}</option>`).join('')}</select></td>
+    </tr>`;
+  }).join('');
+  dpRenderJobsSummary();
+}
+function dpRenderJobsSummary(){
+  const box = document.getElementById('dp-jobs-summary'); if(!box) return;
+  const months = {};
+  dpJobs().forEach(r=>{
+    const j = dpJobParse(r);
+    const m = String(j.workdate).slice(0,7).replace('-','/');
+    months[m] = months[m]||{sales:0,cost:0,unpaid:0,edUnpaid:0};
+    months[m].sales += j.clientTotal;
+    months[m].cost  += j.editorTotal;
+    if((r.pay_status||'未請求')!=='入金済') months[m].unpaid += j.clientTotal;
+    if((r.editor_pay_status||'未払い')!=='支払済') months[m].edUnpaid += j.editorTotal;
+  });
+  const keys = Object.keys(months).sort().reverse();
+  if(!keys.length){ box.innerHTML = '<p class="desc">報告が入ると月ごとの売上・支払い・粗利がここに表示されます。</p>'; dpRenderJobsStats(); return; }
+  box.innerHTML = `<div class="table-scroll"><table>
+    <thead><tr><th>月(納品ベース)</th><th>売上(クライアント請求)</th><th>編集者支払</th><th>粗利</th><th>未入金</th><th>編集者未払い</th></tr></thead>
+    <tbody>${keys.map(m=>{const v=months[m];return `<tr>
+      <td><strong>${m}</strong></td>
+      <td>¥${v.sales.toLocaleString()}</td>
+      <td>¥${v.cost.toLocaleString()}</td>
+      <td style="font-weight:800;color:${v.sales-v.cost>=0?'var(--green)':'var(--red)'}">¥${(v.sales-v.cost).toLocaleString()}</td>
+      <td>¥${v.unpaid.toLocaleString()}</td>
+      <td>¥${v.edUnpaid.toLocaleString()}</td>
+    </tr>`;}).join('')}</tbody></table></div>`;
+  dpRenderJobsStats();
+}
+function dpRenderJobsStats(){
+  const el = document.getElementById('dp-jobs-stats'); if(!el) return;
+  const now = new Date();
+  const cm = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}`;
+  let sales=0,cost=0,unpaid=0,edUnpaid=0;
+  dpJobs().forEach(r=>{
+    const j=dpJobParse(r);
+    const m=String(j.workdate).slice(0,7).replace('-','/');
+    if(m===cm){sales+=j.clientTotal;cost+=j.editorTotal;}
+    if((r.pay_status||'未請求')!=='入金済') unpaid+=j.clientTotal;
+    if((r.editor_pay_status||'未払い')!=='支払済') edUnpaid+=j.editorTotal;
+  });
+  el.innerHTML = `
+    <div class="stat-chip"><div class="label">今月の売上(納品ベース)</div><div class="value">¥${sales.toLocaleString()}</div></div>
+    <div class="stat-chip"><div class="label">今月の編集者支払</div><div class="value">¥${cost.toLocaleString()}</div></div>
+    <div class="stat-chip"><div class="label">今月の粗利</div><div class="value">¥${(sales-cost).toLocaleString()}</div></div>
+    <div class="stat-chip"><div class="label">未入金合計</div><div class="value">¥${unpaid.toLocaleString()}</div></div>
+    <div class="stat-chip"><div class="label">編集者未払い合計</div><div class="value">¥${edUnpaid.toLocaleString()}</div></div>`;
+}
+function dpJobsTab(){
+  DPKEY = getAdminPw();
+  if(!dpRequests.length){ dpLoadRequests().then(()=>dpRenderJobs()); }
+  else dpRenderJobs();
+}
+
 function dpTab(){
   DPKEY = getAdminPw();
   const done = ()=>{ try{dpRenderRequests();}catch(e){} try{dpRenderPayments();}catch(e){} try{dpRenderEditors();}catch(e){} try{dpRenderStats();}catch(e){} };

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>案件報告シート(編集者用) | クリエイターズリスト mono.create</title>
+<style>
+  :root{
+    --teal:#0ea5a3; --teal-d:#0b8583; --teal-bg:#e6f7f6;
+    --ink:#1e293b; --sub:#64748b; --line:#e2e8f0; --bg:#f5f7fb;
+    --red:#dc2626; --ok:#059669;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",Meiryo,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;}
+  .wrap{max-width:640px;margin:0 auto;padding:28px 18px 80px;}
+  .brand{font-size:12px;font-weight:800;color:var(--teal-d);letter-spacing:.06em;margin-bottom:4px;}
+  h1{font-size:22px;font-weight:800;margin-bottom:6px;}
+  .lead{font-size:13px;color:var(--sub);margin-bottom:18px;}
+  .rules{background:var(--teal-bg);border:1px solid rgba(14,165,163,.3);border-radius:12px;padding:14px 16px;font-size:12.5px;margin-bottom:22px;}
+  .rules b{color:var(--teal-d);}
+  .rules li{margin-left:1.2em;margin-top:4px;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 20px;box-shadow:0 2px 10px rgba(15,23,42,.04);}
+  label{display:block;font-size:12px;font-weight:800;color:var(--sub);margin:16px 0 5px;}
+  label .req{color:var(--red);font-size:10.5px;margin-left:5px;}
+  input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit;background:#fff;color:var(--ink);}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--teal);border-color:transparent;}
+  textarea{min-height:80px;resize:vertical;}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .total{margin-top:16px;background:var(--bg);border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between;align-items:baseline;font-weight:800;}
+  .total .amt{font-size:22px;color:var(--teal-d);}
+  .btn{width:100%;margin-top:20px;padding:15px;border:none;border-radius:11px;background:var(--teal);color:#fff;font-size:15.5px;font-weight:800;cursor:pointer;font-family:inherit;}
+  .btn:hover{background:var(--teal-d);}
+  .btn:disabled{opacity:.55;cursor:not-allowed;}
+  .err{color:var(--red);font-size:12.5px;margin-top:10px;display:none;}
+  .done{display:none;text-align:center;padding:40px 20px;}
+  .done .mark{font-size:44px;}
+  .done h2{font-size:18px;margin:10px 0 8px;}
+  .done p{font-size:13px;color:var(--sub);}
+  .done .btn{max-width:280px;background:#fff;color:var(--teal-d);border:1.5px solid var(--teal);}
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">CREATORS LIST | mono.create</div>
+  <h1>📋 案件報告シート(編集者用)</h1>
+  <p class="lead">クライアントから直接お受けした案件を、納品のたびに(または月末にまとめて)ご報告ください。ご提出いただく請求書との照合に使用します。</p>
+
+  <div class="rules">
+    <b>お支払いルール</b>
+    <ul>
+      <li><b>25日締め・翌月末払い</b>(例: 7/25納品分→8/31払い、7/26〜8/25納品分→9/30払い)</li>
+      <li>請求書(1本あたり500円)は毎月25日までにメールでご提出ください</li>
+      <li>この報告と請求書の内容を照合してお支払いします</li>
+    </ul>
+  </div>
+
+  <div class="card" id="form-card">
+    <label>お名前(編集者)<span class="req">必須</span></label>
+    <select id="f-editor"><option value="">読み込み中...</option></select>
+    <input id="f-editor-free" class="hidden" type="text" placeholder="お名前を入力" style="margin-top:8px;">
+
+    <label>メールアドレス</label>
+    <input id="f-email" type="email" placeholder="you@example.com">
+
+    <label>クライアント名(会社名・お名前)<span class="req">必須</span></label>
+    <input id="f-client" type="text" placeholder="例: 株式会社◯◯ / ◯◯様">
+
+    <div class="row2">
+      <div>
+        <label>納品日(作業完了日)<span class="req">必須</span></label>
+        <input id="f-date" type="date">
+      </div>
+      <div>
+        <label>本数<span class="req">必須</span></label>
+        <input id="f-count" type="number" min="1" value="1">
+      </div>
+    </div>
+
+    <label>内容<span class="req">必須</span></label>
+    <select id="f-type">
+      <option>ショート動画</option>
+      <option>長尺動画(10分)</option>
+      <option>長尺動画(15分)</option>
+      <option>長尺動画(20分)</option>
+      <option>その他</option>
+    </select>
+
+    <label>単価(あなたの請求単価・円/本)</label>
+    <input id="f-unit" type="number" min="0" value="500">
+
+    <label>備考(案件の詳細・クライアントとの取り決めなど)</label>
+    <textarea id="f-note" placeholder="例: TikTok用60秒、テロップフル、7/20依頼分"></textarea>
+
+    <div class="total"><span>ご請求額(自動計算)</span><span class="amt" id="f-total">¥500</span></div>
+
+    <button class="btn" id="f-submit" onclick="submitJob()">この内容で報告する</button>
+    <p class="err" id="f-err"></p>
+  </div>
+
+  <div class="done card" id="done-card">
+    <div class="mark">✅</div>
+    <h2>報告を受け付けました</h2>
+    <p>運営(mono.create)に通知されました。<br>請求書は毎月25日までにメールでご提出ください。</p>
+    <button class="btn" onclick="location.reload()">続けて別の案件を報告する</button>
+  </div>
+</div>
+
+<script>
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
+
+// 納品日デフォルト=今日
+document.getElementById('f-date').value = new Date().toLocaleDateString('sv-SE');
+
+// 編集者リスト読み込み(認証不要API)
+(async function(){
+  const sel = document.getElementById('f-editor');
+  try{
+    const res = await fetch(GAS_URL + '?action=editors');
+    const json = await res.json();
+    const names = (json.data||[]).map(e=>e.name).filter(Boolean);
+    sel.innerHTML = '<option value="">選択してください</option>'
+      + names.map(n=>`<option>${String(n).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}</option>`).join('')
+      + '<option value="__free__">リストにない(手入力)</option>';
+  }catch(e){
+    sel.innerHTML = '<option value="__free__">手入力してください</option>';
+    document.getElementById('f-editor-free').classList.remove('hidden');
+  }
+})();
+document.getElementById('f-editor').addEventListener('change', e=>{
+  document.getElementById('f-editor-free').classList.toggle('hidden', e.target.value !== '__free__');
+});
+
+// 合計自動計算
+function recalc(){
+  const c = Number(document.getElementById('f-count').value)||0;
+  const u = Number(document.getElementById('f-unit').value)||0;
+  document.getElementById('f-total').textContent = '¥' + (c*u).toLocaleString();
+}
+document.getElementById('f-count').addEventListener('input', recalc);
+document.getElementById('f-unit').addEventListener('input', recalc);
+
+async function submitJob(){
+  const selVal = document.getElementById('f-editor').value;
+  const editor = selVal === '__free__' ? document.getElementById('f-editor-free').value.trim() : selVal;
+  const email  = document.getElementById('f-email').value.trim();
+  const client = document.getElementById('f-client').value.trim();
+  const date   = document.getElementById('f-date').value;
+  const count  = Number(document.getElementById('f-count').value)||0;
+  const type   = document.getElementById('f-type').value;
+  const unit   = Number(document.getElementById('f-unit').value)||0;
+  const note   = document.getElementById('f-note').value.trim();
+  const err    = document.getElementById('f-err');
+
+  if(!editor || !client || !date || count < 1){
+    err.textContent = 'お名前・クライアント名・納品日・本数は必須です。';
+    err.style.display = 'block';
+    return;
+  }
+  err.style.display = 'none';
+  const btn = document.getElementById('f-submit');
+  btn.disabled = true; btn.textContent = '送信中...';
+
+  const total = count * unit;
+  const payload = {
+    action: 'creator_dispatch_request',
+    company: '[案件報告] ' + client,
+    contact_name: editor,
+    email: email,
+    genre: '📋案件シート',
+    volume: String(count),
+    start: date,
+    selected_editors: editor,
+    message: '【編集者からの案件報告】\n'
+      + '納品日: ' + date + '\n'
+      + '内容: ' + type + '\n'
+      + '本数: ' + count + '本\n'
+      + '編集者単価: ' + unit + '円/本\n'
+      + '編集者請求額: ' + total + '円\n'
+      + '備考: ' + (note || 'なし')
+  };
+  try{
+    const res = await fetch(GAS_URL, {method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify(payload)});
+    const json = await res.json();
+    if(json.ok){
+      document.getElementById('form-card').style.display = 'none';
+      document.getElementById('done-card').style.display = 'block';
+      window.scrollTo(0,0);
+      return;
+    }
+    throw new Error(json.error||'送信に失敗しました');
+  }catch(e){
+    err.textContent = '送信に失敗しました。通信環境をご確認のうえ再度お試しください。';
+    err.style.display = 'block';
+  }
+  btn.disabled = false; btn.textContent = 'この内容で報告する';
+}
+</script>
+</body>
+</html>
