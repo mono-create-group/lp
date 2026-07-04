@@ -8034,7 +8034,7 @@ function dpJobParse(r){
   const unit = Number(String((msg.match(/編集者単価[::]\s*([\d,]+)/)||[])[1]||'500').replace(/,/g,''));
   const content = ((msg.match(/内容[::]\s*([^\n]+)/)||[])[1]||'').trim();
   const note = ((msg.match(/備考[::]\s*([\s\S]+)/)||[])[1]||'').trim();
-  const workdate = r.start || String(r.date).slice(0,10);
+  const workdate = String(r.start || r.date).slice(0,10);
   const client = String(r.company||'').replace(/^\[案件報告\]\s*/,'');
   let cu = 0; DP_CLIENT_UNIT.forEach(p=>{ if(p[0].test(content)) cu = cu||p[1]; });
   return { count:count, unit:unit, content:content, note:note, workdate:workdate, client:client,
