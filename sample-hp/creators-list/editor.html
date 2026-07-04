@@ -50,10 +50,14 @@
 
   section{padding:70px 24px;}
   h2{font-size:clamp(20px,3.6vw,28px);font-weight:900;text-align:center;margin-bottom:36px;}
-  .step{display:flex;gap:16px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px 24px;margin-bottom:12px;align-items:flex-start;}
+  .step{display:flex;gap:16px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px 24px;margin-bottom:12px;align-items:center;}
   .step .n{width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;flex-shrink:0;}
   .step h4{font-size:15px;font-weight:800;margin-bottom:4px;}
   .step p{font-size:13px;color:var(--sub);}
+  .step .bd{flex:1;}
+  .step .il{width:92px;height:78px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+  .step .il img{max-width:92px;max-height:78px;}
+  @media(max-width:560px){.step .il{width:64px;height:58px;}.step .il img{max-width:64px;max-height:58px;}}
 
   .merits{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
   .merit{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px 20px;text-align:center;}
@@ -100,10 +104,10 @@
 <section id="flow">
   <div class="wrap">
     <h2>お仕事までの流れ</h2>
-    <div class="step"><div class="n">1</div><div><h4>応募</h4><p>応募フォームからポートフォリオを添えてご応募ください。</p></div></div>
-    <div class="step"><div class="n">2</div><div><h4>選考・面談</h4><p>実績を拝見し、担当ディレクターが面談します。</p></div></div>
-    <div class="step"><div class="n">3</div><div><h4>プロフィール登録</h4><p>採用後、専用フォームでプロフィールを登録すると編集者一覧に掲載されます。<br>クライアントから指名が入ることもあります。</p></div></div>
-    <div class="step"><div class="n">4</div><div><h4>案件受注・納品</h4><p>案件のご案内はLINE・Chatwork・Slack・Discordなど、クライアントに合わせた連絡手段で届きます。<br>受けたい案件だけ受けてOKです。</p></div></div>
+    <div class="step"><div class="n">1</div><div class="bd"><h4>応募</h4><p>応募フォームからポートフォリオを添えてご応募ください。</p></div><div class="il"><img src="img/soco/ed1.svg" alt="スマホから応募するイラスト" loading="lazy"></div></div>
+    <div class="step"><div class="n">2</div><div class="bd"><h4>選考・面談</h4><p>実績を拝見し、担当ディレクターが面談します。</p></div><div class="il"><img src="img/soco/ed2.svg" alt="オンライン面談のイラスト" loading="lazy"></div></div>
+    <div class="step"><div class="n">3</div><div class="bd"><h4>プロフィール登録</h4><p>採用後、専用フォームでプロフィールを登録すると編集者一覧に掲載されます。<br>クライアントから指名が入ることもあります。</p></div><div class="il"><img src="img/soco/ed3.svg" alt="プロフィールを登録するイラスト" loading="lazy"></div></div>
+    <div class="step"><div class="n">4</div><div class="bd"><h4>案件受注・納品</h4><p>案件のご案内はLINE・Chatwork・Slack・Discordなど、クライアントに合わせた連絡手段で届きます。<br>受けたい案件だけ受けてOKです。</p></div><div class="il"><img src="img/soco/ed4.svg" alt="動画編集で納品するイラスト" loading="lazy"></div></div>
   </div>
 </section>
 
