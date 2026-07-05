@@ -516,14 +516,15 @@
   document.querySelector('.nav-toggle').addEventListener('click', function(){
     var ul = document.querySelector('nav ul');
     if(ul.style.display==='flex'){
-      ul.style.display='none';
+      ul.style.cssText='';
     } else {
       ul.style.cssText='display:flex;flex-direction:column;position:absolute;top:54px;left:0;right:0;background:rgba(26,74,122,.97);padding:16px 24px;gap:14px;';
     }
   });
   document.querySelectorAll('nav a').forEach(function(a){
     a.addEventListener('click',function(){
-      document.querySelector('nav ul').style.display='none';
+      // インラインstyleを消してCSS既定に戻す(PCで消えっぱなしになるバグの修正)
+      document.querySelector('nav ul').style.cssText='';
     });
   });
 
