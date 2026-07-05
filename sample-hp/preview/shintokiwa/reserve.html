@@ -238,8 +238,12 @@
           <input type="text" id="guestName" name="guestName" placeholder="例：山田 太郎" required>
         </div>
         <div class="form-group">
-          <label>連絡先(電話番号またはメールアドレス) <span class="req">必須</span></label>
-          <input type="text" id="contact" name="contact" placeholder="例：090-0000-0000 または example@mail.com" required>
+          <label>電話番号 <span class="req">必須</span></label>
+          <input type="tel" id="phone" name="phone" placeholder="例：090-0000-0000" required>
+        </div>
+        <div class="form-group">
+          <label>メールアドレス <span class="req">必須</span></label>
+          <input type="email" id="email" name="email" placeholder="例：example@mail.com" required>
         </div>
         <div class="form-group">
           <label>備考・ご要望(任意)</label>
@@ -330,10 +334,12 @@ document.getElementById('reserveForm').addEventListener('submit',async function(
   const guests=document.getElementById('guests').value;
   const roomtype=document.getElementById('roomtype').value;
   const guestName=document.getElementById('guestName').value;
-  const contact=document.getElementById('contact').value;
+  const phone=document.getElementById('phone').value.trim();
+  const email=document.getElementById('email').value.trim();
+  if(!phone||!email){ alert('電話番号とメールアドレスは両方必須です。'); return; }
   const notes=document.getElementById('notes').value;
 
-  const messageBody=`【宿泊予約リクエスト(シントキワ)】\nチェックイン: ${checkin}\nチェックアウト: ${checkout}\n人数: ${guests}\n客室: ${roomtype}\n連絡先: ${contact}\n備考: ${notes||'なし'}`;
+  const messageBody=`【宿泊予約リクエスト(シントキワ)】\nチェックイン: ${checkin}\nチェックアウト: ${checkout}\n人数: ${guests}\n客室: ${roomtype}\n電話: ${phone}\nメール: ${email}\n備考: ${notes||'なし'}`;
 
   const params=new URLSearchParams({
     action:'submit',
