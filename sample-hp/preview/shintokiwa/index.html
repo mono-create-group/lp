@@ -52,6 +52,15 @@
   img{max-width:100%;display:block;}
   a{color:inherit;}
 
+  /* ===== Ken Burns ===== */
+  @keyframes kb{
+    0%  {transform:scale(1)    translate(0,0);}
+    100%{transform:scale(1.08) translate(-1%,-.8%);}
+  }
+  @media (prefers-reduced-motion: no-preference){
+    .kb{animation:kb 20s ease-in-out alternate infinite;}
+  }
+
   /* ===== ヘッダー ===== */
   header{
     position:fixed;top:0;left:0;right:0;z-index:100;
@@ -137,6 +146,32 @@
   .compare-row .direct-val{color:#86efac;font-weight:700;}
   .direct-btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;}
 
+  /* ===== Walk section ===== */
+  .walk{position:relative;height:420vh;background:#0d1a2e;}
+  .walk-sticky{position:sticky;top:0;height:100vh;overflow:hidden;}
+  .walk-scene{position:absolute;inset:0;opacity:0;}
+  .walk-scene img{width:100%;height:100%;object-fit:cover;transform:scale(1.08);will-change:transform,opacity;}
+  .walk-scene::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,20,40,.38),transparent 30%,transparent 65%,rgba(10,20,40,.58));}
+  .walk-video{display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  .walk-sticky.video-on .walk-video{display:block;}
+  .walk-sticky.video-on .walk-scene{display:none;}
+  .walk-sticky.video-on::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(10,20,40,.38),transparent 30%,transparent 65%,rgba(10,20,40,.58));}
+  .walk-head{position:absolute;top:9%;left:0;right:0;text-align:center;z-index:3;color:#fff;padding:0 20px;}
+  .walk-head .eyebrow{font-size:12px;letter-spacing:.3em;color:var(--gold);font-weight:700;}
+  .walk-head h2{font-size:clamp(22px,4vw,34px);margin-top:8px;font-weight:700;text-shadow:0 2px 18px rgba(0,0,0,.5);}
+  .walk-caption{position:absolute;left:0;right:0;bottom:12%;text-align:center;z-index:3;color:#fff;padding:0 20px;}
+  .walk-caption .cap{font-size:clamp(18px,3.2vw,26px);text-shadow:0 2px 16px rgba(0,0,0,.6);opacity:0;transition:opacity .4s ease;position:absolute;left:0;right:0;bottom:26px;}
+  .walk-caption .cap.on{opacity:1;}
+  .walk-dots{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:3;}
+  .walk-dots span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.35);transition:.3s;}
+  .walk-dots span.on{background:var(--gold);transform:scale(1.3);}
+  .walk-hint{position:absolute;top:50%;transform:translateY(-50%);right:18px;color:rgba(255,255,255,.7);font-size:11px;letter-spacing:.14em;z-index:3;writing-mode:vertical-rl;}
+  @media (prefers-reduced-motion: reduce){
+    .walk{height:auto;}
+    .walk-sticky{position:static;height:auto;}
+    .walk-scene{position:static;opacity:1;height:56vw;}
+  }
+
   /* ===== ギャラリー ===== */
   .gallery{background:var(--cream);}
   .gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
@@ -220,19 +255,22 @@
     <nav>
       <ul>
         <li><a href="#features">特徴</a></li>
-        <li><a href="#gallery">フォトギャラリー</a></li>
-        <li><a href="#rooms">客室・施設</a></li>
-        <li><a href="#access">アクセス</a></li>
-        <li><a href="#reserve">ご予約</a></li>
+        <li><a href="rooms.html">客室・料金</a></li>
+        <li><a href="#gallery">ギャラリー</a></li>
+        <li><a href="access.html">アクセス</a></li>
+        <li><a href="news.html">お知らせ</a></li>
+        <li><a href="blog.html">ブログ</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="reserve.html" style="color:var(--gold);font-weight:700;">ご予約</a></li>
       </ul>
     </nav>
     <button class="nav-toggle" aria-label="メニュー">☰</button>
   </div>
 </header>
 
-<!-- ヒーロー -->
+<!-- ヒーロー: p3.jpg=ベッドルーム(会長確認済み・ホテルとわかる写真) + Ken Burns -->
 <section class="hero" id="top" style="padding:0;">
-  <img class="hero-img" src="img/p2.jpg" alt="ダイバーシティホテル シン トキワ 旭川 外観・館内">
+  <img class="hero-img kb" src="img/p3.jpg" alt="ダイバーシティホテル シン トキワ 旭川 客室">
   <div class="hero-content">
     <div class="hero-eyebrow">ASAHIKAWA / HOKKAIDO</div>
     <h1>旭川の中心に泊まる、<br>コスパ最高のホテル。</h1>
@@ -259,19 +297,39 @@
       <div class="feature-card">
         <div class="f-icon">🅿️</div>
         <h3>無料WiFi &amp; 無料駐車場</h3>
-        <p>高速WiFiと駐車場を完全無料でご利用いただけます。<br>旭川市内観光や道北ドライブの拠点としても最適です。</p>
+        <p>高速WiFiと駐車場を完全無料でご利用いただけます。旭川市内観光や道北ドライブの拠点としても最適です。</p>
       </div>
       <div class="feature-card">
-        <img src="img/park.jpg" alt="常磐公園の池の風景(旭川市)" loading="lazy" style="width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px;margin-bottom:12px;">
+        <div class="f-icon">🌲</div>
         <h3>常盤公園へ徒歩5分</h3>
-        <p>旭川市のシンボル・常盤公園まで徒歩約5分。<br>北海道立美術館も徒歩8分圏内。<br>旭川観光に絶好のロケーション。</p>
+        <p>旭川市のシンボル・常盤公園まで徒歩約5分。北海道立美術館も徒歩8分圏内。旭川観光に絶好のロケーション。</p>
       </div>
       <div class="feature-card">
         <div class="f-icon">🕙</div>
         <h3>深夜チェックインもOK</h3>
-        <p>チェックインは15:00〜29:00(翌朝5時)まで対応。<br>19時以降は無人セルフチェックイン機を使って<br>安心チェックイン。</p>
+        <p>チェックインは15:00〜29:00(翌朝5時)まで対応。19時以降は無人セルフチェックイン機を使って安心チェックイン。</p>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ホテルの中を歩いてみる(restaurant版から移植・walk1=ベッド/walk2=和室/walk3=外観) -->
+<section class="walk" id="walk" aria-label="ホテルの中を歩いてみる">
+  <div class="walk-sticky">
+    <div class="walk-scene"><img src="walk/walk1.jpg" alt="客室 ベッドルーム"></div>
+    <div class="walk-scene"><img src="walk/walk2.jpg" alt="和室 落ち着いた客室"></div>
+    <div class="walk-scene"><img src="walk/walk3.jpg" alt="ホテル外観"></div>
+    <div class="walk-head">
+      <span class="eyebrow">WALK THROUGH</span>
+      <h2>ホテルの中を歩いてみる。</h2>
+    </div>
+    <div class="walk-caption">
+      <div class="cap">清潔な客室で、ゆっくりとくつろぐ。</div>
+      <div class="cap">和の空間で、北海道の夜を過ごす。</div>
+      <div class="cap">旭川の中心に、シン トキワがある。</div>
+    </div>
+    <div class="walk-dots"><span></span><span></span><span></span></div>
+    <div class="walk-hint">スクロールで館内へ</div>
   </div>
 </section>
 
@@ -322,7 +380,7 @@
   </div>
 </section>
 
-<!-- フォトギャラリー -->
+<!-- フォトギャラリー: カフェ店内(p2)除去、ホテル写真のみ(外観p5+ベッドp3+和室p4) -->
 <section class="gallery" id="gallery">
   <div class="wrap">
     <div class="sec-head">
@@ -330,11 +388,9 @@
       <h2>館内・客室ギャラリー<span class="note">INTERIOR &amp; ROOMS</span></h2>
     </div>
     <div class="gallery-grid">
-      <img src="img/p2.jpg" alt="ホテル外観・エントランス" loading="lazy">
-      <img src="img/p1.jpg" alt="客室・インテリア" loading="lazy">
+      <img src="img/p5.jpg" alt="ホテル外観" loading="lazy">
       <img src="img/p3.jpg" alt="客室・ベッドルーム" loading="lazy">
-      <img src="img/p4.jpg" alt="館内設備" loading="lazy">
-      <img src="img/p5.jpg" alt="旭川の景色・周辺環境" loading="lazy">
+      <img src="img/p4.jpg" alt="和室" loading="lazy">
     </div>
   </div>
 </section>
@@ -348,10 +404,17 @@
     </div>
     <div class="room-grid">
       <div class="room-card">
-        <img src="img/p1.jpg" alt="スタンダードルーム" loading="lazy">
+        <img class="kb" src="img/p3.jpg" alt="スタンダードルーム" loading="lazy">
         <div class="room-body">
           <h4>スタンダードルーム</h4>
-          <p>広めの設計でビジネス出張にも観光にも対応。清潔感あふれる客室でゆっくりとおくつろぎください。</p>
+          <p>清潔感あふれるベッドルーム。ビジネス出張にも観光にも。ゆっくりとおくつろぎください。</p>
+        </div>
+      </div>
+      <div class="room-card">
+        <img class="kb" src="img/p4.jpg" alt="和室" loading="lazy">
+        <div class="room-body">
+          <h4>和室</h4>
+          <p>畳の落ち着いた空間で、北海道の旅をゆったりと。グループ・家族旅行にも対応。</p>
         </div>
       </div>
       <div class="room-card">
@@ -360,13 +423,6 @@
           <h4>1階カフェ「トリとたまごのカフェ ココケッコウ」</h4>
           <p>ふわとろオムライスが人気のカフェを館内1階に併設。<br>ランチ11:30〜14:30/カフェ15:00〜18:00(火曜定休)。<br>チェックアウト後もゆっくりとお過ごしいただけます。</p>
           <p style="margin-top:6px;"><a href="https://www.instagram.com/koko_keko_cafe/" target="_blank" rel="noopener" style="font-weight:700;">Instagram @koko_keko_cafe</a></p>
-        </div>
-      </div>
-      <div class="room-card">
-        <img src="img/p4.jpg" alt="無料駐車場・無料WiFi" loading="lazy">
-        <div class="room-body">
-          <h4>充実の無料設備</h4>
-          <p>無料WiFi(高速回線)・無料駐車場を完備。全館禁煙でクリーンな空間をお届けします。</p>
         </div>
       </div>
     </div>
@@ -404,7 +460,7 @@
       <div>
         <iframe
           class="map-frame"
-          src="https://www.google.com/maps?q=%E3%83%80%E3%82%A4%E3%83%90%E3%83%BC%E3%82%B7%E3%83%86%E3%82%A3%E3%83%9B%E3%83%86%E3%83%AB%20%E3%82%B7%E3%83%B3%20%E3%83%88%E3%82%AD%E3%83%AF%20%E6%97%AD%E5%B7%9D&output=embed"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2877.0!2d142.36!3d43.77!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDPCsDQ2JzEyLjAiTiAxNDLCsDIxJzM2LjAiRQ!5e0!3m2!1sja!2sjp!4v1720000000000!5m2!1sja!2sjp"
           allowfullscreen
           loading="lazy"
           title="ダイバーシティホテル シン トキワ 旭川 地図"></iframe>
@@ -426,18 +482,25 @@
       </a>
       <a class="btn-cta-tel" href="tel:0166-00-0000">📞 0166-00-0000</a>
     </div>
-    <p style="font-size:12px;margin-top:14px;"><a href="https://www.jalan.net/yad348302/" target="_blank" rel="noopener" style="color:rgba(255,255,255,.75);text-decoration:underline;">じゃらんなど各予約サイトからのご予約はこちら ↗</a></p>
-    <p style="font-size:11px;color:rgba(255,255,255,.5);margin-top:12px;">※電話番号・LINE URLは掲載情報を現地照合後に更新します</p>
+    <p style="font-size:11px;color:rgba(255,255,255,.5);margin-top:18px;">※電話番号・LINE URLは掲載情報を現地照合後に更新します</p>
   </div>
 </section>
 
 <footer>
   <div class="fname">ダイバーシティホテル シン トキワ 旭川</div>
   <div>北海道旭川市常盤通3-4047-8</div>
+  <div style="margin-top:10px;display:flex;justify-content:center;gap:16px;flex-wrap:wrap;">
+    <a href="rooms.html" style="color:#8a8fa0;text-decoration:none;font-size:12px;">客室・料金</a>
+    <a href="access.html" style="color:#8a8fa0;text-decoration:none;font-size:12px;">アクセス</a>
+    <a href="reserve.html" style="color:#8a8fa0;text-decoration:none;font-size:12px;">ご予約</a>
+    <a href="faq.html" style="color:#8a8fa0;text-decoration:none;font-size:12px;">FAQ</a>
+    <a href="blog.html" style="color:#8a8fa0;text-decoration:none;font-size:12px;">ブログ</a>
+    <a href="news.html" style="color:#8a8fa0;text-decoration:none;font-size:12px;">お知らせ</a>
+  </div>
   <div style="margin-top:10px;">
     <a href="tel:0166-00-0000" style="color:#06C755;font-weight:700;text-decoration:none;">📞 電話で予約する</a>
     &nbsp;｜&nbsp;
-    <a href="#reserve" style="color:#06C755;font-weight:700;text-decoration:none;">LINE公式で予約(導入イメージ)</a>
+    <a href="reserve.html" style="color:#06C755;font-weight:700;text-decoration:none;">ウェブ予約フォーム</a>
   </div>
   <div class="footer-note">
     本ページはmono.create(旭川)による制作サンプルです。掲載情報・画像は公開情報を元にしています。<br>
@@ -447,28 +510,91 @@
 
 <!-- フロートボタン -->
 <a class="float-tel" href="tel:0166-00-0000" aria-label="電話で予約">📞 電話予約</a>
-<a class="float-line" href="#reserve" aria-label="LINEで予約">
+<a class="float-line" href="reserve.html" aria-label="ウェブ予約">
   <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.94 2 10.7c0 3.03 2.02 5.7 5.06 7.24-.16.62-.85 3.1-.87 3.3 0 0-.02.18.1.24.11.06.24 0 .24 0 .34-.05 3.7-2.44 4.3-2.87.4.06.8.09 1.17.09 5.52 0 10-3.94 10-8.7C22 5.94 17.52 2 12 2z"/></svg>
-  LINE予約(導入イメージ)
+  ウェブ予約
 </a>
 
 <script>
-// ハンバーガーメニュー
-document.querySelector('.nav-toggle').addEventListener('click', function(){
-  const ul = document.querySelector('nav ul');
-  if(ul.style.display==='flex'){
-    ul.style.display='none';
-  } else {
-    ul.style.cssText='display:flex;flex-direction:column;position:absolute;top:54px;left:0;right:0;background:rgba(26,74,122,.97);padding:16px 24px;gap:14px;';
-  }
-});
-// スムーズスクロール後にメニューを閉じる
-document.querySelectorAll('nav a').forEach(a=>{
-  a.addEventListener('click',()=>{
-    const ul = document.querySelector('nav ul');
-    ul.style.display='none';
+(function(){
+  /* ===== ハンバーガーメニュー ===== */
+  document.querySelector('.nav-toggle').addEventListener('click', function(){
+    var ul = document.querySelector('nav ul');
+    if(ul.style.display==='flex'){
+      ul.style.display='none';
+    } else {
+      ul.style.cssText='display:flex;flex-direction:column;position:absolute;top:54px;left:0;right:0;background:rgba(26,74,122,.97);padding:16px 24px;gap:14px;';
+    }
   });
-});
+  document.querySelectorAll('nav a').forEach(function(a){
+    a.addEventListener('click',function(){
+      document.querySelector('nav ul').style.display='none';
+    });
+  });
+
+  /* ===== ホテルを歩く walk スクロール連動クロスフェード ===== */
+  var walk = document.getElementById('walk');
+  if(!walk) return;
+  var sticky = walk.querySelector('.walk-sticky');
+  var scenes = walk.querySelectorAll('.walk-scene');
+  var caps   = walk.querySelectorAll('.walk-caption .cap');
+  var dots   = walk.querySelectorAll('.walk-dots span');
+  var n = scenes.length;
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* walk/walk.mp4があればスクラブ再生に自動切替。なければ静止画クロスフェード */
+  var video = document.createElement('video');
+  var videoMode = false, vDur = 0;
+  if(!reduced){
+    video.muted = true; video.playsInline = true; video.preload = 'auto';
+    video.setAttribute('muted',''); video.setAttribute('playsinline','');
+    video.className = 'walk-video';
+    video.addEventListener('loadedmetadata', function(){ vDur = video.duration; videoMode = true; sticky.classList.add('video-on'); update(); });
+    video.addEventListener('error', function(){ videoMode = false; sticky.classList.remove('video-on'); });
+    video.src = 'walk/walk.mp4';
+    sticky.insertBefore(video, sticky.firstChild);
+  }
+
+  var ticking = false, target = 0, raf = null;
+  function seekLoop(){
+    raf = null;
+    if(!videoMode) return;
+    var diff = target - video.currentTime;
+    if(Math.abs(diff) > 0.02){
+      video.currentTime = video.currentTime + diff * 0.22;
+      raf = requestAnimationFrame(seekLoop);
+    }
+  }
+  function update(){
+    ticking = false;
+    var rect  = walk.getBoundingClientRect();
+    var total = walk.offsetHeight - window.innerHeight;
+    var p = -rect.top / total;
+    p = Math.max(0, Math.min(1, p));
+    var f = p * (n - 1);
+    if(videoMode && vDur){
+      target = p * Math.max(0, vDur - 0.05);
+      if(Math.abs(target - video.currentTime) > 0.6) video.currentTime = target;
+      if(!raf) raf = requestAnimationFrame(seekLoop);
+    } else {
+      scenes.forEach(function(sc,i){
+        var d  = Math.abs(f - i);
+        var op = Math.max(0, 1 - d * 1.2);
+        sc.style.opacity = op;
+        sc.style.zIndex  = op > .5 ? 2 : 1;
+        var img   = sc.querySelector('img');
+        var local = Math.max(-1, Math.min(1, f - i));
+        img.style.transform = 'scale(' + (1.06 + 0.10 * Math.min(1, Math.max(0, local + 1) / 1)) + ') translateY(' + (local * -14) + 'px)';
+      });
+    }
+    var idx = Math.round(f);
+    caps.forEach(function(c,i){ c.classList.toggle('on', i===idx); });
+    dots.forEach(function(d,i){ d.classList.toggle('on', i===idx); });
+  }
+  addEventListener('scroll', function(){ if(!ticking){ ticking=true; requestAnimationFrame(update); } }, {passive:true});
+  addEventListener('resize', update);
+  update();
+})();
 </script>
 
 </body>
