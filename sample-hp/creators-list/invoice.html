@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>請求書の提出(編集者用) | クリエイターズリスト mono.create</title>
+<style>
+  :root{--teal:#0ea5a3;--teal-d:#0b8583;--teal-bg:#e6f7f6;--ink:#1e293b;--sub:#64748b;--line:#e2e8f0;--bg:#f5f7fb;--red:#dc2626;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",Meiryo,sans-serif;background:var(--bg);color:var(--ink);line-height:1.8;}
+  .wrap{max-width:600px;margin:0 auto;padding:28px 18px 80px;}
+  .brand{font-size:12px;font-weight:800;color:var(--teal-d);letter-spacing:.06em;margin-bottom:4px;}
+  h1{font-size:22px;font-weight:800;margin-bottom:6px;}
+  .lead{font-size:13px;color:var(--sub);margin-bottom:18px;}
+  .rules{background:var(--teal-bg);border:1px solid rgba(14,165,163,.3);border-radius:12px;padding:14px 16px;font-size:12.5px;margin-bottom:22px;}
+  .rules b{color:var(--teal-d);}
+  .rules li{margin-left:1.2em;margin-top:4px;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 20px;box-shadow:0 2px 10px rgba(15,23,42,.04);}
+  label{display:block;font-size:12px;font-weight:800;color:var(--sub);margin:16px 0 5px;}
+  label .req{color:var(--red);font-size:10.5px;margin-left:5px;}
+  input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit;background:#fff;color:var(--ink);}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--teal);border-color:transparent;}
+  textarea{min-height:64px;resize:vertical;}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .filebox{border:1.5px dashed var(--teal);border-radius:11px;background:var(--teal-bg);padding:18px;text-align:center;cursor:pointer;font-size:13px;font-weight:700;color:var(--teal-d);}
+  .filebox.has{border-style:solid;background:#fff;color:var(--ink);}
+  .btn{width:100%;margin-top:20px;padding:15px;border:none;border-radius:11px;background:var(--teal);color:#fff;font-size:15.5px;font-weight:800;cursor:pointer;font-family:inherit;}
+  .btn:hover{background:var(--teal-d);}
+  .btn:disabled{opacity:.55;cursor:not-allowed;}
+  .err{color:var(--red);font-size:12.5px;margin-top:10px;display:none;}
+  .done{display:none;text-align:center;padding:40px 20px;}
+  .done .mark{font-size:38px;color:var(--teal-d);}
+  .done h2{font-size:18px;margin:10px 0 8px;}
+  .done p{font-size:13px;color:var(--sub);}
+  .done .btn{max-width:280px;background:#fff;color:var(--teal-d);border:1.5px solid var(--teal);}
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">CREATORS LIST | mono.create</div>
+  <h1>請求書の提出(編集者用)</h1>
+  <p class="lead">その月に報告した分の受取額合計で請求書を作成し、こちらからご提出ください。<br>提出内容は運営(mono.create)のGoogleドライブに、年・月ごとに自動で保存されます。</p>
+
+  <div class="rules">
+    <b>提出のルール</b>
+    <ul>
+      <li>締め: <b>毎月25日まで</b>にその月の報告分をご提出ください</li>
+      <li>金額: あなたの<b>受取額</b>(クライアント単価 − 手数料)の合計</li>
+      <li>形式: PDF推奨(画像・Excel等も可・1ファイル15MBまで)</li>
+    </ul>
+  </div>
+
+  <div class="card" id="form-card">
+    <label>お名前(編集者)<span class="req">必須</span></label>
+    <select id="f-editor"><option value="">読み込み中...</option></select>
+    <input id="f-editor-free" class="hidden" type="text" placeholder="お名前を入力" style="margin-top:8px;">
+
+    <div class="row2">
+      <div>
+        <label>対象月<span class="req">必須</span></label>
+        <input id="f-month" type="month">
+      </div>
+      <div>
+        <label>請求金額(円)</label>
+        <input id="f-amount" type="number" min="0" placeholder="例: 12000">
+      </div>
+    </div>
+
+    <label>請求書ファイル<span class="req">必須</span></label>
+    <div class="filebox" id="f-drop" onclick="document.getElementById('f-file').click()">
+      タップして請求書ファイルを選択(PDF・画像など)
+    </div>
+    <input id="f-file" type="file" accept=".pdf,.png,.jpg,.jpeg,.xlsx,.xls,.csv,application/pdf,image/*" class="hidden">
+
+    <label>備考(任意)</label>
+    <textarea id="f-note" placeholder="例: 7月報告分(ショート8本・長尺2本)"></textarea>
+
+    <button class="btn" id="f-submit" onclick="submitInvoice()">この請求書を提出する</button>
+    <p class="err" id="f-err"></p>
+  </div>
+
+  <div class="done card" id="done-card">
+    <div class="mark">✓</div>
+    <h2>請求書を受け付けました</h2>
+    <p>運営に通知され、ドライブに保存されました。<br>内容確認のうえ、25日締め・翌月末にお支払いします。</p>
+    <button class="btn" onclick="location.reload()">続けて別の請求書を提出する</button>
+  </div>
+</div>
+
+<script>
+// 請求書受付専用GAS(Drive自動保存・年/月フォルダ)
+const INVOICE_URL = 'https://script.google.com/macros/s/AKfycbzdPQa24h5Ly1diKnjVwyjFl3Qn_vKGsyDVHD5hhlesG-IEBMpXKYlU4Lz2aDAKJkYwLw/exec';
+const EDITORS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
+
+// 対象月デフォルト=今月
+document.getElementById('f-month').value = new Date().toLocaleDateString('sv-SE').slice(0,7);
+
+const escH = s => String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+// 編集者リスト(認証不要API)
+(async function(){
+  const sel = document.getElementById('f-editor');
+  try{
+    const res = await fetch(EDITORS_URL + '?action=editors');
+    const json = await res.json();
+    const names = (json.data||[]).map(e=>e.name).filter(Boolean);
+    sel.innerHTML = '<option value="">選択してください</option>'
+      + names.map(n=>`<option>${escH(n)}</option>`).join('')
+      + '<option value="__free__">リストにない(手入力)</option>';
+  }catch(e){
+    sel.innerHTML = '<option value="__free__">手入力してください</option>';
+    document.getElementById('f-editor-free').classList.remove('hidden');
+  }
+})();
+document.getElementById('f-editor').addEventListener('change', e=>{
+  document.getElementById('f-editor-free').classList.toggle('hidden', e.target.value !== '__free__');
+});
+
+let pickedFile = null;
+document.getElementById('f-file').addEventListener('change', e=>{
+  pickedFile = e.target.files[0] || null;
+  const box = document.getElementById('f-drop');
+  if(pickedFile){ box.textContent = '選択済み: ' + pickedFile.name; box.classList.add('has'); }
+});
+
+function fileToBase64(file){
+  return new Promise((resolve,reject)=>{
+    const r = new FileReader();
+    r.onload = ()=> resolve(String(r.result).split(',')[1]);
+    r.onerror = reject;
+    r.readAsDataURL(file);
+  });
+}
+
+async function submitInvoice(){
+  const selVal = document.getElementById('f-editor').value;
+  const editor = selVal === '__free__' ? document.getElementById('f-editor-free').value.trim() : selVal;
+  const month  = document.getElementById('f-month').value;
+  const amount = document.getElementById('f-amount').value;
+  const note   = document.getElementById('f-note').value.trim();
+  const err    = document.getElementById('f-err');
+  err.style.display='none';
+
+  if(!editor || !month || !pickedFile){
+    err.textContent = 'お名前・対象月・請求書ファイルは必須です。';
+    err.style.display='block';
+    return;
+  }
+  if(pickedFile.size > 15*1024*1024){
+    err.textContent = 'ファイルが大きすぎます(15MBまで)。';
+    err.style.display='block';
+    return;
+  }
+  const btn = document.getElementById('f-submit');
+  btn.disabled = true; btn.textContent = '送信中...';
+
+  try{
+    const b64 = await fileToBase64(pickedFile);
+    const payload = {
+      action: 'invoice_upload',
+      editor: editor,
+      month: month,
+      amount: amount,
+      note: note,
+      filename: pickedFile.name,
+      mime_type: pickedFile.type || 'application/octet-stream',
+      file_base64: b64
+    };
+    const res = await fetch(INVOICE_URL, { method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify(payload) });
+    // GAS応答が読めない場合も実行は成功している(echo障害対策)
+    let ok = true; try { const j = await res.json(); ok = !!j.ok; } catch(e) { ok = true; }
+    if(ok){
+      document.getElementById('form-card').style.display='none';
+      document.getElementById('done-card').style.display='block';
+      window.scrollTo(0,0);
+      return;
+    }
+    throw new Error('送信に失敗しました');
+  }catch(e){
+    err.textContent = '送信に失敗しました。通信環境をご確認のうえ再度お試しください。';
+    err.style.display='block';
+  }
+  btn.disabled = false; btn.textContent = 'この請求書を提出する';
+}
+</script>
+</body>
+</html>

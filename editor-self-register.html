@@ -112,7 +112,7 @@ body{
     <h1>編集者プロフィール登録</h1>
     <p>採用おめでとうございます！<br>
     以下のフォームにプロフィール情報を入力してください。<br>
-    入力内容は編集者派遣サイト「クリエイターズリスト」の編集者一覧に掲載されます。</p>
+    入力内容はLPの「編集者紹介」に掲載されます。</p>
   </div>
 
   <form id="selfRegForm">
@@ -128,11 +128,9 @@ body{
       </div>
 
       <div class="field">
-        <label>アイコン画像URL（必須）</label>
-        <input type="url" id="icon" name="icon" placeholder="https://... （Googleドライブ共有URL等）" required
-          oninvalid="this.setCustomValidity('https:// から始まるURLを入力してください（Googleドライブの共有URL等）')"
-          oninput="this.setCustomValidity('')">
-        <p class="hint">必ずご自身を写した写真を設定してください（後ろ姿や遠目からの写真など、顔がはっきり判別できなくてもOKです）。正方形推奨。</p>
+        <label>アイコン画像URL（任意）</label>
+        <input type="url" id="icon" name="icon" placeholder="https://... （Googleドライブ共有URL等）">
+        <p class="hint">正方形推奨。設定しない場合はデフォルトアイコンが使われます。</p>
       </div>
 
       <div class="field">
@@ -199,7 +197,7 @@ body{
 
     <!-- ポートフォリオ -->
     <div class="card">
-      <div class="card-title">🎞 ポートフォリオ（任意・最大4件）</div>
+      <div class="card-title">ポートフォリオ（必須・最大4件）</div>
       <p style="font-size:0.78rem;color:#64748B;margin-bottom:12px;line-height:1.7;">YouTubeやGoogle DriveなどのURLを入力してください。<br>サムネイルは自動取得されます。</p>
 
       <div class="pf-list" id="pfList">
@@ -232,10 +230,9 @@ body{
     <h2>登録が完了しました！</h2>
     <p>
       プロフィールを受け付けました。<br>
-      内容確認後、クリエイターズリストの編集者一覧に掲載されます。<br><br>
+      内容確認後、LPの編集者紹介ページに掲載されます。<br><br>
       案件のご案内はChatworkにてお送りします。<br>
-      グループに参加済みでない方はメールに記載のリンクからご参加ください。<br><br>
-      <span style="color:#8b93a7;font-size:13px;">5秒後にトップページへ戻ります…</span>
+      グループに参加済みでない方はメールに記載のリンクからご参加ください。
     </p>
   </div>
 
@@ -277,11 +274,8 @@ function removePf(btn){
 }
 
 // ─── フォーム送信 ─────────────────────────────────────────────
-var _submitting = false;
 document.getElementById('selfRegForm').addEventListener('submit', async function(e){
   e.preventDefault();
-  if (_submitting) return; // 二重送信ガード
-  _submitting = true;
   var btn = document.getElementById('submitBtn');
   btn.disabled = true;
   btn.innerHTML = '<span>⏳</span> 送信中...';
@@ -296,6 +290,10 @@ document.getElementById('selfRegForm').addEventListener('submit', async function
   var pfUrls = Array.from(document.querySelectorAll('.pf-url'))
     .map(function(el){ return el.value.trim(); })
     .filter(function(v){ return v; });
+  if (pfUrls.length === 0) {
+    alert('ポートフォリオは必須です。最低1件のURLを入力してください。');
+    return;
+  }
   var portfolios = pfUrls.map(function(url){ return { url: url, title: '' }; });
 
   var params = new URLSearchParams(location.search);
@@ -323,24 +321,15 @@ document.getElementById('selfRegForm').addEventListener('submit', async function
     });
     var json = await res.json();
     if (json.success) {
-      // 完了画面のみを表示(フォームは非表示+ボタンも確実に隠す)
-      var form = document.getElementById('selfRegForm');
-      form.style.display = 'none';
-      form.hidden = true;
+      document.getElementById('selfRegForm').style.display = 'none';
       document.getElementById('done').style.display = 'block';
       window.scrollTo(0,0);
-      // 完了後はトップ(クリエイターズリスト)へ戻す
-      setTimeout(function(){
-        location.href = 'https://mono-create-group.github.io/lp/sample-hp/creators-list/';
-      }, 5000);
     } else {
-      _submitting = false;
       alert('エラーが発生しました: ' + (json.error || '不明なエラー'));
       btn.disabled = false;
       btn.innerHTML = '<span>✅</span> プロフィールを登録する';
     }
   } catch(err) {
-    _submitting = false;
     alert('通信エラーが発生しました。もう一度お試しください。');
     btn.disabled = false;
     btn.innerHTML = '<span>✅</span> プロフィールを登録する';

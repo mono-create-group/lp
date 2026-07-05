@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="index, follow">
-<title>編集者募集 | mono.create</title>
-<meta name="description" content="mono.createでは動画編集者を随時募集しています。ショート¥2,000〜/長尺¥5,000〜。リモート・副業OK。登録フォームから気軽にご応募ください。">
+<title>編集者募集(編集者派遣) | クリエイターズリスト mono.create</title>
+<meta name="description" content="編集者派遣「クリエイターズリスト」の編集者を随時募集。ショート¥2,500〜。リモート・副業OK。応募フォームからポートフォリオを添えてご応募ください。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Inter:wght@700;800&display=swap" rel="stylesheet">
 <style>
@@ -145,7 +145,7 @@ textarea.form-control { min-height:80px; resize:vertical; }
       <!-- ショート -->
       <div class="case-card short">
         <span class="case-label">📱 ショート動画</span>
-        <p class="case-pay">¥2,000〜<br>¥4,000</p>
+        <p class="case-pay">¥2,500〜</p>
         <div class="case-row">
           <strong>初稿</strong>：1日以内<br>
           <strong>完全納品</strong>：2日以内<br>
@@ -179,6 +179,7 @@ textarea.form-control { min-height:80px; resize:vertical; }
       <div class="req-item"><span class="req-icon">✅</span><span>納期を守れる方</span></div>
       <div class="req-item"><span class="req-icon">✅</span><span>Chatworkで連絡が取れる方</span></div>
       <div class="req-item"><span class="req-icon">✅</span><span>修正依頼に丁寧に対応できる方</span></div>
+      <div class="req-item"><span class="req-icon">・</span><span>実績が浅くてもスキルがあれば歓迎(ポートフォリオの提出は必須です)</span></div>
     </div>
   </div>
 
@@ -196,16 +197,16 @@ textarea.form-control { min-height:80px; resize:vertical; }
           <input type="text" class="form-control" name="name" placeholder="山田 太郎" required>
         </div>
         <div class="form-row" style="margin-bottom:0;">
-          <label>年齢<span class="req">*</span></label>
-          <input type="text" class="form-control" name="age" placeholder="例：22歳" required>
+          <label>年齢</label>
+          <input type="text" class="form-control" name="age" placeholder="例：22歳">
         </div>
       </div>
 
       <div class="form-grid" style="margin-bottom:16px;">
         <div class="form-row" style="margin-bottom:0;">
-          <label>性別<span class="req">*</span></label>
+          <label>性別</label>
           <div class="radio-group" style="margin-top:4px;gap:14px;">
-            <div class="radio-item"><input type="radio" id="g-m" name="gender" value="男性" required><label for="g-m">男性</label></div>
+            <div class="radio-item"><input type="radio" id="g-m" name="gender" value="男性"><label for="g-m">男性</label></div>
             <div class="radio-item"><input type="radio" id="g-f" name="gender" value="女性"><label for="g-f">女性</label></div>
             <div class="radio-item"><input type="radio" id="g-o" name="gender" value="その他"><label for="g-o">その他</label></div>
           </div>
@@ -229,58 +230,34 @@ textarea.form-control { min-height:80px; resize:vertical; }
       <!-- 実績・PF -->
       <div class="form-row">
         <label>実績・ポートフォリオURL<span class="req">*</span></label>
-        <div id="portfolio-list">
-          <div class="portfolio-entry" style="display:flex;gap:8px;margin-bottom:6px;">
-            <input type="text" class="form-control portfolio-url" placeholder="https://..." style="flex:1;" required>
-            <button type="button" onclick="removePortfolio(this)" style="padding:0 12px;border:1px solid #E2E8F0;border-radius:8px;background:#fff;color:#94A3B8;font-size:18px;cursor:pointer;line-height:1;" title="削除">×</button>
-          </div>
-        </div>
-        <button type="button" onclick="addPortfolio()" style="margin-top:4px;padding:7px 16px;border:1px dashed #6366F1;border-radius:8px;background:#F5F3FF;color:#6366F1;font-size:13px;font-weight:600;cursor:pointer;width:100%;">＋ URLを追加</button>
-        <p style="font-size:11px;color:#94A3B8;margin-top:4px;">YouTube・TikTok・Instagramなど複数の実績URLを入力できます</p>
+        <input type="text" class="form-control" name="portfolio" placeholder="https://... （複数あればカンマ区切りでOK）" required>
       </div>
 
       <!-- 対応本数 -->
       <div class="form-row">
-        <label>週・月に納品可能な本数の目安<span class="req">*</span></label>
-        <input type="text" class="form-control" name="weekly_monthly_vol" placeholder="例：週2〜3本 / 月8〜10本" required>
+        <label>週・月に納品可能な本数の目安</label>
+        <input type="text" class="form-control" name="weekly_monthly_vol" placeholder="例：週2〜3本 / 月8〜10本">
       </div>
 
       <!-- 得意分野 -->
       <div class="form-row">
-        <label>得意分野・ジャンル<span class="req">*</span></label>
-        <input type="text" class="form-control" name="specialty" placeholder="例：ビジネス系、Vlog、切り抜き、エンタメ" required>
+        <label>得意分野・ジャンル</label>
+        <input type="text" class="form-control" name="specialty" placeholder="例：ビジネス系、Vlog、切り抜き、エンタメ">
       </div>
 
       <!-- 長期契約 -->
       <div class="form-row">
-        <label>長期でのご契約は可能ですか？<span class="req">*</span></label>
+        <label>長期でのご契約は可能ですか？</label>
         <div class="radio-group" style="margin-top:4px;gap:14px;">
-          <div class="radio-item"><input type="radio" id="lt-y" name="long_term" value="可能" required><label for="lt-y">可能</label></div>
+          <div class="radio-item"><input type="radio" id="lt-y" name="long_term" value="可能"><label for="lt-y">可能</label></div>
           <div class="radio-item"><input type="radio" id="lt-c" name="long_term" value="要相談"><label for="lt-c">要相談</label></div>
           <div class="radio-item"><input type="radio" id="lt-n" name="long_term" value="難しい"><label for="lt-n">現時点では難しい</label></div>
         </div>
       </div>
-
-      <!-- 派遣オプション -->
-      <div class="dispatch-banner">
-        <strong>🤝 編集者派遣への登録もご希望ですか？</strong><br>
-        クライアントに直接紹介する「編集者派遣」サービスにも情報を掲載できます。
-        <div style="margin-top:10px;margin-bottom:10px;">
-          <div class="radio-item">
-            <input type="checkbox" id="dispatch" name="dispatch" value="希望する">
-            <label for="dispatch" style="color:#1E40AF;font-weight:700;">編集者派遣にも登録を希望する</label>
-          </div>
-        </div>
-        <p style="font-size:0.72rem;color:#2563EB;line-height:1.8;border-top:1px solid rgba(37,99,235,0.2);padding-top:10px;">
-          ※ 希望いただいた場合、管理者が内容を確認のうえ審査を行います。<br>
-          承認後にメールが届き、編集者派遣ページへご自身の情報を登録いただけます。
-        </p>
-      </div>
-
       <!-- 一言メッセージ -->
       <div class="form-row">
-        <label>一言メッセージ・自己PR<span class="req">*</span></label>
-        <textarea class="form-control" name="message" placeholder="現在のスキルレベル・稼働状況・意気込みなど自由にご記入ください。" required></textarea>
+        <label>一言メッセージ・自己PR（任意）</label>
+        <textarea class="form-control" name="message" placeholder="現在のスキルレベル・稼働状況・意気込みなど自由にご記入ください。"></textarea>
       </div>
 
       <button type="submit" class="form-submit" id="submit-btn">応募する →</button>
@@ -303,12 +280,16 @@ textarea.form-control { min-height:80px; resize:vertical; }
     <p class="card-title">FAQ</p>
     <div style="display:flex;flex-direction:column;gap:14px;">
       <div>
+        <p style="font-size:0.82rem;font-weight:700;color:#1E40AF;margin-bottom:4px;">Q. 経験が浅くても応募できますか？</p>
+        <p style="font-size:0.78rem;color:#475569;line-height:1.7;">はい。スキルがあれば実績なしでもOKです。まずはテスト編集をお願いする場合があります。</p>
+      </div>
+      <div>
         <p style="font-size:0.82rem;font-weight:700;color:#1E40AF;margin-bottom:4px;">Q. 最低稼働本数はありますか？</p>
         <p style="font-size:0.78rem;color:#475569;line-height:1.7;">ありません。案件が発生したときにご連絡するスタイルです。</p>
       </div>
       <div>
         <p style="font-size:0.82rem;font-weight:700;color:#1E40AF;margin-bottom:4px;">Q. 報酬の支払いはいつですか？</p>
-        <p style="font-size:0.78rem;color:#475569;line-height:1.7;">納品確認後、月末締め翌月末払いが基本です。詳細は契約時にご確認ください。</p>
+        <p style="font-size:0.78rem;color:#475569;line-height:1.7;">納品確認後、月末締め翌月払いが基本です。詳細は契約時にご確認ください。</p>
       </div>
       <div>
         <p style="font-size:0.82rem;font-weight:700;color:#1E40AF;margin-bottom:4px;">Q. 編集者派遣とは何ですか？</p>
@@ -355,21 +336,6 @@ function _validateFields(checks) {
   return true;
 }
 
-function addPortfolio() {
-  const list = document.getElementById('portfolio-list');
-  const div = document.createElement('div');
-  div.className = 'portfolio-entry';
-  div.style.cssText = 'display:flex;gap:8px;margin-bottom:6px;';
-  div.innerHTML = '<input type="text" class="form-control portfolio-url" placeholder="https://..." style="flex:1;"><button type="button" onclick="removePortfolio(this)" style="padding:0 12px;border:1px solid #E2E8F0;border-radius:8px;background:#fff;color:#94A3B8;font-size:18px;cursor:pointer;line-height:1;" title="削除">×</button>';
-  list.appendChild(div);
-  div.querySelector('input').focus();
-}
-function removePortfolio(btn) {
-  const entries = document.querySelectorAll('.portfolio-entry');
-  if (entries.length <= 1) return;
-  btn.closest('.portfolio-entry').remove();
-}
-
 document.getElementById('apply-form').addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -377,29 +343,21 @@ document.getElementById('apply-form').addEventListener('submit', async (e) => {
   const case_type = form.querySelector('[name="case_type"]:checked')?.value || '';
   const caseTypeEl = form.querySelector('[name="case_type"]');
 
-  const gender    = form.querySelector('[name="gender"]:checked')?.value    || '';
-  const long_term = form.querySelector('[name="long_term"]:checked')?.value || '';
-  const genderEl   = form.querySelector('[name="gender"]');
-  const longTermEl = form.querySelector('[name="long_term"]');
-
   const ok = _validateFields([
-    { el: form.name,               msg: 'お名前を入力してください' },
-    { el: form.age,                msg: '年齢を入力してください' },
-    { el: genderEl,                msg: '性別を選択してください', test: () => !!gender },
-    { el: form.email,              msg: 'メールアドレスを入力してください',
+    { el: form.name,      msg: 'お名前を入力してください' },
+    { el: form.email,     msg: 'メールアドレスを入力してください',
       test: el => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim()) },
-    { el: caseTypeEl,              msg: '希望する案件を選択してください', test: () => !!case_type },
-    { el: document.querySelector('.portfolio-url'), msg: '実績・ポートフォリオURLを1つ以上入力してください',
-      test: () => [...document.querySelectorAll('.portfolio-url')].some(i => i.value.trim() !== '') },
-    { el: form.weekly_monthly_vol, msg: '納品可能な本数の目安を入力してください' },
-    { el: form.specialty,          msg: '得意分野・ジャンルを入力してください' },
-    { el: longTermEl,              msg: '長期契約の可否を選択してください', test: () => !!long_term },
-    { el: form.message,            msg: '一言メッセージ・自己PRを入力してください' },
+    { el: caseTypeEl,     msg: '動画ジャンルを選択してください',
+      test: () => !!case_type },
+    { el: form.portfolio, msg: 'ポートフォリオURLを入力してください' },
   ]);
   if (!ok) return;
 
   const btn = document.getElementById('submit-btn');
   btn.disabled = true; btn.textContent = '送信中...';
+
+  const gender    = form.querySelector('[name="gender"]:checked')?.value    || '';
+  const long_term = form.querySelector('[name="long_term"]:checked')?.value || '';
 
   const data = {
     action:             'editor_apply',
@@ -408,11 +366,11 @@ document.getElementById('apply-form').addEventListener('submit', async (e) => {
     gender:             gender,
     email:              form.email.value,
     case_type:          case_type,
-    portfolio:          [...document.querySelectorAll('.portfolio-url')].map(i => i.value.trim()).filter(Boolean).join('\n'),
+    portfolio:          form.portfolio.value,
     weekly_monthly_vol: form.weekly_monthly_vol.value,
     specialty:          form.specialty.value,
     long_term:          long_term,
-    dispatch:           form.dispatch.checked ? '希望する' : 'なし',
+    dispatch:           '希望する', // この応募自体が編集者派遣への応募
     message:            form.message.value,
   };
 

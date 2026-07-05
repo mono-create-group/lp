@@ -5869,54 +5869,16 @@ const TIMEREX_URL = 'https://timerex.net/s/mono.create.group_1f8e/22c29f19';
 async function hireEditor(row, name) {
   const app = editorApps.find(a => a.row === row) || {};
   const email = app.email || '';
-  if (!confirm(`「${name}」さんを採用決定しますか？\n面談調整(TimeRex)と業務委託契約書のURLを載せた採用通知メールの下書きを作成します。`)) return;
+  if (!confirm(`「${name}」さんを採用決定しますか？\n採用通知メール(面談予約TimeRex・Chatwork招待・業務委託契約書URL入り)がGmailから自動送信されます。`)) return;
   await updateEditorAppStatus(row, '採用決定');
-  let contractUrl = '';
-  try {
-    const r = await gasFetch(`${GAS_URL}?action=create_contract_token&key=${encodeURIComponent(getAdminPw())}&type=${encodeURIComponent('editor')}&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}`);
-    const j = await r.json();
-    if (j.success && j.url) contractUrl = j.url;
-  } catch(e) {}
-  const body = [
-    `${name} さん`,
-    '',
-    'この度は、mono.create「クリエイターズリスト」へご応募いただきありがとうございました。',
-    '選考の結果、ぜひ編集者メンバーとしてご一緒したく、採用のご連絡です🎉',
-    '',
-    '▼ まずはオンライン面談(15〜30分)で今後の流れをご案内します。',
-    '以下のリンクからご都合の良い日時をお選びください。',
-    TIMEREX_URL,
-    '',
-    contractUrl ? '▼ 業務委託契約書(電子契約)\n面談までに以下のURLからご確認・ご締結をお願いします。\n' + contractUrl : '▼ 業務委託契約書は面談時にご案内します。',
-    '',
-    'ご不明な点はこのメールへの返信でお気軽にどうぞ。',
-    'それでは面談でお会いできるのを楽しみにしています！',
-    '',
-    'mono.create 中村航汰',
-  ].join('\n');
-  location.href = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent('【mono.create】採用のご連絡と面談のご案内')}&body=${encodeURIComponent(body)}`;
-  showToast(`✅ 「${name}」さんを採用決定！採用通知メールの下書きを開きました${contractUrl?'(契約書URL同封)':''}`);
+  showToast(`「${name}」さんを採用決定。採用通知メール(TimeRex・Chatwork・契約書URL入り)を自動送信しました`);
 }
 async function rejectEditorApp(row, name) {
   const app = editorApps.find(a => a.row === row) || {};
   const email = app.email || '';
-  if (!confirm(`「${name}」さんに不採用のご連絡をしますか？`)) return;
+  if (!confirm(`「${name}」さんに不採用のご連絡をしますか？\n不採用通知メールがGmailから自動送信されます。`)) return;
   await updateEditorAppStatus(row, '見送り');
-  const body = [
-    `${name} さん`,
-    '',
-    'この度はmono.create「クリエイターズリスト」へご応募いただき、誠にありがとうございました。',
-    '慎重に選考を重ねました結果、今回はご期待に沿えない結果となりました。',
-    '',
-    '今回の結果は現在の案件状況によるものです。',
-    '今後、体制拡大の際にあらためてお声がけさせていただく場合がございます。',
-    '',
-    '末筆ながら、今後ますますのご活躍をお祈り申し上げます。',
-    '',
-    'mono.create 中村航汰',
-  ].join('\n');
-  location.href = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent('【mono.create】選考結果のご連絡')}&body=${encodeURIComponent(body)}`;
-  showToast(`「${name}」さんを見送りにし、通知メールの下書きを開きました`);
+  showToast(`「${name}」さんを見送りにしました。不採用通知メールを自動送信しました`);
 }
 
 async function updateEditorAppStatus(row, status) {
