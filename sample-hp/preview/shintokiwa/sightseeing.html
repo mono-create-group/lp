@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>周辺観光｜ダイバーシティホテル シン トキワ 旭川</title>
+<meta name="description" content="常盤公園徒歩5分。シン トキワを拠点にした旭川観光ガイド。旭山動物園・上川神社・男山酒造・旭川ラーメンなど、おすすめスポットをご紹介。">
+<style>
+  :root{--brand:#1a4a7a;--brand-dark:#0f2f50;--brand-mid:#2563a8;--ink:#1e2330;--cream:#f4f6fb;--gold:#c9a84c;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",Meiryo,sans-serif;color:var(--ink);background:var(--cream);line-height:1.8;word-break:keep-all;overflow-wrap:anywhere;}
+  img{max-width:100%;display:block;}
+  a{color:inherit;}
+  header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(26,74,122,0.95);backdrop-filter:blur(6px);}
+  .nav-inner{max-width:1100px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;}
+  .logo{color:#fff;font-size:17px;letter-spacing:.08em;font-weight:700;line-height:1.3;text-decoration:none;}
+  .logo small{display:block;font-size:10px;letter-spacing:.2em;color:rgba(255,255,255,.65);font-weight:400;}
+  nav ul{list-style:none;display:flex;gap:20px;font-size:13px;}
+  nav a{color:rgba(255,255,255,.85);text-decoration:none;letter-spacing:.04em;}
+  nav a:hover,nav a.active{color:var(--gold);}
+  .nav-toggle{display:none;background:none;border:none;color:#fff;font-size:24px;cursor:pointer;}
+  .page-hero{background:linear-gradient(135deg,var(--brand-dark),var(--brand));color:#fff;text-align:center;padding:120px 24px 60px;}
+  .page-hero .eyebrow{font-size:11px;letter-spacing:.3em;color:var(--gold);display:block;margin-bottom:10px;}
+  .page-hero h1{font-size:clamp(22px,3.5vw,32px);font-weight:700;letter-spacing:.06em;}
+  section{padding:72px 24px;}
+  .wrap{max-width:1100px;margin:0 auto;}
+  .sec-head{text-align:center;margin-bottom:48px;}
+  .sec-head .eyebrow{font-size:11px;letter-spacing:.3em;color:var(--brand-mid);font-weight:700;display:block;margin-bottom:10px;}
+  .sec-head h2{font-size:clamp(20px,3vw,28px);font-weight:700;}
+  .breadcrumb{font-size:12px;color:#8a8fa0;margin-bottom:36px;}
+  .breadcrumb a{color:var(--brand-mid);text-decoration:none;}
+  .lead{text-align:center;font-size:14px;color:#3a3f50;max-width:720px;margin:0 auto 48px;}
+
+  /* スポットカード */
+  .spots-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .spot-card{background:#fff;border:1px solid #e4e8f0;border-radius:10px;overflow:hidden;display:flex;flex-direction:column;}
+  .spot-card img{width:100%;height:190px;object-fit:cover;}
+  .spot-ph{height:190px;display:flex;align-items:center;justify-content:center;font-size:48px;background:linear-gradient(135deg,var(--brand-dark),var(--brand-mid));}
+  .spot-card-body{padding:20px 22px 24px;flex:1;}
+  .spot-dist{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.08em;padding:3px 12px;border-radius:20px;background:var(--cream);color:var(--brand-mid);border:1px solid #d0d9e8;margin-bottom:10px;}
+  .spot-card-body h4{font-size:16.5px;font-weight:700;margin-bottom:8px;}
+  .spot-card-body p{font-size:12.5px;color:#5a6070;line-height:1.85;}
+
+  /* ブログ連携 */
+  .blog-link-sec{background:#fff;}
+  .blog-link-card{display:grid;grid-template-columns:360px 1fr;background:var(--cream);border:1px solid #e4e8f0;border-radius:12px;overflow:hidden;text-decoration:none;transition:.15s;}
+  .blog-link-card:hover{box-shadow:0 8px 28px rgba(26,74,122,.12);}
+  .blog-link-card img{width:100%;height:100%;object-fit:cover;min-height:200px;}
+  .blog-link-body{padding:28px 32px;align-self:center;}
+  .blog-link-body .tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.1em;padding:4px 12px;border-radius:2px;background:var(--brand-mid);color:#fff;margin-bottom:10px;}
+  .blog-link-body h3{font-size:18px;font-weight:700;margin-bottom:8px;}
+  .blog-link-body p{font-size:13px;color:#5a6070;line-height:1.85;}
+  .blog-link-body .more{display:inline-block;margin-top:12px;font-size:13px;font-weight:700;color:var(--brand-mid);}
+
+  /* モデルコース */
+  .course-sec{background:var(--cream);}
+  .course-list{max-width:680px;margin:0 auto;}
+  .course-item{display:flex;gap:18px;padding:18px 0;border-bottom:1px solid #e4e8f0;}
+  .course-item:last-child{border-bottom:none;}
+  .course-time{flex-shrink:0;width:74px;font-size:13px;font-weight:700;color:var(--brand-mid);padding-top:2px;}
+  .course-body h4{font-size:14.5px;font-weight:700;margin-bottom:4px;}
+  .course-body p{font-size:12.5px;color:#5a6070;}
+
+  /* CTA */
+  .cta-sec{background:linear-gradient(135deg,var(--brand-dark),var(--brand-mid));color:#fff;text-align:center;}
+  .cta-sec h2{font-size:clamp(20px,3.5vw,28px);font-weight:700;margin-bottom:12px;}
+  .cta-sec p{font-size:13.5px;color:rgba(255,255,255,.8);margin-bottom:24px;}
+  .btn-reserve{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:#1a1a1a;font-weight:700;font-size:14px;padding:14px 32px;border-radius:3px;text-decoration:none;}
+  .btn-reserve:hover{background:#dab75a;}
+
+  footer{background:var(--ink);color:#8a8fa0;text-align:center;padding:40px 24px;font-size:12px;line-height:2;}
+  footer .fname{color:#fff;font-size:14px;margin-bottom:8px;letter-spacing:.08em;font-weight:700;}
+  .footer-links{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin:10px 0;}
+  .footer-links a{color:#8a8fa0;text-decoration:none;font-size:12px;}
+  .footer-links a:hover{color:#fff;}
+  .footer-note{margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.1);font-size:11px;color:#666;}
+  .float-tel{position:fixed;right:20px;bottom:82px;z-index:90;background:#fff;color:var(--ink);text-decoration:none;font-weight:700;font-size:13px;padding:12px 18px;border-radius:50px;box-shadow:0 6px 20px rgba(0,0,0,.2);display:inline-flex;align-items:center;gap:7px;}
+  .float-line{position:fixed;right:20px;bottom:20px;z-index:90;background:#06C755;color:#fff;text-decoration:none;font-weight:700;font-size:13px;padding:12px 18px;border-radius:50px;box-shadow:0 6px 20px rgba(6,199,85,.4);display:inline-flex;align-items:center;gap:7px;}
+  .float-line svg{width:18px;height:18px;fill:#fff;}
+  @media(max-width:900px){
+    nav ul{display:none;}.nav-toggle{display:block;}
+    .spots-grid{grid-template-columns:1fr;}
+    .blog-link-card{grid-template-columns:1fr;}
+    section{padding:48px 20px;}
+    .float-tel,.float-line{font-size:12px;padding:10px 14px;}
+    .float-tel{bottom:74px;}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="nav-inner">
+    <a class="logo" href="index.html">ダイバーシティホテル シン トキワ 旭川<small>ASAHIKAWA HOTEL</small></a>
+    <nav>
+      <ul>
+        <li><a href="rooms.html">客室・料金</a></li>
+        <li><a href="facilities.html">館内施設</a></li>
+        <li><a href="access.html">アクセス</a></li>
+        <li><a href="sightseeing.html" class="active">周辺観光</a></li>
+        <li><a href="news.html">お知らせ</a></li>
+        <li><a href="blog.html">ブログ</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="reserve.html" style="color:var(--gold);font-weight:700;">ご予約</a></li>
+      </ul>
+    </nav>
+    <button class="nav-toggle" aria-label="メニュー">☰</button>
+  </div>
+</header>
+
+<div class="page-hero">
+  <span class="eyebrow">AREA GUIDE</span>
+  <h1>周辺観光</h1>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> &rsaquo; 周辺観光</div>
+    <p class="lead">シン トキワは旭川市中心部・常盤公園エリアに位置し、市内観光にも道北ドライブにも便利な立地。徒歩圏内の公園散策から、旭山動物園まで、おすすめのスポットをご紹介します。</p>
+
+    <div class="spots-grid">
+      <div class="spot-card">
+        <img src="img/park.jpg" alt="常盤公園(旭川市)" loading="lazy">
+        <div class="spot-card-body">
+          <span class="spot-dist">徒歩 約5分</span>
+          <h4>常盤公園</h4>
+          <p>旭川市のシンボル公園。白鳥の池・ボート・道立旭川美術館が隣接し、四季の花々が楽しめる市民の憩いの場。朝の散歩コースとしてもおすすめです。</p>
+        </div>
+      </div>
+      <div class="spot-card">
+        <div class="spot-ph">🖼️</div>
+        <div class="spot-card-body">
+          <span class="spot-dist">徒歩 約8分</span>
+          <h4>北海道立旭川美術館</h4>
+          <p>常盤公園内にある美術館。道北ゆかりの作家作品や木の造形コレクションを収蔵。公園散策とあわせて気軽にアートに触れられます。</p>
+        </div>
+      </div>
+      <div class="spot-card">
+        <div class="spot-ph">🐧</div>
+        <div class="spot-card-body">
+          <span class="spot-dist">バス 約40分</span>
+          <h4>旭山動物園</h4>
+          <p>年間入園者数140万人超。行動展示でおなじみの日本最北の動物園。旭川のナンバーワン観光スポット。ホテルから車なら約30分です。</p>
+        </div>
+      </div>
+      <div class="spot-card">
+        <div class="spot-ph">⛩️</div>
+        <div class="spot-card-body">
+          <span class="spot-dist">車 約10分</span>
+          <h4>上川神社</h4>
+          <p>1893年創建。神楽岡公園内に鎮座する歴史ある神社。緑豊かな境内は散策にもぴったりで、旭川の街を静かに見守ってきたパワースポットです。</p>
+        </div>
+      </div>
+      <div class="spot-card">
+        <div class="spot-ph">🍶</div>
+        <div class="spot-card-body">
+          <span class="spot-dist">車 約15分</span>
+          <h4>男山酒造</h4>
+          <p>350年の歴史を誇る旭川の銘酒「男山」の醸造所。資料館は無料開放されており、北海道の酒造文化を学べます。お土産選びにも。</p>
+        </div>
+      </div>
+      <div class="spot-card">
+        <div class="spot-ph">🍜</div>
+        <div class="spot-card-body">
+          <span class="spot-dist">徒歩圏〜車5分</span>
+          <h4>旭川ラーメン(買物公園エリア)</h4>
+          <p>醤油ラーメン発祥の地・旭川。平和通買物公園周辺には老舗から新店まで名店が集まります。夜のラーメン巡りも徒歩圏で楽しめます。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ブログ連携 -->
+<section class="blog-link-sec">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">FROM BLOG</span>
+      <h2>スタッフのおすすめ</h2>
+    </div>
+    <a class="blog-link-card" href="blog/tokiwa-morning-walk.html">
+      <img src="img/park.jpg" alt="常盤公園の朝" loading="lazy">
+      <div class="blog-link-body">
+        <span class="tag">BLOG</span>
+        <h3>チェックアウト前の30分。常盤公園の朝さんぽが気持ちいい</h3>
+        <p>ホテルから徒歩5分の常盤公園。朝の澄んだ空気の中を歩く、おすすめの散歩コースをご紹介します。</p>
+        <span class="more">記事を読む →</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- モデルコース -->
+<section class="course-sec">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">MODEL COURSE</span>
+      <h2>1泊2日モデルコース(2日目)</h2>
+    </div>
+    <div class="course-list">
+      <div class="course-item">
+        <div class="course-time">7:30</div>
+        <div class="course-body"><h4>常盤公園を朝さんぽ</h4><p>ホテルから徒歩5分。白鳥の池を一周して爽やかな朝を。</p></div>
+      </div>
+      <div class="course-item">
+        <div class="course-time">9:00</div>
+        <div class="course-body"><h4>チェックアウト→旭山動物園へ</h4><p>車で約30分。開園直後は人気の展示もゆっくり見られます。</p></div>
+      </div>
+      <div class="course-item">
+        <div class="course-time">13:00</div>
+        <div class="course-body"><h4>旭川ラーメンでランチ</h4><p>市内中心部へ戻って名物の醤油ラーメンを。</p></div>
+      </div>
+      <div class="course-item">
+        <div class="course-time">14:30</div>
+        <div class="course-body"><h4>男山酒造で酒蔵見学</h4><p>資料館は無料。お土産の地酒選びにもぴったり。</p></div>
+      </div>
+    </div>
+    <p style="font-size:12px;color:#8a8fa0;margin-top:20px;text-align:center;">※所要時間は目安です。季節・交通状況によって変わります。</p>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-sec">
+  <div class="wrap">
+    <h2>旭川観光の拠点に、シン トキワ。</h2>
+    <p>直接予約ならポータルサイト手数料ゼロ。<br>ウェブ予約フォームまたはお電話でどうぞ。</p>
+    <a class="btn-reserve" href="reserve.html">ウェブ予約フォームへ →</a>
+  </div>
+</section>
+
+<footer>
+  <div class="fname">ダイバーシティホテル シン トキワ 旭川</div>
+  <div>北海道旭川市常盤通3-4047-8</div>
+  <div class="footer-links">
+    <a href="index.html">トップ</a><a href="rooms.html">客室・料金</a><a href="facilities.html">館内施設</a><a href="access.html">アクセス</a>
+    <a href="sightseeing.html">周辺観光</a><a href="news.html">お知らせ</a><a href="blog.html">ブログ</a><a href="faq.html">FAQ</a><a href="reserve.html">ご予約</a>
+  </div>
+  <div class="footer-note">本ページはmono.create(旭川)による制作サンプルです。掲載情報・画像は公開情報を元にしています。<br>掲載内容の正確性は現地にてご確認ください。成約前は速やかに削除いたします。</div>
+</footer>
+
+<a class="float-tel" href="tel:0166-00-0000">📞 電話予約</a>
+<a class="float-line" href="reserve.html">
+  <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.94 2 10.7c0 3.03 2.02 5.7 5.06 7.24-.16.62-.85 3.1-.87 3.3 0 0-.02.18.1.24.11.06.24 0 .24 0 .34-.05 3.7-2.44 4.3-2.87.4.06.8.09 1.17.09 5.52 0 10-3.94 10-8.7C22 5.94 17.52 2 12 2z"/></svg>
+  ウェブ予約
+</a>
+<script>
+document.querySelector('.nav-toggle').addEventListener('click',function(){
+  const ul=document.querySelector('nav ul');
+  if(ul.style.display==='flex'){ul.style.display='none';}
+  else{ul.style.cssText='display:flex;flex-direction:column;position:absolute;top:54px;left:0;right:0;background:rgba(26,74,122,.97);padding:16px 24px;gap:14px;';}
+});
+</script>
+</body>
+</html>

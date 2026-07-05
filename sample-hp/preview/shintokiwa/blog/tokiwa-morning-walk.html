@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>常盤公園の朝さんぽ｜シン トキワ ブログ</title>
+<meta name="description" content="旭川・常盤公園を早朝に散歩するコースと見どころを紹介。シン トキワから徒歩5分のリアルな体験レポート。">
+<style>
+  :root{--brand:#1a4a7a;--brand-dark:#0f2f50;--brand-mid:#2563a8;--ink:#1e2330;--cream:#f4f6fb;--gold:#c9a84c;--teal:#0d7490;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",Meiryo,sans-serif;color:var(--ink);background:var(--cream);line-height:1.8;word-break:keep-all;overflow-wrap:anywhere;}
+  img{max-width:100%;display:block;}
+  a{color:inherit;}
+
+  header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(26,74,122,0.95);backdrop-filter:blur(6px);}
+  .nav-inner{max-width:1100px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;}
+  .logo{color:#fff;font-size:17px;letter-spacing:.08em;font-weight:700;line-height:1.3;text-decoration:none;}
+  .logo small{display:block;font-size:10px;letter-spacing:.2em;color:rgba(255,255,255,.65);font-weight:400;}
+  nav ul{list-style:none;display:flex;gap:20px;font-size:13px;}
+  nav a{color:rgba(255,255,255,.85);text-decoration:none;letter-spacing:.04em;}
+  nav a:hover,nav a.active{color:var(--gold);}
+  .nav-toggle{display:none;background:none;border:none;color:#fff;font-size:24px;cursor:pointer;}
+
+  .page-hero{background:linear-gradient(135deg,var(--brand-dark),var(--brand));color:#fff;padding:120px 24px 48px;text-align:center;}
+  .page-hero .cat{font-size:11px;letter-spacing:.3em;color:var(--gold);display:block;margin-bottom:10px;}
+  .page-hero h1{font-size:clamp(20px,3.5vw,30px);font-weight:700;letter-spacing:.04em;line-height:1.5;margin-bottom:12px;}
+  .page-hero .meta{font-size:12px;color:rgba(255,255,255,.6);}
+
+  .article-wrap{max-width:760px;margin:0 auto;padding:64px 24px 80px;}
+  .breadcrumb{font-size:12px;color:#8a8fa0;margin-bottom:28px;}
+  .breadcrumb a{color:var(--brand-mid);text-decoration:none;}
+
+  .article-body h2{font-size:20px;font-weight:700;margin:36px 0 12px;padding-left:12px;border-left:4px solid var(--brand-mid);}
+  .article-body p{font-size:14.5px;line-height:1.95;margin-bottom:18px;color:#2a2f3e;}
+  .article-body ul{margin:0 0 18px 20px;}
+  .article-body li{font-size:14px;line-height:1.85;color:#3a3f50;margin-bottom:4px;}
+  .article-img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:10px;margin:24px 0;}
+  .article-img-cap{font-size:11px;color:#8a8fa0;text-align:center;margin-top:-14px;margin-bottom:24px;}
+
+  .info-box{background:#fff;border:1px solid #e4e8f0;border-radius:8px;padding:20px 24px;margin:28px 0;}
+  .info-box h3{font-size:14px;font-weight:700;color:var(--brand-mid);margin-bottom:8px;}
+  .info-box dl{display:grid;grid-template-columns:90px 1fr;gap:6px 12px;font-size:13px;}
+  .info-box dt{font-weight:700;color:#5a6070;}
+
+  .cta-banner{background:linear-gradient(135deg,var(--brand-dark),var(--brand-mid));color:#fff;border-radius:10px;padding:32px 28px;margin-top:48px;text-align:center;}
+  .cta-banner h3{font-size:18px;font-weight:700;margin-bottom:8px;}
+  .cta-banner p{font-size:13px;color:rgba(255,255,255,.8);margin-bottom:20px;}
+  .btn-gold{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:#1a1a1a;font-weight:700;font-size:14px;padding:13px 28px;border-radius:3px;text-decoration:none;border:1.5px solid var(--gold);}
+  .btn-gold:hover{background:#dab75a;}
+
+  footer{background:var(--ink);color:#8a8fa0;text-align:center;padding:40px 24px;font-size:12px;line-height:2;}
+  footer .fname{color:#fff;font-size:14px;margin-bottom:8px;letter-spacing:.08em;font-weight:700;}
+  .footer-links{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin:10px 0;}
+  .footer-links a{color:#8a8fa0;text-decoration:none;font-size:12px;}
+  .footer-links a:hover{color:#fff;}
+  .footer-note{margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.1);font-size:11px;color:#666;}
+
+  .float-tel{position:fixed;right:20px;bottom:82px;z-index:90;background:#fff;color:var(--ink);text-decoration:none;font-weight:700;font-size:13px;padding:12px 18px;border-radius:50px;box-shadow:0 6px 20px rgba(0,0,0,.2);display:inline-flex;align-items:center;gap:7px;}
+  .float-line{position:fixed;right:20px;bottom:20px;z-index:90;background:#06C755;color:#fff;text-decoration:none;font-weight:700;font-size:13px;padding:12px 18px;border-radius:50px;box-shadow:0 6px 20px rgba(6,199,85,.4);display:inline-flex;align-items:center;gap:7px;}
+  .float-line svg{width:18px;height:18px;fill:#fff;}
+
+  @media(max-width:860px){
+    nav ul{display:none;}
+    .nav-toggle{display:block;}
+    section{padding:48px 20px;}
+    .float-tel,.float-line{font-size:12px;padding:10px 14px;}
+    .float-tel{bottom:74px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-inner">
+    <a class="logo" href="../index.html">ダイバーシティホテル シン トキワ 旭川<small>ASAHIKAWA HOTEL</small></a>
+    <nav>
+      <ul>
+        <li><a href="../rooms.html">客室・料金</a></li>
+        <li><a href="../facilities.html">館内施設</a></li>
+        <li><a href="../access.html">アクセス</a></li>
+        <li><a href="../sightseeing.html">周辺観光</a></li>
+        <li><a href="../news.html">お知らせ</a></li>
+        <li><a href="../blog.html" class="active">ブログ</a></li>
+        <li><a href="../faq.html">FAQ</a></li>
+        <li><a href="../reserve.html" style="color:var(--gold);font-weight:700;">ご予約</a></li>
+      </ul>
+    </nav>
+    <button class="nav-toggle" aria-label="メニュー">☰</button>
+  </div>
+</header>
+
+<div class="page-hero">
+  <span class="cat">LOCAL GUIDE / BLOG</span>
+  <h1>常盤公園の朝さんぽ<br>— シン トキワからの徒歩5分コース</h1>
+  <div class="meta">2026年6月28日 ｜ スタッフレポート</div>
+</div>
+
+<div class="article-wrap">
+  <div class="breadcrumb">
+    <a href="../index.html">ホーム</a> &rsaquo; <a href="../blog.html">ブログ</a> &rsaquo; 常盤公園の朝さんぽ
+  </div>
+
+  <div class="article-body">
+    <p>旭川に来たなら、チェックアウトの前に一度だけ早朝の常盤公園を歩いてほしい。シン トキワを出て徒歩5分。北海道の朝の空気はそれだけで十分な旅の記憶になる。</p>
+
+    <img class="article-img" src="../img/park.jpg" alt="常磐公園の池と木立（旭川市）">
+    <p class="article-img-cap">常盤公園の白鳥の池。早朝は人も少なく、静かな時間が流れる。</p>
+
+    <h2>シン トキワから常盤公園へのルート</h2>
+    <p>常盤通を西方向に5分ほど歩くと、公園の入口が見えてくる。信号1つ分の距離感で、旅行の重い荷物を部屋に置いたまま気軽に出かけられる。スニーカーで十分。</p>
+    <ul>
+      <li>シン トキワ出発 → 常盤通を西へ直進</li>
+      <li>徒歩約5分 → 常盤公園南入口</li>
+      <li>池沿いに一周 → 約20〜30分</li>
+      <li>北側出口から帰路 → 合計45分の朝さんぽ完成</li>
+    </ul>
+
+    <h2>池を一周する「白鳥コース」</h2>
+    <p>公園の中心にある白鳥の池を反時計回りに歩くのがおすすめ。春から秋にかけては白鳥やカモが遊ぶ姿が見られる。池の対岸には北海道立旭川美術館の外壁が映り込み、思わず写真を撮りたくなる構図が随所にある。</p>
+    <p>ボートは観光シーズン中に貸し出しがあるが、朝の時間帯はまだ静か。池の水面と木立を独り占めできる贅沢な時間だ。</p>
+
+    <img class="article-img" src="../walk/walk1.jpg" alt="常盤公園周辺の朝の歩道">
+    <p class="article-img-cap">公園周辺の歩道。朝7時台はジョギングをする地元の方が多い。</p>
+
+    <h2>文化施設も徒歩圏内</h2>
+    <p>常盤公園の北側には北海道立旭川美術館が徒歩約8分のところにある。開館は10時からなので、チェックアウト後に立ち寄るのがちょうどいい。旭川市立中央図書館や公会堂も公園の敷地内にあり、イベントが重なる時期は地元の方々で賑わう。</p>
+
+    <h2>朝さんぽ後はカフェでひと息</h2>
+    <p>ホテルに戻ったら、1階のカフェ「トリとたまごのカフェ ココケッコウ」のオープン(11:30)を待つか、近隣のコンビニで北海道牛乳を買って部屋でのんびりするのもいい。チェックアウトは10時なので、8時頃に出発して9時半に戻るスケジュールがちょうどいい。</p>
+
+    <div class="info-box">
+      <h3>常盤公園 基本情報</h3>
+      <dl>
+        <dt>場所</dt><dd>北海道旭川市常盤通</dd>
+        <dt>入場</dt><dd>無料・24時間開放</dd>
+        <dt>徒歩</dt><dd>シン トキワより約5分</dd>
+        <dt>ボート</dt><dd>観光シーズンのみ(有料)</dd>
+        <dt>隣接施設</dt><dd>北海道立旭川美術館・旭川市立中央図書館</dd>
+      </dl>
+    </div>
+
+    <div class="cta-banner">
+      <h3>常盤公園散歩の拠点として</h3>
+      <p>シン トキワへの宿泊は、電話またはウェブフォームからご予約いただけます。<br>直接予約でポータル手数料ゼロ。お得にご宿泊ください。</p>
+      <a class="btn-gold" href="../reserve.html">ウェブ予約フォームへ</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="fname">ダイバーシティホテル シン トキワ 旭川</div>
+  <div>北海道旭川市常盤通3-4047-8</div>
+  <div class="footer-links">
+    <a href="../index.html">トップ</a><a href="../rooms.html">客室・料金</a><a href="../facilities.html">館内施設</a><a href="../access.html">アクセス</a><a href="../sightseeing.html">周辺観光</a><a href="../news.html">お知らせ</a><a href="../blog.html">ブログ</a><a href="../faq.html">FAQ</a><a href="../reserve.html">ご予約</a>
+  </div>
+  <div class="footer-note">
+    本ページはmono.create(旭川)による制作サンプルです。掲載情報・画像は公開情報を元にしています。<br>
+    掲載内容の正確性は現地にてご確認ください。成約前は速やかに削除いたします。
+  </div>
+</footer>
+
+<a class="float-tel" href="tel:0166-00-0000" aria-label="電話で予約">📞 電話予約</a>
+<a class="float-line" href="../reserve.html" aria-label="ウェブ予約">
+  <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.94 2 10.7c0 3.03 2.02 5.7 5.06 7.24-.16.62-.85 3.1-.87 3.3 0 0-.02.18.1.24.11.06.24 0 .24 0 .34-.05 3.7-2.44 4.3-2.87.4.06.8.09 1.17.09 5.52 0 10-3.94 10-8.7C22 5.94 17.52 2 12 2z"/></svg>
+  ウェブ予約
+</a>
+
+<script>
+document.querySelector('.nav-toggle').addEventListener('click',function(){
+  const ul=document.querySelector('nav ul');
+  if(ul.style.display==='flex'){ul.style.display='none';}
+  else{ul.style.cssText='display:flex;flex-direction:column;position:absolute;top:54px;left:0;right:0;background:rgba(26,74,122,.97);padding:16px 24px;gap:14px;';}
+});
+</script>
+</body>
+</html>

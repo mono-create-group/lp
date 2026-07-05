@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>館内施設｜ダイバーシティホテル シン トキワ 旭川</title>
+<meta name="description" content="シン トキワの館内施設のご案内。1階カフェ「トリとたまごのカフェ ココケッコウ」、無人セルフチェックイン機、無料駐車場、無料WiFiなど。">
+<style>
+  :root{--brand:#1a4a7a;--brand-dark:#0f2f50;--brand-mid:#2563a8;--ink:#1e2330;--cream:#f4f6fb;--gold:#c9a84c;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",Meiryo,sans-serif;color:var(--ink);background:var(--cream);line-height:1.8;word-break:keep-all;overflow-wrap:anywhere;}
+  img{max-width:100%;display:block;}
+  a{color:inherit;}
+  header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(26,74,122,0.95);backdrop-filter:blur(6px);}
+  .nav-inner{max-width:1100px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;}
+  .logo{color:#fff;font-size:17px;letter-spacing:.08em;font-weight:700;line-height:1.3;text-decoration:none;}
+  .logo small{display:block;font-size:10px;letter-spacing:.2em;color:rgba(255,255,255,.65);font-weight:400;}
+  nav ul{list-style:none;display:flex;gap:20px;font-size:13px;}
+  nav a{color:rgba(255,255,255,.85);text-decoration:none;letter-spacing:.04em;}
+  nav a:hover,nav a.active{color:var(--gold);}
+  .nav-toggle{display:none;background:none;border:none;color:#fff;font-size:24px;cursor:pointer;}
+  .page-hero{background:linear-gradient(135deg,var(--brand-dark),var(--brand));color:#fff;text-align:center;padding:120px 24px 60px;}
+  .page-hero .eyebrow{font-size:11px;letter-spacing:.3em;color:var(--gold);display:block;margin-bottom:10px;}
+  .page-hero h1{font-size:clamp(22px,3.5vw,32px);font-weight:700;letter-spacing:.06em;}
+  section{padding:72px 24px;}
+  .wrap{max-width:1100px;margin:0 auto;}
+  .sec-head{text-align:center;margin-bottom:48px;}
+  .sec-head .eyebrow{font-size:11px;letter-spacing:.3em;color:var(--brand-mid);font-weight:700;display:block;margin-bottom:10px;}
+  .sec-head h2{font-size:clamp(20px,3vw,28px);font-weight:700;}
+  .breadcrumb{font-size:12px;color:#8a8fa0;margin-bottom:36px;}
+  .breadcrumb a{color:var(--brand-mid);text-decoration:none;}
+
+  /* 施設カード(大) */
+  .fac-detail{background:#fff;border:1px solid #e4e8f0;border-radius:12px;overflow:hidden;display:grid;grid-template-columns:420px 1fr;align-items:stretch;margin-bottom:36px;}
+  .fac-detail:nth-child(even){direction:rtl;}
+  .fac-detail:nth-child(even)>*{direction:ltr;}
+  .fac-detail img{width:100%;height:100%;object-fit:cover;min-height:240px;}
+  .fac-body{padding:32px 36px;}
+  .fac-tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.1em;padding:4px 12px;border-radius:2px;background:var(--brand-mid);color:#fff;margin-bottom:12px;}
+  .fac-body h3{font-size:22px;font-weight:700;margin-bottom:6px;}
+  .fac-sub{font-size:12px;color:#8a8fa0;margin-bottom:16px;}
+  .fac-body p{font-size:13.5px;color:#3a3f50;line-height:1.9;margin-bottom:14px;}
+  .fac-info{background:#f8f9fd;border-radius:8px;padding:14px 18px;font-size:12.5px;color:#3a3f50;margin-bottom:14px;}
+  .fac-info strong{color:var(--brand-mid);}
+
+  /* 設備一覧 */
+  .amenity-sec{background:#fff;}
+  .amenity-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+  .amenity-card{text-align:center;padding:24px 16px;border:1px solid #e4e8f0;border-radius:8px;}
+  .amenity-card .icon{font-size:30px;margin-bottom:10px;}
+  .amenity-card h4{font-size:14px;font-weight:700;margin-bottom:4px;}
+  .amenity-card p{font-size:12px;color:#5a6070;}
+
+  /* CTA */
+  .cta-sec{background:linear-gradient(135deg,var(--brand-dark),var(--brand-mid));color:#fff;text-align:center;}
+  .cta-sec h2{font-size:clamp(20px,3.5vw,28px);font-weight:700;margin-bottom:12px;}
+  .cta-sec p{font-size:13.5px;color:rgba(255,255,255,.8);margin-bottom:24px;}
+  .btn-reserve{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:#1a1a1a;font-weight:700;font-size:14px;padding:14px 32px;border-radius:3px;text-decoration:none;}
+  .btn-reserve:hover{background:#dab75a;}
+
+  footer{background:var(--ink);color:#8a8fa0;text-align:center;padding:40px 24px;font-size:12px;line-height:2;}
+  footer .fname{color:#fff;font-size:14px;margin-bottom:8px;letter-spacing:.08em;font-weight:700;}
+  .footer-links{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin:10px 0;}
+  .footer-links a{color:#8a8fa0;text-decoration:none;font-size:12px;}
+  .footer-links a:hover{color:#fff;}
+  .footer-note{margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.1);font-size:11px;color:#666;}
+  .float-tel{position:fixed;right:20px;bottom:82px;z-index:90;background:#fff;color:var(--ink);text-decoration:none;font-weight:700;font-size:13px;padding:12px 18px;border-radius:50px;box-shadow:0 6px 20px rgba(0,0,0,.2);display:inline-flex;align-items:center;gap:7px;}
+  .float-line{position:fixed;right:20px;bottom:20px;z-index:90;background:#06C755;color:#fff;text-decoration:none;font-weight:700;font-size:13px;padding:12px 18px;border-radius:50px;box-shadow:0 6px 20px rgba(6,199,85,.4);display:inline-flex;align-items:center;gap:7px;}
+  .float-line svg{width:18px;height:18px;fill:#fff;}
+  @media(max-width:900px){
+    nav ul{display:none;}.nav-toggle{display:block;}
+    .fac-detail{grid-template-columns:1fr;direction:ltr;}
+    .fac-detail:nth-child(even){direction:ltr;}
+    .fac-body{padding:22px 20px;}
+    .amenity-grid{grid-template-columns:repeat(2,1fr);}
+    section{padding:48px 20px;}
+    .float-tel,.float-line{font-size:12px;padding:10px 14px;}
+    .float-tel{bottom:74px;}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="nav-inner">
+    <a class="logo" href="index.html">ダイバーシティホテル シン トキワ 旭川<small>ASAHIKAWA HOTEL</small></a>
+    <nav>
+      <ul>
+        <li><a href="rooms.html">客室・料金</a></li>
+        <li><a href="facilities.html" class="active">館内施設</a></li>
+        <li><a href="access.html">アクセス</a></li>
+        <li><a href="sightseeing.html">周辺観光</a></li>
+        <li><a href="news.html">お知らせ</a></li>
+        <li><a href="blog.html">ブログ</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="reserve.html" style="color:var(--gold);font-weight:700;">ご予約</a></li>
+      </ul>
+    </nav>
+    <button class="nav-toggle" aria-label="メニュー">☰</button>
+  </div>
+</header>
+
+<div class="page-hero">
+  <span class="eyebrow">FACILITIES</span>
+  <h1>館内施設</h1>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> &rsaquo; 館内施設</div>
+
+    <div class="fac-detail">
+      <img src="img/cafe.jpg" alt="トリとたまごのカフェ ココケッコウの名物オムライス">
+      <div class="fac-body">
+        <span class="fac-tag">1F CAFE</span>
+        <h3>トリとたまごのカフェ ココケッコウ</h3>
+        <p class="fac-sub">館内1階・併設カフェ</p>
+        <p>ふわとろオムライスが人気のカフェを館内1階に併設。宿泊のお客様はもちろん、チェックアウト後のひとときにもゆっくりとお過ごしいただけます。</p>
+        <div class="fac-info">
+          <strong>営業時間</strong>: ランチ 11:30〜14:30 ／ カフェ 15:00〜18:00<br>
+          <strong>定休日</strong>: 火曜日
+        </div>
+        <p><a href="https://www.instagram.com/koko_keko_cafe/" target="_blank" rel="noopener" style="font-weight:700;color:var(--brand-mid);">Instagram @koko_keko_cafe →</a></p>
+      </div>
+    </div>
+
+    <div class="fac-detail">
+      <img src="img/p2.jpg" alt="カフェ店内の落ち着いた空間">
+      <div class="fac-body">
+        <span class="fac-tag">SELF CHECK-IN</span>
+        <h3>無人セルフチェックイン機</h3>
+        <p class="fac-sub">19:00以降〜翌5:00まで対応</p>
+        <p>チェックインは15:00〜29:00(翌朝5:00)まで対応。19:00以降はフロント無人となりますが、セルフチェックイン機で簡単にお手続きいただけます。深夜到着のビジネス出張や、遅い時間の観光帰りでも安心です。</p>
+        <div class="fac-info">
+          <strong>チェックイン</strong>: 15:00〜29:00(翌5:00)<br>
+          <strong>チェックアウト</strong>: 〜10:00
+        </div>
+      </div>
+    </div>
+
+    <div class="fac-detail">
+      <img src="img/p5.jpg" alt="ホテル外観と駐車場">
+      <div class="fac-body">
+        <span class="fac-tag">FREE PARKING</span>
+        <h3>無料駐車場</h3>
+        <p class="fac-sub">台数制限あり・事前連絡推奨</p>
+        <p>宿泊のお客様は駐車場を無料でご利用いただけます。旭川市内観光はもちろん、旭山動物園・美瑛・富良野など道北ドライブの拠点としても便利です。</p>
+        <div class="fac-info">
+          <strong>料金</strong>: 無料<br>
+          <strong>備考</strong>: 台数に限りがあります。お車でお越しの際は事前にご連絡ください。
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- 全館共通設備 -->
+<section class="amenity-sec">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">AMENITIES</span>
+      <h2>全館共通の設備・サービス</h2>
+    </div>
+    <div class="amenity-grid">
+      <div class="amenity-card"><div class="icon">📶</div><h4>高速WiFi</h4><p>全館・無料</p></div>
+      <div class="amenity-card"><div class="icon">🅿️</div><h4>無料駐車場</h4><p>台数制限あり</p></div>
+      <div class="amenity-card"><div class="icon">☕</div><h4>1階カフェ</h4><p>ココケッコウ併設</p></div>
+      <div class="amenity-card"><div class="icon">🔒</div><h4>セーフティBox</h4><p>貴重品保管</p></div>
+      <div class="amenity-card"><div class="icon">📺</div><h4>液晶テレビ</h4><p>地デジ対応</p></div>
+      <div class="amenity-card"><div class="icon">💨</div><h4>ドライヤー</h4><p>全室備付け</p></div>
+      <div class="amenity-card"><div class="icon">🚫</div><h4>全館禁煙</h4><p>クリーンな空間</p></div>
+      <div class="amenity-card"><div class="icon">🌙</div><h4>深夜チェックイン</h4><p>セルフ機 5:00まで</p></div>
+    </div>
+    <p style="font-size:12px;color:#8a8fa0;margin-top:16px;text-align:center;">※設備の詳細は現地照合後に更新予定です。</p>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-sec">
+  <div class="wrap">
+    <h2>ご予約はこちら</h2>
+    <p>直接予約ならポータルサイト手数料ゼロ。<br>ウェブ予約フォームまたはお電話でどうぞ。</p>
+    <a class="btn-reserve" href="reserve.html">ウェブ予約フォームへ →</a>
+  </div>
+</section>
+
+<footer>
+  <div class="fname">ダイバーシティホテル シン トキワ 旭川</div>
+  <div>北海道旭川市常盤通3-4047-8</div>
+  <div class="footer-links">
+    <a href="index.html">トップ</a><a href="rooms.html">客室・料金</a><a href="facilities.html">館内施設</a><a href="access.html">アクセス</a>
+    <a href="sightseeing.html">周辺観光</a><a href="news.html">お知らせ</a><a href="blog.html">ブログ</a><a href="faq.html">FAQ</a><a href="reserve.html">ご予約</a>
+  </div>
+  <div class="footer-note">本ページはmono.create(旭川)による制作サンプルです。掲載情報・画像は公開情報を元にしています。<br>掲載内容の正確性は現地にてご確認ください。成約前は速やかに削除いたします。</div>
+</footer>
+
+<a class="float-tel" href="tel:0166-00-0000">📞 電話予約</a>
+<a class="float-line" href="reserve.html">
+  <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.94 2 10.7c0 3.03 2.02 5.7 5.06 7.24-.16.62-.85 3.1-.87 3.3 0 0-.02.18.1.24.11.06.24 0 .24 0 .34-.05 3.7-2.44 4.3-2.87.4.06.8.09 1.17.09 5.52 0 10-3.94 10-8.7C22 5.94 17.52 2 12 2z"/></svg>
+  ウェブ予約
+</a>
+<script>
+document.querySelector('.nav-toggle').addEventListener('click',function(){
+  const ul=document.querySelector('nav ul');
+  if(ul.style.display==='flex'){ul.style.display='none';}
+  else{ul.style.cssText='display:flex;flex-direction:column;position:absolute;top:54px;left:0;right:0;background:rgba(26,74,122,.97);padding:16px 24px;gap:14px;';}
+});
+</script>
+</body>
+</html>

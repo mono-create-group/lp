@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>宿泊予約｜ダイバーシティホテル シン トキワ 旭川</title>
+<meta name="description" content="ダイバーシティホテル シン トキワ 旭川の宿泊予約フォーム。直接予約でポータル手数料ゼロ。宿泊日・人数・お名前をご入力ください。">
+<style>
+  :root{--brand:#1a4a7a;--brand-dark:#0f2f50;--brand-mid:#2563a8;--ink:#1e2330;--cream:#f4f6fb;--gold:#c9a84c;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",Meiryo,sans-serif;color:var(--ink);background:var(--cream);line-height:1.8;word-break:keep-all;overflow-wrap:anywhere;}
+  a{color:inherit;}
+  header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(26,74,122,0.95);backdrop-filter:blur(6px);}
+  .nav-inner{max-width:1100px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;}
+  .logo{color:#fff;font-size:17px;letter-spacing:.08em;font-weight:700;line-height:1.3;text-decoration:none;}
+  .logo small{display:block;font-size:10px;letter-spacing:.2em;color:rgba(255,255,255,.65);font-weight:400;}
+  nav ul{list-style:none;display:flex;gap:20px;font-size:13px;}
+  nav a{color:rgba(255,255,255,.85);text-decoration:none;letter-spacing:.04em;}
+  nav a:hover,nav a.active{color:var(--gold);}
+  .nav-toggle{display:none;background:none;border:none;color:#fff;font-size:24px;cursor:pointer;}
+  .page-hero{background:linear-gradient(135deg,var(--brand-dark),var(--brand));color:#fff;text-align:center;padding:120px 24px 60px;}
+  .page-hero .eyebrow{font-size:11px;letter-spacing:.3em;color:var(--gold);display:block;margin-bottom:10px;}
+  .page-hero h1{font-size:clamp(22px,3.5vw,32px);font-weight:700;letter-spacing:.06em;}
+  section{padding:72px 24px;}
+  .wrap{max-width:720px;margin:0 auto;}
+  .breadcrumb{font-size:12px;color:#8a8fa0;margin-bottom:32px;}
+  .breadcrumb a{color:var(--brand-mid);text-decoration:none;}
+
+  /* 注意書きバナー */
+  .notice-box{background:#fff8e1;border:1px solid #f0c040;border-radius:8px;padding:16px 20px;margin-bottom:32px;font-size:13px;color:#6b4c00;line-height:1.75;}
+  .notice-box strong{display:block;margin-bottom:4px;font-size:14px;}
+
+  /* フォーム */
+  .form-card{background:#fff;border:1px solid #e4e8f0;border-radius:10px;padding:36px 40px;}
+  .form-group{margin-bottom:22px;}
+  .form-group label{display:block;font-size:13px;font-weight:700;color:var(--brand-mid);margin-bottom:6px;letter-spacing:.04em;}
+  .form-group label .req{color:#e53e3e;font-size:11px;margin-left:4px;}
+  .form-group input,.form-group select,.form-group textarea{
+    width:100%;padding:11px 14px;border:1px solid #d0d5e0;border-radius:5px;
+    font-size:14px;font-family:inherit;color:var(--ink);background:#fafbfd;transition:.15s;
+  }
+  .form-group input:focus,.form-group select:focus,.form-group textarea:focus{
+    outline:none;border-color:var(--brand-mid);background:#fff;box-shadow:0 0 0 3px rgba(37,99,168,.1);
+  }
+  .form-group textarea{resize:vertical;min-height:90px;}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .submit-btn{
+    width:100%;padding:16px;background:var(--brand);color:#fff;border:none;border-radius:5px;
+    font-size:16px;font-weight:700;letter-spacing:.06em;cursor:pointer;transition:.2s;margin-top:8px;
+  }
+  .submit-btn:hover{background:var(--brand-dark);}
+  .submit-btn:disabled{background:#8a8fa0;cursor:not-allowed;}
+
+  /* 完了メッセージ */
+  .success-msg{display:none;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:24px;text-align:center;margin-top:20px;}
+  .success-msg h3{color:#166534;font-size:18px;margin-bottom:8px;}
+  .success-msg p{color:#166534;font-size:13.5px;}
+
+  /* エラーメッセージ */
+  .error-msg{display:none;background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:16px;margin-top:16px;font-size:13px;color:#991b1b;}
+
+  /* 代替予約手段 */
+  .alt-box{background:var(--cream);border-radius:8px;padding:24px;margin-top:36px;text-align:center;}
+  .alt-box p{font-size:13px;color:#5a6070;margin-bottom:14px;}
+  .alt-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}
+  .btn-tel{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:#1a1a1a;font-weight:700;font-size:14px;padding:12px 24px;border-radius:3px;text-decoration:none;border:1.5px solid var(--gold);}
+  .btn-line{display:inline-flex;align-items:center;gap:8px;background:#06C755;color:#fff;font-weight:700;font-size:14px;padding:12px 24px;border-radius:3px;text-decoration:none;}
+
+  /* 空室目安 */
+  .vacancy-hint{background:#fff;border:1px solid #e4e8f0;border-radius:8px;padding:20px 24px;margin-top:32px;}
+  .vacancy-hint h3{font-size:14px;font-weight:700;color:var(--brand-mid);margin-bottom:10px;}
+  .vacancy-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;font-size:12px;text-align:center;}
+  .v-cell{padding:8px 4px;border-radius:4px;}
+  .v-avail{background:#f0fdf4;color:#166534;}
+  .v-limited{background:#fffbeb;color:#92400e;}
+  .v-full{background:#fef2f2;color:#991b1b;}
+  .v-label{font-weight:700;font-size:11px;}
+
+  footer{background:var(--ink);color:#8a8fa0;text-align:center;padding:40px 24px;font-size:12px;line-height:2;}
+  footer .fname{color:#fff;font-size:14px;margin-bottom:8px;letter-spacing:.08em;font-weight:700;}
+  .footer-links{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin:10px 0;}
+  .footer-links a{color:#8a8fa0;text-decoration:none;font-size:12px;}
+  .footer-links a:hover{color:#fff;}
+  .footer-note{margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.1);font-size:11px;color:#666;}
+  .float-tel{position:fixed;right:20px;bottom:82px;z-index:90;background:#fff;color:var(--ink);text-decoration:none;font-weight:700;font-size:13px;padding:12px 18px;border-radius:50px;box-shadow:0 6px 20px rgba(0,0,0,.2);display:inline-flex;align-items:center;gap:7px;}
+  .float-line{position:fixed;right:20px;bottom:20px;z-index:90;background:#06C755;color:#fff;text-decoration:none;font-weight:700;font-size:13px;padding:12px 18px;border-radius:50px;box-shadow:0 6px 20px rgba(6,199,85,.4);display:inline-flex;align-items:center;gap:7px;}
+  .float-line svg{width:18px;height:18px;fill:#fff;}
+  @media(max-width:860px){
+    nav ul{display:none;}.nav-toggle{display:block;}
+    .form-card{padding:24px 20px;}
+    .form-row{grid-template-columns:1fr;}
+    .vacancy-grid{grid-template-columns:repeat(2,1fr);}
+    section{padding:48px 20px;}
+    .float-tel,.float-line{font-size:12px;padding:10px 14px;}
+    .float-tel{bottom:74px;}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="nav-inner">
+    <a class="logo" href="index.html">ダイバーシティホテル シン トキワ 旭川<small>ASAHIKAWA HOTEL</small></a>
+    <nav>
+      <ul>
+        <li><a href="rooms.html">客室・料金</a></li>
+        <li><a href="facilities.html">館内施設</a></li>
+        <li><a href="access.html">アクセス</a></li>
+        <li><a href="sightseeing.html">周辺観光</a></li>
+        <li><a href="news.html">お知らせ</a></li>
+        <li><a href="blog.html">ブログ</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="reserve.html" class="active" style="color:var(--gold);font-weight:700;">ご予約</a></li>
+      </ul>
+    </nav>
+    <button class="nav-toggle" aria-label="メニュー">☰</button>
+  </div>
+</header>
+
+<div class="page-hero">
+  <span class="eyebrow">RESERVATION</span>
+  <h1>宿泊予約リクエスト</h1>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> &rsaquo; ご予約</div>
+
+    <div class="notice-box">
+      <strong>ご予約確定までの流れ</strong>
+      このフォームは「予約リクエスト」です。送信後、ホテルより電話またはメールにて折り返しご連絡し、空室確認・ご予約確定をご案内いたします。<br>
+      確定前は予約が保証されておりませんのでご注意ください。急ぎの場合はお電話でのご連絡をおすすめします。
+    </div>
+
+    <div class="form-card">
+      <form id="reserveForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label>チェックイン日 <span class="req">必須</span></label>
+            <input type="date" id="checkin" name="checkin" required>
+          </div>
+          <div class="form-group">
+            <label>チェックアウト日 <span class="req">必須</span></label>
+            <input type="date" id="checkout" name="checkout" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>宿泊人数 <span class="req">必須</span></label>
+            <select id="guests" name="guests" required>
+              <option value="">選択してください</option>
+              <option value="1名">1名</option>
+              <option value="2名">2名</option>
+              <option value="3名">3名</option>
+              <option value="4名以上">4名以上(詳細は備考欄へ)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>ご希望の客室タイプ</label>
+            <select id="roomtype" name="roomtype">
+              <option value="おまかせ">おまかせ</option>
+              <option value="シングル">シングルルーム</option>
+              <option value="ツイン">ツインルーム</option>
+              <option value="セミダブル">セミダブルルーム</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>お名前 <span class="req">必須</span></label>
+          <input type="text" id="guestName" name="guestName" placeholder="例：山田 太郎" required>
+        </div>
+        <div class="form-group">
+          <label>連絡先(電話番号またはメールアドレス) <span class="req">必須</span></label>
+          <input type="text" id="contact" name="contact" placeholder="例：090-0000-0000 または example@mail.com" required>
+        </div>
+        <div class="form-group">
+          <label>備考・ご要望(任意)</label>
+          <textarea id="notes" name="notes" placeholder="到着時間のご連絡・アレルギー情報・その他ご要望があればご記入ください。"></textarea>
+        </div>
+        <button type="submit" class="submit-btn" id="submitBtn">予約リクエストを送信する</button>
+      </form>
+      <div class="success-msg" id="successMsg">
+        <h3>送信完了しました</h3>
+        <p>予約リクエストを受け付けました。<br>1〜2営業日以内にホテルよりご連絡いたします。<br>お急ぎの場合はお電話(0166-00-0000)にてお問い合わせください。</p>
+      </div>
+      <div class="error-msg" id="errorMsg">
+        送信中にエラーが発生しました。お手数ですが、お電話(0166-00-0000)にてご連絡ください。
+      </div>
+    </div>
+
+    <!-- 空室目安表示 -->
+    <div class="vacancy-hint">
+      <h3>空室状況の目安(7月)</h3>
+      <div class="vacancy-grid">
+        <div class="v-cell v-avail"><div class="v-label">7/5〜7/11</div>空室あり</div>
+        <div class="v-cell v-limited"><div class="v-label">7/12〜7/18</div>残りわずか</div>
+        <div class="v-cell v-avail"><div class="v-label">7/19〜7/25</div>空室あり</div>
+        <div class="v-cell v-full"><div class="v-label">7/26〜7/31</div>満室</div>
+      </div>
+      <p style="font-size:11px;color:#8a8fa0;margin-top:8px;">※空室状況は目安です。正確な情報はお電話またはフォームにてご確認ください。</p>
+    </div>
+
+    <div class="alt-box">
+      <p>お急ぎの場合・確実な予約をご希望の場合</p>
+      <div class="alt-btns">
+        <a class="btn-tel" href="tel:0166-00-0000">📞 0166-00-0000</a>
+        <a class="btn-line" href="#">
+          <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#fff;"><path d="M12 2C6.48 2 2 5.94 2 10.7c0 3.03 2.02 5.7 5.06 7.24-.16.62-.85 3.1-.87 3.3 0 0-.02.18.1.24.11.06.24 0 .24 0 .34-.05 3.7-2.44 4.3-2.87.4.06.8.09 1.17.09 5.52 0 10-3.94 10-8.7C22 5.94 17.52 2 12 2z"/></svg>
+          LINE公式(導入予定)
+        </a>
+      </div>
+      <p style="margin-top:12px;font-size:12px;">電話受付時間: 9:00〜18:00</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="fname">ダイバーシティホテル シン トキワ 旭川</div>
+  <div>北海道旭川市常盤通3-4047-8</div>
+  <div class="footer-links">
+    <a href="index.html">トップ</a><a href="rooms.html">客室・料金</a><a href="facilities.html">館内施設</a><a href="access.html">アクセス</a><a href="sightseeing.html">周辺観光</a><a href="news.html">お知らせ</a><a href="blog.html">ブログ</a><a href="faq.html">FAQ</a><a href="reserve.html">ご予約</a>
+  </div>
+  <div class="footer-note">本ページはmono.create(旭川)による制作サンプルです。掲載情報・画像は公開情報を元にしています。<br>掲載内容の正確性は現地にてご確認ください。成約前は速やかに削除いたします。</div>
+</footer>
+
+<a class="float-tel" href="tel:0166-00-0000">📞 電話予約</a>
+<a class="float-line" href="reserve.html">
+  <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.94 2 10.7c0 3.03 2.02 5.7 5.06 7.24-.16.62-.85 3.1-.87 3.3 0 0-.02.18.1.24.11.06.24 0 .24 0 .34-.05 3.7-2.44 4.3-2.87.4.06.8.09 1.17.09 5.52 0 10-3.94 10-8.7C22 5.94 17.52 2 12 2z"/></svg>
+  ウェブ予約
+</a>
+
+<script>
+const GAS_URL='https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
+
+// 日付の初期値セット
+(function(){
+  const today=new Date();
+  const fmt=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  const tomorrow=new Date(today);tomorrow.setDate(today.getDate()+1);
+  document.getElementById('checkin').min=fmt(today);
+  document.getElementById('checkin').value=fmt(today);
+  document.getElementById('checkout').min=fmt(tomorrow);
+  document.getElementById('checkout').value=fmt(tomorrow);
+  document.getElementById('checkin').addEventListener('change',function(){
+    const ci=new Date(this.value);
+    const co=new Date(ci);co.setDate(ci.getDate()+1);
+    document.getElementById('checkout').min=fmt(co);
+    if(new Date(document.getElementById('checkout').value)<=ci){
+      document.getElementById('checkout').value=fmt(co);
+    }
+  });
+})();
+
+document.getElementById('reserveForm').addEventListener('submit',async function(e){
+  e.preventDefault();
+  const btn=document.getElementById('submitBtn');
+  btn.disabled=true;
+  btn.textContent='送信中...';
+
+  const checkin=document.getElementById('checkin').value;
+  const checkout=document.getElementById('checkout').value;
+  const guests=document.getElementById('guests').value;
+  const roomtype=document.getElementById('roomtype').value;
+  const guestName=document.getElementById('guestName').value;
+  const contact=document.getElementById('contact').value;
+  const notes=document.getElementById('notes').value;
+
+  const messageBody=`【宿泊予約リクエスト(シントキワ)】\nチェックイン: ${checkin}\nチェックアウト: ${checkout}\n人数: ${guests}\n客室: ${roomtype}\n連絡先: ${contact}\n備考: ${notes||'なし'}`;
+
+  const params=new URLSearchParams({
+    action:'submit',
+    name:guestName,
+    company:'宿泊者',
+    plan:'宿泊予約リクエスト(シントキワ)',
+    message:messageBody
+  });
+
+  try{
+    const res=await fetch(GAS_URL,{method:'POST',body:params,headers:{'Content-Type':'application/x-www-form-urlencoded'}});
+    let ok=false;
+    try{const json=await res.json();ok=json.result==='ok'||json.status==='success'||!!json;}catch{ok=true;}
+    document.getElementById('reserveForm').style.display='none';
+    document.getElementById('successMsg').style.display='block';
+  }catch(err){
+    document.getElementById('errorMsg').style.display='block';
+    btn.disabled=false;
+    btn.textContent='予約リクエストを送信する';
+  }
+});
+
+document.querySelector('.nav-toggle').addEventListener('click',function(){
+  const ul=document.querySelector('nav ul');
+  if(ul.style.display==='flex'){ul.style.display='none';}
+  else{ul.style.cssText='display:flex;flex-direction:column;position:absolute;top:54px;left:0;right:0;background:rgba(26,74,122,.97);padding:16px 24px;gap:14px;';}
+});
+</script>
+</body>
+</html>

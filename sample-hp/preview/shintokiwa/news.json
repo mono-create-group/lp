@@ -1,0 +1,29 @@
+[
+  {
+    "id": 3,
+    "date": "2026-07-01",
+    "category": "お知らせ",
+    "title": "夏の道北旅行プラン、受付開始のご案内",
+    "summary": "2026年夏シーズンの宿泊受付を開始しました。常盤公園のサンセット散歩に最適な季節。直接予約でポータル手数料ゼロ。お電話またはLINEにてお気軽にお問い合わせください。",
+    "en_title": "Summer Hokkaido Stay – Bookings Now Open",
+    "en_summary": "We are now accepting summer 2026 reservations. Enjoy sunset strolls at Tokiwa Park. Book directly and avoid OTA commission fees."
+  },
+  {
+    "id": 2,
+    "date": "2026-06-15",
+    "category": "施設情報",
+    "title": "1階カフェ「ココケッコウ」夏メニュー登場",
+    "summary": "館内1階カフェ「トリとたまごのカフェ ココケッコウ」にて、夏限定の冷製オムライスとフローズンドリンクが登場しました。チェックアウト後のひとときにもぜひどうぞ。",
+    "en_title": "Cafe Koko Keko – Summer Menu Available",
+    "en_summary": "Our 1F cafe now offers summer-limited chilled omurice and frozen drinks. Perfect for a post-checkout break."
+  },
+  {
+    "id": 1,
+    "date": "2026-05-20",
+    "category": "お知らせ",
+    "title": "シン トキワ 旭川、公式サイトをオープンしました",
+    "summary": "ダイバーシティホテル シン トキワ 旭川の公式サイトが完成しました。空室状況・予約受付・周辺観光情報など、旭川滞在に役立つ情報を随時更新してまいります。",
+    "en_title": "Official Website Launched",
+    "en_summary": "The official website of Diversity Hotel Shin Tokiwa Asahikawa is now live. We will regularly update information on availability, reservations, and local sightseeing."
+  }
+]
