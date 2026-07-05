@@ -344,6 +344,7 @@ document.getElementById('reserveForm').addEventListener('submit',async function(
   const params=new URLSearchParams({
     action:'submit',
     name:guestName,
+    email:email,
     company:'宿泊者',
     plan:'宿泊予約リクエスト(シントキワ)',
     message:messageBody
