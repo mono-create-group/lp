@@ -388,8 +388,8 @@
     </div>
     <div class="fmt-tabs rv">
       <div class="fmt-tab act" data-fmt="all">すべて</div>
-      <div class="fmt-tab" data-fmt="short">📱 ショート動画</div>
-      <div class="fmt-tab" data-fmt="long">🎬 長尺動画</div>
+      <div class="fmt-tab" data-fmt="short"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>ショート動画</div>
+      <div class="fmt-tab" data-fmt="long"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px;"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>長尺動画</div>
     </div>
     <div class="genre-label">— ジャンル別一覧 —</div>
     <div class="genre-tags" id="genre-tags"></div>
@@ -609,7 +609,7 @@
   }
 
   // ランクラベル(emoji付き)
-  const RANK_LABEL = { S:'🏆 S', A:'🥇 A', B:'🥈 B', Rookie:'🌱 Rookie' };
+  const RANK_LABEL = { S:'[S]', A:'[A]', B:'[B]', Rookie:'New' };
   function getRankInfo(name){
     return EDITOR_RANKS[name] || null;
   }
@@ -707,7 +707,7 @@
         ${pf.length?`<div class="m-row"><div class="k">ポートフォリオ</div><div class="v">${pf.map((p,i)=>`<a href="${esc(p.url)}" target="_blank" rel="noopener">作品${i+1}を見る ↗</a>`).join('<br>')}</div></div>`:''}
         ${ed.comment?`<div class="m-row"><div class="k">ひとこと</div><div class="v">${esc(ed.comment)}</div></div>`:''}
         <div class="m-contact">
-          <h5>💬 ${esc(ed.name)}さんについて、その場でお問い合わせ</h5>
+          <h5><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:6px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>${esc(ed.name)}さんについて、その場でお問い合わせ</h5>
           <input type="text" id="mc-name" placeholder="お名前・会社名">
           <input type="email" id="mc-email" placeholder="メールアドレス">
           <textarea id="mc-msg" placeholder="ご相談内容(例: 週3本のショート編集をお願いしたい)"></textarea>
@@ -751,7 +751,7 @@
     btn.disabled = true; btn.textContent = '送信中...';
     const ok = await submitInquiry({ company: name, contact_name: name, email, selected_editors: editorName, message: msg });
     if(ok){
-      btn.textContent = '✅ 送信しました。担当者からご連絡します';
+      btn.textContent = '送信しました。担当者からご連絡します';
       btn.style.background = '#16a34a';
     }else{
       btn.disabled = false; btn.textContent = 'この編集者についてお問い合わせする';
@@ -783,7 +783,7 @@
     if(ok){
       document.getElementById('contact-form').innerHTML =
         `<div style="text-align:center;padding:30px 10px;">
-          <div style="font-size:40px;margin-bottom:10px;">🎉</div>
+          <div style="font-size:40px;margin-bottom:10px;"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#2563a8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
           <div style="font-weight:900;font-size:18px;margin-bottom:8px;">お問い合わせを受け付けました</div>
           <div style="font-size:13.5px;color:var(--sub);">担当者より1〜2営業日以内にメールでご連絡します。<br>お急ぎの場合はその旨をお書き添えのうえ再送ください。</div>
         </div>`;

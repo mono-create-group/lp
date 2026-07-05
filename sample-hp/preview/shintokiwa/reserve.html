@@ -7,26 +7,30 @@
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex,nofollow">
-<title>宿泊予約｜Tabist ダイバーシティホテル シン トキワ 旭川</title>
-<meta name="description" content="Tabist ダイバーシティホテル シン トキワ 旭川の宿泊予約フォーム。直接予約でポータル手数料ゼロ。宿泊日・人数・お名前をご入力ください。">
+<title>宿泊予約｜ダイバーシティホテル シン トキワ 旭川</title>
+<meta name="description" content="ダイバーシティホテル シン トキワ 旭川の宿泊予約フォーム。直接予約でポータル手数料ゼロ。宿泊日・人数・お名前をご入力ください。">
 <style>
-  :root{--brand:#1a4a7a;--brand-dark:#0f2f50;--brand-mid:#2563a8;--ink:#1e2330;--cream:#f4f6fb;--gold:#c9a84c;}
+  :root{--brand:#1a4a7a;--brand-dark:#0f2f50;--brand-mid:#2563a8;--ink:#1e2330;--cream:#f4f6fb;--gold:#c9a84c;
+    --serif:Georgia,"Times New Roman","Noto Serif JP",serif;
+    --nav-bg:rgba(255,255,255,0.97);
+    --nav-text:#1e2330;
+    --section-bg-alt:#f8f6f2;}
   *{margin:0;padding:0;box-sizing:border-box;}
   html{scroll-behavior:smooth;}
   body{font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",Meiryo,sans-serif;color:var(--ink);background:var(--cream);line-height:1.8;word-break:keep-all;overflow-wrap:anywhere;}
   a{color:inherit;}
-  header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(26,74,122,0.95);backdrop-filter:blur(6px);}
+  header{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--nav-bg);backdrop-filter:blur(6px);border-bottom:1px solid #e4e8f0;}
   .nav-inner{max-width:1100px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;}
-  .logo{color:#fff;font-size:17px;letter-spacing:.08em;font-weight:700;line-height:1.3;text-decoration:none;}
-  .logo small{display:block;font-size:10px;letter-spacing:.2em;color:rgba(255,255,255,.65);font-weight:400;}
+  .logo{color:var(--brand-dark);font-size:17px;letter-spacing:.08em;font-weight:700;line-height:1.3;text-decoration:none;}
+  .logo small{display:block;font-size:10px;letter-spacing:.2em;color:#8a8fa0;font-weight:400;}
   nav ul{list-style:none;display:flex;gap:20px;font-size:13px;}
-  nav a{color:rgba(255,255,255,.85);text-decoration:none;letter-spacing:.04em;}
+  nav a{color:var(--nav-text);text-decoration:none;letter-spacing:.04em;}
   nav a:hover,nav a.active{color:var(--gold);}
-  .nav-toggle{display:none;background:none;border:none;color:#fff;font-size:24px;cursor:pointer;}
-  .page-hero{background:linear-gradient(135deg,var(--brand-dark),var(--brand));color:#fff;text-align:center;padding:120px 24px 60px;}
-  .page-hero .eyebrow{font-size:11px;letter-spacing:.3em;color:var(--gold);display:block;margin-bottom:10px;}
-  .page-hero h1{font-size:clamp(22px,3.5vw,32px);font-weight:700;letter-spacing:.06em;}
-  section{padding:72px 24px;}
+  .nav-toggle{display:none;background:none;border:none;color:var(--brand-dark);font-size:24px;cursor:pointer;}
+  .page-hero{background:var(--section-bg-alt);border-bottom:1px solid #e4e8f0;color:var(--brand-dark);text-align:center;padding:120px 24px 60px;}
+  .page-hero .eyebrow{font-size:11px;letter-spacing:.3em;color:var(--brand-mid);display:block;margin-bottom:10px;font-weight:700;font-family:var(--serif);}
+  .page-hero h1{font-size:clamp(22px,3.5vw,32px);font-weight:700;letter-spacing:.06em;color:var(--brand-dark);}
+  section{padding:110px 24px;}
   .wrap{max-width:720px;margin:0 auto;}
   .breadcrumb{font-size:12px;color:#8a8fa0;margin-bottom:32px;}
   .breadcrumb a{color:var(--brand-mid);text-decoration:none;}
@@ -64,6 +68,25 @@
   /* エラーメッセージ */
   .error-msg{display:none;background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:16px;margin-top:16px;font-size:13px;color:#991b1b;}
 
+  /* キャンセルポリシー要約ボックス */
+  .cancel-summary{background:#f8fafd;border:1px solid #d0d5e0;border-radius:8px;padding:20px 24px;margin-top:28px;margin-bottom:4px;}
+  .cancel-summary h3{font-size:13.5px;font-weight:700;color:var(--brand-dark);margin-bottom:12px;letter-spacing:.03em;}
+  .cancel-summary table{width:100%;border-collapse:collapse;font-size:12.5px;}
+  .cancel-summary th,.cancel-summary td{border:1px solid #d0d5e0;padding:7px 10px;text-align:left;}
+  .cancel-summary thead th{background:var(--brand);color:#fff;font-weight:700;}
+  .cancel-summary tbody tr:nth-child(even){background:#f0f4fa;}
+  .cancel-summary td.rate{font-weight:700;color:#c0392b;text-align:center;}
+  .cancel-summary td.rate-free{font-weight:700;color:#166534;text-align:center;}
+  .cancel-summary .policy-link{display:block;text-align:right;font-size:12px;margin-top:10px;color:var(--brand-mid);}
+  .cancel-summary .policy-link a{color:var(--brand-mid);text-decoration:underline;}
+
+  /* 同意チェックボックス */
+  .consent-box{display:flex;align-items:flex-start;gap:10px;margin:18px 0 4px;padding:14px 16px;background:#fffbeb;border:1px solid #f0c040;border-radius:6px;cursor:pointer;}
+  .consent-box input[type=checkbox]{width:18px;height:18px;margin-top:2px;flex-shrink:0;cursor:pointer;accent-color:var(--brand);}
+  .consent-box label{font-size:13.5px;color:#4a3000;line-height:1.7;cursor:pointer;}
+  .consent-box label a{color:var(--brand-mid);text-decoration:underline;}
+  .consent-error{display:none;font-size:12px;color:#991b1b;margin-top:4px;margin-bottom:8px;}
+
   /* 代替予約手段 */
   .alt-box{background:var(--cream);border-radius:8px;padding:24px;margin-top:36px;text-align:center;}
   .alt-box p{font-size:13px;color:#5a6070;margin-bottom:14px;}
@@ -100,72 +123,55 @@
     .float-tel{bottom:74px;}
   }
 
-  /* ===== Design Upgrade 2026-07-05: 明朝+Noto組み合わせ・余白拡大・洗練シャドウ ===== */
+  /* ===== Design Upgrade 2026-07-05 ===== */
   :root{
     --font-min:"Shippori Mincho","游明朝","Yu Mincho",serif;
     --font-sans:"Noto Sans JP","Hiragino Kaku Gothic ProN","Hiragino Sans",Meiryo,sans-serif;
-    --shadow-card:0 2px 8px rgba(15,47,80,.07), 0 8px 24px rgba(15,47,80,.10), 0 1px 3px rgba(15,47,80,.04);
-    --shadow-hover:0 4px 16px rgba(15,47,80,.12), 0 16px 40px rgba(15,47,80,.16), 0 2px 6px rgba(15,47,80,.06);
-    --shadow-btn:0 2px 8px rgba(201,168,76,.35), 0 4px 16px rgba(201,168,76,.20);
+    --shadow-card:0 2px 8px rgba(15,47,80,.07),0 8px 24px rgba(15,47,80,.10),0 1px 3px rgba(15,47,80,.04);
+    --shadow-hover:0 4px 16px rgba(15,47,80,.12),0 16px 40px rgba(15,47,80,.16),0 2px 6px rgba(15,47,80,.06);
+    --shadow-btn:0 2px 8px rgba(201,168,76,.35),0 4px 16px rgba(201,168,76,.20);
     --radius:10px;
     --border-light:#eaecf2;
   }
-  /* 本文フォント */
   body{font-family:var(--font-sans);}
-  /* 見出し: 明朝体 */
-  h1,h2,h3,h4,.sec-head h2,.page-hero h1,.hero-content h1{
-    font-family:var(--font-min);letter-spacing:.06em;
-  }
-  /* サイズジャンプ強化 */
+  h1,h2,h3,h4{font-family:var(--font-min);letter-spacing:.06em;}
   .sec-head h2{font-size:clamp(24px,3.5vw,36px);font-weight:700;line-height:1.4;}
-  /* カード: 多層シャドウ・淡色ボーダー */
   .spot-card,.room-detail,.room-card,.blog-link-card,.feature-card,.amenity-card,.faq-item,.facility-card{
     border:1px solid var(--border-light);
     box-shadow:var(--shadow-card);
-    transition:box-shadow .25s ease, transform .25s ease;
+    transition:box-shadow .25s ease,transform .25s ease;
     border-radius:var(--radius);
   }
   .spot-card:hover,.room-detail:hover,.room-card:hover,.feature-card:hover,.amenity-card:hover,.facility-card:hover{
     box-shadow:var(--shadow-hover);
     transform:translateY(-3px);
   }
-  /* ボタン質感向上 */
   .btn-gold,.btn-reserve,.btn-cta-tel{
-    box-shadow:var(--shadow-btn);
-    letter-spacing:.06em;
-    transition:box-shadow .2s ease, transform .2s ease, background .2s ease;
+    box-shadow:var(--shadow-btn);letter-spacing:.06em;
+    transition:box-shadow .2s ease,transform .2s ease,background .2s ease;
   }
   .btn-gold:hover,.btn-reserve:hover{
     transform:translateY(-2px);
-    box-shadow:0 4px 16px rgba(201,168,76,.55), 0 8px 24px rgba(201,168,76,.30);
+    box-shadow:0 4px 16px rgba(201,168,76,.55),0 8px 24px rgba(201,168,76,.30);
   }
-  /* フロートボタン: 多層シャドウ */
-  .float-tel{
-    box-shadow:0 2px 8px rgba(0,0,0,.12), 0 8px 24px rgba(0,0,0,.18), 0 1px 3px rgba(0,0,0,.08);
-    font-family:var(--font-sans);
-  }
-  .float-line{
-    box-shadow:0 2px 8px rgba(6,199,85,.25), 0 8px 24px rgba(6,199,85,.40), 0 1px 3px rgba(6,199,85,.15);
-  }
-  /* ヒーローオーバーレイ調整 */
-  .page-hero{
-    background:linear-gradient(160deg,var(--brand-dark) 0%,var(--brand) 50%,#1a5a8a 100%);
-    padding:132px 24px 72px;
-  }
+  .float-tel{box-shadow:0 2px 8px rgba(0,0,0,.12),0 8px 24px rgba(0,0,0,.18),0 1px 3px rgba(0,0,0,.08);}
+  .float-line{box-shadow:0 2px 8px rgba(6,199,85,.25),0 8px 24px rgba(6,199,85,.40),0 1px 3px rgba(6,199,85,.15);}
+  .page-hero{background:var(--section-bg-alt);border-bottom:1px solid #e4e8f0;color:var(--brand-dark);text-align:center;padding:120px 24px 60px;}
   .page-hero h1,.page-hero .eyebrow{font-family:var(--font-min);}
-  /* セクション余白拡大 */
-  section{padding:96px 24px;}
-  @media(max-width:900px){section{padding:64px 20px;}}
-  /* 罫線の淡色化 */
   .compare-row,.price-table th,.price-table td,.faq-item{border-color:var(--border-light);}
-  /* spot-ph廃止後の念のための非表示 */
   .spot-ph{background:linear-gradient(135deg,var(--brand-dark),var(--brand-mid));border-radius:var(--radius) var(--radius) 0 0;}
+  .f-icon{color:var(--brand-mid);display:flex;justify-content:center;align-items:center;margin-bottom:18px;}
+  .f-icon svg{stroke:var(--brand-mid);}
+  .amenity-card .icon{display:flex;justify-content:center;align-items:center;margin-bottom:12px;color:var(--brand-mid);}
+  .amenity-card .icon svg{stroke:var(--brand-mid);}
+  .access-item .icon{color:var(--brand-mid);}
+  .access-item .icon svg{stroke:var(--brand-mid);}
 </style>
 </head>
 <body>
 <header>
   <div class="nav-inner">
-    <a class="logo" href="index.html">Tabist ダイバーシティホテル シン トキワ 旭川<small>ASAHIKAWA HOTEL</small></a>
+    <a class="logo" href="index.html">ダイバーシティホテル シン トキワ 旭川<small>ASAHIKAWA HOTEL</small></a>
     <nav>
       <ul>
         <li><a href="rooms.html">客室・料金</a></li>
@@ -178,7 +184,7 @@
         <li><a href="reserve.html" class="active" style="color:var(--gold);font-weight:700;">ご予約</a></li>
       </ul>
     </nav>
-    <button class="nav-toggle" aria-label="メニュー">☰</button>
+    <button class="nav-toggle" aria-label="メニュー"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
   </div>
 </header>
 
@@ -193,11 +199,8 @@
 
     <div class="notice-box">
       <strong>ご予約確定までの流れ</strong>
-      このフォームは「予約リクエスト」です。<br>
-      送信後、ホテルより電話またはメールにて折り返しご連絡し、<br>
-      空室確認・ご予約確定をご案内いたします。<br><br>
-      確定前は予約が保証されておりませんのでご注意ください。<br>
-      急ぎの場合はお電話でのご連絡をおすすめします。
+      このフォームは「予約リクエスト」です。送信後、ホテルより電話またはメールにて折り返しご連絡し、空室確認・ご予約確定をご案内いたします。<br>
+      確定前は予約が保証されておりませんのでご注意ください。急ぎの場合はお電話でのご連絡をおすすめします。
     </div>
 
     <div class="form-card">
@@ -238,17 +241,40 @@
           <input type="text" id="guestName" name="guestName" placeholder="例：山田 太郎" required>
         </div>
         <div class="form-group">
-          <label>電話番号 <span class="req">必須</span></label>
-          <input type="tel" id="phone" name="phone" placeholder="例：090-0000-0000" required>
-        </div>
-        <div class="form-group">
-          <label>メールアドレス <span class="req">必須</span></label>
-          <input type="email" id="email" name="email" placeholder="例：example@mail.com" required>
+          <label>連絡先(電話番号またはメールアドレス) <span class="req">必須</span></label>
+          <input type="text" id="contact" name="contact" placeholder="例：090-0000-0000 または example@mail.com" required>
         </div>
         <div class="form-group">
           <label>備考・ご要望(任意)</label>
           <textarea id="notes" name="notes" placeholder="到着時間のご連絡・アレルギー情報・その他ご要望があればご記入ください。"></textarea>
         </div>
+        <!-- キャンセルポリシー要約 -->
+        <div class="cancel-summary">
+          <h3>キャンセルポリシー(標準例)</h3>
+          <table>
+            <thead>
+              <tr><th>キャンセル連絡のタイミング</th><th>キャンセル料</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>宿泊日の3日前まで</td><td class="rate-free">無料(0%)</td></tr>
+              <tr><td>宿泊日の2日前</td><td class="rate">20%</td></tr>
+              <tr><td>宿泊日の前日</td><td class="rate">50%</td></tr>
+              <tr><td>宿泊当日</td><td class="rate">80%</td></tr>
+              <tr><td>無連絡不泊</td><td class="rate">100%</td></tr>
+            </tbody>
+          </table>
+          <span class="policy-link"><a href="policy.html" target="_blank">キャンセルポリシー詳細・個人情報の取り扱い &rsaquo;</a></span>
+        </div>
+
+        <!-- 同意チェック -->
+        <div class="consent-box">
+          <input type="checkbox" id="consentCheck" name="consent">
+          <label for="consentCheck">
+            <a href="policy.html" target="_blank">キャンセルポリシーおよび個人情報の取り扱い</a>について確認し、同意します。<span style="color:#e53e3e;font-size:11px;margin-left:4px;">必須</span>
+          </label>
+        </div>
+        <div class="consent-error" id="consentError">キャンセルポリシーへの同意が必要です。チェックを入れてから送信してください。</div>
+
         <button type="submit" class="submit-btn" id="submitBtn">予約リクエストを送信する</button>
       </form>
       <div class="success-msg" id="successMsg">
@@ -275,7 +301,7 @@
     <div class="alt-box">
       <p>お急ぎの場合・確実な予約をご希望の場合</p>
       <div class="alt-btns">
-        <a class="btn-tel" href="tel:0166-67-2194"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.64 3.41 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.78a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> 0166-67-2194</a>
+        <a class="btn-tel" href="tel:0166-67-2194"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.64 3.41 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.78a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> 0166-67-2194</a>
         <a class="btn-line" href="#">
           <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#fff;"><path d="M12 2C6.48 2 2 5.94 2 10.7c0 3.03 2.02 5.7 5.06 7.24-.16.62-.85 3.1-.87 3.3 0 0-.02.18.1.24.11.06.24 0 .24 0 .34-.05 3.7-2.44 4.3-2.87.4.06.8.09 1.17.09 5.52 0 10-3.94 10-8.7C22 5.94 17.52 2 12 2z"/></svg>
           LINE公式(導入予定)
@@ -287,15 +313,15 @@
 </section>
 
 <footer>
-  <div class="fname">Tabist ダイバーシティホテル シン トキワ 旭川</div>
+  <div class="fname">ダイバーシティホテル シン トキワ 旭川</div>
   <div>北海道旭川市常盤通3-4047-8</div>
   <div class="footer-links">
-    <a href="index.html">トップ</a><a href="rooms.html">客室・料金</a><a href="facilities.html">館内施設</a><a href="access.html">アクセス</a><a href="sightseeing.html">周辺観光</a><a href="news.html">お知らせ</a><a href="blog.html">ブログ</a><a href="faq.html">FAQ</a><a href="reserve.html">ご予約</a>
+    <a href="index.html">トップ</a><a href="rooms.html">客室・料金</a><a href="facilities.html">館内施設</a><a href="access.html">アクセス</a><a href="sightseeing.html">周辺観光</a><a href="news.html">お知らせ</a><a href="blog.html">ブログ</a><a href="faq.html">FAQ</a><a href="reserve.html">ご予約</a><a href="policy.html" style="color:#c9a84c;">ご予約とキャンセルについて</a>
   </div>
   <div class="footer-note">本ページはmono.create(旭川)による制作サンプルです。掲載情報・画像は公開情報を元にしています。<br>掲載内容の正確性は現地にてご確認ください。成約前は速やかに削除いたします。</div>
 </footer>
 
-<a class="float-tel" href="tel:0166-67-2194"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.64 3.41 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.78a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> 電話予約</a>
+<a class="float-tel" href="tel:0166-67-2194"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.64 3.41 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.78a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> 電話予約</a>
 <a class="float-line" href="reserve.html">
   <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.94 2 10.7c0 3.03 2.02 5.7 5.06 7.24-.16.62-.85 3.1-.87 3.3 0 0-.02.18.1.24.11.06.24 0 .24 0 .34-.05 3.7-2.44 4.3-2.87.4.06.8.09 1.17.09 5.52 0 10-3.94 10-8.7C22 5.94 17.52 2 12 2z"/></svg>
   ウェブ予約
@@ -325,6 +351,19 @@ const GAS_URL='https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2
 
 document.getElementById('reserveForm').addEventListener('submit',async function(e){
   e.preventDefault();
+
+  // 同意チェックバリデーション
+  const consent=document.getElementById('consentCheck');
+  const consentError=document.getElementById('consentError');
+  if(!consent.checked){
+    consentError.style.display='block';
+    consent.closest('.consent-box').style.borderColor='#e53e3e';
+    consent.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  consentError.style.display='none';
+  consent.closest('.consent-box').style.borderColor='#f0c040';
+
   const btn=document.getElementById('submitBtn');
   btn.disabled=true;
   btn.textContent='送信中...';
@@ -334,17 +373,14 @@ document.getElementById('reserveForm').addEventListener('submit',async function(
   const guests=document.getElementById('guests').value;
   const roomtype=document.getElementById('roomtype').value;
   const guestName=document.getElementById('guestName').value;
-  const phone=document.getElementById('phone').value.trim();
-  const email=document.getElementById('email').value.trim();
-  if(!phone||!email){ alert('電話番号とメールアドレスは両方必須です。'); return; }
+  const contact=document.getElementById('contact').value;
   const notes=document.getElementById('notes').value;
 
-  const messageBody=`【宿泊予約リクエスト(シントキワ)】\nチェックイン: ${checkin}\nチェックアウト: ${checkout}\n人数: ${guests}\n客室: ${roomtype}\n電話: ${phone}\nメール: ${email}\n備考: ${notes||'なし'}`;
+  const messageBody=`【宿泊予約リクエスト(シントキワ)】\nチェックイン: ${checkin}\nチェックアウト: ${checkout}\n人数: ${guests}\n客室: ${roomtype}\n連絡先: ${contact}\n備考: ${notes||'なし'}`;
 
   const params=new URLSearchParams({
     action:'submit',
     name:guestName,
-    email:email,
     company:'宿泊者',
     plan:'宿泊予約リクエスト(シントキワ)',
     message:messageBody
@@ -366,7 +402,7 @@ document.getElementById('reserveForm').addEventListener('submit',async function(
 document.querySelector('.nav-toggle').addEventListener('click',function(){
   const ul=document.querySelector('nav ul');
   if(ul.style.display==='flex'){ul.style.display='none';}
-  else{ul.style.cssText='display:flex;flex-direction:column;position:absolute;top:54px;left:0;right:0;background:rgba(26,74,122,.97);padding:16px 24px;gap:14px;';}
+  else{ul.style.cssText='display:flex;flex-direction:column;position:absolute;top:54px;left:0;right:0;background:rgba(255,255,255,.97);color:var(--brand-dark);padding:16px 24px;gap:14px;';}
 });
 </script>
 </body>

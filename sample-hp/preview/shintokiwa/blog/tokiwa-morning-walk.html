@@ -2,6 +2,9 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex,nofollow">
 <title>常盤公園の朝さんぽ｜シン トキワ ブログ</title>
@@ -68,13 +71,57 @@
     .float-tel,.float-line{font-size:12px;padding:10px 14px;}
     .float-tel{bottom:74px;}
   }
+
+  /* ===== Design Upgrade 2026-07-05 ===== */
+  :root{
+    --font-min:"Shippori Mincho","游明朝","Yu Mincho",serif;
+    --font-sans:"Noto Sans JP","Hiragino Kaku Gothic ProN","Hiragino Sans",Meiryo,sans-serif;
+    --shadow-card:0 2px 8px rgba(15,47,80,.07),0 8px 24px rgba(15,47,80,.10),0 1px 3px rgba(15,47,80,.04);
+    --shadow-hover:0 4px 16px rgba(15,47,80,.12),0 16px 40px rgba(15,47,80,.16),0 2px 6px rgba(15,47,80,.06);
+    --shadow-btn:0 2px 8px rgba(201,168,76,.35),0 4px 16px rgba(201,168,76,.20);
+    --radius:10px;
+    --border-light:#eaecf2;
+  }
+  body{font-family:var(--font-sans);}
+  h1,h2,h3,h4{font-family:var(--font-min);letter-spacing:.06em;}
+  .sec-head h2{font-size:clamp(24px,3.5vw,36px);font-weight:700;line-height:1.4;}
+  .spot-card,.room-detail,.room-card,.blog-link-card,.feature-card,.amenity-card,.faq-item,.facility-card{
+    border:1px solid var(--border-light);
+    box-shadow:var(--shadow-card);
+    transition:box-shadow .25s ease,transform .25s ease;
+    border-radius:var(--radius);
+  }
+  .spot-card:hover,.room-detail:hover,.room-card:hover,.feature-card:hover,.amenity-card:hover,.facility-card:hover{
+    box-shadow:var(--shadow-hover);
+    transform:translateY(-3px);
+  }
+  .btn-gold,.btn-reserve,.btn-cta-tel{
+    box-shadow:var(--shadow-btn);letter-spacing:.06em;
+    transition:box-shadow .2s ease,transform .2s ease,background .2s ease;
+  }
+  .btn-gold:hover,.btn-reserve:hover{
+    transform:translateY(-2px);
+    box-shadow:0 4px 16px rgba(201,168,76,.55),0 8px 24px rgba(201,168,76,.30);
+  }
+  .float-tel{box-shadow:0 2px 8px rgba(0,0,0,.12),0 8px 24px rgba(0,0,0,.18),0 1px 3px rgba(0,0,0,.08);}
+  .float-line{box-shadow:0 2px 8px rgba(6,199,85,.25),0 8px 24px rgba(6,199,85,.40),0 1px 3px rgba(6,199,85,.15);}
+  .page-hero{background:linear-gradient(160deg,var(--brand-dark) 0%,var(--brand) 50%,#1a5a8a 100%);padding:132px 24px 72px;}
+  .page-hero h1,.page-hero .eyebrow{font-family:var(--font-min);}
+  .compare-row,.price-table th,.price-table td,.faq-item{border-color:var(--border-light);}
+  .spot-ph{background:linear-gradient(135deg,var(--brand-dark),var(--brand-mid));border-radius:var(--radius) var(--radius) 0 0;}
+  .f-icon{color:var(--brand-mid);display:flex;justify-content:center;align-items:center;margin-bottom:18px;}
+  .f-icon svg{stroke:var(--brand-mid);}
+  .amenity-card .icon{display:flex;justify-content:center;align-items:center;margin-bottom:12px;color:var(--brand-mid);}
+  .amenity-card .icon svg{stroke:var(--brand-mid);}
+  .access-item .icon{color:var(--brand-mid);}
+  .access-item .icon svg{stroke:var(--brand-mid);}
 </style>
 </head>
 <body>
 
 <header>
   <div class="nav-inner">
-    <a class="logo" href="../index.html">Tabist ダイバーシティホテル シン トキワ 旭川<small>ASAHIKAWA HOTEL</small></a>
+    <a class="logo" href="../index.html">ダイバーシティホテル シン トキワ 旭川<small>ASAHIKAWA HOTEL</small></a>
     <nav>
       <ul>
         <li><a href="../rooms.html">客室・料金</a></li>
@@ -150,10 +197,10 @@
 </div>
 
 <footer>
-  <div class="fname">Tabist ダイバーシティホテル シン トキワ 旭川</div>
+  <div class="fname">ダイバーシティホテル シン トキワ 旭川</div>
   <div>北海道旭川市常盤通3-4047-8</div>
   <div class="footer-links">
-    <a href="../index.html">トップ</a><a href="../rooms.html">客室・料金</a><a href="../facilities.html">館内施設</a><a href="../access.html">アクセス</a><a href="../sightseeing.html">周辺観光</a><a href="../news.html">お知らせ</a><a href="../blog.html">ブログ</a><a href="../faq.html">FAQ</a><a href="../reserve.html">ご予約</a>
+    <a href="../index.html">トップ</a><a href="../rooms.html">客室・料金</a><a href="../facilities.html">館内施設</a><a href="../access.html">アクセス</a><a href="../sightseeing.html">周辺観光</a><a href="../news.html">お知らせ</a><a href="../blog.html">ブログ</a><a href="../faq.html">FAQ</a><a href="../reserve.html">ご予約</a><a href="../policy.html" style="color:#c9a84c;">ご予約とキャンセルについて</a>
   </div>
   <div class="footer-note">
     本ページはmono.create(旭川)による制作サンプルです。掲載情報・画像は公開情報を元にしています。<br>
@@ -161,7 +208,7 @@
   </div>
 </footer>
 
-<a class="float-tel" href="tel:0166-67-2194" aria-label="電話で予約">📞 電話予約</a>
+<a class="float-tel" href="tel:0166-67-2194" aria-label="電話で予約"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.64 3.41 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.78a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> 電話予約</a>
 <a class="float-line" href="../reserve.html" aria-label="ウェブ予約">
   <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.94 2 10.7c0 3.03 2.02 5.7 5.06 7.24-.16.62-.85 3.1-.87 3.3 0 0-.02.18.1.24.11.06.24 0 .24 0 .34-.05 3.7-2.44 4.3-2.87.4.06.8.09 1.17.09 5.52 0 10-3.94 10-8.7C22 5.94 17.52 2 12 2z"/></svg>
   ウェブ予約
