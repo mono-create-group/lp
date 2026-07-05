@@ -567,6 +567,13 @@
   let curGenre = 'all';
 
   function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  // monthly_capacity は「8本・余裕あり」形式で稼働状況を内包する(GASに稼働状況カラムが無いため)
+  function parseCapacity(s){
+    s = String(s||'');
+    const status = (s.match(/余裕あり|普通|満枠/)||[''])[0];
+    const n = s.replace(/[・\s]*(余裕あり|普通|満枠)/,'').replace(/本$/,'').trim();
+    return { n, status };
+  }
   function fmtsOf(ed){
     const g = ed.genres || '';
     const f = [];
@@ -648,11 +655,13 @@
       const starHtml = ri && ri.rating
         ? `<span class="star-score">★${ri.rating.toFixed(1)} (${ri.reviewCount}件)</span>`
         : '';
-      const availBadge = ed.availability
-        ? `<span class="avail-badge avail-${esc(ed.availability)}">${esc(ed.availability)}</span>`
+      const cap = parseCapacity(ed.monthly_capacity);
+      const avail = ed.availability || cap.status;
+      const availBadge = avail
+        ? `<span class="avail-badge avail-${esc(avail)}">${esc(avail)}</span>`
         : '';
-      const capacityNote = ed.monthly_capacity
-        ? `<div class="capacity-note">今月の空き: ${esc(String(ed.monthly_capacity))}本</div>`
+      const capacityNote = cap.n
+        ? `<div class="capacity-note">今月の空き: ${esc(cap.n)}本</div>`
         : '';
       return `<div class="creator-card" onclick="openModal(${ed.row})">
         ${ed.icon?`<img class="ph-img" src="${esc(ed.icon)}" loading="lazy" onerror="this.outerHTML='<div class=&quot;ph&quot;>NO PHOTO</div>'">`:'<div class="ph">NO PHOTO</div>'}
@@ -680,8 +689,8 @@
       ['得意スタイル', ed.style],
       ['使用ソフト', ed.software],
       ['ランク', ri ? `${RANK_LABEL[ri.rank]||ri.rank}  ★${ri.rating.toFixed(1)} (${ri.reviewCount}件の口コミ)  納品実績: ${ri.deliveries}本` : null],
-      ['稼働状況', ed.availability],
-      ['今月の空き', ed.monthly_capacity ? ed.monthly_capacity + '本' : null],
+      ['稼働状況', ed.availability || parseCapacity(ed.monthly_capacity).status || null],
+      ['今月の空き', parseCapacity(ed.monthly_capacity).n ? parseCapacity(ed.monthly_capacity).n + '本' : null],
       ['週の対応本数', ed.weekly_capacity],
       ['稼働時間帯', ed.work_hours],
     ].filter(([,v])=>v);

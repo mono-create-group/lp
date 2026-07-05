@@ -149,6 +149,13 @@
 <script>
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
 const escH = s => String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+// monthly_capacity は「8本・余裕あり」形式で稼働状況を内包する(GASに稼働状況カラムが無いため)
+function parseCapacity(s){
+  s = String(s||'');
+  const status = (s.match(/余裕あり|普通|満枠/)||[''])[0];
+  const n = s.replace(/[・\s]*(余裕あり|普通|満枠)/,'').replace(/本$/,'').trim();
+  return { n, status };
+}
 
 let EDITORS = [];
 let selectedEditor = null;
@@ -193,12 +200,13 @@ function prefillForm(ed){
   document.getElementById('e-experience').value  = ed.experience || '';
   document.getElementById('e-genres').value      = ed.genres || '';
   document.getElementById('e-software').value    = ed.software || '';
-  document.getElementById('e-monthly').value     = ed.monthly_capacity || '';
+  const cap = parseCapacity(ed.monthly_capacity);
+  document.getElementById('e-monthly').value     = cap.n;
   document.getElementById('e-weekly').value      = ed.weekly_capacity || '';
   document.getElementById('e-hours').value       = ed.work_hours || '';
   document.getElementById('e-comment').value     = ed.comment || '';
   // 稼働ステータス
-  const st = ed.availability || '';
+  const st = ed.availability || cap.status || '';
   if(st) setStatus(st);
 }
 
@@ -248,7 +256,8 @@ async function submitMypage(){
     experience:       document.getElementById('e-experience').value || selectedEditor.experience || '',
     genres:           document.getElementById('e-genres').value     || selectedEditor.genres     || '',
     software:         document.getElementById('e-software').value   || selectedEditor.software   || '',
-    monthly_capacity: monthly,
+    // 稼働状況はGASに専用カラムが無いため monthly_capacity に「N本・状況」で埋め込む
+    monthly_capacity: parseCapacity(monthly).n + '本・' + status,
     weekly_capacity:  document.getElementById('e-weekly').value  || selectedEditor.weekly_capacity || '',
     work_hours:       document.getElementById('e-hours').value    || selectedEditor.work_hours    || '',
     comment:          document.getElementById('e-comment').value  || selectedEditor.comment       || '',
@@ -268,7 +277,7 @@ async function submitMypage(){
     // GAS POST応答が読めない障害対策(2026-07-04観測): 実行自体は成功しているため成功扱い
     if(json.ok || json.degraded){
       // ローカルのEDITORSも更新
-      selectedEditor.monthly_capacity = monthly;
+      selectedEditor.monthly_capacity = parseCapacity(monthly).n + '本・' + status;
       selectedEditor.availability     = status;
       okMsg.style.display = 'block';
       btn.disabled = false; btn.textContent = '稼働状況を更新する';
