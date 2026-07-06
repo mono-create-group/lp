@@ -233,6 +233,32 @@ textarea.form-control { min-height:80px; resize:vertical; }
         <input type="text" class="form-control" name="portfolio" placeholder="https://... （複数あればカンマ区切りでOK）" required>
       </div>
 
+      <!-- 使用PC -->
+      <div class="form-row">
+        <label>使用PC<span class="req">*</span></label>
+        <div class="radio-group" style="margin-top:4px;gap:14px;">
+          <div class="radio-item"><input type="radio" id="pc-mac" name="pc_type" value="Mac" required><label for="pc-mac">Mac</label></div>
+          <div class="radio-item"><input type="radio" id="pc-win" name="pc_type" value="Windows"><label for="pc-win">Windows</label></div>
+          <div class="radio-item"><input type="radio" id="pc-both" name="pc_type" value="両方"><label for="pc-both">両方</label></div>
+        </div>
+      </div>
+
+      <!-- 使用ソフト -->
+      <div class="form-row">
+        <label>使用ソフト（複数可）<span class="req">*</span></label>
+        <div class="radio-group" style="margin-top:4px;gap:10px 16px;">
+          <div class="radio-item"><input type="checkbox" id="sw-pr" name="software" value="Premiere Pro"><label for="sw-pr">Premiere Pro</label></div>
+          <div class="radio-item"><input type="checkbox" id="sw-ae" name="software" value="After Effects"><label for="sw-ae">After Effects</label></div>
+          <div class="radio-item"><input type="checkbox" id="sw-fcp" name="software" value="Final Cut Pro"><label for="sw-fcp">Final Cut Pro</label></div>
+          <div class="radio-item"><input type="checkbox" id="sw-dv" name="software" value="DaVinci Resolve"><label for="sw-dv">DaVinci Resolve</label></div>
+          <div class="radio-item"><input type="checkbox" id="sw-cc" name="software" value="CapCut"><label for="sw-cc">CapCut</label></div>
+          <div class="radio-item"><input type="checkbox" id="sw-fm" name="software" value="Filmora"><label for="sw-fm">Filmora</label></div>
+          <div class="radio-item"><input type="checkbox" id="sw-av" name="software" value="AviUtl"><label for="sw-av">AviUtl</label></div>
+          <div class="radio-item"><input type="checkbox" id="sw-other-chk" name="software" value="その他"><label for="sw-other-chk">その他</label></div>
+        </div>
+        <input type="text" class="form-control" id="sw-other-text" placeholder="その他の場合はソフト名を入力" style="margin-top:8px;display:none;">
+      </div>
+
       <!-- 対応本数 -->
       <div class="form-row">
         <label>週・月に納品可能な本数の目安</label>
@@ -336,12 +362,19 @@ function _validateFields(checks) {
   return true;
 }
 
+// 「その他」ソフトのチェック時のみ自由記述欄を表示
+document.getElementById('sw-other-chk').addEventListener('change', (e) => {
+  document.getElementById('sw-other-text').style.display = e.target.checked ? 'block' : 'none';
+});
+
 document.getElementById('apply-form').addEventListener('submit', async (e) => {
   e.preventDefault();
 
   const form = e.target;
   const case_type = form.querySelector('[name="case_type"]:checked')?.value || '';
   const caseTypeEl = form.querySelector('[name="case_type"]');
+  const pcTypeEl = form.querySelector('[name="pc_type"]');
+  const swChecks = Array.from(form.querySelectorAll('[name="software"]:checked'));
 
   const ok = _validateFields([
     { el: form.name,      msg: 'お名前を入力してください' },
@@ -350,6 +383,10 @@ document.getElementById('apply-form').addEventListener('submit', async (e) => {
     { el: caseTypeEl,     msg: '動画ジャンルを選択してください',
       test: () => !!case_type },
     { el: form.portfolio, msg: 'ポートフォリオURLを入力してください' },
+    { el: pcTypeEl,       msg: '使用PCを選択してください',
+      test: () => !!form.querySelector('[name="pc_type"]:checked') },
+    { el: document.getElementById('sw-pr'), msg: '使用ソフトを1つ以上選択してください',
+      test: () => swChecks.length > 0 },
   ]);
   if (!ok) return;
 
@@ -358,6 +395,19 @@ document.getElementById('apply-form').addEventListener('submit', async (e) => {
 
   const gender    = form.querySelector('[name="gender"]:checked')?.value    || '';
   const long_term = form.querySelector('[name="long_term"]:checked')?.value || '';
+  const pc_type   = form.querySelector('[name="pc_type"]:checked')?.value   || '';
+
+  // ソフト名を収集(「その他」選択時は自由記述を反映)
+  const softwareNames = swChecks.map(el => {
+    if (el.value === 'その他') {
+      const other = document.getElementById('sw-other-text').value.trim();
+      return other ? other : 'その他';
+    }
+    return el.value;
+  });
+  // GAS列を増やせないため、message(既存項目)にPC/ソフト情報を連結して送信する
+  const pcSoftwareLine = 'PC: ' + pc_type + ' / 使用ソフト: ' + softwareNames.join(', ');
+  const messageWithMeta = pcSoftwareLine + (form.message.value ? '\n\n' + form.message.value : '');
 
   const data = {
     action:             'editor_apply',
@@ -371,7 +421,7 @@ document.getElementById('apply-form').addEventListener('submit', async (e) => {
     specialty:          form.specialty.value,
     long_term:          long_term,
     dispatch:           '希望する', // この応募自体が編集者派遣への応募
-    message:            form.message.value,
+    message:            messageWithMeta,
   };
 
   try {

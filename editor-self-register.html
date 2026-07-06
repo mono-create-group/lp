@@ -171,11 +171,23 @@ body{
         <label>対応ソフト（複数選択可）</label>
         <div class="check-group" id="softwareGroup">
           <label class="check-item"><input type="checkbox" name="software" value="Premiere Pro">Premiere Pro</label>
+          <label class="check-item"><input type="checkbox" name="software" value="After Effects">After Effects</label>
           <label class="check-item"><input type="checkbox" name="software" value="Final Cut Pro">Final Cut Pro</label>
           <label class="check-item"><input type="checkbox" name="software" value="DaVinci Resolve">DaVinci Resolve</label>
           <label class="check-item"><input type="checkbox" name="software" value="CapCut">CapCut</label>
-          <label class="check-item"><input type="checkbox" name="software" value="After Effects">After Effects</label>
           <label class="check-item"><input type="checkbox" name="software" value="Filmora">Filmora</label>
+          <label class="check-item"><input type="checkbox" name="software" value="AviUtl">AviUtl</label>
+          <label class="check-item"><input type="checkbox" name="software" value="その他" id="sw-other-chk">その他</label>
+        </div>
+        <input type="text" id="sw-other-text" placeholder="その他の場合はソフト名を入力" style="width:100%;padding:10px 12px;border-radius:8px;border:1.5px solid #E2E8F0;background:#F8FAFC;font-size:0.85rem;margin-top:8px;display:none;font-family:'Noto Sans JP',sans-serif;">
+      </div>
+
+      <div class="field">
+        <label>使用PC</label>
+        <div class="check-group" id="pcGroup">
+          <label class="check-item"><input type="radio" name="pc_type" value="Mac">Mac</label>
+          <label class="check-item"><input type="radio" name="pc_type" value="Windows">Windows</label>
+          <label class="check-item"><input type="radio" name="pc_type" value="両方">両方</label>
         </div>
       </div>
     </div>
@@ -273,6 +285,11 @@ function removePf(btn){
   btn.closest('.pf-row').remove();
 }
 
+// 「その他」ソフトのチェック時のみ自由記述欄を表示
+document.getElementById('sw-other-chk').addEventListener('change', function(e){
+  document.getElementById('sw-other-text').style.display = e.target.checked ? 'block' : 'none';
+});
+
 // ─── フォーム送信 ─────────────────────────────────────────────
 document.getElementById('selfRegForm').addEventListener('submit', async function(e){
   e.preventDefault();
@@ -284,6 +301,22 @@ document.getElementById('selfRegForm').addEventListener('submit', async function
   function getChecked(name){
     return Array.from(document.querySelectorAll('input[name="' + name + '"]:checked'))
       .map(function(el){ return el.value; }).join('、');
+  }
+
+  // 対応ソフト(「その他」選択時は自由記述を反映) + 使用PCを連結して送信
+  // GAS列を増やせないため、既存の software フィールドに「Premiere Pro、CapCut | PC: Mac」形式で内包する
+  function getSoftwareWithPc(){
+    var names = Array.from(document.querySelectorAll('input[name="software"]:checked')).map(function(el){
+      if (el.value === 'その他') {
+        var other = document.getElementById('sw-other-text').value.trim();
+        return other ? other : 'その他';
+      }
+      return el.value;
+    });
+    var pcEl = document.querySelector('input[name="pc_type"]:checked');
+    var pc = pcEl ? pcEl.value : '';
+    var swStr = names.join('、');
+    return swStr + (pc ? (swStr ? ' | PC: ' : 'PC: ') + pc : '');
   }
 
   // ポートフォリオ収集
@@ -306,7 +339,7 @@ document.getElementById('selfRegForm').addEventListener('submit', async function
     experience:       document.getElementById('experience').value.trim(),
     genres:           getChecked('genre'),
     style:            document.getElementById('style').value.trim(),
-    software:         getChecked('software'),
+    software:         getSoftwareWithPc(),
     monthly_capacity: document.getElementById('monthly_capacity').value.trim(),
     work_hours:       document.getElementById('work_hours').value.trim(),
     comment:          document.getElementById('comment').value.trim(),
