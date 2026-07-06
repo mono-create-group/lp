@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>麺屋 一徹｜旭川醤油ラーメン(制作サンプル)</title>
+<meta name="description" content="Wスープの旭川醤油ラーメン「麺屋 一徹」。mono.createによるデザインポートフォリオ(架空店舗)です。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700;900&family=Shippori+Mincho:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0e0d0c;
+    --paper:#f5efe3;
+    --ink:#f3ede1;
+    --mut:#9d958a;
+    --red:#c8281e;
+    --yellow:#e8b83a;
+    --line:rgba(243,237,225,.14);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:"Noto Sans JP",sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.9;
+    word-break:keep-all;overflow-wrap:anywhere;
+  }
+  img{max-width:100%;display:block;}
+  a{color:inherit;}
+  .min{font-family:"Shippori Mincho",serif;}
+
+  header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(14,13,12,.92);backdrop-filter:blur(4px);border-bottom:1px solid var(--line);}
+  .nav-inner{max-width:1100px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;}
+  .logo{display:flex;align-items:center;gap:12px;font-family:"Shippori Mincho",serif;font-size:22px;font-weight:800;letter-spacing:.2em;}
+  .logo .maru{width:34px;height:34px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;flex:none;}
+  nav ul{list-style:none;display:flex;gap:26px;font-size:13px;font-weight:700;}
+  nav a{text-decoration:none;color:var(--mut);letter-spacing:.08em;transition:.2s;}
+  nav a:hover{color:var(--yellow);}
+  @media (max-width:820px){nav ul{display:none;}}
+
+  .hero{position:relative;height:100vh;min-height:600px;display:flex;align-items:center;overflow:hidden;}
+  .hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(14,13,12,.9) 0%,rgba(14,13,12,.55) 45%,rgba(14,13,12,.15) 100%);}
+  .hero-content{position:relative;z-index:2;max-width:1100px;margin:0 auto;width:100%;padding:0 24px;}
+  .hero-content .tate{font-family:"Shippori Mincho",serif;font-weight:800;font-size:clamp(40px,7vw,76px);letter-spacing:.14em;line-height:1.35;text-shadow:0 4px 30px rgba(0,0,0,.7);}
+  .hero-content .tate b{color:var(--yellow);}
+  .hero-content .sub{margin-top:20px;font-size:clamp(13px,1.6vw,15.5px);color:#d8d0c2;font-weight:500;letter-spacing:.12em;}
+  .hero-badge{display:inline-flex;align-items:center;gap:10px;background:var(--red);color:#fff;font-weight:900;font-size:13px;letter-spacing:.2em;padding:8px 18px;margin-bottom:26px;}
+  .hero-cta{margin-top:38px;display:flex;gap:14px;flex-wrap:wrap;}
+  .btn{font-size:14px;font-weight:900;letter-spacing:.1em;padding:15px 32px;text-decoration:none;transition:.25s;display:inline-flex;align-items:center;gap:8px;}
+  .btn-red{background:var(--red);color:#fff;}
+  .btn-red:hover{background:#e0392e;}
+  .btn-ghost{border:1.5px solid rgba(243,237,225,.5);color:var(--ink);}
+  .btn-ghost:hover{border-color:var(--yellow);color:var(--yellow);}
+  .btn-line{background:#06C755;color:#fff;}
+  .btn-line:hover{opacity:.88;}
+  .btn svg{width:19px;height:19px;fill:currentColor;}
+
+  section{padding:100px 24px;}
+  .wrap{max-width:1100px;margin:0 auto;}
+  .sec-head{margin-bottom:54px;display:flex;align-items:baseline;gap:20px;flex-wrap:wrap;}
+  .sec-head h2{font-family:"Shippori Mincho",serif;font-size:clamp(26px,4vw,40px);font-weight:800;letter-spacing:.12em;}
+  .sec-head .en{font-size:11px;letter-spacing:.4em;color:var(--red);font-weight:900;}
+  .sec-bar{width:100%;height:3px;background:linear-gradient(90deg,var(--red) 0 64px,var(--line) 64px);margin-top:18px;}
+
+  .signature{background:var(--bg);}
+  .sig-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center;}
+  .sig-grid img{aspect-ratio:4/3;object-fit:cover;border:1px solid var(--line);}
+  .sig-text h3{font-family:"Shippori Mincho",serif;font-size:clamp(24px,3vw,32px);font-weight:800;letter-spacing:.1em;line-height:1.6;margin-bottom:20px;}
+  .sig-text h3 b{color:var(--yellow);}
+  .sig-text p{font-size:14.5px;color:#c9c1b3;margin-bottom:16px;}
+  .sig-price{font-family:"Shippori Mincho",serif;font-size:30px;font-weight:800;color:var(--yellow);margin-top:10px;}
+  .sig-price small{font-size:13px;color:var(--mut);font-family:"Noto Sans JP",sans-serif;font-weight:500;margin-left:10px;}
+  @media (max-width:820px){.sig-grid{grid-template-columns:1fr;gap:34px;}}
+
+  .menu{background:#141210;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--line);border:1px solid var(--line);}
+  .menu-cell{background:#141210;padding:30px 26px;}
+  .menu-cell .nm{font-family:"Shippori Mincho",serif;font-size:18px;font-weight:800;letter-spacing:.08em;}
+  .menu-cell .pr{color:var(--yellow);font-weight:900;font-size:16px;margin-top:6px;}
+  .menu-cell .ds{font-size:12.5px;color:var(--mut);margin-top:8px;line-height:1.8;}
+  .menu-cell.head{background:var(--red);display:flex;align-items:center;justify-content:center;}
+  .menu-cell.head span{font-family:"Shippori Mincho",serif;font-size:20px;font-weight:800;letter-spacing:.3em;color:#fff;writing-mode:vertical-rl;}
+  @media (max-width:820px){.menu-grid{grid-template-columns:1fr;}.menu-cell.head span{writing-mode:horizontal-tb;}}
+  .menu-note{margin-top:26px;font-size:12px;color:var(--mut);}
+
+  .shop{background:var(--bg);}
+  .shop-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
+  .shop-grid img{aspect-ratio:16/10;object-fit:cover;width:100%;border:1px solid var(--line);}
+  .shop-copy{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:6px;}
+  .shop-copy .card{border:1px solid var(--line);padding:28px 26px;}
+  .shop-copy h3{font-family:"Shippori Mincho",serif;font-size:18px;font-weight:800;letter-spacing:.1em;margin-bottom:10px;color:var(--yellow);}
+  .shop-copy p{font-size:13.5px;color:#c9c1b3;line-height:2;}
+  @media (max-width:820px){.shop-grid,.shop-copy{grid-template-columns:1fr;}}
+
+  .access{background:#141210;border-top:1px solid var(--line);}
+  .access-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;}
+  .info-table{font-size:14px;}
+  .info-table dt{color:var(--yellow);font-weight:900;font-size:11.5px;letter-spacing:.25em;margin-top:20px;}
+  .info-table dd{margin-top:5px;color:#c9c1b3;}
+  .map-box{border:1px solid var(--line);background:var(--bg);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:12.5px;min-height:330px;}
+  @media (max-width:820px){.access-grid{grid-template-columns:1fr;gap:32px;}}
+
+  .cta{background:var(--red);text-align:center;}
+  .cta h2{font-family:"Shippori Mincho",serif;font-size:clamp(24px,4vw,34px);font-weight:800;letter-spacing:.16em;color:#fff;margin-bottom:14px;}
+  .cta p{font-size:13.5px;color:#ffd9d5;margin-bottom:34px;}
+  .cta .btn-line{border-radius:50px;padding:17px 40px;font-size:15px;}
+  .cta-tel{display:block;margin-top:22px;color:#fff;font-size:16px;font-weight:900;letter-spacing:.06em;text-decoration:none;}
+  .cta-tel small{display:block;font-size:11px;color:#ffd9d5;font-weight:500;margin-top:4px;}
+
+  footer{background:#090808;color:var(--mut);text-align:center;padding:46px 24px;font-size:12px;line-height:2;}
+  footer .fname{color:var(--ink);font-family:"Shippori Mincho",serif;font-size:16px;font-weight:800;letter-spacing:.3em;margin-bottom:8px;}
+  footer .disclaimer{margin-top:16px;font-size:11px;color:#5f584e;}
+
+  .float-line{position:fixed;right:20px;bottom:20px;z-index:90;background:#06C755;color:#fff;text-decoration:none;font-weight:700;font-size:13.5px;padding:13px 20px;border-radius:50px;box-shadow:0 6px 18px rgba(0,0,0,.5);display:inline-flex;align-items:center;gap:8px;}
+  .float-line svg{width:19px;height:19px;fill:#fff;}
+
+  .fade{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease;}
+  .fade.on{opacity:1;transform:none;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-inner">
+    <div class="logo"><span class="maru">一</span>麺屋 一徹</div>
+    <nav>
+      <ul>
+        <li><a href="#signature">一杯へのこだわり</a></li>
+        <li><a href="#menu">お品書き</a></li>
+        <li><a href="#shop">店舗</a></li>
+        <li><a href="#access">アクセス</a></li>
+        <li><a href="#reserve">クーポン</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <img src="img/hero.jpg" alt="旭川醤油ラーメン">
+  <div class="hero-content">
+    <span class="hero-badge">旭川醤油 × Wスープ</span>
+    <h1 class="tate">魂の一杯、<br>ここに<b>在り</b>。</h1>
+    <p class="sub">豚骨×魚介のWスープに、老舗醤油蔵のかえし。旭川ラーメン「麺屋 一徹」。</p>
+    <div class="hero-cta">
+      <a href="#menu" class="btn btn-red">お品書きを見る</a>
+      <a href="#reserve" class="btn btn-line">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.94 2 10.7c0 3.03 2.02 5.7 5.06 7.24-.16.62-.85 3.1-.87 3.3 0 0-.02.18.1.24.11.06.24 0 .24 0 .34-.05 3.7-2.44 4.3-2.87.4.06.8.09 1.17.09 5.52 0 10-3.94 10-8.7C22 5.94 17.52 2 12 2z"/></svg>
+        LINEでクーポン取得
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="signature" id="signature">
+  <div class="wrap">
+    <div class="sec-head fade">
+      <h2>一杯へのこだわり</h2>
+      <span class="en">SIGNATURE</span>
+      <div class="sec-bar"></div>
+    </div>
+    <div class="sig-grid fade">
+      <img src="img/kitchen.jpg" alt="スープを炊く厨房">
+      <div class="sig-text">
+        <h3>十時間炊いた豚骨に、<br>道北の煮干しを<b>重ねる</b>。</h3>
+        <p>寸胴の前から離れない。それが一徹の流儀です。十時間かけて炊き上げた豚骨スープに、道北産煮干しの魚介スープを合わせるWスープ。</p>
+        <p>麺は旭川伝統の低加水中細ちぢれ麺。スープを持ち上げる、最後の一滴まで飲み干せる一杯です。</p>
+        <p class="sig-price">醤油らーめん ¥900<small>味玉トッピング +¥120</small></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="menu" id="menu">
+  <div class="wrap">
+    <div class="sec-head fade">
+      <h2>お品書き</h2>
+      <span class="en">MENU</span>
+      <div class="sec-bar"></div>
+    </div>
+    <div class="menu-grid fade">
+      <div class="menu-cell head"><span>らーめん</span></div>
+      <div class="menu-cell">
+        <div class="nm">醤油らーめん</div>
+        <div class="pr">¥900</div>
+        <div class="ds">看板の一杯。Wスープ×老舗蔵のかえし。</div>
+      </div>
+      <div class="menu-cell">
+        <div class="nm">味噌らーめん</div>
+        <div class="pr">¥950</div>
+        <div class="ds">道産味噌三種の合わせ。ラードで熱々のまま。</div>
+      </div>
+      <div class="menu-cell">
+        <div class="nm">塩らーめん</div>
+        <div class="pr">¥900</div>
+        <div class="ds">澄んだスープに柚子を一片。〆の一杯にも。</div>
+      </div>
+      <div class="menu-cell">
+        <div class="nm">辛味噌らーめん</div>
+        <div class="pr">¥1,000</div>
+        <div class="ds">自家製辣油と山椒。辛さは三段階。</div>
+      </div>
+      <div class="menu-cell">
+        <div class="nm">チャーシュー麺</div>
+        <div class="pr">¥1,250</div>
+        <div class="ds">炙りバラチャーシュー五枚盛り。</div>
+      </div>
+    </div>
+    <div class="menu-grid fade" style="margin-top:2px;border-top:none;">
+      <div class="menu-cell head"><span>サイド</span></div>
+      <div class="menu-cell">
+        <div class="nm">焼き餃子(5個)</div>
+        <div class="pr">¥400</div>
+        <div class="ds">羽根つきパリパリ。秘伝の味噌だれで。</div>
+      </div>
+      <div class="menu-cell">
+        <div class="nm">炙りチャーシュー丼</div>
+        <div class="pr">¥450</div>
+        <div class="ds">タレが染みた小丼。らーめんのお供に。</div>
+      </div>
+      <div class="menu-cell">
+        <div class="nm">ライス</div>
+        <div class="pr">¥150</div>
+        <div class="ds">道産ななつぼし。おかわり無料。</div>
+      </div>
+      <div class="menu-cell">
+        <div class="nm">瓶ビール</div>
+        <div class="pr">¥600</div>
+        <div class="ds">餃子と一緒にどうぞ。</div>
+      </div>
+    </div>
+    <p class="menu-note">※ お品書き・価格はサンプルです。</p>
+  </div>
+</section>
+
+<section class="shop" id="shop">
+  <div class="wrap">
+    <div class="sec-head fade">
+      <h2>店舗</h2>
+      <span class="en">OUR SHOP</span>
+      <div class="sec-bar"></div>
+    </div>
+    <div class="shop-grid fade">
+      <img src="img/counter.jpg" alt="カウンター席">
+      <img src="img/gyoza.jpg" alt="焼き餃子">
+      <div class="shop-copy">
+        <div class="card">
+          <h3>厨房を囲むカウンター</h3>
+          <p>湯切りの音、立ちのぼる湯気。目の前で仕上がる一杯を、いちばん熱いうちに。お一人様でも入りやすいカウンター10席です。</p>
+        </div>
+        <div class="card">
+          <h3>家族で座れるテーブル席</h3>
+          <p>4名掛けテーブル×3卓。お子様用の椅子・取り分け皿もご用意しています。週末は家族連れで賑わいます。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="access" id="access">
+  <div class="wrap">
+    <div class="sec-head fade">
+      <h2>アクセス</h2>
+      <span class="en">ACCESS</span>
+      <div class="sec-bar"></div>
+    </div>
+    <div class="access-grid fade">
+      <dl class="info-table">
+        <dt>店名</dt><dd>麺屋 一徹(架空店舗・制作サンプル)</dd>
+        <dt>住所</dt><dd>北海道旭川市〇条通〇丁目〇-〇</dd>
+        <dt>電話</dt><dd>0166-00-0000</dd>
+        <dt>営業時間</dt><dd>11:00〜15:00 ／ 17:00〜21:00(スープ切れ次第終了)</dd>
+        <dt>定休日</dt><dd>火曜日</dd>
+        <dt>席数</dt><dd>カウンター10席・テーブル12席</dd>
+        <dt>駐車場</dt><dd>店舗前3台・第二駐車場5台</dd>
+      </dl>
+      <div class="map-box">Googleマップ埋め込みエリア(納品時に実店舗の地図を設置)</div>
+    </div>
+  </div>
+</section>
+
+<section class="cta" id="reserve">
+  <div class="wrap">
+    <h2>LINEで、味玉一個。</h2>
+    <p>友だち追加で「味玉無料クーポン」をプレゼント。<br>限定メニューの先行案内や、スープ切れ情報もLINEでお知らせします。</p>
+    <a class="btn btn-line" href="#" aria-label="LINEで友だち追加">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.94 2 10.7c0 3.03 2.02 5.7 5.06 7.24-.16.62-.85 3.1-.87 3.3 0 0-.02.18.1.24.11.06.24 0 .24 0 .34-.05 3.7-2.44 4.3-2.87.4.06.8.09 1.17.09 5.52 0 10-3.94 10-8.7C22 5.94 17.52 2 12 2z"/></svg>
+      LINE友だち追加(導入イメージ)
+    </a>
+    <a class="cta-tel" href="tel:0166-00-0000">0166-00-0000<small>お問い合わせは営業時間内にどうぞ</small></a>
+  </div>
+</section>
+
+<footer>
+  <div class="fname">麺屋 一徹</div>
+  <div>北海道旭川市〇条通〇丁目〇-〇 ／ 0166-00-0000</div>
+  <div class="disclaimer">本ページは mono.create(旭川)による制作サンプルです。店舗・掲載情報・画像はすべて架空のもので、実在の店舗とは関係ありません。<br>同品質のホームページを ¥49,800(制作)+月額¥3,000(管理) でご提供しています。© mono.create</div>
+</footer>
+
+<a class="float-line" href="#reserve" aria-label="LINEでクーポン">
+  <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.94 2 10.7c0 3.03 2.02 5.7 5.06 7.24-.16.62-.85 3.1-.87 3.3 0 0-.02.18.1.24.11.06.24 0 .24 0 .34-.05 3.7-2.44 4.3-2.87.4.06.8.09 1.17.09 5.52 0 10-3.94 10-8.7C22 5.94 17.52 2 12 2z"/></svg>
+  クーポン取得
+</a>
+
+<script>
+(function(){
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target); } });
+  }, {threshold:.12});
+  document.querySelectorAll('.fade').forEach(function(el){ io.observe(el); });
+})();
+</script>
+</body>
+</html>

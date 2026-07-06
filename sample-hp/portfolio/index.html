@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>制作実績ポートフォリオ｜mono.create(旭川)</title>
+<meta name="description" content="mono.create(旭川)のホームページ制作ポートフォリオ。業種別のデザインサンプルをご覧いただけます。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f6f7f5;
+    --ink:#1f2937;
+    --mut:#6b7280;
+    --brand:#1a56db;
+    --line:#e5e7eb;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN",sans-serif;background:var(--bg);color:var(--ink);line-height:1.9;word-break:keep-all;overflow-wrap:anywhere;}
+  a{color:inherit;}
+  img{max-width:100%;display:block;}
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px;}
+
+  .hero{padding:80px 0 56px;text-align:center;}
+  .hero .tag{display:inline-block;font-size:12px;font-weight:700;background:#eef1fb;color:var(--brand);padding:5px 16px;border-radius:20px;margin-bottom:18px;letter-spacing:.08em;}
+  .hero h1{font-size:clamp(26px,4.6vw,38px);font-weight:900;letter-spacing:.04em;line-height:1.6;}
+  .hero p{margin-top:14px;font-size:14px;color:var(--mut);}
+
+  .cat{padding:34px 0 8px;}
+  .cat h2{font-size:19px;font-weight:900;display:flex;align-items:center;gap:12px;}
+  .cat h2::before{content:"";width:10px;height:26px;background:var(--brand);border-radius:3px;}
+  .cat .sub{font-size:12.5px;color:var(--mut);margin:6px 0 20px 22px;}
+
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:26px;}
+  @media (max-width:820px){.cards{grid-template-columns:1fr;}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;text-decoration:none;transition:.2s;display:flex;flex-direction:column;}
+  .card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,0,0,.1);}
+  .card .thumb{aspect-ratio:16/10;overflow:hidden;background:#111;}
+  .card .thumb img{width:100%;height:100%;object-fit:cover;transition:.35s;}
+  .card:hover .thumb img{transform:scale(1.04);}
+  .card .body{padding:18px 20px 22px;flex:1;}
+  .card .genre{font-size:11px;font-weight:700;color:var(--brand);letter-spacing:.1em;}
+  .card h3{font-size:16.5px;font-weight:700;margin:6px 0 8px;}
+  .card p{font-size:12.5px;color:var(--mut);line-height:1.8;}
+  .card .view{display:inline-block;margin-top:12px;font-size:12.5px;font-weight:700;color:var(--brand);}
+
+  .soon{background:#fff;border:1px dashed #cbd2dc;border-radius:14px;padding:26px 24px;color:var(--mut);font-size:13.5px;margin-bottom:26px;display:flex;align-items:center;gap:14px;}
+  .soon .badge{flex:none;font-size:11px;font-weight:700;background:#f3f4f6;color:#6b7280;padding:4px 12px;border-radius:16px;}
+
+  .pitch{background:#101828;color:#fff;border-radius:20px;padding:52px 40px;margin:56px 0;text-align:center;}
+  .pitch h2{font-size:clamp(20px,3.4vw,27px);font-weight:900;letter-spacing:.04em;margin-bottom:14px;}
+  .pitch p{font-size:13.5px;color:#c7cede;margin-bottom:8px;}
+  .pitch .price{font-size:clamp(26px,4.4vw,36px);font-weight:900;color:#7fb0ff;margin:18px 0 6px;}
+  .pitch .price small{font-size:14px;color:#c7cede;font-weight:500;}
+  .pitch ul{list-style:none;display:flex;gap:10px 26px;justify-content:center;flex-wrap:wrap;margin:22px 0 30px;font-size:13px;color:#e3e8f2;}
+  .pitch li::before{content:"✓ ";color:#7fb0ff;font-weight:900;}
+  .pitch .contact{display:inline-block;background:#fff;color:#101828;font-weight:900;font-size:14.5px;padding:15px 38px;border-radius:50px;text-decoration:none;transition:.2s;}
+  .pitch .contact:hover{opacity:.88;}
+  @media (max-width:820px){.pitch{padding:40px 22px;}}
+
+  footer{text-align:center;padding:20px 20px 60px;font-size:11.5px;color:#9ca3af;line-height:2;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="wrap">
+    <span class="tag">mono.create PORTFOLIO</span>
+    <h1>業種別デザインサンプル</h1>
+    <p>すべて実際に納品しているものと同じ品質・構成のサンプルサイトです。<br>店名・写真・掲載内容は架空のものです。クリックすると実際のサイトをご覧いただけます。</p>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="cat">
+    <h2>飲食店</h2>
+    <p class="sub">居酒屋・カフェ・ラーメン — ジャンルに合わせてデザインの空気を変えます。</p>
+  </div>
+  <div class="cards">
+    <a class="card" href="./izakaya/index.html">
+      <div class="thumb"><img src="./izakaya/img/hero.jpg" alt="炉ばた 燈 サイトサンプル" loading="lazy"></div>
+      <div class="body">
+        <span class="genre">IZAKAYA — 居酒屋</span>
+        <h3>炉ばた 燈 -AKARI-</h3>
+        <p>漆黒×金の落ち着いた大人の炉端。品書き・個室・宴会導線・LINE予約。</p>
+        <span class="view">サイトを見る →</span>
+      </div>
+    </a>
+    <a class="card" href="./cafe/index.html">
+      <div class="thumb"><img src="./cafe/img/hero.jpg" alt="喫茶こなゆき サイトサンプル" loading="lazy"></div>
+      <div class="body">
+        <span class="genre">CAFE — カフェ・喫茶</span>
+        <h3>喫茶こなゆき</h3>
+        <p>生成り×オリーブのやわらかいデザイン。メニュー・お客さまの声・お取り置きLINE。</p>
+        <span class="view">サイトを見る →</span>
+      </div>
+    </a>
+    <a class="card" href="./ramen/index.html">
+      <div class="thumb"><img src="./ramen/img/hero.jpg" alt="麺屋一徹 サイトサンプル" loading="lazy"></div>
+      <div class="body">
+        <span class="genre">RAMEN — ラーメン</span>
+        <h3>麺屋 一徹</h3>
+        <p>黒×赤の力強い縦書きデザイン。お品書き・こだわり・LINEクーポン導線。</p>
+        <span class="view">サイトを見る →</span>
+      </div>
+    </a>
+  </div>
+
+  <div class="cat">
+    <h2>美容室・ネイル・まつげ・エステ</h2>
+  </div>
+  <div class="soon"><span class="badge">近日公開</span><span>美容サロン向けのデザインサンプルを準備中です。既存サンプル「<a href="../salon/index.html" style="color:var(--brand);font-weight:700;">hair salon Ciel</a>」もご覧いただけます。</span></div>
+
+  <div class="cat">
+    <h2>整体・整骨院・鍼灸・パーソナルジム</h2>
+  </div>
+  <div class="soon"><span class="badge">近日公開</span>治療院・ジム向けのデザインサンプルを準備中です。</div>
+
+  <div class="cat">
+    <h2>車関連・建築関連</h2>
+  </div>
+  <div class="soon"><span class="badge">近日公開</span>自動車整備・工務店向けのデザインサンプルを準備中です。</div>
+
+  <div class="pitch">
+    <h2>このクオリティのホームページが</h2>
+    <div class="price">¥49,800 <small>+ 月額 ¥3,000(管理・更新)</small></div>
+    <p>ポータルサイトの掲載料・予約手数料は一切かかりません。</p>
+    <ul>
+      <li>スマホ完全対応</li>
+      <li>LINE予約導線</li>
+      <li>写真撮影のご相談OK</li>
+      <li>最短1週間で公開</li>
+      <li>文章はすべておまかせ</li>
+    </ul>
+    <a class="contact" href="mailto:mono.create.group@gmail.com">制作の相談をする(無料)</a>
+  </div>
+
+</div>
+
+<footer>
+  本ページおよび各サンプルサイトは mono.create(旭川)の制作ポートフォリオです。<br>
+  掲載している店舗はすべて架空であり、実在の店舗・団体とは関係ありません。© mono.create
+</footer>
+
+</body>
+</html>
