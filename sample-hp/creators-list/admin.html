@@ -7831,7 +7831,7 @@ async function deleteFeedback(row, name) {
       const res = await fetch(`${GAS_URL}?action=dispatch_list&key=${encodeURIComponent(DPKEY)}`);
       const json = await res.json();
       // 【テスト】/E2Eテストの行はローンチ運用画面に出さない(シートには残存)
-      if(!json.error){dpRequests = (json.data || []).filter(r=>!/【テスト】|E2Eテスト/.test(String(r.company||'')+String(r.contact||'')));dpRenderRequests();dpRenderEditors();dpRenderReviews();}
+      if(!json.error){dpRequests = (json.data || []).filter(r=>!/【テスト】|E2Eテスト/.test(String(r.company||'')+String(r.contact||''))).filter(r=>!String(r.memo||'').startsWith('__DELETED__'));dpRenderRequests();dpRenderEditors();dpRenderReviews();}
     }catch(e){}
   }
 
@@ -7879,6 +7879,13 @@ async function deleteFeedback(row, name) {
     r.memo = val; dpRenderRequests();
     await dpUpdateReq(row,{memo:val});
   }
+  async function dpDeleteReq(row){
+    const r = dpRequests.find(x=>x.row===row); if(!r) return;
+    if(!confirm(`この派遣依頼を一覧から削除しますか?\n\nクライアント: ${r.company||''}\n\n※記録シートには残りますが、管理画面の一覧からは表示されなくなります。`)) return;
+    dpRequests = dpRequests.filter(x=>x.row!==row);
+    dpRenderRequests(); dpRenderEditors(); dpRenderStats();
+    await dpUpdateReq(row,{memo:'__DELETED__|'+(r.memo||'')});
+  }
 
   document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
     document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
@@ -7907,7 +7914,7 @@ async function deleteFeedback(row, name) {
             ${DP_STATUSES.map(s=>`<option ${s===r.status?'selected':''}>${s}</option>`).join('')}
           </select>
         </td>
-        <td style="max-width:200px;">${dpEsc(r.memo)||''}${r.message?'<div class="muted" style="font-size:11px;">相談: '+dpEsc(r.message.slice(0,60))+'</div>':''} <button class="btn btn-sm btn-ghost" onclick="dpSetMemo(${r.row})">✎</button><br><button class="btn btn-sm btn-ghost" style="margin-top:4px;" onclick="dpSendHearing('${dpEsc(r.email||'')}','${dpEsc(r.contact||r.company||'')}')">📋 ヒアリング送付</button></td>
+        <td style="max-width:200px;">${dpEsc(r.memo)||''}${r.message?'<div class="muted" style="font-size:11px;">相談: '+dpEsc(r.message.slice(0,60))+'</div>':''} <button class="btn btn-sm btn-ghost" onclick="dpSetMemo(${r.row})">✎</button><br><button class="btn btn-sm btn-ghost" style="margin-top:4px;" onclick="dpSendHearing('${dpEsc(r.email||'')}','${dpEsc(r.contact||r.company||'')}')">📋 ヒアリング送付</button><br><button class="btn btn-sm btn-ghost" style="margin-top:4px;color:#dc2626;" onclick="dpDeleteReq(${r.row})">🗑 削除</button></td>
       </tr>`).join('');
     dpRenderStats();
   }
