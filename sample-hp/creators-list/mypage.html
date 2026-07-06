@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="編集者マイページ">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#0ea5a3">
+<link rel="apple-touch-icon" href="favicon-32.png">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <title>編集者マイページ | クリエイターズリスト mono.create</title>
 <style>
   :root{
@@ -71,19 +78,61 @@
   .link-btn{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--ink);text-decoration:none;font-size:13.5px;font-weight:700;}
   .link-btn:hover{background:var(--teal-bg);border-color:var(--teal);}
   .link-btn .arrow{color:var(--teal-d);}
+  .icon{width:20px;height:20px;flex-shrink:0;stroke:var(--teal-d);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+  .link-btn .icon-wrap{display:flex;align-items:center;gap:10px;}
+  /* ヒーロー説明エリア */
+  .hero{margin-bottom:18px;}
+  .hero-title{font-size:17px;font-weight:800;margin-bottom:4px;}
+  .hero-lead{font-size:12.5px;color:var(--sub);margin-bottom:14px;}
+  .hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .hero-card{
+    background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 14px;
+    text-align:left;cursor:pointer;transition:.15s;display:flex;flex-direction:column;gap:8px;
+    text-decoration:none;color:var(--ink);
+  }
+  .hero-card:hover{border-color:var(--teal);background:var(--teal-bg);box-shadow:0 4px 14px rgba(15,23,42,.06);}
+  .hero-card .icon{width:26px;height:26px;stroke-width:1.6;}
+  .hero-card .h-name{font-size:13px;font-weight:800;}
+  .hero-card .h-desc{font-size:11px;color:var(--sub);line-height:1.5;}
+  /* 確認のお願いバナー */
+  .reminder-banner{
+    display:flex;align-items:flex-start;gap:10px;background:#fff7ed;border:1.5px solid #fdba74;
+    border-radius:12px;padding:14px 16px;margin-bottom:20px;
+  }
+  .reminder-banner .icon{stroke:#c2410c;width:22px;height:22px;flex-shrink:0;margin-top:1px;}
+  .reminder-banner .r-text{font-size:12.5px;color:#7c2d12;font-weight:600;line-height:1.6;}
+  .reminder-banner .r-text b{font-size:13.5px;display:block;margin-bottom:2px;}
+  /* ホーム画面追加カード */
+  .pwa-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 18px;margin-top:16px;}
+  .pwa-head{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;}
+  .pwa-head .icon{stroke:var(--teal-d);width:22px;height:22px;}
+  .pwa-head-text{flex:1;font-size:14px;font-weight:800;}
+  .pwa-toggle{font-size:11px;color:var(--teal-d);font-weight:700;}
+  .pwa-body{margin-top:14px;display:none;}
+  .pwa-body.open{display:block;}
+  .pwa-os-block{margin-bottom:16px;}
+  .pwa-os-title{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:800;color:var(--ink);margin-bottom:8px;}
+  .pwa-os-title .tag{font-size:10px;background:var(--teal-bg);color:var(--teal-d);padding:2px 7px;border-radius:6px;font-weight:800;}
+  .pwa-steps{list-style:none;counter-reset:step;display:flex;flex-direction:column;gap:8px;}
+  .pwa-steps li{counter-increment:step;display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--ink);}
+  .pwa-steps li::before{
+    content:counter(step);flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--teal);color:#fff;
+    font-size:11.5px;font-weight:800;display:flex;align-items:center;justify-content:center;
+  }
+  .pwa-steps .icon{stroke:var(--sub);width:17px;height:17px;flex-shrink:0;}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="brand">CREATORS LIST | mono.create</div>
-  <h1>👤 編集者マイページ</h1>
+  <h1>編集者マイページ</h1>
   <p class="lead">稼働状況・今月の対応可能本数を更新してください。<br>クライアント向けページに「今月の空き」として表示されます。</p>
 
   <!-- STEP 0: サインイン(必須) -->
   <div id="step-auth">
     <div class="info">
-      <b>Googleアカウントでサインインしてください</b><br>
-      サインイン後、ご自身のお名前を選択するとプロフィールを更新できます。
+      <b>このページは編集者専用のマイページです</b><br>
+      Googleでサインインすると、ご自身のプロフィールを確認・更新できます。下のボタンからサインインしてください。
     </div>
     <div class="card">
       <button class="g-btn" id="g-signin-btn" onclick="signInWithGoogle()">
@@ -113,6 +162,44 @@
 
   <!-- STEP 2: 更新フォーム -->
   <div id="step-edit">
+
+    <!-- ヒーロー説明エリア -->
+    <div class="hero">
+      <div class="hero-title">ここが、あなたの拠点です</div>
+      <p class="hero-lead">マイページでできることは、この4つです。気になるカードをタップしてください。</p>
+      <div class="hero-grid">
+        <a class="hero-card" href="#e-monthly-label">
+          <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="16" y1="2" x2="16" y2="6"></line><path d="M8 14l2 2 4-4"></path></svg>
+          <div class="h-name">稼働状況の更新</div>
+          <div class="h-desc">今月あと何本受けられるかを伝えると、運営がそれを見て案件を回します。</div>
+        </a>
+        <a class="hero-card" href="sheet.html">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"></path><path d="M14 3v5h5"></path><line x1="9" y1="13" x2="15" y2="13"></line><line x1="9" y1="17" x2="13" y2="17"></line></svg>
+          <div class="h-name">案件報告</div>
+          <div class="h-desc">納品したら報告してください。支払いの根拠になります。</div>
+        </a>
+        <a class="hero-card" href="invoice.html">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"></path><path d="M9 12h6"></path><path d="M9 16h4"></path><circle cx="9" cy="8" r="1"></circle></svg>
+          <div class="h-name">請求書の提出</div>
+          <div class="h-desc">毎月25日までにご提出ください。</div>
+        </a>
+        <a class="hero-card" href="guide.html">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><line x1="10" y1="8" x2="15" y2="8"></line></svg>
+          <div class="h-name">進め方ガイド</div>
+          <div class="h-desc">困ったときは、まずこちらを見てください。</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- 確認のお願いバナー -->
+    <div class="reminder-banner">
+      <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="8" x2="12" y2="13"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+      <div class="r-text">
+        <b>週に1回は、稼働状況の更新をお願いします</b>
+        空き状況が新しいほど、あなたに合った案件が届きやすくなります。
+      </div>
+    </div>
+
     <div class="info">
       <b>現在のプロフィール(参照のみ)</b><br>
       プロフィール内容の変更はmono.createまでお知らせください。
@@ -137,7 +224,7 @@
 
       <div class="section-title" style="margin-top:28px;">稼働状況(更新可)</div>
 
-      <label>今月あと何本対応可能ですか<span class="req">必須</span></label>
+      <label id="e-monthly-label">今月あと何本対応可能ですか<span class="req">必須</span></label>
       <div class="capacity-grid">
         <div>
           <label style="margin-top:0;">月間対応可能本数(今月)</label>
@@ -176,9 +263,55 @@
     <div class="card" style="margin-top:16px;">
       <div class="section-title" style="margin-top:0;">その他の手続き</div>
       <div class="link-row">
-        <a class="link-btn" href="sheet.html">📋 案件報告シートを開く<span class="arrow">→</span></a>
-        <a class="link-btn" href="invoice.html">🧾 請求書を提出する<span class="arrow">→</span></a>
-        <a class="link-btn" href="guide.html">📖 進め方ガイドを見る<span class="arrow">→</span></a>
+        <a class="link-btn" href="sheet.html">
+          <span class="icon-wrap">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"></path><path d="M14 3v5h5"></path><line x1="9" y1="13" x2="15" y2="13"></line><line x1="9" y1="17" x2="13" y2="17"></line></svg>
+            案件報告シートを開く
+          </span>
+          <span class="arrow">→</span>
+        </a>
+        <a class="link-btn" href="invoice.html">
+          <span class="icon-wrap">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"></path><path d="M9 12h6"></path><path d="M9 16h4"></path><circle cx="9" cy="8" r="1"></circle></svg>
+            請求書を提出する
+          </span>
+          <span class="arrow">→</span>
+        </a>
+        <a class="link-btn" href="guide.html">
+          <span class="icon-wrap">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><line x1="10" y1="8" x2="15" y2="8"></line></svg>
+            進め方ガイドを見る
+          </span>
+          <span class="arrow">→</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- ホーム画面に追加(PWA的表示) -->
+    <div class="pwa-card">
+      <div class="pwa-head" onclick="togglePwaGuide()">
+        <svg class="icon" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"></rect><line x1="11" y1="18" x2="13" y2="18"></line></svg>
+        <div class="pwa-head-text">ホーム画面に追加する</div>
+        <div class="pwa-toggle" id="pwa-toggle-label">開く</div>
+      </div>
+      <p style="font-size:11.5px;color:var(--sub);margin-top:8px;">スマホのホーム画面に追加すると、アプリのように1タップで開けます。</p>
+      <div class="pwa-body" id="pwa-body">
+        <div class="pwa-os-block" id="pwa-ios-block">
+          <div class="pwa-os-title"><span class="tag">iPhone / iPad(Safari)</span></div>
+          <ul class="pwa-steps">
+            <li><svg class="icon" viewBox="0 0 24 24"><path d="M12 3v12"></path><path d="M7 8l5-5 5 5"></path><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"></path></svg>画面下の「共有」ボタンをタップ</li>
+            <li><svg class="icon" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>「ホーム画面に追加」を選ぶ</li>
+            <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"></path></svg>右上の「追加」をタップして完了</li>
+          </ul>
+        </div>
+        <div class="pwa-os-block" id="pwa-android-block">
+          <div class="pwa-os-title"><span class="tag">Android(Chrome)</span></div>
+          <ul class="pwa-steps">
+            <li><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.2"></circle><circle cx="12" cy="12" r="1.2"></circle><circle cx="12" cy="19" r="1.2"></circle></svg>右上の「⋮」(メニュー)をタップ</li>
+            <li><svg class="icon" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>「ホーム画面に追加」を選ぶ</li>
+            <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"></path></svg>「追加」をタップして完了</li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -195,6 +328,25 @@ function parseCapacity(s){
   const status = (s.match(/余裕あり|普通|満枠/)||[''])[0];
   const n = s.replace(/[・\s]*(余裕あり|普通|満枠)/,'').replace(/本$/,'').trim();
   return { n, status };
+}
+
+// ===== ホーム画面に追加ガイド: 端末に応じてiOS/Androidの手順を出し分け(両方併記・該当OSを上に) =====
+(function(){
+  const ua = navigator.userAgent || '';
+  const isIOS = /iPhone|iPad|iPod/i.test(ua);
+  const isAndroid = /Android/i.test(ua);
+  const iosBlock = document.getElementById('pwa-ios-block');
+  const androidBlock = document.getElementById('pwa-android-block');
+  if(isAndroid && iosBlock && androidBlock){
+    androidBlock.parentNode.insertBefore(androidBlock, iosBlock);
+  }
+  // それ以外(iOSまたはPC)はHTML記載順(iOS→Android)のまま
+})();
+function togglePwaGuide(){
+  const body = document.getElementById('pwa-body');
+  const label = document.getElementById('pwa-toggle-label');
+  const open = body.classList.toggle('open');
+  label.textContent = open ? '閉じる' : '開く';
 }
 
 // ===== Firebase(EditFlowと同一プロジェクト・承認済みドメイン共用) =====
