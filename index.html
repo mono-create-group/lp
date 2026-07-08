@@ -2313,7 +2313,7 @@ section { contain: layout style; }
     box-sizing: border-box;
   }
   .problem-card p {
-    overflow-wrap: anywhere;
+    overflow-wrap:break-word;
     word-break: normal;
   }
   .problem-card:last-child:nth-child(3n+1) { grid-column: auto !important; }
@@ -2357,7 +2357,7 @@ section { contain: layout style; }
   }
   .pricing-price { font-size: 1.05rem !important; padding-right: 4px; }
   .pricing-row-name { font-size: 0.92rem !important; font-weight: 800 !important; }
-  .pricing-row-desc { font-size: 0.78rem !important; line-height: 1.7 !important; overflow-wrap: anywhere; }
+  .pricing-row-desc { font-size: 0.78rem !important; line-height: 1.7 !important; overflow-wrap:break-word; }
   .pricing-row { box-sizing: border-box; max-width: 100%; }
 
   /* 無料トライアルバナー: 1列 */
@@ -2369,7 +2369,7 @@ section { contain: layout style; }
   }
   /* strength-label overflow防止 */
   .strength-label {
-    overflow-wrap: anywhere !important;
+    overflow-wrap:break-word !important;
     word-break: normal !important;
   }
 
@@ -2405,7 +2405,7 @@ section { contain: layout style; }
   /* 紹介コードの長テキストを折り返す */
   .form-row p, .form-row label {
     word-break: break-all !important;
-    overflow-wrap: anywhere !important;
+    overflow-wrap:break-word !important;
   }
 
   /* ── トライアルバナー padding縮小 ── */
