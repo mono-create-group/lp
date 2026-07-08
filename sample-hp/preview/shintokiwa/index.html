@@ -54,7 +54,7 @@
     color:var(--ink);
     background:var(--cream);
     line-height:1.8;
-    word-break:keep-all;overflow-wrap:anywhere;
+    word-break:keep-all;line-break:strict;overflow-wrap:break-word;
   }
   img{max-width:100%;display:block;}
   a{color:inherit;}
@@ -66,6 +66,15 @@
   }
   @media (prefers-reduced-motion: no-preference){
     .kb{animation:kb 20s ease-in-out alternate infinite;}
+  }
+
+  /* ===== スクロールリビール(Framer Motion級・雛形標準) ===== */
+  @media (prefers-reduced-motion: no-preference){
+    .reveal{opacity:0;transform:translateY(26px);
+      transition:opacity .8s ease,transform .9s cubic-bezier(.22,1,.36,1);}
+    .reveal.in{opacity:1;transform:none;}
+    .reveal:nth-child(2){transition-delay:.12s;}
+    .reveal:nth-child(3){transition-delay:.24s;}
   }
 
   /* ===== ヘッダー ===== */
@@ -91,12 +100,22 @@
     text-align:center;color:#fff;overflow:hidden;
   }
   .hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
-  /* スライダー */
+  /* 没入映像モード: img/hero.mp4 があれば自動で映像ヒーローに切替(Higgsfield生成) */
+  .hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;}
+  .hero.has-video .hero-video{display:block;}
+  .hero.has-video .hero-slides,.hero.has-video .hero-dots{display:none;}
+  /* スライダー: 疑似フライスルー(ダイブ)トランジション */
   .hero-slides{position:absolute;inset:0;}
-  .hero-slide{position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease;}
-  .hero-slide.active{opacity:1;}
+  .hero-slide{
+    position:absolute;inset:0;opacity:0;z-index:1;
+    transform:scale(1.05);
+    transition:opacity 1.6s ease,transform 1.6s cubic-bezier(.4,0,.2,1),filter 1.6s ease;
+    will-change:opacity,transform;
+  }
+  .hero-slide.active{opacity:1;z-index:2;transform:scale(1);}
+  .hero-slide.leaving{opacity:0;z-index:3;transform:scale(1.35);filter:blur(7px) brightness(1.12);}
   .hero-slide img{width:100%;height:100%;object-fit:cover;}
-  @media(prefers-reduced-motion:reduce){.hero-slide{transition:none;}}
+  @media(prefers-reduced-motion:reduce){.hero-slide{transition:none;transform:none!important;filter:none!important;}}
   .hero-dots{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:4;}
   .hero-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4);cursor:pointer;transition:.3s;border:none;}
   .hero-dot.active{background:var(--gold);}
@@ -344,6 +363,10 @@
 
 <!-- ヒーロー: クロスフェードスライダー (外観/ベッドルーム/常盤公園/カフェ) -->
 <section class="hero" id="top" style="padding:0;">
+  <!-- 没入映像: img/hero.mp4 を配置すると自動で映像モード(Higgsfield生成・無ければスライダー) -->
+  <video class="hero-video" autoplay muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1">
+    <source src="img/hero.mp4" type="video/mp4">
+  </video>
   <div class="hero-slides">
     <div class="hero-slide active"><img class="kb" src="img/p5.jpg" alt="ダイバーシティホテル シン トキワ 旭川 外観"></div>
     <div class="hero-slide"><img class="kb" src="img/p3.jpg" alt="ダイバーシティホテル シン トキワ 旭川 客室"></div>
@@ -358,13 +381,13 @@
   </div>
   <div class="hero-content">
     <div class="hero-eyebrow">ASAHIKAWA / HOKKAIDO</div>
-    <h1>旭川の中心に泊まる、<br>コスパ最高のホテル。</h1>
-    <p class="sub">常盤公園まで徒歩5分・JR旭川駅から車5分・無料駐車場完備</p>
+    <h1>旭川の<wbr>中心に<wbr>泊まる、<br>コスパ最高の<wbr>ホテル。</h1>
+    <p class="sub">常盤公園まで<wbr>徒歩5分・JR旭川駅から<wbr>車5分・<wbr>無料駐車場完備</p>
     <div class="hero-cta">
-      <a href="tel:0166-67-2194" class="btn btn-gold"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.64 3.41 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.78a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> 電話で予約</a>
+      <a href="tel:0166-67-2194" class="btn btn-gold"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.64 3.41 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.78a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> 電話で<wbr>予約</a>
       <a href="#reserve" class="btn btn-line">
         <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor;"><path d="M12 2C6.48 2 2 5.94 2 10.7c0 3.03 2.02 5.7 5.06 7.24-.16.62-.85 3.1-.87 3.3 0 0-.02.18.1.24.11.06.24 0 .24 0 .34-.05 3.7-2.44 4.3-2.87.4.06.8.09 1.17.09 5.52 0 10-3.94 10-8.7C22 5.94 17.52 2 12 2z"/></svg>
-        公式LINEで直接予約(導入イメージ)
+        公式LINEで<wbr>直接予約(導入イメージ)
       </a>
       <a href="#access" class="btn btn-tel">アクセス</a>
     </div>
@@ -376,23 +399,23 @@
   <div class="wrap">
     <div class="sec-head">
       <span class="eyebrow">HIGHLIGHTS</span>
-      <h2>シン トキワ 3つの魅力<span class="note">HOTEL FEATURES</span></h2>
+      <h2>シン トキワ 3つの<wbr>魅力<span class="note">HOTEL FEATURES</span></h2>
     </div>
     <div class="feature-grid">
       <div class="feature-card">
         <div class="f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 17V7h5a3 3 0 0 1 0 6H9"/></svg></div>
         <h3>無料WiFi &amp; 無料駐車場</h3>
-        <p>高速WiFiと駐車場を完全無料でご利用いただけます。旭川市内観光や道北ドライブの拠点としても最適です。</p>
+        <p>高速WiFiと<wbr>駐車場を<wbr>完全無料で<wbr>ご利用いただけます。<wbr>旭川市内観光や<wbr>道北ドライブの<wbr>拠点と<wbr>しても<wbr>最適です。</p>
       </div>
       <div class="feature-card">
         <div class="f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2L6 12h3l-3 6h6v4h0v-4h6l-3-6h3L12 2z"/></svg></div>
-        <h3>常盤公園へ徒歩5分</h3>
-        <p>旭川市のシンボル・常盤公園まで徒歩約5分。北海道立美術館も徒歩8分圏内。旭川観光に絶好のロケーション。</p>
+        <h3>常盤公園へ<wbr>徒歩5分</h3>
+        <p>旭川市の<wbr>シンボル・常盤公園まで<wbr>徒歩約5分。<wbr>北海道立美術館も<wbr>徒歩8分圏内。<wbr>旭川観光に<wbr>絶好の<wbr>ロケーション。</p>
       </div>
       <div class="feature-card">
         <div class="f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 8 14"/></svg></div>
-        <h3>深夜チェックインもOK</h3>
-        <p>チェックインは15:00〜29:00(翌朝5時)まで対応。19時以降は無人セルフチェックイン機を使って安心チェックイン。</p>
+        <h3>深夜<wbr>チェックインも<wbr>OK</h3>
+        <p>チェックインは<wbr>15:00〜29:00(翌朝5時)まで<wbr>対応。<wbr>19時以降は<wbr>無人セルフチェックイン機を<wbr>使って<wbr>安心チェックイン。</p>
       </div>
     </div>
   </div>
@@ -406,13 +429,13 @@
     <div class="direct-inner">
       <div class="direct-text">
         <span class="eyebrow">DIRECT BOOKING BENEFIT</span>
-        <h2>ポータルサイトより、<br>直接予約がおトク。</h2>
-        <p>じゃらん・楽天トラベル・Booking.comなどのポータルサイト経由では、<br>手数料(10〜20%程度)がホテルに発生します。<br><br>公式LINE・直接電話からご予約いただくと、<br>その分を特典・価格還元に回すことができます。</p>
+        <h2>ポータルサイトより、<br>直接予約が<wbr>おトク。</h2>
+        <p>じゃらん・<wbr>楽天トラベル・Booking.comなどの<wbr>ポータルサイト経由では、<br>手数料(10〜20%程度)が<wbr>ホテルに<wbr>発生します。<br><br>公式LINE・直接電話から<wbr>ご予約いただくと、<br>その分を<wbr>特典・価格還元に<wbr>回すことができます。</p>
         <div class="direct-btns">
-          <a href="tel:0166-67-2194" class="btn btn-gold"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.64 3.41 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.78a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> 電話で予約する</a>
+          <a href="tel:0166-67-2194" class="btn btn-gold"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.64 3.41 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.78a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> 電話で<wbr>予約する</a>
           <a href="#reserve" class="btn btn-line">
             <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor;"><path d="M12 2C6.48 2 2 5.94 2 10.7c0 3.03 2.02 5.7 5.06 7.24-.16.62-.85 3.1-.87 3.3 0 0-.02.18.1.24.11.06.24 0 .24 0 .34-.05 3.7-2.44 4.3-2.87.4.06.8.09 1.17.09 5.52 0 10-3.94 10-8.7C22 5.94 17.52 2 12 2z"/></svg>
-            LINEで直接予約(導入イメージ)
+            LINEで<wbr>直接予約(導入イメージ)
           </a>
         </div>
       </div>
@@ -428,9 +451,9 @@
           <span class="direct-val">ゼロ</span>
         </div>
         <div class="compare-row">
-          <span class="label">問い合わせ</span>
+          <span class="label">問い<wbr>合わせ</span>
           <span class="portal">サイト経由</span>
-          <span class="direct-val">LINE/電話で即返答</span>
+          <span class="direct-val">LINE/電話で<wbr>即返答</span>
         </div>
         <div class="compare-row">
           <span class="label">特典・融通</span>
@@ -440,7 +463,7 @@
         <div class="compare-row">
           <span class="label">キャンセル連絡</span>
           <span class="portal">サイト操作のみ</span>
-          <span class="direct-val">LINEで即対応</span>
+          <span class="direct-val">LINEで<wbr>即対応</span>
         </div>
       </div>
     </div>
@@ -484,21 +507,21 @@
         <img class="kb" src="img/p3.jpg" alt="スタンダードルーム" loading="lazy">
         <div class="room-body">
           <h4>スタンダードルーム</h4>
-          <p>清潔感あふれるベッドルーム。ビジネス出張にも観光にも。ゆっくりとおくつろぎください。</p>
+          <p>清潔感<wbr>あ<wbr>ふれる<wbr>ベッドルーム。<wbr>ビジネス出張にも<wbr>観光にも。<wbr>ゆっくりと<wbr>おくつろぎください。</p>
         </div>
       </div>
       <div class="room-card">
         <img class="kb" src="img/p4.jpg" alt="和室" loading="lazy">
         <div class="room-body">
           <h4>和室</h4>
-          <p>畳の落ち着いた空間で、北海道の旅をゆったりと。グループ・家族旅行にも対応。</p>
+          <p>畳の<wbr>落ち着いた<wbr>空間で、<wbr>北海道の<wbr>旅を<wbr>ゆったりと。<wbr>グループ・家族旅行にも<wbr>対応。</p>
         </div>
       </div>
       <div class="room-card">
         <img src="img/cafe.jpg" alt="トリとたまごのカフェ ココケッコウの名物オムライス" loading="lazy">
         <div class="room-body">
-          <h4>1階カフェ「トリとたまごのカフェ ココケッコウ」</h4>
-          <p>ふわとろオムライスが人気のカフェを館内1階に併設。<br>ランチ11:30〜14:30/カフェ15:00〜18:00(火曜定休)。<br>チェックアウト後もゆっくりとお過ごしいただけます。</p>
+          <h4>1階カフェ<wbr>「トリと<wbr>たま<wbr>ごの<wbr>カフェ ココケッコウ」</h4>
+          <p>ふわと<wbr>ろオムライスが<wbr>人気の<wbr>カフェを<wbr>館内1階に<wbr>併設。<br>ランチ11:30〜14:30/カフェ15:00〜18:00(火曜定休)。<br>チェックアウト後も<wbr>ゆっくりとお過ごしいただけます。</p>
           <p style="margin-top:6px;"><a href="https://www.instagram.com/koko_keko_cafe/" target="_blank" rel="noopener" style="font-weight:700;">Instagram @koko_keko_cafe</a></p>
         </div>
       </div>
@@ -521,15 +544,15 @@
           <dt>住所</dt>
           <dd>〒070-0043 北海道旭川市常盤通3丁目1971-45</dd>
           <dt>電話番号</dt>
-          <dd><a href="tel:0166-67-2194" style="color:var(--brand-mid);font-weight:700;">0166-67-2194</a>(掲載情報は現地照合後更新予定)</dd>
+          <dd><a href="tel:0166-67-2194" style="color:var(--brand-mid);font-weight:700;">0166-67-2194</a>(掲載情報は<wbr>現地照合後更新予定)</dd>
           <dt>アクセス</dt>
-          <dd>JR旭川駅から車・タクシー約5分(目安¥700前後)<br>道北バス「1条2丁目」下車</dd>
+          <dd>JR旭川駅から<wbr>車・タクシー約5分(目安¥700前後)<br>道北バス「1条2丁目」下車</dd>
           <dt>チェックイン / アウト</dt>
-          <dd>15:00〜29:00(翌5:00) / 〜10:00<br><small style="color:#8a8fa0;">19:00以降は無人セルフチェックイン機対応</small></dd>
+          <dd>15:00〜29:00(翌5:00) / 〜10:00<br><small style="color:#8a8fa0;">19:00以降は<wbr>無人セルフチェックイン機対応</small></dd>
           <dt>周辺観光</dt>
           <dd>常盤公園 徒歩約5分 ／ 北海道立美術館 徒歩約8分</dd>
           <dt>設備</dt>
-          <dd>全館禁煙・無料WiFi・無料駐車場・コーヒーショップ</dd>
+          <dd>全館禁煙・<wbr>無料WiFi・<wbr>無料駐車場・<wbr>コーヒーショップ</dd>
           <dt>参考価格</dt>
           <dd>2名1泊 ¥6,174〜(各予約サイト参考)</dd>
         </dl>
@@ -541,7 +564,7 @@
           allowfullscreen
           loading="lazy"
           title="ダイバーシティホテル シン トキワ 旭川 地図"></iframe>
-        <p style="font-size:11px;color:#8a8fa0;margin-top:8px;">※地図は参考表示です。正確な位置は現地住所をご確認ください。</p>
+        <p style="font-size:11px;color:#8a8fa0;margin-top:8px;">※地図は<wbr>参考表示です。<wbr>正確な<wbr>位置は<wbr>現地住所を<wbr>ご確認ください。</p>
       </div>
     </div>
   </div>
@@ -550,16 +573,16 @@
 <!-- ご予約CTA -->
 <section class="cta-sec" id="reserve">
   <div class="wrap">
-    <h2>ご予約・お問い合わせ</h2>
-    <p>電話または公式LINE(導入予定)からご予約で、<br>ポータル手数料ゼロの直接予約をご利用いただけます。</p>
+    <h2>ご予約・<wbr>お問い<wbr>合わせ</h2>
+    <p>電話または<wbr>公式LINE(導入予定)から<wbr>ご予約で、<br>ポータル手数料ゼロの<wbr>直接予約を<wbr>ご利用いただけます。</p>
     <div class="cta-btns">
       <a class="btn-cta-line" href="#">
         <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.94 2 10.7c0 3.03 2.02 5.7 5.06 7.24-.16.62-.85 3.1-.87 3.3 0 0-.02.18.1.24.11.06.24 0 .24 0 .34-.05 3.7-2.44 4.3-2.87.4.06.8.09 1.17.09 5.52 0 10-3.94 10-8.7C22 5.94 17.52 2 12 2z"/></svg>
-        公式LINEで予約(導入イメージ)
+        公式LINEで<wbr>予約(導入イメージ)
       </a>
       <a class="btn-cta-tel" href="tel:0166-67-2194"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.64 3.41 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.78a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> 0166-67-2194</a>
     </div>
-    <p style="font-size:11px;color:rgba(255,255,255,.5);margin-top:18px;">※電話番号・LINE URLは掲載情報を現地照合後に更新します</p>
+    <p style="font-size:11px;color:rgba(255,255,255,.5);margin-top:18px;">※電話番号・LINE URLは<wbr>掲載情報を<wbr>現地照合後に<wbr>更新します</p>
   </div>
 </section>
 
@@ -567,16 +590,16 @@
   <div class="fname">ダイバーシティホテル シン トキワ 旭川</div>
   <div>〒070-0043 北海道旭川市常盤通3丁目1971-45</div>
   <div style="margin-top:10px;display:flex;justify-content:center;gap:16px;flex-wrap:wrap;">
-    <a href="rooms.html" style="color:#8a8fa0;text-decoration:none;font-size:12px;">客室・料金</a><a href="facilities.html" style="color:#8a8fa0;text-decoration:none;font-size:12px;">館内施設</a><a href="access.html" style="color:#8a8fa0;text-decoration:none;font-size:12px;">アクセス</a><a href="sightseeing.html" style="color:#8a8fa0;text-decoration:none;font-size:12px;">周辺観光</a><a href="news.html" style="color:#8a8fa0;text-decoration:none;font-size:12px;">お知らせ</a><a href="blog.html" style="color:#8a8fa0;text-decoration:none;font-size:12px;">ブログ</a><a href="faq.html" style="color:#8a8fa0;text-decoration:none;font-size:12px;">FAQ</a><a href="reserve.html" style="color:#8a8fa0;text-decoration:none;font-size:12px;">ご予約</a><a href="policy.html" style="color:#c9a84c;text-decoration:none;font-size:12px;">ご予約とキャンセルについて</a>
+    <a href="rooms.html" style="color:#8a8fa0;text-decoration:none;font-size:12px;">客室・料金</a><a href="facilities.html" style="color:#8a8fa0;text-decoration:none;font-size:12px;">館内施設</a><a href="access.html" style="color:#8a8fa0;text-decoration:none;font-size:12px;">アクセス</a><a href="sightseeing.html" style="color:#8a8fa0;text-decoration:none;font-size:12px;">周辺観光</a><a href="news.html" style="color:#8a8fa0;text-decoration:none;font-size:12px;">お知らせ</a><a href="blog.html" style="color:#8a8fa0;text-decoration:none;font-size:12px;">ブログ</a><a href="faq.html" style="color:#8a8fa0;text-decoration:none;font-size:12px;">FAQ</a><a href="reserve.html" style="color:#8a8fa0;text-decoration:none;font-size:12px;">ご予約</a><a href="policy.html" style="color:#c9a84c;text-decoration:none;font-size:12px;">ご予約と<wbr>キャンセルに<wbr>ついて</a>
   </div>
   <div style="margin-top:10px;">
-    <a href="tel:0166-67-2194" style="color:#06C755;font-weight:700;text-decoration:none;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.64 3.41 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.78a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> 電話で予約する</a>
+    <a href="tel:0166-67-2194" style="color:#06C755;font-weight:700;text-decoration:none;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.64 3.41 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.78a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> 電話で<wbr>予約する</a>
     &nbsp;｜&nbsp;
     <a href="reserve.html" style="color:#06C755;font-weight:700;text-decoration:none;">ウェブ予約フォーム</a>
   </div>
   <div class="footer-note">
-    本ページはmono.create(旭川)による制作サンプルです。掲載情報・画像は公開情報を元にしています。<br>
-    掲載内容の正確性は現地にてご確認ください。成約前は速やかに削除いたします。
+    本ページは<wbr>mono.create(旭川)に<wbr>よる<wbr>制作サンプルです。<wbr>掲載情報・画像は<wbr>公開情報を<wbr>元に<wbr>しています。<br>
+    掲載内容の<wbr>正確性は<wbr>現地にて<wbr>ご確認ください。<wbr>成約前は<wbr>速やかに<wbr>削除いたします。<wbr>
   </div>
 </footer>
 
@@ -588,21 +611,64 @@
 </a>
 
 <script>
-/* ===== ヒーロースライダー ===== */
+/* ===== ヒーロースライダー(疑似フライスルー) ===== */
 (function(){
   const slides = document.querySelectorAll('.hero-slide');
   const dots = document.querySelectorAll('.hero-dot');
   let cur = 0;
   const reduced = matchMedia('(prefers-reduced-motion:reduce)').matches;
   function go(n){
-    slides[cur].classList.remove('active');
-    dots[cur].classList.remove('active');
+    const prev = cur;
+    slides[prev].classList.remove('active');
+    if(!reduced){
+      slides[prev].classList.add('leaving');
+      setTimeout(function(){ slides[prev].classList.remove('leaving'); }, 1700);
+    }
+    dots[prev].classList.remove('active');
     cur = (n + slides.length) % slides.length;
     slides[cur].classList.add('active');
     dots[cur].classList.add('active');
   }
   dots.forEach(function(d,i){ d.addEventListener('click', function(){ go(i); }); });
   if(!reduced){ setInterval(function(){ go(cur+1); }, 5000); }
+
+  /* 没入映像モード: hero.mp4 が読み込めたら映像ヒーローへ自動切替 */
+  const v = document.querySelector('.hero-video');
+  if(v){
+    v.addEventListener('canplay', function(){
+      document.querySelector('.hero').classList.add('has-video');
+      v.play().catch(function(){});
+    });
+    v.load();
+  }
+})();
+
+/* ===== スクロールリビール(rect判定・全環境動作・雛形標準) ===== */
+(function(){
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  var targets = Array.prototype.slice.call(document.querySelectorAll('.sec-head,.feature-card,.room-card'));
+  targets.forEach(function(el){ el.classList.add('reveal'); });
+  var ticking = false;
+  function check(){
+    ticking = false;
+    for(var i=targets.length-1; i>=0; i--){
+      var r = targets[i].getBoundingClientRect();
+      if(r.top < innerHeight - 40 && r.bottom > 0){
+        targets[i].classList.add('in');
+        targets.splice(i,1);
+      }
+    }
+    if(!targets.length){
+      removeEventListener('scroll', onScroll);
+      removeEventListener('resize', onScroll);
+    }
+  }
+  function onScroll(){
+    if(!ticking){ ticking = true; setTimeout(check, 80); }
+  }
+  addEventListener('scroll', onScroll, {passive:true});
+  addEventListener('resize', onScroll);
+  check();
 })();
 
 (function(){

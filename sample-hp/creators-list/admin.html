@@ -17,7 +17,7 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 16px; }
-body {
+body {word-break:keep-all;line-break:strict;overflow-wrap:break-word;
   font-family: 'Noto Sans JP', sans-serif;
   background: #f5f7fb;
   color: #1e293b;
@@ -460,13 +460,13 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
   <div class="login-card">
     <div class="login-logo">mono<span>.</span>create</div>
     <p class="login-sub" style="color:#F59E0B;font-weight:700;">🔐 初回セットアップ</p>
-    <p style="font-size:0.8rem;color:var(--sub);margin-bottom:18px;text-align:center;line-height:1.6;">管理者パスワードを設定してください。<br>11文字以上、英数字を含めてください。</p>
+    <p style="font-size:0.8rem;color:var(--sub);margin-bottom:18px;text-align:center;line-height:1.6;">管理者パスワードを<wbr>設定してください。<br>11文字以上、<wbr>英数字を<wbr>含めてください。</p>
     <input type="password" class="login-input" id="setup-pw1" placeholder="新しいパスワード（11文字以上）"
            oninput="checkSetupStrength()">
     <div id="setup-strength" style="font-size:0.75rem;margin-bottom:8px;height:16px;"></div>
     <input type="password" class="login-input" id="setup-pw2" placeholder="もう一度入力"
            onkeydown="if(event.key==='Enter') doSetup()">
-    <button class="login-btn" onclick="doSetup()">パスワードを設定する</button>
+    <button class="login-btn" onclick="doSetup()">パスワードを<wbr>設定する</button>
     <p class="login-error" id="setup-error"></p>
   </div>
 </div>
@@ -475,13 +475,13 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
 <div id="login-screen">
   <div class="login-card">
     <div class="login-logo">mono<span>.</span>create</div>
-    <p class="login-sub">管理画面にログインしてください</p>
+    <p class="login-sub">管理画面に<wbr>ログインしてください</p>
     <input type="password" class="login-input" id="pw-input" placeholder="パスワードを入力"
            onkeydown="if(event.key==='Enter') doLogin()">
     <button class="login-btn" onclick="doLogin()">ログイン</button>
-    <p class="login-error" id="login-error">パスワードが正しくありません。</p>
+    <p class="login-error" id="login-error">パスワードが<wbr>正しく<wbr>ありません。</p>
     <p id="lockout-msg" style="display:none;font-size:0.78rem;color:#F59E0B;margin-top:8px;text-align:center;"></p>
-    <p style="margin-top:16px;text-align:center;"><a href="#" onclick="resetLocalPw();return false;" style="font-size:0.75rem;color:#94A3B8;">パスワードを忘れた場合（この端末で再設定）</a></p>
+    <p style="margin-top:16px;text-align:center;"><a href="#" onclick="resetLocalPw();return false;" style="font-size:0.75rem;color:#94A3B8;">パスワードを<wbr>忘れた<wbr>場合<wbr>（この<wbr>端末で<wbr>再設定）</a></p>
   </div>
 </div>
 
@@ -495,10 +495,10 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       <span id="session-timer" style="font-size:0.7rem;color:rgba(255,255,255,0.45);display:none;" title="セッション有効期限"></span>
       <a href="index.html" class="back-btn">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-        LPに戻る
+        LPに<wbr>戻る<wbr>
       </a>
       <button class="logout-btn" onclick="doLogout()" title="セッションのみ終了（パスワードはこのデバイスに保存されたまま）">ログアウト</button>
-      <button class="logout-btn" onclick="doFullLogout()" title="パスワードも完全削除（共有PCで作業後はこちら）" style="background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.3);color:#F87171;margin-left:4px;font-size:0.75rem;">🔒 完全ログアウト</button>
+      <button class="logout-btn" onclick="doFullLogout()" title="パスワードも完全削除（共有PCで作業後はこちら）" style="background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.3);color:#F87171;margin-left:4px;font-size:0.75rem;">🔒 完全ロ<wbr>グアウト</button>
     </div>
   </header>
 
@@ -512,7 +512,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       </button>
       <button id="tab-dispatch-pay-btn" onclick="switchAdminTab('dispatch-pay')"
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
-        💴 派遣支払い
+        💴 派遣支払い<wbr>
       </button>
       <button id="tab-dispatch-editors-btn" onclick="switchAdminTab('dispatch-editors')"
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
@@ -528,7 +528,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       </button>
       <button id="tab-inquiries-btn" onclick="switchAdminTab('inquiries')"
         style="padding:10px 16px;border:none;background:none;color:var(--lt);font-weight:700;font-size:0.85rem;border-bottom:2px solid var(--lt);cursor:pointer;font-family:inherit;">
-        📩 問い合わせ管理
+        📩 問い<wbr>合わせ管理
       </button>
       <button id="tab-payments-btn" onclick="switchAdminTab('payments')"
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
@@ -544,7 +544,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       </button>
       <button id="tab-sales-btn" onclick="switchAdminTab('sales')"
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
-        💰 収支帳（青色申告）
+        💰 収支帳<wbr>（青色申告）<wbr>
       </button>
       <button id="tab-schedule-btn" onclick="switchAdminTab('schedule')"
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
@@ -616,7 +616,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       </button>
       <button id="tab-testimonials-btn" onclick="switchAdminTab('testimonials')"
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
-        💬 お客様の声
+        💬 お客様の<wbr>声
       </button>
       <button id="tab-line-followers-btn" onclick="switchAdminTab('line-followers')"
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
@@ -634,7 +634,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
     <div class="stat-row" id="dp-stats" style="margin-bottom:14px;"></div>
     <div class="card">
       <h3>受付状況・マッチング進捗</h3>
-      <p class="desc">クリエイターズリストのお問い合わせフォームから自動で届きます(メール+LINEに通知)。</p>
+      <p class="desc">クリエイターズリストの<wbr>お問い<wbr>合わせフォームから<wbr>自動で<wbr>届きます(メール+LINEに<wbr>通知)。</p>
       <div class="table-scroll">
         <table>
           <thead>
@@ -649,7 +649,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
   <div id="tab-dispatch-pay" style="display:none;">
     <div class="card">
       <h3>メール案内ツール</h3>
-      <p class="desc">宛先とお名前・金額を入れると、件名・本文入りのメール下書きが開きます(内容は送信前に自由に編集できます)。振込先はブラウザに保存されます。</p>
+      <p class="desc">宛先とお名前・金額を<wbr>入れると、<wbr>件名・本文<wbr>入りの<wbr>メール下<wbr>書きが<wbr>開きます(内容は<wbr>送信前に<wbr>自由に<wbr>編集できます)。<wbr>振込先は<wbr>ブラウザに<wbr>保存されます。</p>
       <div style="display:grid;grid-template-columns:1fr 1fr 140px auto auto;gap:10px;align-items:end;max-width:960px;">
         <div><label style="font-size:11.5px;font-weight:700;color:var(--sub);">宛先メール</label>
           <input id="dp-pay-email" type="email" placeholder="taro@example.com" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;"></div>
@@ -657,25 +657,25 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
           <input id="dp-pay-name" type="text" placeholder="山田太郎" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;"></div>
         <div><label style="font-size:11.5px;font-weight:700;color:var(--sub);">金額(円)</label>
           <input id="dp-pay-amount" type="number" placeholder="40000" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;"></div>
-        <button class="btn" style="padding:10px 16px;border:none;border-radius:8px;background:var(--brand);color:#1e293b;font-weight:700;font-size:12.5px;cursor:pointer;" onclick="dpSendInvoiceMail()">💰 振込のご案内(クライアント宛)</button>
+        <button class="btn" style="padding:10px 16px;border:none;border-radius:8px;background:var(--brand);color:#1e293b;font-weight:700;font-size:12.5px;cursor:pointer;" onclick="dpSendInvoiceMail()">💰 振込の<wbr>ご案内(クライアント宛)</button>
         <button class="btn" style="padding:10px 16px;border:1px solid var(--line);border-radius:8px;background:#fff;font-weight:700;font-size:12.5px;cursor:pointer;" onclick="dpSendPayNotice()">📤 支払通知(編集者宛)</button>
       </div>
       <div style="margin-top:10px;">
-        <label style="font-size:11.5px;font-weight:700;color:var(--sub);">振込先(請求案内に差し込まれます・この端末に保存)</label>
+        <label style="font-size:11.5px;font-weight:700;color:var(--sub);">振込先(請求案内に<wbr>差し込まれます・<wbr>この<wbr>端末に<wbr>保存)</label>
         <input id="dp-pay-bank" type="text" placeholder="例: ◯◯銀行 ◯◯支店 普通 1234567 ナカムラコウタ" style="width:100%;max-width:640px;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;" onchange="localStorage.setItem('cr_bank',this.value)">
       </div>
     </div>
     <div class="card">
       <h3>支払いルール(標準)</h3>
       <p class="desc">
-        クライアント: <b>翌月末払い</b>(月末締めで請求書を送付 → 翌月末までに銀行振込)。<br>
-        編集者への支払い: <b>25日締め・翌月末払い</b>(例: 7/25納品分→8/31払い、7/26〜8/25納品分→9/30払い)。<br>
-        ※「すべてのご依頼をお受けできない場合がある」ことはヒアリングメールでクライアントへ事前にお伝えする。
+        クライアント: <b>翌月末払い</b>(月<wbr>末締めで<wbr>請求書を<wbr>送付 → 翌月末までに<wbr>銀行振込)。<br>
+        編集者への<wbr>支払い<wbr>: <b>25<wbr>日締め・翌月末払い</b>(例: 7/25納品分→8/31払い、<wbr>7/26〜8/25納品分→9/30払い)。<br>
+        ※<wbr>「すべての<wbr>ご依頼を<wbr>お受けできない<wbr>場合が<wbr>ある」ことは<wbr>ヒアリングメールで<wbr>クライアントへ<wbr>事前に<wbr>お伝えする。<wbr>
       </p>
     </div>
     <div class="card">
-      <h3>案件ごとの請求・入金・編集者支払い</h3>
-      <p class="desc">変更すると自動保存されます。対象はトライアル以降の案件です。</p>
+      <h3>案件ごとの<wbr>請求・入金・編集者支払い</h3>
+      <p class="desc">変更すると<wbr>自動保存されます。<wbr>対象は<wbr>トライアル以降の<wbr>案件です。</p>
       <div class="table-scroll">
         <table>
           <thead>
@@ -689,12 +689,12 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
 
   <div id="tab-dispatch-editors" style="display:none;">
     <div class="card">
-      <h3>在籍編集者と稼働状況</h3>
-      <p class="desc">プロフィールは編集者の自己登録データ。「本稼働・トライアル」の担当件数から稼働を判定します。</p>
+      <h3>在籍編集者と<wbr>稼働状況</h3>
+      <p class="desc">プロフィールは<wbr>編集者の<wbr>自己登録データ。<wbr>「本稼働・トライアル」の<wbr>担当件数から<wbr>稼働を<wbr>判定します。</p>
       <div class="table-scroll">
         <table>
           <thead>
-            <tr><th>名前</th><th>ジャンル</th><th>月の対応本数</th><th>稼働時間帯</th><th>担当中の案件</th><th>稼働判定</th></tr>
+            <tr><th>名前</th><th>ジャンル</th><th>月の<wbr>対応本数</th><th>稼働時間帯</th><th>担当中の<wbr>案件</th><th>稼働判定</th></tr>
           </thead>
           <tbody id="dp-editor-rows"><tr><td colspan="6" class="empty">読み込み中...</td></tr></tbody>
         </table>
@@ -704,15 +704,15 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
 
   <div id="tab-dispatch-contracts" style="display:none;">
     <div class="card">
-      <h3>業務委託契約書の発行</h3>
-      <p class="desc">氏名とメールを入力して発行すると、本人が氏名を確認して締結できる契約ページのURLが作られます。発行後に「📧 メールで送る」ボタンからそのまま送付できます。</p>
+      <h3>業務委託契約書の<wbr>発行</h3>
+      <p class="desc">氏名と<wbr>メールを<wbr>入力して<wbr>発行すると、<wbr>本人が<wbr>氏名を<wbr>確認して<wbr>締結できる<wbr>契約ページの<wbr>URLが<wbr>作られます。<wbr>発行後に<wbr>「📧 メールで<wbr>送る」<wbr>ボタンから<wbr>そのまま<wbr>送付できます。</p>
       <div style="display:grid;grid-template-columns:140px 1fr 1fr auto;gap:10px;align-items:end;max-width:820px;">
-        <div><label style="font-size:11.5px;font-weight:700;color:var(--sub);">契約の種類</label>
+        <div><label style="font-size:11.5px;font-weight:700;color:var(--sub);">契約の<wbr>種類</label>
           <select id="dp-ct-type" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;">
             <option value="editor">編集者(業務委託)</option>
             <option value="client">クライアント(取引基本)</option>
           </select></div>
-        <div><label style="font-size:11.5px;font-weight:700;color:var(--sub);">相手の氏名/会社名</label>
+        <div><label style="font-size:11.5px;font-weight:700;color:var(--sub);">相手の<wbr>氏名/会社名</label>
           <input id="dp-ct-name" type="text" placeholder="例: 山田太郎" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;"></div>
         <div><label style="font-size:11.5px;font-weight:700;color:var(--sub);">メールアドレス</label>
           <input id="dp-ct-email" type="email" placeholder="例: taro@example.com" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;"></div>
@@ -721,12 +721,12 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       <div id="dp-ct-result" style="margin-top:14px;"></div>
     </div>
     <div class="card">
-      <h3>締結済みの契約</h3>
-      <p class="desc">本人が契約ページで締結すると、ここに記録とPDFが並びます。</p>
+      <h3>締結済みの<wbr>契約</h3>
+      <p class="desc">本人が<wbr>契約ページで<wbr>締結すると、<wbr>ここに<wbr>記録と<wbr>PDFが<wbr>並びます。</p>
       <div class="table-scroll">
         <table>
           <thead><tr><th>締結日</th><th>氏名</th><th>メール</th><th>種別</th><th>状態</th><th>PDF</th></tr></thead>
-          <tbody id="dp-contract-rows"><tr><td colspan="6" class="empty">「契約書」タブを開くと読み込みます</td></tr></tbody>
+          <tbody id="dp-contract-rows"><tr><td colspan="6" class="empty">「契約書」<wbr>タブを<wbr>開くと<wbr>読み込みます</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -736,15 +736,15 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
     <div class="stat-row" id="dp-jobs-stats" style="margin-bottom:14px;"></div>
     <div class="card">
       <h3>編集者用 案件報告ページ(共有用URL)</h3>
-      <p class="desc">編集者はこのページから納品した案件を報告します。報告が届くとメール+LINEに通知されます。毎月25日までに届く請求書(1本500円)とここの内容を照合してください。</p>
+      <p class="desc">編集者は<wbr>この<wbr>ページから<wbr>納品した<wbr>案件を<wbr>報告します。<wbr>報告が<wbr>届くと<wbr>メール+LINEに<wbr>通知されます。<wbr>毎月<wbr>25日までに<wbr>届く<wbr>請求書(1本500円)と<wbr>ここの<wbr>内容を<wbr>照合してください。</p>
       <div style="display:flex;gap:8px;max-width:720px;">
         <input id="dp-jobs-url" readonly value="https://mono-create-group.github.io/lp/sample-hp/creators-list/sheet.html" style="flex:1;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:12.5px;background:#fff;">
-        <button class="btn" style="padding:9px 16px;border:1px solid var(--line);border-radius:8px;background:#fff;font-weight:700;font-size:12.5px;cursor:pointer;" onclick="navigator.clipboard.writeText(document.getElementById('dp-jobs-url').value).then(()=>this.textContent='コピーしました')">URLをコピー</button>
+        <button class="btn" style="padding:9px 16px;border:1px solid var(--line);border-radius:8px;background:#fff;font-weight:700;font-size:12.5px;cursor:pointer;" onclick="navigator.clipboard.writeText(document.getElementById('dp-jobs-url').value).then(()=>this.textContent='コピーしました<wbr>')">URLを<wbr>コピー</button>
       </div>
     </div>
     <div class="card">
-      <h3>クライアント登録(単価の正はここ・編集者は変更不可)</h3>
-      <p class="desc">登録単価が編集者の報告シートに<b>既定値として自動適用</b>されます。案件ごとの単価変更は可能ですが、変更・未登録の報告には<b>「要確認」バッジ</b>が付き、クライアント請求と突合してから確定します。手数料は<b>ショート500円/本・長尺1,000円/本</b>で固定(操作不能)。</p>
+      <h3>クライアント登録(単価の<wbr>正は<wbr>ここ・編集者は<wbr>変更不可)</h3>
+      <p class="desc">登録単価が<wbr>編集者の<wbr>報告シートに<b>既定値と<wbr>して<wbr>自動適用</b>されます。<wbr>案件ごとの<wbr>単価変更は<wbr>可能ですが、<wbr>変更・未登録の<wbr>報告には<b>「要確認」<wbr>バッジ</b>が<wbr>付き、<wbr>クライアント請求と<wbr>突合してから<wbr>確定します。<wbr>手数料は<b>ショート500円/本・<wbr>長尺1,000円/本</b>で<wbr>固定(操作不能)。</p>
       <div style="display:grid;grid-template-columns:1fr 140px 140px auto;gap:10px;align-items:end;max-width:760px;">
         <div><label style="font-size:11.5px;font-weight:700;color:var(--sub);">クライアント名</label>
           <input id="dp-cl-name" type="text" placeholder="例: 株式会社◯◯" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;"></div>
@@ -756,22 +756,22 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       </div>
       <div class="table-scroll" style="margin-top:14px;">
         <table>
-          <thead><tr><th>クライアント</th><th>ショート単価</th><th>長尺単価</th><th>編集者の受取(ショート/長尺)</th><th></th></tr></thead>
+          <thead><tr><th>クライアント</th><th>ショート単価</th><th>長尺単価</th><th>編集者の<wbr>受取(ショート/長尺)</th><th></th></tr></thead>
           <tbody id="dp-client-rows"><tr><td colspan="5" class="empty">読み込み中...</td></tr></tbody>
         </table>
       </div>
     </div>
     <div class="card">
       <h3>月次サマリー(手数料売上・入出金)</h3>
-      <p class="desc">運営の売上=手数料(ショート500円/長尺1,000円×本数)。クライアント請求: <b>月末締め・翌月末払い</b> / 編集者支払: <b>25日締め・翌月末払い</b>(例: 7/25納品→8/31払い、7/26〜8/25納品→9/30払い)</p>
+      <p class="desc">運営の<wbr>売上=手数料(ショート500円/長尺1,000円×本数)。<wbr>クライアント請求: <b>月<wbr>末締め・翌月末払い</b> / 編集者支払: <b>25<wbr>日締め・翌月末払い</b>(例: 7/25納品→8/31払い、<wbr>7/26〜8/25納品→9/30払い<wbr>)</p>
       <div id="dp-jobs-summary"></div>
     </div>
     <div class="card">
-      <h3>案件一覧(編集者からの報告)</h3>
-      <p class="desc">「自動」ボタンで報告値(登録単価×本数)がクライアント請求に入ります。金額・状況は変更すると自動保存されます。「未登録単価」バッジの行はクライアントと単価を確認してください。</p>
+      <h3>案件一覧(編集者からの<wbr>報告)</h3>
+      <p class="desc">「自動」<wbr>ボタンで<wbr>報告値(登録単価×本数)が<wbr>クライアント請求に<wbr>入ります。<wbr>金額・状況は<wbr>変更すると<wbr>自動保存されます。<wbr>「未登録単価」<wbr>バッジの<wbr>行は<wbr>クライアントと<wbr>単価を<wbr>確認してください。</p>
       <div class="table-scroll">
         <table>
-          <thead><tr><th>納品日</th><th>編集者</th><th>クライアント</th><th>内容・タイトル</th><th>本数</th><th>クライアント請求(円)</th><th>手数料(売上)</th><th>編集者支払</th><th>請求状況</th><th>編集者支払状況</th></tr></thead>
+          <thead><tr><th>納品日</th><th>編集者</th><th>クライアント</th><th>内容・<wbr>タイトル</th><th>本数</th><th>クライアント請求(円)</th><th>手数料(売上)</th><th>編集者支払</th><th>請求状況</th><th>編集者支払状況</th></tr></thead>
           <tbody id="dp-jobs-rows"><tr><td colspan="10" class="empty">読み込み中...</td></tr></tbody>
         </table>
       </div>
@@ -779,10 +779,10 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
 
     <!-- ===== 口コミ一覧カード ===== -->
     <div class="card" id="dp-review-card">
-      <h3>⭐ 口コミ一覧(review.htmlから投稿)</h3>
-      <p class="desc">クライアントからの口コミです。各行の「公開」チェックを入れた上で「ランク集計を公開」ボタンを押してください。編集者ランク・⭐平均・公開口コミが client.html に反映されます。</p>
+      <h3>⭐ 口コミ一覧(review.htmlから<wbr>投稿)</h3>
+      <p class="desc">クライアントからの<wbr>口コミです。<wbr>各行の<wbr>「公開」<wbr>チェックを<wbr>入れた<wbr>上で<wbr>「ランク集計を<wbr>公開」<wbr>ボタンを<wbr>押してください。<wbr>編集者ランク・⭐平均・<wbr>公開口コミが<wbr> client.html に<wbr>反映されます。</p>
       <div style="margin-bottom:12px;">
-        <button onclick="dpPublishRanks()" style="padding:10px 22px;border:none;border-radius:8px;background:#1a56db;color:#fff;font-weight:700;font-size:13.5px;cursor:pointer;font-family:inherit;">ランク集計を公開</button>
+        <button onclick="dpPublishRanks()" style="padding:10px 22px;border:none;border-radius:8px;background:#1a56db;color:#fff;font-weight:700;font-size:13.5px;cursor:pointer;font-family:inherit;">ランク集計を<wbr>公開</button>
         <span id="dp-rank-publish-msg" style="font-size:12.5px;margin-left:10px;"></span>
       </div>
       <div class="table-scroll">
@@ -842,7 +842,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         更新
       </button>
       <button class="export-btn" onclick="exportCSV()">CSV出力</button>
-      <button class="action-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;" onclick="clearAllRecords('inquiries','お問い合わせ',loadData)">🗑 全件削除</button>
+      <button class="action-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;" onclick="clearAllRecords('inquiries','お問い合わせ',loadData)">🗑 全件<wbr>削除</button>
     </div>
 
     <!-- Table -->
@@ -853,7 +853,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
             <th>受信日時</th>
             <th>お名前</th>
             <th>連絡先</th>
-            <th>ご関心プラン</th>
+            <th>ご関心<wbr>プラン</th>
             <th>ご相談内容</th>
             <th>ステータス</th>
             <th>アクション</th>
@@ -874,11 +874,11 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         <h2 style="font-size:1rem;font-weight:700;">💳 振込確認・売上自動記帳</h2>
         <div style="display:flex;gap:10px;">
           <button onclick="loadPayments()" style="padding:7px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--sub);font-size:0.8rem;font-family:inherit;cursor:pointer;">更新</button>
-          <button class="action-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;" onclick="clearAllRecords('payments','振込確認記録',loadPayments)">🗑 全件削除</button>
+          <button class="action-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;" onclick="clearAllRecords('payments','振込確認記録',loadPayments)">🗑 全件<wbr>削除</button>
         </div>
       </div>
       <p style="font-size:0.78rem;color:var(--sub);margin-bottom:20px;line-height:1.7;">
-        客から振込完了報告が届いたら「承認」ボタンを押してください。承認すると自動で売上帳に記帳されます。
+        客から<wbr>振込完了報告が<wbr>届いたら<wbr>「承認」<wbr>ボタンを<wbr>押してください。<wbr>承認すると<wbr>自動で<wbr>売上帳に<wbr>記帳されます。<wbr>
       </p>
       <div class="table-wrap">
         <table>
@@ -905,12 +905,12 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         <h2 style="font-size:1rem;font-weight:700;">📤 振込依頼履歴</h2>
         <div style="display:flex;gap:10px;">
           <button onclick="loadPaymentRequests()" style="padding:7px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--sub);font-size:0.8rem;font-family:inherit;cursor:pointer;">更新</button>
-          <button class="action-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;" onclick="clearAllRecords('payment_requests','振込依頼履歴',loadPaymentRequests)">🗑 全件削除</button>
+          <button class="action-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;" onclick="clearAllRecords('payment_requests','振込依頼履歴',loadPaymentRequests)">🗑 全件<wbr>削除</button>
         </div>
       </div>
       <p style="font-size:0.78rem;color:var(--sub);margin-bottom:20px;line-height:1.7;">
-        クライアントに送信した見積もり・振込依頼の履歴です。LINE／メールで送った依頼が自動で記録されます。<br>
-        実際の入金報告は「💳 振込確認」タブで承認してください。
+        クライアントに<wbr>送信した<wbr>見積もり・振込依頼の<wbr>履歴です。<wbr>LINE／メールで<wbr>送った<wbr>依頼が<wbr>自動で<wbr>記録されます。<br>
+        実際の<wbr>入金報告は<wbr>「💳 振込確認」<wbr>タブで<wbr>承認してください。<wbr>
       </p>
       <div class="table-wrap">
         <table>
@@ -939,15 +939,15 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         <button onclick="loadTrash()" style="padding:7px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--sub);font-size:0.8rem;font-family:inherit;cursor:pointer;">更新</button>
       </div>
       <p style="font-size:0.78rem;color:var(--sub);margin-bottom:20px;line-height:1.7;">
-        各タブで削除した項目はここに退避されます。「↩ 復元」で元のタブに戻せます。<br>
-        ※ 復元すると元の一覧の末尾に追加されます。「完全削除」すると元に戻せません。
+        各タブで<wbr>削除した<wbr>項目は<wbr>ここに<wbr>退避されます。<wbr>「↩ 復元」で<wbr>元の<wbr>タブに<wbr>戻せます。<br>
+        ※ 復元すると<wbr>元の<wbr>一覧の<wbr>末尾に<wbr>追加されます。<wbr>「完全削除」すると<wbr>元に<wbr>戻せません。<wbr>
       </p>
       <div class="table-wrap">
         <table>
           <thead><tr>
             <th>削除日時</th>
             <th>種別</th>
-            <th>内容（プレビュー）</th>
+            <th>内容<wbr>（プレビュー）</th>
             <th>操作</th>
           </tr></thead>
           <tbody id="trash-body">
@@ -959,19 +959,19 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
 
     <!-- ── お客様の声タブ ── -->
     <div id="tab-testimonials" style="display:none;max-width:860px;margin:0 auto;padding:24px 0;">
-      <h2 style="font-size:1.05rem;font-weight:800;margin-bottom:4px;">💬 お客様の声</h2>
+      <h2 style="font-size:1.05rem;font-weight:800;margin-bottom:4px;">💬 お客様の<wbr>声</h2>
       <p style="font-size:0.8rem;color:var(--sub);margin-bottom:18px;line-height:1.7;">
-        LPの「制作実績」の下に表示される、お客様の声（スクショ画像）を管理します。<br>
-        画像URL（Google Drive の共有リンク／画像直リンク）を貼って追加してください。
+        LPの<wbr>「制作実績」の<wbr>下に<wbr>表示される、<wbr>お客様の<wbr>声<wbr>（スクショ画像）を<wbr>管理します。<br>
+        画像URL<wbr>（Google Drive の<wbr>共有リンク／画像直リンク）を<wbr>貼って<wbr>追加してください。<wbr>
       </p>
       <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:20px;">
         <label style="display:block;font-size:0.78rem;color:var(--sub);margin-bottom:5px;">画像URL <span style="color:#f87171;">*</span></label>
         <input type="url" id="ts-url" placeholder="https://drive.google.com/file/d/.../view など"
           style="width:100%;padding:10px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#1e293b;font-size:0.88rem;font-family:inherit;outline:none;margin-bottom:12px;">
-        <label style="display:block;font-size:0.78rem;color:var(--sub);margin-bottom:5px;">キャプション（任意）</label>
+        <label style="display:block;font-size:0.78rem;color:var(--sub);margin-bottom:5px;">キャプション<wbr>（任意）</label>
         <input type="text" id="ts-caption" placeholder="例：株式会社〇〇 様 / リール編集"
           style="width:100%;padding:10px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#1e293b;font-size:0.88rem;font-family:inherit;outline:none;margin-bottom:14px;">
-        <button class="action-btn" style="background:#ecfdf5;color:#059669;border:1px solid #a7f3d0;font-weight:700;padding:9px 20px;" onclick="addTestimonial()">＋ 追加して掲載</button>
+        <button class="action-btn" style="background:#ecfdf5;color:#059669;border:1px solid #a7f3d0;font-weight:700;padding:9px 20px;" onclick="addTestimonial()">＋ 追加して<wbr>掲載</button>
       </div>
       <div id="testimonials-admin-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;">
         <p style="color:var(--sub);font-size:0.82rem;"><span class="spinner"></span></p>
@@ -985,7 +985,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         <button onclick="loadLineFollowers()" style="padding:7px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--sub);font-size:0.8rem;font-family:inherit;cursor:pointer;">更新</button>
       </div>
       <p style="font-size:0.78rem;color:var(--sub);margin-bottom:20px;line-height:1.7;">
-        公式LINEを友だち追加した方の一覧です。追加直後に「お名前」をご記入いただく案内が自動送信され、記入されるとここに反映されます。
+        公式LINEを<wbr>友だち追加した方の<wbr>一覧です。<wbr>追加直後に<wbr>「お名前」を<wbr>ご記入いただく<wbr>案内が<wbr>自動送信され、<wbr>記入されると<wbr>ここに<wbr>反映されます。<wbr>
       </p>
       <div class="table-wrap">
         <table>
@@ -1006,11 +1006,11 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
     <!-- ── 納品進捗（都度納品の残数）タブ ── -->
     <div id="tab-progress" style="display:none;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-        <h2 style="font-size:1rem;font-weight:700;">📦 納品進捗（都度納品の残数）</h2>
+        <h2 style="font-size:1rem;font-weight:700;">📦 納品進捗<wbr>（都度納品の<wbr>残数）</h2>
         <button onclick="loadProgress()" style="padding:7px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--sub);font-size:0.8rem;font-family:inherit;cursor:pointer;">更新</button>
       </div>
       <p style="font-size:0.78rem;color:var(--sub);margin-bottom:16px;line-height:1.7;">
-        「まとめて編集」など、合計本数の中から都度納品するご依頼の残数を管理します。納品ごとに「＋1納品」を押してください。
+        <wbr>「まとめて<wbr>編集」など、<wbr>合計本数の<wbr>中から<wbr>都度納品する<wbr>ご依頼の<wbr>残数を<wbr>管理します。<wbr>納品ごとに<wbr>「＋1納品」を<wbr>押してください。<wbr>
       </p>
       <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:18px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;">
         <div><label style="display:block;font-size:0.74rem;color:var(--sub);margin-bottom:4px;">クライアント名</label>
@@ -1039,13 +1039,13 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         <div style="display:flex;gap:10px;">
           <button class="refresh-btn" onclick="loadContracts()">更新</button>
           <button class="export-btn" onclick="exportContractsCSV()">CSV出力</button>
-          <button class="action-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;" onclick="clearAllRecords('contracts','契約同意記録',loadContracts)">🗑 全件削除</button>
+          <button class="action-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;" onclick="clearAllRecords('contracts','契約同意記録',loadContracts)">🗑 全件<wbr>削除</button>
         </div>
       </div>
       <div class="table-wrap">
         <table>
           <thead><tr>
-            <th>同意日時</th><th>お名前</th><th>メールアドレス</th><th>プラン</th><th>ステージ</th><th>契約書PDF</th><th>アクション</th><th></th>
+            <th>同意日<wbr>時</th><th>お名前</th><th>メールアドレス</th><th>プラン</th><th>ステージ</th><th>契約書PDF</th><th>アクション</th><th></th>
           </tr></thead>
           <tbody id="contracts-body">
             <tr><td colspan="8" class="table-empty"><span class="spinner"></span></td></tr>
@@ -1061,15 +1061,15 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         <div style="display:flex;gap:10px;">
           <button class="refresh-btn" onclick="loadHearings()">更新</button>
           <button class="export-btn" onclick="exportHearingsCSV()">CSV出力</button>
-          <button class="action-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;" onclick="clearAllRecords('hearings','ヒアリング回答',loadHearings)">🗑 全件削除</button>
+          <button class="action-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;" onclick="clearAllRecords('hearings','ヒアリング回答',loadHearings)">🗑 全件<wbr>削除</button>
         </div>
       </div>
       <!-- 手動見積もり送信 -->
       <div style="background:rgba(59,130,246,0.07);border:1px solid rgba(59,130,246,0.25);border-radius:10px;padding:16px 20px;margin-bottom:20px;">
-        <p style="font-size:0.8rem;font-weight:700;color:#60a5fa;margin-bottom:12px;">💳 新規見積もり・振込依頼を手動送信</p>
+        <p style="font-size:0.8rem;font-weight:700;color:#60a5fa;margin-bottom:12px;">💳 新規見積もり・振込依頼を<wbr>手動送信</p>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
           <div>
-            <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">お名前 <span style="color:#f87171;">*</span> <span style="color:#60a5fa;font-size:0.7rem;">（▼で選択 or 自由入力）</span></label>
+            <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">お名前 <span style="color:#f87171;">*</span> <span style="color:#60a5fa;font-size:0.7rem;">（▼で<wbr>選択 or 自由入力）</span></label>
             <input type="text" id="manual-name" placeholder="山田 太郎" list="manual-name-list" autocomplete="off" oninput="onManualNamePick(this.value)"
               style="width:100%;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;">
             <datalist id="manual-name-list"></datalist>
@@ -1085,7 +1085,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
               style="width:100%;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;">
           </div>
           <div>
-            <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">金額（税込）<span style="color:#f87171;">*</span> <span id="manual-amount-hint" style="color:#4ade80;font-size:0.7rem;"></span></label>
+            <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">金額<wbr>（税込）<span style="color:#f87171;">*</span> <span id="manual-amount-hint" style="color:#4ade80;font-size:0.7rem;"></span></label>
             <input type="number" id="manual-amount" placeholder="例: 45000" min="0"
               style="width:100%;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;">
           </div>
@@ -1095,7 +1095,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
             style="flex:1;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;">
           <button onclick="submitManualPaymentRequest()"
             style="padding:9px 20px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;border:none;border-radius:8px;font-size:0.85rem;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit;">
-            💳 見積もりを送信
+            💳 見積もりを<wbr>送信
           </button>
         </div>
       </div>
@@ -1125,7 +1125,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         </div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:14px;">
           <div class="stat-card" style="background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.3);">
-            <p class="stat-label">売上（税込）</p>
+            <p class="stat-label">売上<wbr>（税込）</p>
             <p class="stat-val green" id="sum-sales">¥—</p>
           </div>
           <div class="stat-card" style="background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.3);">
@@ -1146,7 +1146,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
 
       <!-- ═══ 売上（収入）セクション ═══ -->
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px;">
-        <h3 style="font-size:0.95rem;font-weight:700;margin-bottom:16px;">📈 売上を記録（青色申告対応）</h3>
+        <h3 style="font-size:0.95rem;font-weight:700;margin-bottom:16px;">📈 売上を<wbr>記録<wbr>（青色申告対応）</h3>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;">
           <div>
             <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">取引日 *</label>
@@ -1157,11 +1157,11 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
             <input type="text" id="sl-client" placeholder="山田太郎 様" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#1e293b;font-size:0.85rem;font-family:inherit;outline:none;">
           </div>
           <div>
-            <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">売上金額（税込） *</label>
+            <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">売上金額<wbr>（税込）<wbr> *</label>
             <input type="number" id="sl-amount" placeholder="49800" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#1e293b;font-size:0.85rem;font-family:inherit;outline:none;">
           </div>
           <div>
-            <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">プラン（摘要）</label>
+            <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">プラン<wbr>（摘要）</label>
             <input type="text" id="sl-plan" placeholder="ショート動画編集 10本パック" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#1e293b;font-size:0.85rem;font-family:inherit;outline:none;">
           </div>
           <div>
@@ -1180,12 +1180,12 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       </div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
         <div>
-          <span style="font-size:0.82rem;color:var(--sub);">今月の売上合計（税込）：</span>
+          <span style="font-size:0.82rem;color:var(--sub);">今月の<wbr>売上合計<wbr>（税込）<wbr>：</span>
           <span id="sales-total" style="font-size:1.1rem;font-weight:900;color:var(--green);font-family:'Inter',sans-serif;">¥—</span>
           <span style="font-size:0.75rem;color:var(--sub);margin-left:8px;">（税抜 <span id="sales-total-exc">—</span>）</span>
         </div>
         <button class="export-btn" onclick="exportSalesCSV()">青色申告用CSV出力</button>
-          <button class="action-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;" onclick="clearAllRecords('sales','売上帳',loadSales)">🗑 全件削除</button>
+          <button class="action-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;" onclick="clearAllRecords('sales','売上帳',loadSales)">🗑 全件<wbr>削除</button>
       </div>
       <div class="table-wrap">
         <table>
@@ -1200,9 +1200,9 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
 
       <!-- ═══ 経費（支出）セクション ═══ -->
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px;">
-        <h3 style="font-size:0.95rem;font-weight:700;margin-bottom:16px;">📉 経費を記録（外注費・パートナー報酬など）</h3>
+        <h3 style="font-size:0.95rem;font-weight:700;margin-bottom:16px;">📉 経費を<wbr>記録<wbr>（外注費・パートナー報酬など）</h3>
         <div style="background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:0.78rem;color:#FCA5A5;">
-          💡 パートナー報酬は「支払済」ボタンを押すと自動記帳されます。ここでは外注費などを手動入力できます。
+          💡 パートナー報酬は<wbr>「支払済」<wbr>ボタンを<wbr>押すと<wbr>自動記帳されます。<wbr>ここでは<wbr>外注費などを<wbr>手動入力できます。<wbr>
         </div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:12px;">
           <div>
@@ -1229,7 +1229,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
             <input type="number" id="ex-amount" placeholder="2000" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#1e293b;font-size:0.85rem;font-family:inherit;outline:none;">
           </div>
           <div>
-            <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">支払方法</label>
+            <label style="font-size:0.75rem;color:var(--sub);display:block;margin-bottom:4px;">支払方<wbr>法</label>
             <select id="ex-method" style="width:100%;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#1e293b;font-size:0.85rem;font-family:inherit;outline:none;">
               <option selected>銀行振込</option>
               <option>クレジットカード</option>
@@ -1243,7 +1243,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
           </div>
         </div>
         <div style="display:flex;gap:10px;align-items:center;">
-          <button onclick="addExpenseRecord()" style="padding:10px 24px;background:var(--red);color:#fff;border:none;border-radius:50px;font-size:0.88rem;font-weight:700;font-family:inherit;cursor:pointer;">経費を記録</button>
+          <button onclick="addExpenseRecord()" style="padding:10px 24px;background:var(--red);color:#fff;border:none;border-radius:50px;font-size:0.88rem;font-weight:700;font-family:inherit;cursor:pointer;">経費を<wbr>記録</button>
           <span id="ex-msg" style="font-size:0.82rem;color:var(--green);display:none;">記録しました！</span>
         </div>
       </div>
@@ -1251,18 +1251,18 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       <!-- 経費一覧 -->
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
         <div>
-          <span style="font-size:0.82rem;color:var(--sub);">今月の経費合計：</span>
+          <span style="font-size:0.82rem;color:var(--sub);">今月の<wbr>経費合計：</span>
           <span id="expense-total" style="font-size:1.1rem;font-weight:900;color:var(--red);font-family:'Inter',sans-serif;">¥—</span>
         </div>
         <div style="display:flex;gap:8px;">
           <button class="export-btn" onclick="exportExpenseCSV()">経費CSV出力</button>
-          <button class="action-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;" onclick="clearAllRecords('expenses','経費帳',loadExpenses)">🗑 全件削除</button>
+          <button class="action-btn" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;" onclick="clearAllRecords('expenses','経費帳',loadExpenses)">🗑 全件<wbr>削除</button>
         </div>
       </div>
       <div class="table-wrap">
         <table>
           <thead><tr>
-            <th>取引日</th><th>相手先</th><th>種別</th><th>摘要</th><th>金額</th><th>支払方法</th><th></th>
+            <th>取引日</th><th>相手先</th><th>種別</th><th>摘要</th><th>金額</th><th>支払方<wbr>法</th><th></th>
           </tr></thead>
           <tbody id="expense-body">
             <tr><td colspan="7" class="table-empty"><span class="spinner"></span></td></tr>
@@ -1275,7 +1275,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
     <div id="tab-schedule" style="display:none;">
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px;">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
-          <h3 style="font-size:0.95rem;font-weight:700;">📅 制作スケジュール — 案件・素材ごとの納期管理</h3>
+          <h3 style="font-size:0.95rem;font-weight:700;">📅 制作スケジュール — 案件・素材ごとの<wbr>納期管理</h3>
           <div style="display:flex;gap:10px;">
             <button class="refresh-btn" onclick="loadSchedule()">更新</button>
             <button class="export-btn" onclick="exportScheduleCSV()">CSV出力</button>
@@ -1284,7 +1284,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         <div id="schedule-stats" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px;"></div>
       </div>
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px;">
-        <p style="font-size:0.85rem;font-weight:700;color:#60a5fa;margin-bottom:10px;">➕ 新規案件・素材の納期登録</p>
+        <p style="font-size:0.85rem;font-weight:700;color:#60a5fa;margin-bottom:10px;">➕ 新規案件・素材の<wbr>納期登録</p>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:10px;" id="sch-form-grid">
           <div>
             <label style="font-size:0.72rem;color:var(--sub);display:block;margin-bottom:4px;">クライアント名 *</label>
@@ -1330,7 +1330,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         </div>
         <button onclick="addScheduleItem()"
           style="margin-top:6px;padding:10px 22px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:0.88rem;cursor:pointer;font-family:inherit;">
-          📅 案件を登録（Chatwork通知あり）
+          📅 案件を<wbr>登録<wbr>（Chatwork通知<wbr>あり）<wbr>
         </button>
       </div>
       <div class="table-wrap">
@@ -1348,12 +1348,12 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
     <!-- ── ポートフォリオタブ ── -->
     <div id="tab-portfolio" style="display:none;">
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:24px;">
-        <h3 style="font-size:0.95rem;font-weight:700;margin-bottom:20px;">ポートフォリオを追加</h3>
+        <h3 style="font-size:0.95rem;font-weight:700;margin-bottom:20px;">ポートフォリオを<wbr>追加</h3>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;" id="portfolio-form-grid">
           <div>
-            <label style="font-size:0.78rem;color:var(--sub);display:block;margin-bottom:4px;">動画URL（YouTube / Google Drive） <span style="color:#EF4444;">*</span></label>
+            <label style="font-size:0.78rem;color:var(--sub);display:block;margin-bottom:4px;">動画URL<wbr>（YouTube / Google Drive）<wbr> <span style="color:#EF4444;">*</span></label>
             <input type="url" id="pf-url" placeholder="https://www.youtube.com/watch?v=... または https://drive.google.com/..." style="width:100%;padding:10px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;color:#1e293b;font-size:0.88rem;font-family:inherit;outline:none;" onblur="autoFillDriveTitle(this.value)">
-            <p style="font-size:0.72rem;color:#60A5FA;margin-top:4px;">💡 GoogleドライブURLを入力するとファイル名が自動でタイトルに入ります</p>
+            <p style="font-size:0.72rem;color:#60A5FA;margin-top:4px;">💡 GoogleドライブURLを<wbr>入力すると<wbr>ファイル名が<wbr>自動で<wbr>タイトルに<wbr>入ります</p>
           </div>
           <div>
             <label style="font-size:0.78rem;color:var(--sub);display:block;margin-bottom:4px;">タイトル <span id="pf-title-fetching" style="font-size:0.7rem;color:#F59E0B;display:none;">取得中...</span></label>
@@ -1392,7 +1392,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
     <div id="tab-editors" style="display:none;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
         <h2 style="font-size:1rem;font-weight:700;">👥 編集者管理</h2>
-        <button class="action-btn" style="background:#ecfdf5;color:#059669;border:1px solid #a7f3d0;font-size:0.85rem;padding:8px 18px;" onclick="openEditorModal(null)">＋ 編集者を追加</button>
+        <button class="action-btn" style="background:#ecfdf5;color:#059669;border:1px solid #a7f3d0;font-size:0.85rem;padding:8px 18px;" onclick="openEditorModal(null)">＋ 編集者を<wbr>追加</button>
       </div>
       <div id="editors-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
         <div style="text-align:center;padding:40px;color:var(--sub);"><span class="spinner"></span></div>
@@ -1403,7 +1403,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
     <div id="editor-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;overflow-y:auto;padding:24px 16px;">
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;max-width:620px;margin:0 auto;padding:28px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-          <h3 id="editor-modal-title" style="font-size:1rem;font-weight:700;">編集者を追加</h3>
+          <h3 id="editor-modal-title" style="font-size:1rem;font-weight:700;">編集者を<wbr>追加</h3>
           <button onclick="closeEditorModal()" style="background:none;border:none;color:var(--sub);font-size:1.3rem;cursor:pointer;">✕</button>
         </div>
         <input type="hidden" id="em-row" value="">
@@ -1437,19 +1437,19 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
             <input class="form-input" id="em-software" placeholder="例：Premiere Pro / CapCut / Final Cut Pro">
           </div>
           <div>
-            <label class="form-label">月の対応可能本数</label>
+            <label class="form-label">月の<wbr>対応可能本数</label>
             <input class="form-input" id="em-monthly" placeholder="例：〜20本/月">
           </div>
           <div>
-            <label class="form-label">週の対応可能本数</label>
+            <label class="form-label">週の<wbr>対応可能本数</label>
             <input class="form-input" id="em-weekly-cap" placeholder="例：〜5本/週">
           </div>
           <div>
-            <label class="form-label">1日の稼働時間</label>
+            <label class="form-label">1日の<wbr>稼働時間</label>
             <input class="form-input" id="em-daily-hours" placeholder="例：3〜4時間">
           </div>
           <div>
-            <label class="form-label">週の稼働時間</label>
+            <label class="form-label">週の<wbr>稼働時間</label>
             <input class="form-input" id="em-weekly-hours" placeholder="例：15〜20時間">
           </div>
           <div style="grid-column:1/-1;">
@@ -1461,7 +1461,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
             <textarea class="form-input" id="em-comment" rows="3" placeholder="例：テロップのリズム感を大切にしています。" style="resize:vertical;"></textarea>
           </div>
           <div style="grid-column:1/-1;">
-            <label class="form-label">表示順（数字が小さいほど上）</label>
+            <label class="form-label">表示順<wbr>（数字が<wbr>小さい<wbr>ほど<wbr>上）</label>
             <input class="form-input" id="em-order" type="number" placeholder="99" value="99" style="width:100px;">
           </div>
         </div>
@@ -1484,56 +1484,56 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
 
     <!-- ── 設定タブ ── -->
     <div id="tab-settings" style="display:none;max-width:480px;margin:0 auto;padding:32px 0;">
-      <h2 style="font-size:1rem;font-weight:700;margin-bottom:24px;">⚙️ 管理画面の設定</h2>
+      <h2 style="font-size:1rem;font-weight:700;margin-bottom:24px;">⚙️ 管理画面の<wbr>設定</h2>
 
       <!-- パスワード変更 -->
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px;">
         <h3 style="font-size:0.9rem;font-weight:700;margin-bottom:16px;color:var(--lt);">🔑 パスワード変更</h3>
         <div style="margin-bottom:12px;">
-          <label style="display:block;font-size:0.78rem;color:var(--sub);margin-bottom:6px;">現在のパスワード</label>
+          <label style="display:block;font-size:0.78rem;color:var(--sub);margin-bottom:6px;">現在の<wbr>パスワード</label>
           <input type="password" id="pw-current" placeholder="現在のパスワードを入力"
             style="width:100%;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--lt);font-size:0.9rem;font-family:inherit;outline:none;">
         </div>
         <div style="margin-bottom:12px;">
-          <label style="display:block;font-size:0.78rem;color:var(--sub);margin-bottom:6px;">新しいパスワード</label>
+          <label style="display:block;font-size:0.78rem;color:var(--sub);margin-bottom:6px;">新しい<wbr>パスワード</label>
           <input type="password" id="pw-new" placeholder="新しいパスワードを入力"
             style="width:100%;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--lt);font-size:0.9rem;font-family:inherit;outline:none;">
         </div>
         <div style="margin-bottom:16px;">
-          <label style="display:block;font-size:0.78rem;color:var(--sub);margin-bottom:6px;">新しいパスワード（確認）</label>
+          <label style="display:block;font-size:0.78rem;color:var(--sub);margin-bottom:6px;">新しい<wbr>パスワード<wbr>（確認）</label>
           <input type="password" id="pw-confirm" placeholder="もう一度入力"
             style="width:100%;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--lt);font-size:0.9rem;font-family:inherit;outline:none;">
         </div>
         <p id="pw-msg" style="font-size:0.8rem;margin-bottom:12px;display:none;"></p>
         <button onclick="changePassword()"
           style="width:100%;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:0.9rem;cursor:pointer;font-family:inherit;">
-          パスワードを変更する
+          パスワードを<wbr>変更する<wbr>
         </button>
       </div>
 
       <p style="font-size:0.75rem;color:var(--sub);line-height:1.7;">
-        ※ パスワードはこのブラウザのローカルストレージに保存されます。<br>
-        ※ 別のブラウザやデバイスからログインする場合は、同じパスワードを設定してください。
+        ※ パスワードは<wbr>この<wbr>ブラウザの<wbr>ローカルストレージに<wbr>保存されます。<br>
+        ※ 別の<wbr>ブラウザや<wbr>デバイスから<wbr>ログインする<wbr>場合は、<wbr>同じ<wbr>パスワードを<wbr>設定してください。<wbr>
       </p>
 
       <!-- GAS 認証キー同期（復旧用） -->
       <div style="background:var(--bg2);border:1px solid rgba(245,158,11,0.3);border-radius:12px;padding:24px;margin-top:20px;">
         <h3 style="font-size:0.9rem;font-weight:700;margin-bottom:8px;color:#F59E0B;">🔄 GAS認証キー同期</h3>
         <p style="font-size:0.76rem;color:var(--sub);margin-bottom:16px;line-height:1.6;">
-          「読み込みに失敗しました」「削除に失敗しました」が表示される場合は、ブラウザに保存されているパスワードとGASの認証キーが一致していない可能性があります。<br>
-          下のボタンで同期してください。
+          <wbr>「読み込みに<wbr>失敗しました」<wbr>「削除に<wbr>失敗しました」が<wbr>表示される<wbr>場合は、<wbr>ブラウザに<wbr>保存されている<wbr>パスワードと<wbr>GASの<wbr>認証キーが<wbr>一致していない<wbr>可能性が<wbr>あります。<br>
+          下の<wbr>ボタンで<wbr>同期してください。<wbr>
         </p>
         <p id="gas-sync-msg" style="font-size:0.8rem;margin-bottom:12px;display:none;"></p>
         <button onclick="syncGasKey()"
           style="width:100%;padding:12px;background:#92400E;color:#FDE68A;border:1px solid #F59E0B;border-radius:8px;font-weight:700;font-size:0.9rem;cursor:pointer;font-family:inherit;">
-          GASとパスワードを同期する
+          GASと<wbr>パスワードを<wbr>同期する<wbr>
         </button>
       </div>
 
       <!-- サービス受付管理 -->
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-top:28px;">
         <h3 style="font-size:0.9rem;font-weight:700;margin-bottom:6px;color:var(--lt);">🔧 サービス受付管理</h3>
-        <p style="font-size:0.76rem;color:var(--sub);margin-bottom:20px;">OFFにするとLPで「受付停止中」と表示され、申込ボタンが無効になります。</p>
+        <p style="font-size:0.76rem;color:var(--sub);margin-bottom:20px;">OFFに<wbr>すると<wbr>LPで<wbr>「受付停止中」と<wbr>表示され、<wbr>申込ボタンが<wbr>無効に<wbr>なります。</p>
         <div id="service-status-list">
           <p style="font-size:0.82rem;color:var(--sub);">読み込み中...</p>
         </div>
@@ -1551,7 +1551,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         <h3 style="font-size:0.9rem;font-weight:700;margin-bottom:16px;color:var(--lt);">📸 設定</h3>
 
         <div style="margin-bottom:16px;">
-          <label style="display:block;font-size:0.78rem;color:var(--sub);margin-bottom:6px;">先着受付人数（合計）</label>
+          <label style="display:block;font-size:0.78rem;color:var(--sub);margin-bottom:6px;">先着受付人数<wbr>（合計）</label>
           <div style="display:flex;gap:8px;align-items:center;">
             <input type="number" id="pf-max-slots" min="1" max="100" value="5" style="width:80px;padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--lt);font-family:inherit;font-size:0.88rem;">
             <span style="font-size:0.82rem;color:var(--sub);">名</span>
@@ -1560,7 +1560,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         </div>
 
         <div style="margin-bottom:16px;">
-          <label style="display:block;font-size:0.78rem;color:var(--sub);margin-bottom:10px;">ジャンル管理（ON/OFFと上限人数）</label>
+          <label style="display:block;font-size:0.78rem;color:var(--sub);margin-bottom:10px;">ジャンル管理<wbr>（ON/OFFと<wbr>上限人数）</label>
           <div id="pf-genres-admin" style="display:flex;flex-direction:column;gap:8px;"></div>
           <div style="display:flex;gap:8px;margin-top:12px;">
             <input id="pf-new-genre" type="text" placeholder="新しいジャンル名" style="flex:1;padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--lt);font-family:inherit;font-size:0.85rem;">
@@ -1582,7 +1582,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
     <!-- ── コンテンツ管理タブ ── -->
     <div id="tab-content" style="display:none;max-width:760px;margin:0 auto;padding:32px 0;">
       <h2 style="font-size:1.2rem;font-weight:800;margin-bottom:6px;">✏️ LP テキスト・価格 編集</h2>
-      <p style="font-size:0.82rem;color:var(--sub);margin-bottom:24px;">変更後「保存」を押すとLPに即反映されます。空欄のまま保存するとデフォルト値に戻ります。</p>
+      <p style="font-size:0.82rem;color:var(--sub);margin-bottom:24px;">変更後<wbr>「保存」を<wbr>押すと<wbr>LPに<wbr>即反映されます。<wbr>空欄のまま<wbr>保存すると<wbr>デフォルト値に<wbr>戻ります。</p>
 
       <div id="content-form-area">
         <p style="color:var(--sub);font-size:0.85rem;">読み込み中...</p>
@@ -1590,7 +1590,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
 
       <div style="margin-top:28px;display:flex;align-items:center;gap:16px;">
         <button onclick="saveContent()" style="padding:12px 32px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;">
-          💾 保存してLPに反映
+          💾 保存して<wbr>LPに<wbr>反映
         </button>
         <span id="content-save-msg" style="font-size:0.82rem;display:none;"></span>
       </div>
@@ -1641,7 +1641,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
               <th>メール</th>
               <th>希望案件</th>
               <th>対応本数</th>
-              <th>得意分野</th>
+              <th>得意分<wbr>野</th>
               <th>長期</th>
               <th>PF</th>
               <th>派遣</th>
@@ -1732,7 +1732,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       ══════════════════════════════════════════════════════ -->
       <div style="margin-bottom:32px;">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
-          <h2 style="font-size:1rem;font-weight:700;">💰 パートナー報酬管理（自動計算）</h2>
+          <h2 style="font-size:1rem;font-weight:700;">💰 パートナー報酬管理<wbr>（自動計算）</h2>
           <button class="refresh-btn" onclick="loadPartnerRewards()">更新</button>
         </div>
 
@@ -1741,13 +1741,13 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
           <div class="stat-card"><p class="stat-label">未送信</p><p class="stat-val red" id="rw-unsent">—</p></div>
           <div class="stat-card"><p class="stat-label">メール済み</p><p class="stat-val yellow" id="rw-mailed">—</p></div>
           <div class="stat-card"><p class="stat-label">支払済み</p><p class="stat-val green" id="rw-paid">—</p></div>
-          <div class="stat-card"><p class="stat-label">未払い総額</p><p class="stat-val" style="color:#F59E0B;" id="rw-amount">—</p></div>
+          <div class="stat-card"><p class="stat-label">未払い<wbr>総額</p><p class="stat-val" style="color:#F59E0B;" id="rw-amount">—</p></div>
         </div>
 
         <!-- フロー説明 -->
         <div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:0.78rem;color:#FCD34D;line-height:1.8;">
-          <strong>自動フロー：</strong> 振込承認 → 紹介コードを自動検索 → 報酬額を自動計算 →
-          ここに表示 → <strong>「📧 送信」</strong>でメール自動送信 → 銀行振込（手動） → <strong>「✅ 支払済」</strong>クリック
+          <strong>自動フロー：</strong> 振込承認 → 紹介コードを<wbr>自動検索 → 報酬額を<wbr>自動計算 →
+          ここに<wbr>表示 → <strong>「📧 送信」</strong>で<wbr>メール自動送信 → 銀行振込（手動）<wbr> → <strong>「✅ 支払済」</strong>クリック
         </div>
 
         <!-- 報酬テーブル -->
@@ -1829,7 +1829,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       <div id="reward-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;align-items:center;justify-content:center;">
         <div style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px;max-width:400px;width:90%;">
           <h3 style="font-weight:800;margin-bottom:16px;">💰 報酬確定メール送信</h3>
-          <p style="font-size:0.82rem;color:var(--sub);margin-bottom:16px;">パートナーへ報酬確定の連絡メールを送信します。</p>
+          <p style="font-size:0.82rem;color:var(--sub);margin-bottom:16px;">パートナーへ<wbr>報酬確定の<wbr>連絡メールを<wbr>送信します。</p>
           <input id="reward-amount" type="number" placeholder="報酬金額（例：500）" style="width:100%;padding:10px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:#1e293b;font-size:0.9rem;margin-bottom:16px;font-family:inherit;">
           <div style="display:flex;gap:10px;">
             <button onclick="submitRewardEmail()" style="flex:1;padding:10px;background:var(--yellow);color:#000;border:none;border-radius:8px;font-weight:800;cursor:pointer;">送信する</button>
@@ -1846,10 +1846,10 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
     <div id="tab-private-link" style="display:none;max-width:780px;margin:0 auto;padding:28px 0;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
         <h2 style="font-size:1.1rem;font-weight:900;">🔗 個別提案リンク生成</h2>
-        <button onclick="loadPrivateLinks()" style="padding:7px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--sub);font-size:0.8rem;cursor:pointer;">🔄 一覧を更新</button>
+        <button onclick="loadPrivateLinks()" style="padding:7px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--sub);font-size:0.8rem;cursor:pointer;">🔄 一覧を<wbr>更新</button>
       </div>
       <p style="font-size:0.82rem;color:var(--sub);margin-bottom:20px;line-height:1.7;">
-        トークンURLで管理。価格は非公開・有効期限付き。クライアントが開くと専用プランが表示されます。
+        トークンURLで<wbr>管理。<wbr>価格は<wbr>非公開・<wbr>有効期限付き。<wbr>クライアントが<wbr>開くと<wbr>専用プランが<wbr>表示されます。<wbr>
       </p>
 
       <div style="background:var(--bg2);border:1.5px solid var(--border);border-radius:14px;padding:22px;margin-bottom:24px;">
@@ -1868,11 +1868,11 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         <!-- Row2 -->
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px;">
           <div>
-            <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--sub);margin-bottom:5px;">金額（円）</label>
+            <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--sub);margin-bottom:5px;">金額<wbr>（円）</label>
             <input id="pl-price" type="number" placeholder="例：49800" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-size:0.88rem;font-family:inherit;outline:none;">
           </div>
           <div>
-            <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--sub);margin-bottom:5px;">支払い形式</label>
+            <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--sub);margin-bottom:5px;">支払い<wbr>形式</label>
             <select id="pl-pay-type" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-size:0.82rem;font-family:inherit;outline:none;">
               <option value="spot">つど払い</option>
               <option value="month_end">当月払い</option>
@@ -1881,7 +1881,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
             </select>
           </div>
           <div>
-            <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--sub);margin-bottom:5px;">有効期限（日）</label>
+            <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--sub);margin-bottom:5px;">有効期限<wbr>（日）</label>
             <input id="pl-expire" type="number" value="30" min="1" max="365" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-size:0.88rem;font-family:inherit;outline:none;">
           </div>
         </div>
@@ -1892,24 +1892,24 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
             <input id="pl-note" type="text" placeholder="例：初回特別価格" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-size:0.88rem;font-family:inherit;outline:none;">
           </div>
           <div>
-            <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--sub);margin-bottom:5px;">ヒアリングURL（任意）</label>
+            <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--sub);margin-bottom:5px;">ヒアリングURL<wbr>（任意）</label>
             <input id="pl-hearing-url" type="text" placeholder="例：https://mono-create-group.github.io/lp/hearing/short.html" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-size:0.82rem;font-family:inherit;outline:none;">
           </div>
         </div>
 
         <button onclick="generatePrivateLinkDB()" id="pl-gen-btn" style="width:100%;padding:13px;background:linear-gradient(135deg,#1E40AF,#2563EB);color:#fff;border:none;border-radius:10px;font-size:0.95rem;font-weight:800;cursor:pointer;font-family:inherit;margin-bottom:14px;">
-          🔗 リンクを生成・DB保存
+          🔗 リンクを<wbr>生成・DB保存
         </button>
 
         <!-- 生成結果 -->
         <div id="pl-result" style="display:none;">
-          <p style="font-size:0.78rem;font-weight:700;color:#059669;margin-bottom:8px;">✅ リンクが生成されました（DB保存済み）</p>
+          <p style="font-size:0.78rem;font-weight:700;color:#059669;margin-bottom:8px;">✅ リンクが<wbr>生成されました<wbr>（DB保存済み）</p>
           <div style="background:rgba(37,99,235,0.08);border:1.5px solid rgba(37,99,235,0.25);border-radius:8px;padding:12px;word-break:break-all;">
             <p id="pl-url" style="font-size:0.78rem;color:#60A5FA;font-family:monospace;line-height:1.6;"></p>
           </div>
           <div style="display:flex;gap:8px;margin-top:10px;">
-            <button onclick="copyPLUrl()" style="flex:1;padding:10px;background:#059669;color:#1e293b;border:none;border-radius:8px;font-size:0.85rem;font-weight:700;cursor:pointer;">📋 URLをコピー</button>
-            <button onclick="openPLUrl()" style="flex:1;padding:10px;background:#6B7280;color:#1e293b;border:none;border-radius:8px;font-size:0.85rem;font-weight:700;cursor:pointer;">🔗 ブラウザで確認</button>
+            <button onclick="copyPLUrl()" style="flex:1;padding:10px;background:#059669;color:#1e293b;border:none;border-radius:8px;font-size:0.85rem;font-weight:700;cursor:pointer;">📋 URLを<wbr>コピー</button>
+            <button onclick="openPLUrl()" style="flex:1;padding:10px;background:#6B7280;color:#1e293b;border:none;border-radius:8px;font-size:0.85rem;font-weight:700;cursor:pointer;">🔗 ブラウザで<wbr>確認</button>
           </div>
         </div>
       </div>
@@ -1931,7 +1931,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
         <div>
           <h2 style="font-size:1.1rem;font-weight:900;margin-bottom:4px;">👤 クライアント単価マスタ</h2>
-          <p style="font-size:0.8rem;color:var(--sub);">クライアントごとの単価・支払い方法を登録。振込依頼モーダルで自動補完されます。</p>
+          <p style="font-size:0.8rem;color:var(--sub);">クライアントごとの<wbr>単価・支払い方<wbr>法を<wbr>登録。<wbr>振込依頼モーダルで<wbr>自動補完されます。</p>
         </div>
         <button onclick="openClientMasterForm()" style="padding:9px 18px;background:linear-gradient(135deg,#1E40AF,#2563EB);color:#fff;border:none;border-radius:8px;font-size:0.85rem;font-weight:800;cursor:pointer;">＋ 追加</button>
       </div>
@@ -1956,11 +1956,11 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
             <input id="cm-plan" type="text" placeholder="例：ショート5本/月" style="width:100%;padding:9px 12px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.88rem;font-family:inherit;outline:none;">
           </div>
           <div>
-            <label style="display:block;font-size:0.75rem;color:var(--sub);margin-bottom:5px;">単価（円）</label>
+            <label style="display:block;font-size:0.75rem;color:var(--sub);margin-bottom:5px;">単価<wbr>（円）</label>
             <input id="cm-amount" type="number" placeholder="例：15000" style="width:100%;padding:9px 12px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.88rem;font-family:inherit;outline:none;">
           </div>
           <div>
-            <label style="display:block;font-size:0.75rem;color:var(--sub);margin-bottom:5px;">支払い形式</label>
+            <label style="display:block;font-size:0.75rem;color:var(--sub);margin-bottom:5px;">支払い<wbr>形式</label>
             <select id="cm-pay-type" style="width:100%;padding:9px 12px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.82rem;font-family:inherit;outline:none;">
               <option value="spot">つど払い</option>
               <option value="month_end">当月払い（特例）</option>
@@ -1987,7 +1987,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
               <th style="padding:10px 12px;text-align:left;color:var(--sub);font-weight:700;">クライアント</th>
               <th style="padding:10px 12px;text-align:left;color:var(--sub);font-weight:700;">プラン</th>
               <th style="padding:10px 12px;text-align:right;color:var(--sub);font-weight:700;">単価</th>
-              <th style="padding:10px 12px;text-align:center;color:var(--sub);font-weight:700;">支払い形式</th>
+              <th style="padding:10px 12px;text-align:center;color:var(--sub);font-weight:700;">支払い<wbr>形式</th>
               <th style="padding:10px 12px;text-align:left;color:var(--sub);font-weight:700;">備考</th>
               <th style="padding:10px 12px;text-align:center;color:var(--sub);font-weight:700;">操作</th>
             </tr>
@@ -2031,7 +2031,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
     <!-- ── LINE 送信タブ ── -->
     <div id="tab-line" style="display:none;max-width:760px;margin:0 auto;padding:28px 0;">
       <h2 style="font-size:1.1rem;font-weight:800;margin-bottom:4px;">💬 LINE メッセージ送信</h2>
-      <p style="font-size:0.82rem;color:var(--sub);margin-bottom:24px;">テンプレートを選んでクライアントのLINE UIDに直接送信できます</p>
+      <p style="font-size:0.82rem;color:var(--sub);margin-bottom:24px;">テンプレートを<wbr>選んで<wbr>クライアントの<wbr>LINE UIDに<wbr>直接送信できます</p>
 
       <!-- LINE管理画面リンク -->
       <div style="background:#00b900;border-radius:12px;padding:14px 20px;margin-bottom:24px;display:flex;align-items:center;gap:14px;">
@@ -2043,7 +2043,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         </div>
         <a href="https://manager.line.biz/" target="_blank"
           style="margin-left:auto;background:#fff;color:#00b900;padding:7px 16px;border-radius:8px;font-size:0.82rem;font-weight:700;text-decoration:none;white-space:nowrap;">
-          管理画面を開く →
+          管理画面を<wbr>開く<wbr> →
         </a>
       </div>
 
@@ -2060,10 +2060,10 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
                 style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--lt);font-size:0.85rem;font-family:inherit;">
               <button onclick="openLineLookup()"
                 style="padding:9px 12px;background:var(--accent-dim);color:var(--lt);border:1px solid var(--border);border-radius:8px;font-size:0.78rem;cursor:pointer;font-family:inherit;white-space:nowrap;">
-                履歴から選ぶ
+                履歴から<wbr>選ぶ
               </button>
             </div>
-            <p style="font-size:0.74rem;color:var(--sub);margin-top:4px;">※ 相手に「myid」と送ってもらうと確認できます</p>
+            <p style="font-size:0.74rem;color:var(--sub);margin-top:4px;">※ 相手に<wbr>「myid」と<wbr>送って<wbr>もらうと<wbr>確認できます</p>
           </div>
 
           <div style="margin-bottom:14px;">
@@ -2077,12 +2077,12 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
           <!-- 差し込み値：送信時に {{name}} {{url}} {{fb}} を自動置換 -->
           <div style="margin-bottom:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
             <div>
-              <label style="font-size:0.78rem;color:var(--sub);display:block;margin-bottom:5px;">お客様名 <span style="color:var(--sub);">（{{name}}に反映）</span></label>
+              <label style="font-size:0.78rem;color:var(--sub);display:block;margin-bottom:5px;">お客様名 <span style="color:var(--sub);">（{{name}}に<wbr>反映）</span></label>
               <input id="line-push-name" type="text" placeholder="山田 太郎" oninput="updateLineCharCount()"
                 style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--lt);font-size:0.85rem;font-family:inherit;">
             </div>
             <div>
-              <label style="font-size:0.78rem;color:var(--sub);display:block;margin-bottom:5px;">🎬 納品動画URL <span style="color:var(--sub);">（{{url}}/{{fb}}に反映）</span></label>
+              <label style="font-size:0.78rem;color:var(--sub);display:block;margin-bottom:5px;">🎬 納品動画URL <span style="color:var(--sub);">（{{url}}/{{fb}}に<wbr>反映）</span></label>
               <input id="line-push-video" type="url" placeholder="https://drive.google.com/file/d/..." oninput="updateLineCharCount()"
                 style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--lt);font-size:0.85rem;font-family:inherit;">
             </div>
@@ -2100,7 +2100,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
             <button onclick="insertLinePlaceholder('{{url}}')"
               style="padding:3px 8px;background:var(--accent-dim);border:none;border-radius:5px;color:var(--lt);font-size:0.73rem;cursor:pointer;">{{url}}</button>
             <button onclick="insertLinePlaceholder('{{fb}}')"
-              style="padding:3px 8px;background:var(--accent-dim);border:none;border-radius:5px;color:var(--lt);font-size:0.73rem;cursor:pointer;">{{fb}}（修正リンク）</button>
+              style="padding:3px 8px;background:var(--accent-dim);border:none;border-radius:5px;color:var(--lt);font-size:0.73rem;cursor:pointer;">{{fb}}<wbr>（修正リンク）</button>
           </div>
 
           <textarea id="line-push-text" rows="10" maxlength="2000"
@@ -2111,7 +2111,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
           <div style="margin-top:12px;display:flex;gap:10px;align-items:center;">
             <button onclick="sendLinePush()" id="line-push-btn"
               style="flex:1;padding:12px;background:#00b900;color:#1e293b;border:none;border-radius:10px;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;">
-              💬 LINEで送信
+              💬 LINEで<wbr>送信
             </button>
             <button onclick="previewLinePush()"
               style="padding:12px 16px;background:var(--card);color:var(--lt);border:1px solid var(--border);border-radius:10px;font-size:0.82rem;font-weight:600;cursor:pointer;font-family:inherit;">
@@ -2135,10 +2135,10 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       <div id="line-lookup-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center;">
         <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;width:min(500px,90vw);max-height:80vh;overflow-y:auto;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-            <h3 style="font-size:1rem;font-weight:700;">🔍 LINE UID を選ぶ</h3>
+            <h3 style="font-size:1rem;font-weight:700;">🔍 LINE UID を<wbr>選ぶ</h3>
             <button onclick="closeLineLookup()" style="background:none;border:none;color:var(--sub);font-size:1.3rem;cursor:pointer;">✕</button>
           </div>
-          <p style="font-size:0.8rem;color:var(--sub);margin-bottom:14px;">追加発注・FBフォームから取得されたUID一覧です</p>
+          <p style="font-size:0.8rem;color:var(--sub);margin-bottom:14px;">追加発注・FBフォームから<wbr>取得された<wbr>UID一覧です</p>
           <div id="line-uid-history" style="display:flex;flex-direction:column;gap:8px;">
             <p style="color:var(--sub);font-size:0.82rem;">読み込み中...</p>
           </div>
@@ -2164,7 +2164,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
             </button>
             <button onclick="confirmLinePush()"
               style="flex:1;padding:11px;background:#00b900;color:#1e293b;border:none;border-radius:8px;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;">
-              この内容で送信
+              この<wbr>内容で<wbr>送信
             </button>
           </div>
         </div>
@@ -2175,10 +2175,10 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
     <!-- ── 追加発注タブ ── -->
     <div id="tab-orders" style="display:none;">
       <div style="display:flex;align-items:center;gap:12px;margin:18px 0 6px;flex-wrap:wrap;">
-        <h2 style="font-size:1.05rem;font-weight:800;">📦 追加発注（継続依頼）</h2>
+        <h2 style="font-size:1.05rem;font-weight:800;">📦 追加発注<wbr>（継続依頼）</h2>
         <button class="refresh-btn" onclick="loadOrders()">更新</button>
       </div>
-      <p style="font-size:0.8rem;color:var(--sub);margin-bottom:14px;">LINE経由の追加発注一覧。各行からワンタップでLINE返信できます。</p>
+      <p style="font-size:0.8rem;color:var(--sub);margin-bottom:14px;">LINE経由の<wbr>追加発注一覧。<wbr>各行から<wbr>ワンタップで<wbr>LINE返信できます。</p>
       <div class="table-wrap">
         <table>
           <thead><tr><th>日時</th><th>お名前</th><th>プラン / 本数</th><th>希望時期</th><th>状態</th><th>アクション</th></tr></thead>
@@ -2190,10 +2190,10 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
     <!-- ── 修正依頼タブ ── -->
     <div id="tab-revisions" style="display:none;">
       <div style="display:flex;align-items:center;gap:12px;margin:18px 0 6px;flex-wrap:wrap;">
-        <h2 style="font-size:1.05rem;font-weight:800;">🛠 修正依頼（フィードバック）</h2>
+        <h2 style="font-size:1.05rem;font-weight:800;">🛠 修正依頼<wbr>（フィードバック）</h2>
         <button class="refresh-btn" onclick="loadRevisions()">更新</button>
       </div>
-      <p style="font-size:0.8rem;color:var(--sub);margin-bottom:14px;">LINE経由のフィードバック一覧。各行からワンタップでLINE返信できます。</p>
+      <p style="font-size:0.8rem;color:var(--sub);margin-bottom:14px;">LINE経由の<wbr>フィードバック<wbr>一覧。<wbr>各行から<wbr>ワンタップで<wbr>LINE返信できます。</p>
       <div class="table-wrap">
         <table>
           <thead><tr><th>日時</th><th>クライアント</th><th>R</th><th>修正件数</th><th>納品</th><th>状態</th><th>アクション</th></tr></thead>
@@ -2428,7 +2428,7 @@ function renderPrivateLinks(data) {
   }).join('');
 }
 
-// クライアントマスタから金額・支払形式を自動入力
+// クライアントマスタから<wbr>金額・支払形式を<wbr>自動入力
 function autoFillFromClientMaster(inputName, prefix) {
   if (!_clientMasterData || !_clientMasterData.length) return;
   var match = _clientMasterData.find(function(c) {
@@ -2440,7 +2440,7 @@ function autoFillFromClientMaster(inputName, prefix) {
   if (priceEl && match.base_price && !priceEl.value) {
     priceEl.value = match.base_price;
     priceEl.style.background = 'rgba(74,222,128,0.08)';
-    priceEl.title = 'クライアントマスタから自動入力';
+    priceEl.title = 'クライアントマスタから<wbr>自動入力';
   }
   if (payTypeEl && match.pay_type) {
     payTypeEl.value = match.pay_type;
@@ -2453,7 +2453,7 @@ async function deletePrivateLink(token) {
     await gasFetch(GAS_URL + '?action=private_link_delete&key=' + encodeURIComponent(getAdminPw()) + '&t=' + encodeURIComponent(token));
     loadPrivateLinks();
   } catch(e) {
-    alert('削除に失敗しました');
+    alert('削除に<wbr>失敗しました<wbr>');
   }
 }
 
@@ -2472,7 +2472,7 @@ async function loadClientMaster() {
     renderClientMaster(_clientMasterData);
     populateClientDatalist();
   } catch(e) {
-    if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="padding:24px;text-align:center;color:var(--red);">読み込みに失敗しました</td></tr>';
+    if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="padding:24px;text-align:center;color:var(--red);">読み込みに<wbr>失敗しました</td></tr>';
   }
 }
 
@@ -2480,10 +2480,10 @@ function renderClientMaster(data) {
   var tbody = document.getElementById('cm-table-body');
   if (!tbody) return;
   if (!data.length) {
-    tbody.innerHTML = '<tr><td colspan="6" style="padding:24px;text-align:center;color:var(--sub);">登録されたクライアントがありません</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" style="padding:24px;text-align:center;color:var(--sub);">登録された<wbr>クライアントが<wbr>ありません</td></tr>';
     return;
   }
-  var payLabel = { spot: 'つど払い', month_end: '当月払い（特例）', next_month_end: '翌月末払い（特例）', custom_date: '日付指定（特例）' };
+  var payLabel = { spot: <wbr>'つど払い<wbr>', month_end: '当月払い<wbr>（特例）<wbr>', next_month_end: '翌月末払い<wbr>（特例）<wbr>', custom_date: '日付指定<wbr>（特例）<wbr>' };
   tbody.innerHTML = data.map(function(d) {
     return '<tr style="border-bottom:1px solid var(--border);">'
       + '<td style="padding:10px 12px;">'
@@ -2508,7 +2508,7 @@ function renderClientMaster(data) {
 
 function openClientMasterForm(row) {
   document.getElementById('cm-form-wrap').style.display = 'block';
-  document.getElementById('cm-form-title').textContent = row ? 'クライアント情報を編集' : '新規クライアント追加';
+  document.getElementById('cm-form-title').textContent = row ? 'クライアント情報を<wbr>編集' : '新規クライアント追加';
   document.getElementById('cm-row').value = row || '';
   if (!row) {
     document.getElementById('cm-name').value = '';
@@ -2527,7 +2527,7 @@ function closeClientMasterForm() {
 
 function editClientMaster(row) {
   var d = _clientMasterData.find(function(x) { return x.row === row; });
-  if (!d) { alert('データが見つかりません'); return; }
+  if (!d) { alert('データが<wbr>見つかりません'); return; }
   openClientMasterForm(row);
   document.getElementById('cm-name').value = d.name || '';
   document.getElementById('cm-email').value = d.email || '';
@@ -2539,7 +2539,7 @@ function editClientMaster(row) {
 
 async function saveClientMaster() {
   var name = document.getElementById('cm-name').value.trim();
-  if (!name) { alert('クライアント名は必須です'); return; }
+  if (!name) { alert('クライアント名は<wbr>必須です'); return; }
   var row = document.getElementById('cm-row').value;
   var btn = document.querySelector('#cm-form-wrap button[onclick="saveClientMaster()"]');
   if (btn) { btn.disabled = true; btn.textContent = '保存中...'; }
@@ -2561,7 +2561,7 @@ async function saveClientMaster() {
     closeClientMasterForm();
     loadClientMaster();
   } catch(e) {
-    alert('保存に失敗しました: ' + e.message);
+    alert('保存に<wbr>失敗しました<wbr>: ' + e.message);
   } finally {
     if (btn) { btn.disabled = false; btn.textContent = '💾 保存'; }
   }
@@ -2572,12 +2572,12 @@ async function deleteClientMasterRow(row) {
     await gasFetch(GAS_URL + '?action=client_master_delete&key=' + encodeURIComponent(getAdminPw()) + '&row=' + row);
     loadClientMaster();
   } catch(e) {
-    alert('削除に失敗しました');
+    alert('削除に<wbr>失敗しました<wbr>');
   }
 }
 
 function populateClientDatalist() {
-  // pl-client-listをクライアントマスタで補完
+  // pl-client-listを<wbr>クライアントマスタで<wbr>補完
   var dl = document.getElementById('pl-client-list');
   if (!dl) return;
   dl.innerHTML = _clientMasterData.map(function(d) {
@@ -2614,7 +2614,7 @@ function applyClientMasterToPaymentModal(name) {
 <div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
   <div class="modal">
     <div class="modal-header">
-      <h2 class="modal-title">お問い合わせ詳細</h2>
+      <h2 class="modal-title">お問い<wbr>合わせ詳細</h2>
       <button class="modal-close" onclick="closeModal()">×</button>
     </div>
     <div id="modal-body"></div>
@@ -2625,11 +2625,11 @@ function applyClientMasterToPaymentModal(name) {
 <div class="modal-overlay" id="hearing-modal" onclick="if(event.target===this)closeHearingModal()">
   <div class="modal" style="max-width:480px;">
     <div class="modal-header">
-      <h2 class="modal-title">📋 ヒアリング案内を送る</h2>
+      <h2 class="modal-title">📋 ヒアリング案内を<wbr>送る</h2>
       <button class="modal-close" onclick="closeHearingModal()">×</button>
     </div>
     <div style="padding:24px;">
-      <p style="color:var(--sub);font-size:0.85rem;margin-bottom:16px;">ヒアリングシートのURLを送信します。<br><strong style="color:#4ade80;">LINE経由の問い合わせはLINEに自動送信</strong>（メールもあれば併送）されます。</p>
+      <p style="color:var(--sub);font-size:0.85rem;margin-bottom:16px;">ヒアリングシートの<wbr>URLを<wbr>送信します。<br><strong style="color:#4ade80;">LINE経由の<wbr>問い<wbr>合わせは<wbr>LINEに<wbr>自動送信</strong>（メールも<wbr>あれば<wbr>併送）<wbr>されます。</p>
       <div class="modal-row"><p class="modal-label">お名前</p><p class="modal-val" id="hm-name">—</p></div>
       <div class="modal-row"><p class="modal-label">メール</p><p class="modal-val" id="hm-email">—</p></div>
       <div class="modal-row" style="margin-bottom:16px;">
@@ -2677,15 +2677,15 @@ function applyClientMasterToPaymentModal(name) {
 <div class="modal-overlay" id="payment-req-modal" onclick="if(event.target===this)closePaymentReqModal()">
   <div class="modal" style="max-width:480px;">
     <div class="modal-header">
-      <h2 class="modal-title">💳 お見積もり・振込依頼を送る</h2>
+      <h2 class="modal-title">💳 お見積もり・振込依頼を<wbr>送る</h2>
       <button class="modal-close" onclick="closePaymentReqModal()">×</button>
     </div>
     <div style="padding:24px;">
-      <p style="color:var(--sub);font-size:0.85rem;margin-bottom:16px;">見積金額と振込先口座をメールで自動送信します。</p>
+      <p style="color:var(--sub);font-size:0.85rem;margin-bottom:16px;">見積金額と<wbr>振込先口座を<wbr>メールで<wbr>自動送信します。</p>
       <div class="modal-row"><p class="modal-label">お名前</p><p class="modal-val" id="pm-name">—</p></div>
       <div class="modal-row"><p class="modal-label">メール</p><p class="modal-val" id="pm-email">—</p></div>
       <div class="modal-row" style="align-items:flex-start;">
-        <p class="modal-label">プラン<br><span style="color:#60a5fa;font-size:0.7rem;font-weight:normal;">（選択式・自由記入も可）</span></p>
+        <p class="modal-label">プラン<br><span style="color:#60a5fa;font-size:0.7rem;font-weight:normal;">（選択式・<wbr>自由記入も<wbr>可）</span></p>
         <div style="display:flex;flex-direction:column;gap:6px;flex:1;">
           <select id="pm-plan-select" onchange="onPmPlanSelectChange(this.value)"
             style="width:100%;padding:7px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.88rem;">
@@ -2722,7 +2722,7 @@ function applyClientMasterToPaymentModal(name) {
 
       <!-- オプション追加 -->
       <div style="margin-bottom:12px;">
-        <label style="display:block;font-size:0.82rem;color:var(--sub);margin-bottom:8px;">オプション追加（クリックで自動加算）</label>
+        <label style="display:block;font-size:0.82rem;color:var(--sub);margin-bottom:8px;">オプション追加<wbr>（クリックで<wbr>自動加算）</label>
         <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;" id="pm-option-btns">
           <button type="button" onclick="addOption('当日納品（ショート）',2000)" style="padding:5px 10px;border-radius:6px;font-size:0.75rem;border:1px solid var(--border);background:var(--bg2);color:#60a5fa;cursor:pointer;">⚡当日納品 +¥2,000</button>
           <button type="button" onclick="addOption('当日納品（長尺）',5000)" style="padding:5px 10px;border-radius:6px;font-size:0.75rem;border:1px solid var(--border);background:var(--bg2);color:#60a5fa;cursor:pointer;">⚡当日納品(長尺) +¥5,000</button>
@@ -2735,7 +2735,7 @@ function applyClientMasterToPaymentModal(name) {
         <div id="pm-options-list" style="display:none;margin-bottom:8px;padding:8px 12px;background:rgba(15,23,42,0.03);border-radius:6px;border:1px solid var(--border);">
           <p style="font-size:0.75rem;color:var(--sub);margin-bottom:6px;">追加内訳：</p>
           <ul id="pm-options-items" style="list-style:none;padding:0;font-size:0.78rem;color:var(--text);"></ul>
-          <button type="button" onclick="clearOptions()" style="margin-top:6px;font-size:0.72rem;color:#f87171;background:none;border:none;cursor:pointer;padding:0;">✕ 追加をリセット</button>
+          <button type="button" onclick="clearOptions()" style="margin-top:6px;font-size:0.72rem;color:#f87171;background:none;border:none;cursor:pointer;padding:0;">✕ 追加を<wbr>リセット</button>
         </div>
         <!-- 手動追加 -->
         <div style="display:flex;gap:6px;align-items:center;">
@@ -2746,7 +2746,7 @@ function applyClientMasterToPaymentModal(name) {
       </div>
 
       <div style="margin:0 0 12px;">
-        <label style="display:block;font-size:0.82rem;color:var(--sub);margin-bottom:6px;">合計金額（税込）<span style="color:#f87171;">*</span> <span id="pm-amount-breakdown" style="font-size:0.75rem;color:#4ade80;"></span></label>
+        <label style="display:block;font-size:0.82rem;color:var(--sub);margin-bottom:6px;">合計金額<wbr>（税込）<span style="color:#f87171;">*</span> <span id="pm-amount-breakdown" style="font-size:0.75rem;color:#4ade80;"></span></label>
         <input type="number" id="pm-amount" placeholder="例: 69800" min="0"
           style="width:100%;padding:9px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:1rem;">
       </div>
@@ -2757,8 +2757,8 @@ function applyClientMasterToPaymentModal(name) {
       </div>
       <div style="margin-bottom:12px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-          <label style="font-size:0.82rem;color:var(--sub);">支払い形式</label>
-          <button id="pm-special-pay-btn" onclick="toggleSpecialPayOptions()" style="font-size:0.72rem;padding:2px 8px;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--sub);cursor:pointer;">🔒 特例払いを設定</button>
+          <label style="font-size:0.82rem;color:var(--sub);">支払い<wbr>形式</label>
+          <button id="pm-special-pay-btn" onclick="toggleSpecialPayOptions()" style="font-size:0.72rem;padding:2px 8px;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--sub);cursor:pointer;">🔒 特例払いを<wbr>設定</button>
         </div>
         <select id="pm-pay-type" style="width:100%;padding:9px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.88rem;font-family:inherit;outline:none;" onchange="toggleDateInputVisibility()">
           <option value="spot">つど払い（基本・全員適用）</option>
@@ -2769,18 +2769,18 @@ function applyClientMasterToPaymentModal(name) {
         </select>
         <div id="pm-custom-date-wrap" style="display:none;margin-top:8px;">
           <input type="date" id="pm-custom-date" style="width:100%;padding:9px 12px;background:var(--bg2);border:1px solid #F59E0B;border-radius:6px;color:var(--text);font-size:0.88rem;">
-          <p style="font-size:0.72rem;color:var(--sub);margin-top:4px;">振込期限の日付を指定してください</p>
+          <p style="font-size:0.72rem;color:var(--sub);margin-top:4px;">振込期限の<wbr>日付を<wbr>指定してください</p>
         </div>
       </div>
       <div style="margin-bottom:16px;">
-        <label style="display:block;font-size:0.82rem;color:var(--sub);margin-bottom:6px;">備考・メッセージ（任意）</label>
+        <label style="display:block;font-size:0.82rem;color:var(--sub);margin-bottom:6px;">備考・メッセージ<wbr>（任意）</label>
         <textarea id="pm-note" rows="3" placeholder="特記事項があれば入力してください"
           style="width:100%;padding:9px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;resize:vertical;"></textarea>
       </div>
       <div class="modal-actions" style="margin-top:20px;flex-wrap:wrap;">
         <button class="modal-btn" onclick="closePaymentReqModal()" style="background:var(--bg2);color:var(--sub);flex:0 0 auto;">キャンセル</button>
-        <button class="modal-btn" onclick="openInvoiceModal()" style="background:rgba(245,158,11,0.12);color:var(--yellow);border:1px solid rgba(245,158,11,0.3);flex:0 0 auto;">📄 請求書を作成</button>
-        <button class="modal-btn mail" id="pm-send-btn" onclick="submitPaymentRequest()" style="flex:1;">💳 振込依頼を送信</button>
+        <button class="modal-btn" onclick="openInvoiceModal()" style="background:rgba(245,158,11,0.12);color:var(--yellow);border:1px solid rgba(245,158,11,0.3);flex:0 0 auto;">📄 請求書を<wbr>作成</button>
+        <button class="modal-btn mail" id="pm-send-btn" onclick="submitPaymentRequest()" style="flex:1;">💳 振込依頼を<wbr>送信</button>
       </div>
     </div>
   </div>
@@ -2790,7 +2790,7 @@ function applyClientMasterToPaymentModal(name) {
 <div class="modal-overlay" id="invoice-modal" onclick="if(event.target===this)closeInvoiceModal()">
   <div class="modal" style="max-width:640px;">
     <div class="modal-header">
-      <h2 class="modal-title">📄 請求書を作成</h2>
+      <h2 class="modal-title">📄 請求書を<wbr>作成</h2>
       <button class="modal-close" onclick="closeInvoiceModal()">×</button>
     </div>
     <div style="padding:4px 0 0;">
@@ -2823,7 +2823,7 @@ function applyClientMasterToPaymentModal(name) {
       <div style="margin-bottom:14px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
           <label style="font-size:0.75rem;color:var(--sub);">明細</label>
-          <button onclick="addInvoiceRow()" style="padding:4px 10px;background:#1a2a3a;color:#60a5fa;border:1px solid #1d4ed8;border-radius:6px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;">＋ 行を追加</button>
+          <button onclick="addInvoiceRow()" style="padding:4px 10px;background:#1a2a3a;color:#60a5fa;border:1px solid #1d4ed8;border-radius:6px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit;">＋ 行を<wbr>追加</button>
         </div>
         <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;">
           <div style="display:grid;grid-template-columns:1fr 60px 90px 90px 32px;gap:0;background:var(--bg3);padding:6px 10px;font-size:0.7rem;color:var(--sub);font-weight:700;">
@@ -2845,7 +2845,7 @@ function applyClientMasterToPaymentModal(name) {
           </select>
         </div>
         <div>
-          <label style="display:block;font-size:0.75rem;color:var(--sub);margin-bottom:4px;">税計算方式</label>
+          <label style="display:block;font-size:0.75rem;color:var(--sub);margin-bottom:4px;">税計算方<wbr>式</label>
           <select id="inv-tax-method" onchange="calcInvoice()" style="width:100%;padding:7px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.82rem;font-family:inherit;">
             <option value="exclusive">外税（税抜）</option>
             <option value="inclusive">内税（税込）</option>
@@ -2878,7 +2878,7 @@ function applyClientMasterToPaymentModal(name) {
 
       <!-- 振込先 -->
       <details style="margin-bottom:14px;">
-        <summary style="font-size:0.78rem;color:var(--lt);cursor:pointer;font-weight:700;margin-bottom:8px;">🏦 振込先（クリックで展開 / localStorageに保存されます）</summary>
+        <summary style="font-size:0.78rem;color:var(--lt);cursor:pointer;font-weight:700;margin-bottom:8px;">🏦 振込先<wbr>（クリックで<wbr>展開 / localStorageに<wbr>保存されます）</summary>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
           <div>
             <label style="font-size:0.72rem;color:var(--sub);display:block;margin-bottom:3px;">銀行名</label>
@@ -2901,18 +2901,18 @@ function applyClientMasterToPaymentModal(name) {
             <input type="text" id="inv-bank-number" placeholder="例: 1234567" style="width:100%;padding:7px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.82rem;font-family:inherit;outline:none;">
           </div>
           <div style="grid-column:1/-1;">
-            <label style="font-size:0.72rem;color:var(--sub);display:block;margin-bottom:3px;">口座名義（カタカナ）</label>
+            <label style="font-size:0.72rem;color:var(--sub);display:block;margin-bottom:3px;">口座名義<wbr>（カタカナ）</label>
             <input type="text" id="inv-bank-holder" placeholder="例: ナカムラコウタ" style="width:100%;padding:7px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.82rem;font-family:inherit;outline:none;">
           </div>
         </div>
-        <button onclick="saveBankInfo()" style="margin-top:8px;padding:6px 14px;background:#1a2a3a;color:#60a5fa;border:1px solid #1d4ed8;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;">💾 振込先を保存</button>
+        <button onclick="saveBankInfo()" style="margin-top:8px;padding:6px 14px;background:#1a2a3a;color:#60a5fa;border:1px solid #1d4ed8;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;">💾 振込先を<wbr>保存</button>
       </details>
 
       <!-- アクションボタン -->
       <div class="modal-actions" style="flex-wrap:wrap;gap:8px;">
         <button class="modal-btn" onclick="closeInvoiceModal()" style="background:var(--bg2);color:var(--sub);flex:0 0 auto;">閉じる</button>
-        <button class="modal-btn" onclick="printInvoice()" style="background:rgba(16,185,129,0.12);color:var(--green);border:1px solid rgba(16,185,129,0.3);flex:0 0 auto;">🖨 PDFとして保存</button>
-        <button class="modal-btn mail" onclick="sendInvoiceMail()" style="flex:1;">📧 メールで送付</button>
+        <button class="modal-btn" onclick="printInvoice()" style="background:rgba(16,185,129,0.12);color:var(--green);border:1px solid rgba(16,185,129,0.3);flex:0 0 auto;">🖨 PDFと<wbr>して<wbr>保存</button>
+        <button class="modal-btn mail" onclick="sendInvoiceMail()" style="flex:1;">📧 メールで<wbr>送付</button>
       </div>
 
     </div>

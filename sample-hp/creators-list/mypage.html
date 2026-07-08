@@ -19,7 +19,7 @@
     --red:#dc2626; --ok:#059669;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",Meiryo,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;}
+  body{word-break:keep-all;line-break:strict;overflow-wrap:break-word;font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",Meiryo,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;}
   .wrap{max-width:640px;margin:0 auto;padding:28px 18px 80px;}
   .brand{font-size:12px;font-weight:800;color:var(--teal-d);letter-spacing:.06em;margin-bottom:4px;}
   h1{font-size:22px;font-weight:800;margin-bottom:6px;}
@@ -126,18 +126,18 @@
 <div class="wrap">
   <div class="brand">CREATORS LIST | mono.create</div>
   <h1>編集者マイページ</h1>
-  <p class="lead">稼働状況・今月の対応可能本数を更新してください。<br>クライアント向けページに「今月の空き」として表示されます。</p>
+  <p class="lead">稼働状況・<wbr>今月の<wbr>対応可能本数を<wbr>更新してください。<br>クライアント向けページに<wbr>「今月の<wbr>空き」と<wbr>して<wbr>表示されます。</p>
 
   <!-- STEP 0: サインイン(必須) -->
   <div id="step-auth">
     <div class="info">
-      <b>このページは編集者専用のマイページです</b><br>
-      Googleでサインインすると、ご自身のプロフィールを確認・更新できます。下のボタンからサインインしてください。
+      <b>この<wbr>ページは<wbr>編集者専用の<wbr>マイページです</b><br>
+      Googleで<wbr>サインインすると、<wbr>ご自身の<wbr>プロフィールを<wbr>確認・更新できます。<wbr>下の<wbr>ボタンから<wbr>サインインしてください。<wbr>
     </div>
     <div class="card">
       <button class="g-btn" id="g-signin-btn" onclick="signInWithGoogle()">
         <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-        Googleでサインイン
+        Googleで<wbr>サインイン
       </button>
       <p class="err" id="auth-err"></p>
     </div>
@@ -147,16 +147,16 @@
   <div id="step-select" style="display:none;">
     <div class="user-bar" id="user-bar"></div>
     <div class="info">
-      <b>ご自身のお名前を選択してください</b><br>
-      登録済みプロフィールが自動で読み込まれます。更新できるのは「今月の対応可能本数」と「稼働状況」のみです。
+      <b>ご自身の<wbr>お名前を<wbr>選択してください</b><br>
+      登録済みプロフィールが<wbr>自動で<wbr>読み込まれます。<wbr>更新できるのは<wbr>「今月の<wbr>対応可能本数」と<wbr>「稼働状況」のみです。<wbr>
     </div>
     <div class="card">
-      <label>お名前を選択<span class="req">必須</span></label>
+      <label>お名前を<wbr>選択<span class="req">必須</span></label>
       <select id="s-editor-sel" onchange="onEditorSelect()">
         <option value="">読み込み中...</option>
       </select>
       <p class="err" id="s-err"></p>
-      <button class="btn-sel" id="s-next" onclick="goToEdit()" disabled>このアカウントで更新する →</button>
+      <button class="btn-sel" id="s-next" onclick="goToEdit()" disabled>この<wbr>アカウントで<wbr>更新する<wbr> →</button>
     </div>
   </div>
 
@@ -165,28 +165,28 @@
 
     <!-- ヒーロー説明エリア -->
     <div class="hero">
-      <div class="hero-title">ここが、あなたの拠点です</div>
-      <p class="hero-lead">マイページでできることは、この4つです。気になるカードをタップしてください。</p>
+      <div class="hero-title">ここが、<wbr>あなたの<wbr>拠点です</div>
+      <p class="hero-lead">マイページで<wbr>できる<wbr>ことは、<wbr>この<wbr>4つです。<wbr>気に<wbr>なる<wbr>カードを<wbr>タップしてください。</p>
       <div class="hero-grid">
         <a class="hero-card" href="#e-monthly-label">
           <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="16" y1="2" x2="16" y2="6"></line><path d="M8 14l2 2 4-4"></path></svg>
-          <div class="h-name">稼働状況の更新</div>
-          <div class="h-desc">今月あと何本受けられるかを伝えると、運営がそれを見て案件を回します。</div>
+          <div class="h-name">稼働状況の<wbr>更新</div>
+          <div class="h-desc">今月あと<wbr>何本受けられるかを<wbr>伝えると、<wbr>運営が<wbr>それを<wbr>見て<wbr>案件を<wbr>回します。</div>
         </a>
         <a class="hero-card" href="sheet.html">
           <svg class="icon" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"></path><path d="M14 3v5h5"></path><line x1="9" y1="13" x2="15" y2="13"></line><line x1="9" y1="17" x2="13" y2="17"></line></svg>
           <div class="h-name">案件報告</div>
-          <div class="h-desc">納品したら報告してください。支払いの根拠になります。</div>
+          <div class="h-desc">納品したら<wbr>報告してください。<wbr>支払いの<wbr>根拠に<wbr>なります。</div>
         </a>
         <a class="hero-card" href="invoice.html">
           <svg class="icon" viewBox="0 0 24 24"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"></path><path d="M9 12h6"></path><path d="M9 16h4"></path><circle cx="9" cy="8" r="1"></circle></svg>
-          <div class="h-name">請求書の提出</div>
-          <div class="h-desc">毎月25日までにご提出ください。</div>
+          <div class="h-name">請求書の<wbr>提出</div>
+          <div class="h-desc">毎月<wbr>25日までに<wbr>ご提出ください。</div>
         </a>
         <a class="hero-card" href="guide.html">
           <svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><line x1="10" y1="8" x2="15" y2="8"></line></svg>
-          <div class="h-name">進め方ガイド</div>
-          <div class="h-desc">困ったときは、まずこちらを見てください。</div>
+          <div class="h-name">進め方<wbr>ガイド</div>
+          <div class="h-desc">困った<wbr>ときは、<wbr>まずこちらを<wbr>見てください。</div>
         </a>
       </div>
     </div>
@@ -195,14 +195,14 @@
     <div class="reminder-banner">
       <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="8" x2="12" y2="13"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
       <div class="r-text">
-        <b>週に1回は、稼働状況の更新をお願いします</b>
-        空き状況が新しいほど、あなたに合った案件が届きやすくなります。
+        <b>週に<wbr>1回は、<wbr>稼働状況の<wbr>更新を<wbr>お願いします</b>
+      <wbr>  <wbr>空き状況が<wbr>新しい<wbr>ほど、<wbr>あなたに<wbr>合った<wbr>案件が<wbr>届きやすくなります。<wbr>
       </div>
     </div>
 
     <div class="info">
-      <b>現在のプロフィール(参照のみ)</b><br>
-      プロフィール内容の変更はmono.createまでお知らせください。
+      <b>現在の<wbr>プロフィール(参照のみ<wbr>)</b><br>
+      プロフィール内容の<wbr>変更は<wbr>mono.createまで<wbr>お知らせください。<wbr>
     </div>
     <div class="card">
       <div class="section-title">プロフィール(参照)</div>
@@ -210,7 +210,7 @@
       <label>お名前</label>
       <input id="e-name" type="text" readonly>
 
-      <label>職業・肩書き</label>
+      <label>職業・肩<wbr>書き</label>
       <input id="e-occupation" type="text" readonly>
 
       <label>編集歴</label>
@@ -224,7 +224,7 @@
 
       <div class="section-title" style="margin-top:28px;">稼働状況(更新可)</div>
 
-      <label id="e-monthly-label">今月あと何本対応可能ですか<span class="req">必須</span></label>
+      <label id="e-monthly-label">今月あと<wbr>何本対応可能ですか<span class="req">必須</span></label>
       <div class="capacity-grid">
         <div>
           <label style="margin-top:0;">月間対応可能本数(今月)</label>
@@ -235,11 +235,11 @@
           <input id="e-weekly" type="text" placeholder="例: 3〜5本">
         </div>
       </div>
-      <p class="capacity-note">※ クライアントの編集者カードに「今月の空き: ◯本」として表示されます</p>
+      <p class="capacity-note">※ クライアントの<wbr>編集者カードに<wbr>「今月の<wbr>空き: ◯本」と<wbr>して<wbr>表示されます</p>
 
       <label>稼働状況<span class="req">必須</span></label>
       <div class="status-opts">
-        <button type="button" class="status-opt" data-v="余裕あり" onclick="setStatus('余裕あり')">余裕あり</button>
+        <button type="button" class="status-opt" data-v="余裕あり" onclick="setStatus('余裕あり')">余裕<wbr>あり</button>
         <button type="button" class="status-opt" data-v="普通" onclick="setStatus('普通')">普通</button>
         <button type="button" class="status-opt" data-v="満枠" onclick="setStatus('満枠')">満枠</button>
       </div>
@@ -251,36 +251,36 @@
       <label>ひとこと・メモ(任意)</label>
       <textarea id="e-comment" placeholder="例: 今月は受付を一時停止しています。来月から再開予定。"></textarea>
 
-      <button class="btn" id="e-submit" onclick="submitMypage()">稼働状況を更新する</button>
+      <button class="btn" id="e-submit" onclick="submitMypage()">稼働状況を<wbr>更新する</button>
       <p class="err" id="e-err"></p>
-      <p class="ok-msg" id="e-ok">更新が完了しました。クライアントページに反映されます。</p>
+      <p class="ok-msg" id="e-ok">更新が<wbr>完了しました。<wbr>クライアントページに<wbr>反映されます。</p>
 
       <div style="margin-top:20px;text-align:center;">
-        <button type="button" onclick="backToSelect()" style="background:none;border:none;color:var(--sub);font-size:13px;cursor:pointer;text-decoration:underline;">別の編集者に切り替える</button>
+        <button type="button" onclick="backToSelect()" style="background:none;border:none;color:var(--sub);font-size:13px;cursor:pointer;text-decoration:underline;">別の<wbr>編集者に<wbr>切り替える</button>
       </div>
     </div>
 
     <div class="card" style="margin-top:16px;">
-      <div class="section-title" style="margin-top:0;">その他の手続き</div>
+      <div class="section-title" style="margin-top:0;">その<wbr>他の<wbr>手続き</div>
       <div class="link-row">
         <a class="link-btn" href="sheet.html">
           <span class="icon-wrap">
             <svg class="icon" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"></path><path d="M14 3v5h5"></path><line x1="9" y1="13" x2="15" y2="13"></line><line x1="9" y1="17" x2="13" y2="17"></line></svg>
-            案件報告シートを開く
+            案件報告シートを<wbr>開く<wbr>
           </span>
           <span class="arrow">→</span>
         </a>
         <a class="link-btn" href="invoice.html">
           <span class="icon-wrap">
             <svg class="icon" viewBox="0 0 24 24"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"></path><path d="M9 12h6"></path><path d="M9 16h4"></path><circle cx="9" cy="8" r="1"></circle></svg>
-            請求書を提出する
+            請求書を<wbr>提出する<wbr>
           </span>
           <span class="arrow">→</span>
         </a>
         <a class="link-btn" href="guide.html">
           <span class="icon-wrap">
             <svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><line x1="10" y1="8" x2="15" y2="8"></line></svg>
-            進め方ガイドを見る
+            進め方<wbr>ガイドを<wbr>見る<wbr>
           </span>
           <span class="arrow">→</span>
         </a>
@@ -291,25 +291,25 @@
     <div class="pwa-card">
       <div class="pwa-head" onclick="togglePwaGuide()">
         <svg class="icon" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"></rect><line x1="11" y1="18" x2="13" y2="18"></line></svg>
-        <div class="pwa-head-text">ホーム画面に追加する</div>
+        <div class="pwa-head-text">ホーム画面に<wbr>追加する</div>
         <div class="pwa-toggle" id="pwa-toggle-label">開く</div>
       </div>
-      <p style="font-size:11.5px;color:var(--sub);margin-top:8px;">スマホのホーム画面に追加すると、アプリのように1タップで開けます。</p>
+      <p style="font-size:11.5px;color:var(--sub);margin-top:8px;">スマホの<wbr>ホーム画面に<wbr>追加すると、<wbr>アプリのように<wbr>1タップで<wbr>開けます。</p>
       <div class="pwa-body" id="pwa-body">
         <div class="pwa-os-block" id="pwa-ios-block">
           <div class="pwa-os-title"><span class="tag">iPhone / iPad(Safari)</span></div>
           <ul class="pwa-steps">
-            <li><svg class="icon" viewBox="0 0 24 24"><path d="M12 3v12"></path><path d="M7 8l5-5 5 5"></path><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"></path></svg>画面下の「共有」ボタンをタップ</li>
-            <li><svg class="icon" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>「ホーム画面に追加」を選ぶ</li>
-            <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"></path></svg>右上の「追加」をタップして完了</li>
+            <li><svg class="icon" viewBox="0 0 24 24"><path d="M12 3v12"></path><path d="M7 8l5-5 5 5"></path><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"></path></svg>画面下の<wbr>「共有」<wbr>ボタンを<wbr>タップ</li>
+            <li><svg class="icon" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>「ホーム画面に<wbr>追加」を<wbr>選ぶ</li>
+            <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"></path></svg>右上の<wbr>「追加」を<wbr>タップして<wbr>完了</li>
           </ul>
         </div>
         <div class="pwa-os-block" id="pwa-android-block">
           <div class="pwa-os-title"><span class="tag">Android(Chrome)</span></div>
           <ul class="pwa-steps">
-            <li><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.2"></circle><circle cx="12" cy="12" r="1.2"></circle><circle cx="12" cy="19" r="1.2"></circle></svg>右上の「⋮」(メニュー)をタップ</li>
-            <li><svg class="icon" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>「ホーム画面に追加」を選ぶ</li>
-            <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"></path></svg>「追加」をタップして完了</li>
+            <li><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.2"></circle><circle cx="12" cy="12" r="1.2"></circle><circle cx="12" cy="19" r="1.2"></circle></svg>右上の<wbr>「⋮」<wbr>(メニュー)を<wbr>タップ</li>
+            <li><svg class="icon" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>「ホーム画面に<wbr>追加」を<wbr>選ぶ</li>
+            <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"></path></svg>「追加」を<wbr>タップして<wbr>完了</li>
           </ul>
         </div>
       </div>

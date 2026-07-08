@@ -12,7 +12,7 @@
   body{
     font-family:"Shippori Mincho","Hiragino Mincho ProN",serif;
     background:var(--bg);color:var(--ink);line-height:2.1;
-    letter-spacing:.06em;word-break:keep-all;overflow-wrap:anywhere;
+    letter-spacing:.06em;word-break:keep-all;line-break:strict;overflow-wrap:break-word;
   }
   img{max-width:100%;display:block;}
   a{color:inherit;}

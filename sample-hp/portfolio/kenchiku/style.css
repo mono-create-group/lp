@@ -13,7 +13,7 @@
   body{
     font-family:"Zen Old Mincho","Hiragino Mincho ProN",serif;
     background:var(--bg);color:var(--ink);line-height:2.05;
-    letter-spacing:.04em;word-break:keep-all;overflow-wrap:anywhere;
+    letter-spacing:.04em;word-break:keep-all;line-break:strict;overflow-wrap:break-word;
   }
   img{max-width:100%;display:block;}
   a{color:inherit;}

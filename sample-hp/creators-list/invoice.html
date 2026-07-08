@@ -8,7 +8,7 @@
 <style>
   :root{--teal:#0ea5a3;--teal-d:#0b8583;--teal-bg:#e6f7f6;--ink:#1e293b;--sub:#64748b;--line:#e2e8f0;--bg:#f5f7fb;--red:#dc2626;}
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",Meiryo,sans-serif;background:var(--bg);color:var(--ink);line-height:1.8;}
+  body{word-break:keep-all;line-break:strict;overflow-wrap:break-word;font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",Meiryo,sans-serif;background:var(--bg);color:var(--ink);line-height:1.8;}
   .wrap{max-width:600px;margin:0 auto;padding:28px 18px 80px;}
   .brand{font-size:12px;font-weight:800;color:var(--teal-d);letter-spacing:.06em;margin-bottom:4px;}
   h1{font-size:22px;font-weight:800;margin-bottom:6px;}
@@ -40,15 +40,15 @@
 <body>
 <div class="wrap">
   <div class="brand">CREATORS LIST | mono.create</div>
-  <h1>請求書の提出(編集者用)</h1>
-  <p class="lead">その月に報告した分の受取額合計で請求書を作成し、こちらからご提出ください。<br>提出内容は運営(mono.create)のGoogleドライブに、年・月ごとに自動で保存されます。</p>
+  <h1>請求書の<wbr>提出(編集者用)</h1>
+  <p class="lead">その<wbr>月に<wbr>報告した<wbr>分の<wbr>受取額合計で<wbr>請求書を<wbr>作成し、<wbr>こちらから<wbr>ご提出ください。<br>提出内容は<wbr>運営(mono.create)の<wbr>Googleドライブに、<wbr>年・月ごとに<wbr>自動で<wbr>保存されます。</p>
 
   <div class="rules">
-    <b>提出のルール</b>
+    <b>提出の<wbr>ルール</b>
     <ul>
-      <li>締め: <b>毎月25日まで</b>にその月の報告分をご提出ください</li>
-      <li>金額: あなたの<b>受取額</b>(クライアント単価 − 手数料)の合計</li>
-      <li>形式: PDF推奨(画像・Excel等も可・1ファイル15MBまで)</li>
+      <li>締め: <b>毎月<wbr>25日まで</b>に<wbr>その月の<wbr>報告分を<wbr>ご提出ください</li>
+      <li>金額: あなたの<b>受取額</b>(クライアント単価 − 手数料)の<wbr>合計</li>
+      <li>形式: PDF推奨(画像・Excel等も<wbr>可・1ファイル15MBまで<wbr>)</li>
     </ul>
   </div>
 
@@ -70,22 +70,22 @@
 
     <label>請求書ファイル<span class="req">必須</span></label>
     <div class="filebox" id="f-drop" onclick="document.getElementById('f-file').click()">
-      タップして請求書ファイルを選択(PDF・画像など)
+      タップして<wbr>請求書ファイルを<wbr>選択(PDF・画像など<wbr>)
     </div>
     <input id="f-file" type="file" accept=".pdf,.png,.jpg,.jpeg,.xlsx,.xls,.csv,application/pdf,image/*" class="hidden">
 
     <label>備考(任意)</label>
     <textarea id="f-note" placeholder="例: 7月報告分(ショート8本・長尺2本)"></textarea>
 
-    <button class="btn" id="f-submit" onclick="submitInvoice()">この請求書を提出する</button>
+    <button class="btn" id="f-submit" onclick="submitInvoice()">この<wbr>請求書を<wbr>提出する</button>
     <p class="err" id="f-err"></p>
   </div>
 
   <div class="done card" id="done-card">
     <div class="mark">✓</div>
-    <h2>請求書を受け付けました</h2>
-    <p>運営に通知され、ドライブに保存されました。<br>内容確認のうえ、25日締め・翌月末にお支払いします。</p>
-    <button class="btn" onclick="location.reload()">続けて別の請求書を提出する</button>
+    <h2>請求書を<wbr>受け付けました</h2>
+    <p>運営に<wbr>通知され、<wbr>ドライブに<wbr>保存されました。<br>内容確認の<wbr>うえ、<wbr>25<wbr>日締め・翌月末に<wbr>お支払いします。</p>
+    <button class="btn" onclick="location.reload()">続けて<wbr>別の<wbr>請求書を<wbr>提出する</button>
   </div>
 </div>
 

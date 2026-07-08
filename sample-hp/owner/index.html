@@ -11,7 +11,7 @@
     --bg:#f3f6f5;--line:#e4e9e7;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN",sans-serif;color:var(--ink);background:var(--bg);line-height:1.85;word-break:keep-all;overflow-wrap:anywhere;}
+  body{font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN",sans-serif;color:var(--ink);background:var(--bg);line-height:1.85;word-break:keep-all;line-break:strict;overflow-wrap:break-word;}
   .topbar{background:linear-gradient(135deg,var(--brand),#23a57f);color:#fff;padding:16px 20px;}
   .topbar .inner{max-width:720px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;}
   .topbar .t{font-weight:800;font-size:16px;}
@@ -53,8 +53,8 @@
 <div class="wrap">
 
   <div class="card">
-    <h3>更新のご依頼</h3>
-    <p class="desc">営業時間・メニュー・写真の差し替えなど、サイトの更新をこちらから依頼できます。<br>月2回まで管理費内で対応します(それ以上は別途お見積り)。</p>
+    <h3>更新の<wbr>ご依頼</h3>
+    <p class="desc">営業時間・メニュー・<wbr>写真の<wbr>差し替えなど、<wbr>サイトの<wbr>更新を<wbr>こちらから<wbr>依頼できます。<br>月2回まで<wbr>管理費内で<wbr>対応します(それ以上は<wbr>別途お見積り)。</p>
     <form id="req-form">
       <label>店舗名</label>
       <input type="text" id="shop" required placeholder="例: 旬彩居酒屋 花いち">
@@ -62,7 +62,7 @@
       <input type="text" id="name" required>
       <label>メールアドレス</label>
       <input type="email" id="email" required>
-      <label>ご依頼の種別</label>
+      <label>ご依頼の<wbr>種別</label>
       <select id="kind">
         <option>営業時間・定休日の変更</option>
         <option>メニュー・料金の変更</option>
@@ -73,25 +73,25 @@
       </select>
       <label>内容</label>
       <textarea id="message" required placeholder="例: 7月から日曜も営業します。営業時間の表記を「無休」に変更してください。"></textarea>
-      <button type="submit" class="btn" id="req-btn">この内容で依頼する</button>
-      <p class="note">通常1〜2営業日以内に対応し、完了をメールでご連絡します。</p>
+      <button type="submit" class="btn" id="req-btn">この<wbr>内容で<wbr>依頼する</button>
+      <p class="note">通常1〜2営業日以内に<wbr>対応し、<wbr>完了を<wbr>メールで<wbr>ご連絡します。</p>
     </form>
   </div>
 
   <div class="card">
     <h3>月次レポート</h3>
-    <p class="desc">サイトの閲覧数・LINEボタンのタップ数などを毎月お届けします。<br>レポートはメールで送付します(このページでの閲覧機能は準備中)。</p>
+    <p class="desc">サイトの<wbr>閲覧数・LINEボタンの<wbr>タップ数などを<wbr>毎月<wbr>お届けします。<br>レポートは<wbr>メールで<wbr>送付します(この<wbr>ページでの<wbr>閲覧機能は<wbr>準備中)。</p>
   </div>
 
   <div class="card">
-    <h3>よくあるご質問</h3>
+    <h3>よく<wbr>ある<wbr>ご質問</h3>
     <dl class="faq">
-      <dt>Q. 更新は何回まで無料ですか?</dt>
-      <dd>月額管理費内で月2回まで対応します。大きなデザイン変更やページ追加は別途お見積りです。</dd>
-      <dt>Q. 解約したらサイトはどうなりますか?</dt>
-      <dd>サイトデータ一式を無償でお渡しします。ドメインもオーナーさま名義のため、そのままお使いいただけます。</dd>
-      <dt>Q. 急ぎの修正をお願いしたい</dt>
-      <dd>依頼内容に「急ぎ」とお書きください。営業時間の誤表記など、お客様に影響する内容は最優先で対応します。</dd>
+      <dt>Q. 更新は<wbr>何回まで<wbr>無料ですか<wbr>?</dt>
+      <dd>月額管理費内で<wbr>月2回まで<wbr>対応します。<wbr>大きな<wbr>デザイン変更や<wbr>ページ<wbr>追加は<wbr>別途お見積りです。</dd>
+      <dt>Q. 解約したら<wbr>サイトは<wbr>どうなりますか<wbr>?</dt>
+      <dd>サイトデータ一式を<wbr>無償で<wbr>お渡しします。<wbr>ドメインも<wbr>オーナーさま名義の<wbr>ため、<wbr>そのまま<wbr>お使いいただけます。</dd>
+      <dt>Q. 急ぎの<wbr>修正を<wbr>お願い<wbr>したい</dt>
+      <dd>依頼内容に<wbr>「急ぎ」とお書きください。<wbr>営業時間の<wbr>誤表記など、<wbr>お客様に<wbr>影響する<wbr>内容は<wbr>最優先で<wbr>対応します。</dd>
     </dl>
   </div>
 

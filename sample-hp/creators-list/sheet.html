@@ -12,7 +12,7 @@
     --red:#dc2626; --ok:#059669;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",Meiryo,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;}
+  body{word-break:keep-all;line-break:strict;overflow-wrap:break-word;font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",Meiryo,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;}
   .wrap{max-width:640px;margin:0 auto;padding:28px 18px 80px;}
   .brand{font-size:12px;font-weight:800;color:var(--teal-d);letter-spacing:.06em;margin-bottom:4px;}
   h1{font-size:22px;font-weight:800;margin-bottom:6px;}
@@ -45,15 +45,15 @@
 <div class="wrap">
   <div class="brand">CREATORS LIST | mono.create</div>
   <h1>📋 案件報告シート(編集者用)</h1>
-  <p class="lead">クライアントから直接お受けした案件を、納品のたびに(または月末にまとめて)ご報告ください。<br>ご提出いただく請求書との照合に使用します。</p>
+  <p class="lead">クライアントから<wbr>直接お受けした<wbr>案件を、<wbr>納品の<wbr>たびに<wbr>(または<wbr>月末に<wbr>まとめて<wbr>)ご報告ください。<br>ご提出いただく<wbr>請求書との<wbr>照合に<wbr>使用します。</p>
 
   <div class="rules">
     <b>お支払いルール</b>
     <ul>
-      <li><b>25日締め・翌月末払い</b>(例: 7/25納品分→8/31払い、7/26〜8/25納品分→9/30払い)</li>
-      <li>あなたの受取額 = クライアント単価 − 派遣手数料(<b>ショート500円/本・長尺1,000円/本</b>)</li>
-      <li>毎月25日までに、その月の報告分の請求書(受取額)をメールでご提出ください</li>
-      <li>単価は運営がクライアントごとに登録した金額が自動で適用されます</li>
+      <li><b>25<wbr>日締め・翌月末払い</b>(例: 7/25納品分→8/31払い、<wbr>7/26〜8/25納品分→9/30払い<wbr>)</li>
+      <li>あなたの<wbr>受取額 = クライアント単価 − 派遣手数料(<b>ショート500円/本・<wbr>長尺1,000円/本</b>)</li>
+      <li>毎月<wbr>25日までに、<wbr>その月の<wbr>報告分の<wbr>請求書(受取額)を<wbr>メールで<wbr>ご提出ください</li>
+      <li>単価は<wbr>運営が<wbr>クライアントごとに<wbr>登録した<wbr>金額が<wbr>自動で<wbr>適用されます</li>
     </ul>
   </div>
 
@@ -75,7 +75,7 @@
         <input id="f-date" type="date">
       </div>
       <div>
-        <label>本数(タイトル数で自動)</label>
+        <label>本数(タイトル数で<wbr>自動)</label>
         <input id="f-count" type="number" min="1" value="1" readonly style="background:#eef2f8;">
       </div>
     </div>
@@ -84,7 +84,7 @@
     <div id="f-titles">
       <input class="f-title" type="text" placeholder="例: 【1本目】新メニュー紹介リール" style="margin-bottom:8px;">
     </div>
-    <button type="button" onclick="addTitleRow()" style="padding:9px 16px;border:1.5px dashed var(--teal);border-radius:9px;background:var(--teal-bg);color:var(--teal-d);font-weight:800;font-size:13px;cursor:pointer;font-family:inherit;">＋ 動画を追加</button>
+    <button type="button" onclick="addTitleRow()" style="padding:9px 16px;border:1.5px dashed var(--teal);border-radius:9px;background:var(--teal-bg);color:var(--teal-d);font-weight:800;font-size:13px;cursor:pointer;font-family:inherit;">＋ 動画を<wbr>追加</button>
 
     <label>内容<span class="req">必須</span></label>
     <select id="f-type">
@@ -97,26 +97,26 @@
 
     <label>クライアント単価(円/本)</label>
     <input id="f-unit" type="number" min="0" value="4000">
-    <p style="font-size:11px;color:var(--sub);margin-top:4px;" id="f-unit-note">登録クライアントを選ぶと自動で入ります。案件により異なる場合は変更できます。</p>
+    <p style="font-size:11px;color:var(--sub);margin-top:4px;" id="f-unit-note">登録クライアントを<wbr>選ぶと<wbr>自動で<wbr>入ります。<wbr>案件に<wbr>より<wbr>異なる<wbr>場合は<wbr>変更できます。</p>
 
-    <label>備考(案件の詳細・クライアントとの取り決めなど)</label>
+    <label>備考(案件の<wbr>詳細・クライアントとの<wbr>取り<wbr>決めなど<wbr>)</label>
     <textarea id="f-note" placeholder="例: TikTok用60秒、テロップフル、7/20依頼分"></textarea>
 
     <div class="total" style="display:block;">
       <div style="display:flex;justify-content:space-between;"><span>クライアント請求額</span><span id="f-gross" style="font-weight:800;">¥4,000</span></div>
       <div style="display:flex;justify-content:space-between;font-size:12.5px;color:var(--sub);"><span>派遣手数料(運営)</span><span id="f-fee">−¥500</span></div>
-      <div style="display:flex;justify-content:space-between;align-items:baseline;border-top:1px dashed var(--line);margin-top:8px;padding-top:8px;"><span>あなたの受取額</span><span class="amt" id="f-total">¥3,500</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;border-top:1px dashed var(--line);margin-top:8px;padding-top:8px;"><span>あなたの<wbr>受取額</span><span class="amt" id="f-total">¥3,500</span></div>
     </div>
 
-    <button class="btn" id="f-submit" onclick="submitJob()">この内容で報告する</button>
+    <button class="btn" id="f-submit" onclick="submitJob()">この<wbr>内容で<wbr>報告する</button>
     <p class="err" id="f-err"></p>
   </div>
 
   <div class="done card" id="done-card">
     <div class="mark">✅</div>
-    <h2>報告を受け付けました</h2>
-    <p>運営(mono.create)に通知されました。<br>請求書は毎月25日までに<a href="invoice.html" style="color:var(--teal-d);font-weight:800;">請求書提出ページ</a>からご提出ください。</p>
-    <button class="btn" onclick="location.reload()">続けて別の案件を報告する</button>
+    <h2>報告を<wbr>受け付けました</h2>
+    <p>運営(mono.create)に<wbr>通知されました。<br>請求書は<wbr>毎月<wbr>25日までに<a href="invoice.html" style="color:var(--teal-d);font-weight:800;">請求書提出ページ</a>から<wbr>ご提出ください。</p>
+    <button class="btn" onclick="location.reload()">続けて<wbr>別の<wbr>案件を<wbr>報告する</button>
   </div>
 </div>
 

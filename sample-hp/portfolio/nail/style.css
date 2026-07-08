@@ -13,7 +13,7 @@
   body{
     font-family:"Noto Serif JP","Hiragino Mincho ProN",serif;
     background:var(--bg);color:var(--ink);line-height:2.05;
-    letter-spacing:.05em;word-break:keep-all;overflow-wrap:anywhere;
+    letter-spacing:.05em;word-break:keep-all;line-break:strict;overflow-wrap:break-word;
   }
   img{max-width:100%;display:block;}
   a{color:inherit;}

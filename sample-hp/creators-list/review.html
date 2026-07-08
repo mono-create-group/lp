@@ -12,7 +12,7 @@
     --red:#dc2626; --ok:#059669; --star:#f59e0b;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",Meiryo,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;}
+  body{word-break:keep-all;line-break:strict;overflow-wrap:break-word;font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",Meiryo,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;}
   .wrap{max-width:640px;margin:0 auto;padding:28px 18px 80px;}
   .brand{font-size:12px;font-weight:800;color:var(--teal-d);letter-spacing:.06em;margin-bottom:4px;}
   h1{font-size:22px;font-weight:800;margin-bottom:6px;}
@@ -46,13 +46,13 @@
 <body>
 <div class="wrap">
   <div class="brand">CREATORS LIST | mono.create</div>
-  <h1>⭐ 編集者への口コミ投稿</h1>
-  <p class="lead">担当いただいた編集者への評価をお寄せください。<br>投稿いただいた口コミは審査後、編集者プロフィールに反映されます。</p>
+  <h1>⭐ 編集者への<wbr>口コミ投稿</h1>
+  <p class="lead">担当いただいた<wbr>編集者への<wbr>評価を<wbr>お寄せください。<br>投稿いただいた<wbr>口コミは<wbr>審査後、<wbr>編集者プロフィールに<wbr>反映されます。</p>
 
   <div class="info">
     <b>ご注意</b><br>
-    実際に弊社サービスをご利用いただいたクライアント様のみ投稿できます。<br>
-    不適切な内容は非公開となります。投稿は管理者が確認後に公開されます。
+    実際に<wbr>弊社サービスを<wbr>ご利用いただいた<wbr>クライアント様のみ<wbr>投稿できます。<br>
+    不適切な<wbr>内容は<wbr>非公開と<wbr>なります。<wbr>投稿は<wbr>管理者が<wbr>確認後に<wbr>公開されます。<wbr>
   </div>
 
   <div class="card" id="form-card">
@@ -68,28 +68,28 @@
         <button type="button" class="star-btn" data-v="4" onclick="setStar(4)">★</button>
         <button type="button" class="star-btn" data-v="5" onclick="setStar(5)">★</button>
       </div>
-      <span class="star-label" id="star-label">タップで評価</span>
+      <span class="star-label" id="star-label">タップで<wbr>評価</span>
     </div>
     <input type="hidden" id="r-stars" value="0">
 
     <label>コメント<span class="req">必須</span></label>
     <textarea id="r-comment" placeholder="例: テロップのデザインセンスが抜群で、修正対応も迅速でした。またお願いしたいです。"></textarea>
 
-    <label>会社名・屋号<span class="req">必須</span></label>
+    <label>会社名・<wbr>屋号<span class="req">必須</span></label>
     <input id="r-company" type="text" placeholder="例: 株式会社◯◯ / 個人でご利用の場合は「個人」と入力">
 
-    <label>お名前(任意・非公開)</label>
+    <label>お名前(任意・<wbr>非<wbr>公開)</label>
     <input id="r-name" type="text" placeholder="例: 田中 太郎(公開されません)">
 
-    <button class="btn" id="r-submit" onclick="submitReview()">口コミを投稿する</button>
+    <button class="btn" id="r-submit" onclick="submitReview()">口コミを<wbr>投稿する</button>
     <p class="err" id="r-err"></p>
   </div>
 
   <div class="done card" id="done-card">
     <div class="mark">✅</div>
-    <h2>口コミを受け付けました</h2>
-    <p>ありがとうございます。<br>管理者が確認後、編集者プロフィールに反映されます。</p>
-    <button class="btn" onclick="location.reload()">別の編集者に口コミを投稿する</button>
+    <h2>口コミを<wbr>受け付けました</h2>
+    <p>ありがとう<wbr>ございます。<br>管理者が<wbr>確認後、<wbr>編集者プロフィールに<wbr>反映されます。</p>
+    <button class="btn" onclick="location.reload()">別の<wbr>編集者に<wbr>口コミを<wbr>投稿する</button>
   </div>
 </div>
 

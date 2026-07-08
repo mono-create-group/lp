@@ -13,7 +13,7 @@
   body{
     font-family:"Noto Sans JP",sans-serif;
     background:var(--bg);color:var(--ink);line-height:1.9;
-    word-break:keep-all;overflow-wrap:anywhere;
+    word-break:keep-all;line-break:strict;overflow-wrap:break-word;
   }
   img{max-width:100%;display:block;}
   a{color:inherit;}

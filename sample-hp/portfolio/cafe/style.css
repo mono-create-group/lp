@@ -13,7 +13,9 @@
   body{
     font-family:"Zen Maru Gothic","Hiragino Maru Gothic ProN",sans-serif;
     background:var(--bg);color:var(--ink);line-height:2;
-    word-break:keep-all;overflow-wrap:anywhere;
+    /* 日本語は文節単位でのみ折る。BudouXが本文に<wbr>を焼き込み、keep-allでその点だけ折れる。
+       overflow-wrap:anywhereは禁則を壊し「。」を単独行に落とすため不可。break-wordは超長語の最終手段のみ */
+    word-break:keep-all;line-break:strict;overflow-wrap:break-word;
   }
   img{max-width:100%;display:block;}
   a{color:inherit;}

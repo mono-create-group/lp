@@ -17,7 +17,7 @@
     --section-bg-alt:#f8f6f2;}
   *{margin:0;padding:0;box-sizing:border-box;}
   html{scroll-behavior:smooth;}
-  body{font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",Meiryo,sans-serif;color:var(--ink);background:var(--cream);line-height:1.8;word-break:keep-all;overflow-wrap:anywhere;}
+  body{font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",Meiryo,sans-serif;color:var(--ink);background:var(--cream);line-height:1.8;word-break:keep-all;line-break:strict;overflow-wrap:break-word;}
   a{color:inherit;}
   header{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--nav-bg);backdrop-filter:blur(6px);border-bottom:1px solid #e4e8f0;}
   .nav-inner{max-width:1100px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;}
@@ -198,9 +198,9 @@
     <div class="breadcrumb"><a href="index.html">ホーム</a> &rsaquo; ご予約</div>
 
     <div class="notice-box">
-      <strong>ご予約確定までの流れ</strong>
-      このフォームは「予約リクエスト」です。送信後、ホテルより電話またはメールにて折り返しご連絡し、空室確認・ご予約確定をご案内いたします。<br>
-      確定前は予約が保証されておりませんのでご注意ください。急ぎの場合はお電話でのご連絡をおすすめします。
+      <strong>ご予約確定までの<wbr>流れ</strong>
+      この<wbr>フォームは<wbr>「予約リクエスト」です。<wbr>送信後、<wbr>ホテルより<wbr>電話または<wbr>メールにて<wbr>折り返しご連絡し、<wbr>空室確認・<wbr>ご予約確定を<wbr>ご案内いたします。<br>
+      確定前は<wbr>予約が<wbr>保証されておりませんので<wbr>ご注意ください。<wbr>急ぎの<wbr>場合は<wbr>お電話での<wbr>ご連絡を<wbr>おすすめします。<wbr>
     </div>
 
     <div class="form-card">
@@ -227,7 +227,7 @@
             </select>
           </div>
           <div class="form-group">
-            <label>ご希望の客室タイプ</label>
+            <label>ご希望の<wbr>客室タイプ</label>
             <select id="roomtype" name="roomtype">
               <option value="おまかせ">おまかせ</option>
               <option value="シングル">シングルルーム</option>
@@ -241,11 +241,11 @@
           <input type="text" id="guestName" name="guestName" placeholder="例：山田 太郎" required>
         </div>
         <div class="form-group">
-          <label>連絡先(電話番号またはメールアドレス) <span class="req">必須</span></label>
+          <label>連絡先(電話番号または<wbr>メールアドレス) <span class="req">必須</span></label>
           <input type="text" id="contact" name="contact" placeholder="例：090-0000-0000 または example@mail.com" required>
         </div>
         <div class="form-group">
-          <label>備考・ご要望(任意)</label>
+          <label>備考・<wbr>ご要望(任意)</label>
           <textarea id="notes" name="notes" placeholder="到着時間のご連絡・アレルギー情報・その他ご要望があればご記入ください。"></textarea>
         </div>
         <!-- キャンセルポリシー要約 -->
@@ -253,53 +253,53 @@
           <h3>キャンセルポリシー(標準例)</h3>
           <table>
             <thead>
-              <tr><th>キャンセル連絡のタイミング</th><th>キャンセル料</th></tr>
+              <tr><th>キャンセル連絡の<wbr>タイミング</th><th>キャンセル料</th></tr>
             </thead>
             <tbody>
-              <tr><td>宿泊日の3日前まで</td><td class="rate-free">無料(0%)</td></tr>
-              <tr><td>宿泊日の2日前</td><td class="rate">20%</td></tr>
-              <tr><td>宿泊日の前日</td><td class="rate">50%</td></tr>
+              <tr><td>宿泊日の<wbr>3日前まで</td><td class="rate-free">無料(0%)</td></tr>
+              <tr><td>宿泊日の<wbr>2日前</td><td class="rate">20%</td></tr>
+              <tr><td>宿泊日の<wbr>前日</td><td class="rate">50%</td></tr>
               <tr><td>宿泊当日</td><td class="rate">80%</td></tr>
               <tr><td>無連絡不泊</td><td class="rate">100%</td></tr>
             </tbody>
           </table>
-          <span class="policy-link"><a href="policy.html" target="_blank">キャンセルポリシー詳細・個人情報の取り扱い &rsaquo;</a></span>
+          <span class="policy-link"><a href="policy.html" target="_blank">キャンセルポリシー詳細・個人情報の<wbr>取り扱い<wbr> &rsaquo;</a></span>
         </div>
 
         <!-- 同意チェック -->
         <div class="consent-box">
           <input type="checkbox" id="consentCheck" name="consent">
           <label for="consentCheck">
-            <a href="policy.html" target="_blank">キャンセルポリシーおよび個人情報の取り扱い</a>について確認し、同意します。<span style="color:#e53e3e;font-size:11px;margin-left:4px;">必須</span>
+            <a href="policy.html" target="_blank">キャンセルポリシーおよび<wbr>個人情報の<wbr>取り扱い</a>に<wbr>ついて<wbr>確認し、<wbr>同意します。<span style="color:#e53e3e;font-size:11px;margin-left:4px;">必須</span>
           </label>
         </div>
-        <div class="consent-error" id="consentError">キャンセルポリシーへの同意が必要です。チェックを入れてから送信してください。</div>
+        <div class="consent-error" id="consentError">キャンセルポリシーへの<wbr>同意が<wbr>必要です。<wbr>チェックを<wbr>入れてから<wbr>送信してください。</div>
 
-        <button type="submit" class="submit-btn" id="submitBtn">予約リクエストを送信する</button>
+        <button type="submit" class="submit-btn" id="submitBtn">予約リクエストを<wbr>送信する</button>
       </form>
       <div class="success-msg" id="successMsg">
         <h3>送信完了しました</h3>
-        <p>予約リクエストを受け付けました。<br>1〜2営業日以内にホテルよりご連絡いたします。<br>お急ぎの場合はお電話(0166-67-2194)にてお問い合わせください。</p>
+        <p>予約リクエストを<wbr>受け付けました。<br>1〜2営業日以内に<wbr>ホテルより<wbr>ご連絡いたします。<br>お急ぎの<wbr>場合は<wbr>お電話(0166-67-2194)にてお問い<wbr>合わせください。</p>
       </div>
       <div class="error-msg" id="errorMsg">
-        送信中にエラーが発生しました。お手数ですが、お電話(0166-67-2194)にてご連絡ください。
+        送信中に<wbr>エラーが<wbr>発生しました。<wbr>お手数ですが、<wbr>お電話(0166-67-2194)にて<wbr>ご連絡ください。<wbr>
       </div>
     </div>
 
     <!-- 空室目安表示 -->
     <div class="vacancy-hint">
-      <h3>空室状況の目安(7月)</h3>
+      <h3>空室状況の<wbr>目安(7月)</h3>
       <div class="vacancy-grid">
-        <div class="v-cell v-avail"><div class="v-label">7/5〜7/11</div>空室あり</div>
+        <div class="v-cell v-avail"><div class="v-label">7/5〜7/11</div>空室<wbr>あり</div>
         <div class="v-cell v-limited"><div class="v-label">7/12〜7/18</div>残りわずか</div>
-        <div class="v-cell v-avail"><div class="v-label">7/19〜7/25</div>空室あり</div>
+        <div class="v-cell v-avail"><div class="v-label">7/19〜7/25</div>空室<wbr>あり</div>
         <div class="v-cell v-full"><div class="v-label">7/26〜7/31</div>満室</div>
       </div>
-      <p style="font-size:11px;color:#8a8fa0;margin-top:8px;">※空室状況は目安です。正確な情報はお電話またはフォームにてご確認ください。</p>
+      <p style="font-size:11px;color:#8a8fa0;margin-top:8px;">※<wbr>空室状況は<wbr>目安です。<wbr>正確な<wbr>情報は<wbr>お電話または<wbr>フォームにて<wbr>ご確認ください。</p>
     </div>
 
     <div class="alt-box">
-      <p>お急ぎの場合・確実な予約をご希望の場合</p>
+      <p>お急ぎの<wbr>場合・確実な<wbr>予約を<wbr>ご希望の<wbr>場合</p>
       <div class="alt-btns">
         <a class="btn-tel" href="tel:0166-67-2194"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.64 3.41 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.78a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> 0166-67-2194</a>
         <a class="btn-line" href="#">
@@ -316,9 +316,9 @@
   <div class="fname">ダイバーシティホテル シン トキワ 旭川</div>
   <div>〒070-0043 北海道旭川市常盤通3丁目1971-45</div>
   <div class="footer-links">
-    <a href="index.html">トップ</a><a href="rooms.html">客室・料金</a><a href="facilities.html">館内施設</a><a href="access.html">アクセス</a><a href="sightseeing.html">周辺観光</a><a href="news.html">お知らせ</a><a href="blog.html">ブログ</a><a href="faq.html">FAQ</a><a href="reserve.html">ご予約</a><a href="policy.html" style="color:#c9a84c;">ご予約とキャンセルについて</a>
+    <a href="index.html">トップ</a><a href="rooms.html">客室・料金</a><a href="facilities.html">館内施設</a><a href="access.html">アクセス</a><a href="sightseeing.html">周辺観光</a><a href="news.html">お知らせ</a><a href="blog.html">ブログ</a><a href="faq.html">FAQ</a><a href="reserve.html">ご予約</a><a href="policy.html" style="color:#c9a84c;">ご予約と<wbr>キャンセルに<wbr>ついて</a>
   </div>
-  <div class="footer-note">本ページはmono.create(旭川)による制作サンプルです。掲載情報・画像は公開情報を元にしています。<br>掲載内容の正確性は現地にてご確認ください。成約前は速やかに削除いたします。</div>
+  <div class="footer-note">本ページは<wbr>mono.create(旭川)に<wbr>よる<wbr>制作サンプルです。<wbr>掲載情報・画像は<wbr>公開情報を<wbr>元に<wbr>しています。<br>掲載内容の<wbr>正確性は<wbr>現地にて<wbr>ご確認ください。<wbr>成約前は<wbr>速やかに<wbr>削除いたします。</div>
 </footer>
 
 <a class="float-tel" href="tel:0166-67-2194"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.64 3.41 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.78a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> 電話予約</a>
