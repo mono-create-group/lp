@@ -61,6 +61,7 @@
   .svc-card h3{font-size:16.5px;font-weight:900;letter-spacing:.04em;margin-bottom:10px;}
   .svc-card p{font-size:12.5px;color:var(--mut);line-height:1.9;}
   @media (max-width:900px){.svc-grid{grid-template-columns:1fr 1fr;}}
+  @media (max-width:560px){.svc-grid{grid-template-columns:1fr;}.svc-card{text-align:left;padding:20px 22px;display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;}.svc-card .ic{margin-bottom:0;font-size:26px;}.svc-card h3{margin-bottom:0;}.svc-card p{flex-basis:100%;}}
 
   .reason-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;}
   .reason-grid img{border-radius:12px;aspect-ratio:4/3;object-fit:cover;border:1px solid var(--line);}
