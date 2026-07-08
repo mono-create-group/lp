@@ -126,13 +126,13 @@
 <div class="wrap">
   <div class="brand">CREATORS LIST | mono.create</div>
   <h1>編集者マイページ</h1>
-  <p class="lead">稼働状況・<wbr>今月の<wbr>対応可能本数を<wbr>更新してください。<br>クライアント向けページに<wbr>「今月の<wbr>空き」と<wbr>して<wbr>表示されます。</p>
+  <p class="lead"><span style="white-space:nowrap">稼働状況・今月の</span><wbr>対応可能本数を<wbr>更新してください。<br>クライアント向けページに<wbr>「今月の<wbr>空き」と<wbr>して<wbr>表示されます。</p>
 
   <!-- STEP 0: サインイン(必須) -->
   <div id="step-auth">
     <div class="info">
       <b>この<wbr>ページは<wbr>編集者専用の<wbr>マイページです</b><br>
-      Googleで<wbr>サインインすると、<wbr>ご自身の<wbr>プロフィールを<wbr>確認・更新できます。<wbr>下の<wbr>ボタンから<wbr>サインインしてください。<wbr>
+      Googleで<wbr>サインインすると、<wbr>ご自身の<wbr>プロフィールを<wbr><span style="white-space:nowrap">確認・更新できます</span>。<wbr>下の<wbr>ボタンから<wbr>サインインしてください。<wbr>
     </div>
     <div class="card">
       <button class="g-btn" id="g-signin-btn" onclick="signInWithGoogle()">
@@ -210,7 +210,7 @@
       <label>お名前</label>
       <input id="e-name" type="text" readonly>
 
-      <label>職業・肩<wbr>書き</label>
+      <label><span style="white-space:nowrap">職業・肩</span><wbr>書き</label>
       <input id="e-occupation" type="text" readonly>
 
       <label>編集歴</label>
@@ -248,7 +248,7 @@
       <label>稼働時間帯(任意)</label>
       <input id="e-hours" type="text" placeholder="例: 平日 9:00〜18:00">
 
-      <label>ひとこと・メモ(任意)</label>
+      <label><span style="white-space:nowrap">ひとこと・メモ</span>(任意)</label>
       <textarea id="e-comment" placeholder="例: 今月は受付を一時停止しています。来月から再開予定。"></textarea>
 
       <button class="btn" id="e-submit" onclick="submitMypage()">稼働状況を<wbr>更新する</button>
