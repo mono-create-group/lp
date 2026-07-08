@@ -4,9 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex,nofollow">
-<meta http-equiv="refresh" content="0; url=sample-hp/creators-list/">
-<script>location.replace('sample-hp/creators-list/');</script>
 <title>移転しました | mono.create</title>
+<script>
+(function(){
+  var go = function(){ location.replace('sample-hp/creators-list/'); };
+  try{
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.getRegistrations().then(function(rs){
+        rs.forEach(function(r){ r.unregister(); });
+      }).catch(function(){});
+    }
+    if(window.caches && caches.keys){
+      caches.keys().then(function(ks){ return Promise.all(ks.map(function(k){ return caches.delete(k); })); })
+        .then(go).catch(go);
+    } else { go(); }
+    setTimeout(go, 1200);
+  }catch(e){ go(); }
+})();
+</script>
 </head>
 <body style="font-family:sans-serif;text-align:center;padding:60px 20px;">
 <p>サイトは移転しました。自動で移動しない場合は<a href="sample-hp/creators-list/">こちら</a>。</p>
