@@ -82,6 +82,7 @@
   .flow-card h3{font-size:15px;font-weight:700;margin-bottom:8px;}
   .flow-card p{font-size:12.5px;color:var(--mut);line-height:1.9;}
   @media (max-width:900px){.flow-grid{grid-template-columns:1fr 1fr;}}
+  @media (max-width:560px){.flow-grid{grid-template-columns:1fr;}.flow-card{text-align:left;padding:18px 20px;}}
 
   .voice{background:var(--card);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
   .voice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
