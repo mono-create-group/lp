@@ -170,6 +170,49 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,253,245,.94);backdro
 
 footer{background:#20302b;color:#c8d3ce;font-size:12.5px;text-align:center;padding:26px 24px;line-height:1.9;}
 footer b{color:#fff;}
+
+/* ─── スマホ最適化 ─── */
+html,body{overflow-x:hidden;}
+@media(max-width:600px){
+  section{padding:44px 0;}
+  .wrap{padding:0 18px;}
+  .sec-head{margin-bottom:28px;}
+  .sec-head h2{font-size:22px;}
+  .sec-head .sec-ill{width:94px;height:94px;margin-top:12px;}
+  .hero-in{padding:36px 18px 40px;}
+  .hero .lead{font-size:14.5px;}
+  /* トラストバンド */
+  .trust-in{padding:18px 12px;gap:6px;}
+  .tb{padding:6px 8px;}
+  .tb b{font-size:23px;}
+  .tb b.teal{font-size:16px;}
+  .tb .lbl{font-size:11px;}
+  .tb .sub{font-size:10px;}
+  /* リボン */
+  .ribbon{padding:14px 16px;}
+  .ribbon b{display:block;font-size:14.5px;margin-bottom:10px;line-height:1.7;}
+  .ribbon a{margin-left:0;}
+  /* 3POINT */
+  .pt{padding:26px 22px;}
+  /* 制作実績 */
+  .works .sec-sub{font-size:12.5px;margin:-16px 0 24px;}
+  /* 比較表：全列をスマホ幅に収める */
+  .ctable{border:1px solid var(--line);border-radius:12px;overflow:hidden;}
+  .ctable table{min-width:0;font-size:11px;table-layout:fixed;}
+  .ctable th,.ctable td{padding:8px 4px;word-break:break-word;}
+  .ctable thead th{font-size:11px;}
+  .ctable tbody th{white-space:normal;font-size:11px;}
+  .ctable tbody th{width:22%;}
+  /* 流れ */
+  .step{padding:18px 16px;gap:14px;}
+  .step .num{flex-basis:40px;width:40px;height:40px;font-size:18px;}
+  /* CTA / フォーム */
+  .cta-in{padding:44px 16px;}
+  .cta h2{font-size:21px;}
+  .form-card{padding:22px 16px;}
+  .form-card .intent span{font-size:13px;padding:11px 4px;}
+  footer{font-size:11.5px;}
+}
 </style></head><body>
 
 <header><div class="nav">
@@ -210,7 +253,7 @@ footer b{color:#fff;}
 </div></div>
 
 <!-- リボン -->
-<div class="ribbon"><b>いま無料相談で、たたき台を1枚おつくりします。</b><a href="#contact">無料で相談する</a></div>
+<div class="ribbon"><b>いま無料相談で、完成イメージを1枚おつくりします。</b><a href="#contact">無料で相談する</a></div>
 
 <!-- 悩み -->
 <section class="pains" id="pains"><div class="wrap">
