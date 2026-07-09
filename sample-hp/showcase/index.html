@@ -138,6 +138,28 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,253,245,.94);backdro
 .cta .btns{display:flex;gap:13px;justify-content:center;flex-wrap:wrap;margin-top:26px;}
 .cta .btn-o{padding:16px 30px;font-size:15px;}
 .cta .btn-w{background:#fff;color:var(--teal-d);padding:16px 30px;font-size:15px;font-weight:700;border-radius:50px;text-decoration:none;}
+/* お問い合わせフォーム */
+.form-card{max-width:600px;margin:28px auto 0;background:#fff;border-radius:20px;padding:30px 26px;box-shadow:0 20px 50px rgba(0,0,0,.18);text-align:left;color:var(--ink);}
+.form-card .intent{display:flex;gap:10px;margin-bottom:18px;}
+.form-card .intent label{flex:1;position:relative;cursor:pointer;}
+.form-card .intent input{position:absolute;opacity:0;}
+.form-card .intent span{display:block;text-align:center;padding:12px 8px;border:1.5px solid var(--line);border-radius:12px;font-weight:700;font-size:14px;transition:.15s;}
+.form-card .intent input:checked+span{background:var(--teal);border-color:var(--teal);color:#fff;box-shadow:0 6px 14px rgba(0,194,168,.3);}
+.form-card .fld{margin-bottom:14px;}
+.form-card label.lb{display:block;font-size:13px;font-weight:700;margin-bottom:6px;}
+.form-card label.lb .req{color:var(--orange-d);font-size:11px;margin-left:6px;}
+.form-card input[type=text],.form-card input[type=email],.form-card select,.form-card textarea{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:12px 13px;font-size:15px;font-family:inherit;background:#fffefb;color:var(--ink);}
+.form-card input:focus,.form-card select:focus,.form-card textarea:focus{outline:none;border-color:var(--teal);}
+.form-card textarea{min-height:96px;resize:vertical;line-height:1.7;}
+.form-card .submit{width:100%;border:none;background:var(--orange);color:#fff;font-weight:900;font-size:16px;padding:16px;border-radius:50px;cursor:pointer;box-shadow:0 10px 24px rgba(255,106,26,.34);transition:.15s;margin-top:4px;}
+.form-card .submit:hover{background:var(--orange-d);}
+.form-card .submit:disabled{opacity:.6;cursor:default;}
+.form-card .privacy{font-size:11.5px;color:var(--mut);text-align:center;margin-top:12px;line-height:1.7;}
+.form-line{text-align:center;margin-top:16px;}
+.form-line a{display:inline-flex;align-items:center;gap:8px;background:#06c755;color:#fff;font-weight:700;padding:13px 24px;border-radius:50px;text-decoration:none;font-size:14.5px;}
+.form-done{display:none;background:#fff;color:var(--ink);border-radius:20px;padding:34px 26px;max-width:600px;margin:28px auto 0;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.18);}
+.form-done h3{font-size:20px;font-weight:900;margin-bottom:12px;color:var(--teal-d);}
+.form-done p{font-size:14.5px;line-height:1.9;color:#3a443f;}
 
 /* リボン(繰り返しCTAバナー) */
 .ribbon{background:var(--yellow);text-align:center;padding:16px 24px;}
@@ -205,9 +227,9 @@ footer b{color:#fff;}
 <section class="points" id="points"><div class="wrap">
   <div class="sec-head"><span class="en">3 POINTS</span><h2 class="jp">ぽいっとHP が選ばれる、<span class="mk">3つの理由</span></h2></div>
   <div class="pt-grid">
-    <div class="pt"><span class="no">POINT 01</span><img class="ill" src="img/pt1.png" alt="" loading="lazy"><h3 class="jp">面倒なことは、<br>ぜんぶ丸投げ</h3><p>文章も、写真も、構成も、更新も。手のかかる部分はこちらで用意します。あなたがやるのは、質問に答えることと、できあがりを見ることだけ。パソコンが苦手でも問題ありません。</p></div>
-    <div class="pt"><span class="no">POINT 02</span><img class="ill" src="img/pt2.png" alt="" loading="lazy"><h3 class="jp">業種に合わせて、<br>一軒ずつ作る</h3><p>テンプレートの使い回しはしません。ラーメン店にはラーメン店の、サロンにはサロンの見せ方があります。実物のたたき台を先にお見せするので、完成イメージで迷いません。</p></div>
-    <div class="pt"><span class="no">POINT 03</span><img class="ill" src="img/pt3.png" alt="" loading="lazy"><h3 class="jp">作って終わり、<br>にしない</h3><p>公開したあとの更新も、年間¥10,000でまるごと引き受けます。作って終わりにはしません。ずっと隣にいる、お店のホームページ係です。</p></div>
+    <div class="pt"><span class="no">POINT 01</span><img class="ill" src="img/pt1.png" alt="" loading="lazy"><h3 class="jp">面倒なことは、<br>ぜんぶ丸投げ</h3><p>文章も、構成も、更新も。<wbr>手のかかる部分はこちらで用意します。</p></div>
+    <div class="pt"><span class="no">POINT 02</span><img class="ill" src="img/pt2.png" alt="" loading="lazy"><h3 class="jp">業種に合わせて、<br>一軒ずつ作る</h3><p>テンプレートの使い回しはしません。<wbr>ラーメン店にはラーメン店の、<wbr>サロンにはサロンの見せ方があります。</p></div>
+    <div class="pt"><span class="no">POINT 03</span><img class="ill" src="img/pt3.png" alt="" loading="lazy"><h3 class="jp">作って終わり、<br>にしない</h3><p>公開したあとの更新も、<wbr>年間¥10,000でまるごと引き受けます。</p></div>
   </div>
 </div></section>
 
@@ -244,18 +266,17 @@ footer b{color:#fff;}
       <tr><th>サポート</th><td class="us">地元・継続</td><td>会社による</td><td>なし</td></tr>
     </tbody>
   </table></div>
-  <p class="note">「安さ」だけでは選ばないでください。大事なのは、あなたの手間がゼロで、ずっと続くことです。</p>
 </div></section>
 
 <!-- 流れ -->
 <section class="flow" id="flow"><div class="wrap">
-  <div class="sec-head"><span class="en">STEP</span><h2 class="jp">5ステップで、公開まで。<br><span class="mk">あなたは、答えて見るだけ</span></h2><img class="sec-ill" src="img/ill-flow.png" alt="" loading="lazy"></div>
+  <div class="sec-head"><span class="en">STEP</span><h2 class="jp">丸投げでOK！<br><span class="mk">あなたは、答えて見るだけ</span></h2><img class="sec-ill" src="img/ill-flow.png" alt="" loading="lazy"></div>
   <div class="steps">
-    <div class="step"><span class="num">1</span><div><h3 class="jp">無料相談</h3><p>LINEか電話で、お気軽に。「何から始めればいいか分からない」からで大丈夫です。しつこい営業はしません。</p></div></div>
-    <div class="step"><span class="num">2</span><div><h3 class="jp">ヒアリングもお任せ</h3><p>必要なことは、こちらから質問します。あなたは思い浮かぶまま答えるだけ。まとめる作業はこちらでやります。</p></div></div>
-    <div class="step"><span class="num">3</span><div><h3 class="jp">たたき台を制作</h3><p>写真も文章も構成も、こちらで用意して、実物のたたき台をお見せします。完成イメージで迷いません。</p></div></div>
-    <div class="step"><span class="num">4</span><div><h3 class="jp">確認するだけ</h3><p>「ここを直したい」と言うだけ。手は動かさなくて大丈夫です。納得いくまで調整します。</p></div></div>
-    <div class="step"><span class="num">5</span><div><h3 class="jp">公開・更新も丸投げ</h3><p>公開したあとの変更も、年間¥10,000でまるごと引き受け。あなたは、店に立ち続けてください。</p></div></div>
+    <div class="step"><span class="num">1</span><div><h3 class="jp">無料相談</h3><p>LINEか電話で、お気軽に。<wbr>「何から始めればいいか分からない」<wbr>からで大丈夫です。</p></div></div>
+    <div class="step"><span class="num">2</span><div><h3 class="jp">ヒアリングもお任せ</h3><p>必要なことは、こちらから質問します。<wbr>あなたは思い浮かぶまま答えるだけ。</p></div></div>
+    <div class="step"><span class="num">3</span><div><h3 class="jp">完成イメージを制作</h3><p>文章も構成も、こちらで用意。<wbr>完成イメージを最初にお見せします。</p></div></div>
+    <div class="step"><span class="num">4</span><div><h3 class="jp">確認するだけ</h3><p>「ここを直したい」と言うだけで大丈夫。<wbr>納得いくまで調整します。</p></div></div>
+    <div class="step"><span class="num">5</span><div><h3 class="jp">公開・更新も丸投げ</h3><p>公開したあとの変更も、<wbr>年間¥10,000でまるごと引き受け。</p></div></div>
   </div>
 </div></section>
 
@@ -263,24 +284,68 @@ footer b{color:#fff;}
 <section class="faq" id="faq"><div class="wrap">
   <div class="sec-head"><span class="en">FAQ</span><h2 class="jp">よくあるご質問</h2></div>
   <div class="qa">
-    <details><summary><span class="q">Q</span>料金は本当に¥49,800だけですか？あとから追加されませんか？</summary><div class="a">制作は¥49,800、維持は年間¥10,000だけです。月額はありません。文章や写真の用意、公開後の更新も、この中に含みます。「思っていたより高かった」は起こりません。</div></details>
-    <details><summary><span class="q">Q</span>パソコンが苦手でも、作れますか？</summary><div class="a">大丈夫です。あなたがやるのは、こちらの質問に答えることと、できあがりを見ることだけ。文字を打ったり、画像を用意したりする作業は、すべてこちらでやります。</div></details>
-    <details><summary><span class="q">Q</span>どのくらいで公開できますか？</summary><div class="a">最短で数日です。お店の情報と写真が揃えば、すぐにたたき台をお見せします。急ぎのご事情があれば、先に言ってください。</div></details>
-    <details><summary><span class="q">Q</span>お店の写真がないのですが、大丈夫ですか？</summary><div class="a">大丈夫です。イメージに合う写真をこちらで用意します。実際の店内やメニューの撮影が必要なら、その相談にも乗ります。</div></details>
-    <details><summary><span class="q">Q</span>作ったあと、放置されませんか？</summary><div class="a">しません。公開後も年間契約で更新を引き受けます。ずっと続けていく事業なので、放置はしません。困ったら、そのまま投げてください。</div></details>
-    <details><summary><span class="q">Q</span>やめたくなったら、どうなりますか？</summary><div class="a">年間の維持は、更新しなければ終了です。作ったホームページのデータはお渡しします。無理に続けさせることはしません。</div></details>
+    <details><summary><span class="q">Q</span>料金は本当に¥49,800だけですか？<wbr>あとから追加されませんか？</summary><div class="a">制作は¥49,800、<wbr>維持は年間¥10,000だけです。<wbr>月額はありません。<wbr>文章の用意も公開後の更新も、<wbr>この中に含みます。</div></details>
+    <details><summary><span class="q">Q</span>パソコンが苦手でも、<wbr>作れますか？</summary><div class="a">大丈夫です。<wbr>あなたがやるのは、<wbr>質問に答えることと、<wbr>写真を用意することだけ。<wbr>文字を打つ作業もデザインも、<wbr>すべてこちらでやります。</div></details>
+    <details><summary><span class="q">Q</span>どのくらいで公開できますか？</summary><div class="a">最短で数日です。<wbr>お店の情報と写真が揃えば、<wbr>すぐに完成イメージをお見せします。</div></details>
+    <details><summary><span class="q">Q</span>写真は自分で用意するのですか？</summary><div class="a">お店とメニューの写真だけ、<wbr>ご用意ください。<wbr>スマホで撮ったものでOKです。<wbr>文章もデザインも、<wbr>こちらで仕上げます。</div></details>
+    <details><summary><span class="q">Q</span>作ったあと、放置されませんか？</summary><div class="a">しません。<wbr>公開後も年間契約で更新を引き受けます。<wbr>困ったら、そのまま投げてください。</div></details>
+    <details><summary><span class="q">Q</span>やめたくなったら、<wbr>どうなりますか？</summary><div class="a">年間の維持は、<wbr>更新しなければ終了です。<wbr>作ったホームページのデータはお渡しします。<wbr>無理に続けさせることはしません。</div></details>
   </div>
 </div></section>
 
 <!-- CTA -->
 <section class="cta" id="contact"><div class="cta-in">
-  <h2 class="jp">まずは、話を聞くだけでいい。</h2>
-  <p>「制作実績を見たい」「うちの店だといくら？」だけでも大丈夫です。相談は無料。しつこい営業はしません。</p>
-  <div class="btns">
-    <a class="btn btn-w" href="#">LINEで相談する</a>
-    <a class="btn btn-o" href="#">資料を請求する</a>
+  <h2 class="jp">まずは、完成イメージを<wbr>見てみませんか？</h2>
+  <p>「制作実績を見たい」「うちの店だといくら？」<wbr>だけでも大丈夫です。相談は無料です。</p>
+
+  <form class="form-card" id="cform" novalidate>
+    <div class="intent">
+      <label><input type="radio" name="intent" value="無料相談" checked><span>無料で相談する</span></label>
+      <label><input type="radio" name="intent" value="資料がほしい"><span>資料がほしい</span></label>
+    </div>
+    <div class="fld"><label class="lb">お名前<span class="req">必須</span></label><input type="text" name="name" required autocomplete="name"></div>
+    <div class="fld"><label class="lb">店名・屋号</label><input type="text" name="company" autocomplete="organization" placeholder="例）麺屋 一徹"></div>
+    <div class="fld"><label class="lb">メールアドレス<span class="req">必須</span></label><input type="email" name="email" required autocomplete="email" placeholder="例）info@example.com"></div>
+    <div class="fld"><label class="lb">業種</label><select name="genre">
+      <option value="">選んでください</option>
+      <option>ラーメン・飲食</option><option>カフェ</option><option>居酒屋・バー</option><option>美容室</option><option>ネイル・まつげ</option><option>エステ・サロン</option><option>歯科・クリニック</option><option>整体・整骨院</option><option>パーソナルジム</option><option>建築・工務店</option><option>教室・スクール</option><option>小売・物販</option><option>その他</option>
+    </select></div>
+    <div class="fld"><label class="lb">ご相談内容</label><textarea name="message" placeholder="「うちの店だといくら？」だけでもOKです。"></textarea></div>
+    <button type="submit" class="submit" id="csend">送信する</button>
+    <p class="privacy">送信いただいた内容は、ご相談への対応にのみ使用します。<wbr>1〜2営業日以内にご連絡します。</p>
+  </form>
+  <div class="form-line"><a href="https://line.me/ti/p/@229dbicf" target="_blank" rel="noopener">LINEで相談する</a></div>
+
+  <div class="form-done" id="cdone">
+    <h3>送信しました。ありがとうございます。</h3>
+    <p>受付メールをお送りしました。<wbr>そのメールに、オンライン面談の予約リンクをのせています。<wbr>1〜2営業日以内にこちらからもご連絡します。</p>
   </div>
 </div></section>
+
+<script>
+(function(){
+  var GAS_URL='https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
+  var f=document.getElementById('cform'); if(!f) return;
+  f.addEventListener('submit',function(ev){
+    ev.preventDefault();
+    var name=f.name.value.trim(), email=f.email.value.trim();
+    if(!name){ f.name.focus(); return; }
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ f.email.focus(); return; }
+    var intent=f.querySelector('input[name=intent]:checked').value;
+    var genre=f.genre.value||'未選択';
+    var btn=document.getElementById('csend'); btn.disabled=true; btn.textContent='送信中…';
+    var payload={
+      name:name, company:f.company.value.trim(), email:email,
+      plan:'ぽいっとHP｜'+intent+'｜'+genre,
+      message:'【'+intent+'／'+genre+'】\n'+(f.message.value.trim()||'（内容の記載なし）'),
+      source:'poitto-hp'
+    };
+    fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+      .then(function(){ done(); }).catch(function(){ done(); });
+  });
+  function done(){ f.style.display='none'; document.querySelector('.form-line').style.display='none'; var d=document.getElementById('cdone'); d.style.display='block'; d.scrollIntoView({behavior:'smooth',block:'center'}); }
+})();
+</script>
 
 <footer>
   <b>ぽいっとHP</b>（by mono.create）／ 地域で頑張るお店の「めんどくさい」を引き受けます<br>
