@@ -13,6 +13,7 @@ section{padding:56px 0;}
 .sec-head{text-align:center;margin-bottom:44px;}
 .sec-head .en{color:var(--teal);font-size:12.5px;font-weight:700;letter-spacing:.18em;}
 .sec-head h2{font-size:clamp(24px,3.6vw,34px);font-weight:900;margin-top:8px;line-height:1.4;}
+.sec-head .sec-ill{width:120px;height:120px;object-fit:contain;margin:16px auto 0;}
 .mk{background:linear-gradient(transparent 56%,var(--yellow) 56%);padding:0 .06em;}
 
 /* header */
@@ -71,7 +72,8 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,253,245,.94);backdro
 @media(max-width:820px){.pt-grid{grid-template-columns:1fr;max-width:460px;margin:0 auto;}}
 .pt{background:#fff;border:1px solid var(--line);border-radius:18px;padding:30px 26px;box-shadow:0 12px 30px rgba(40,60,50,.06);position:relative;}
 .pt .no{position:absolute;top:-16px;left:24px;background:var(--teal);color:#fff;font-weight:900;font-size:14px;padding:5px 14px;border-radius:8px;letter-spacing:.05em;}
-.pt h3{font-size:19px;font-weight:900;margin:8px 0 12px;line-height:1.45;}
+.pt .ill{width:104px;height:104px;object-fit:contain;margin:6px 0 2px;}
+.pt h3{font-size:19px;font-weight:900;margin:6px 0 12px;line-height:1.45;}
 .pt p{font-size:14px;color:#4a544f;line-height:1.95;}
 
 /* works carousel */
@@ -203,9 +205,9 @@ footer b{color:#fff;}
 <section class="points" id="points"><div class="wrap">
   <div class="sec-head"><span class="en">3 POINTS</span><h2 class="jp">ぽいっとHP が選ばれる、<span class="mk">3つの理由</span></h2></div>
   <div class="pt-grid">
-    <div class="pt"><span class="no">POINT 01</span><h3 class="jp">面倒なことは、<br>ぜんぶ丸投げ</h3><p>文章も、写真も、構成も、更新も。手のかかる部分はこちらで用意します。あなたがやるのは、質問に答えることと、できあがりを見ることだけ。パソコンが苦手でも問題ありません。</p></div>
-    <div class="pt"><span class="no">POINT 02</span><h3 class="jp">業種に合わせて、<br>一軒ずつ作る</h3><p>テンプレートの使い回しはしません。ラーメン店にはラーメン店の、サロンにはサロンの見せ方があります。実物のたたき台を先にお見せするので、完成イメージで迷いません。</p></div>
-    <div class="pt"><span class="no">POINT 03</span><h3 class="jp">作って終わり、<br>にしない</h3><p>公開したあとの更新も、年間¥10,000でまるごと引き受けます。作って終わりにはしません。ずっと隣にいる、お店のホームページ係です。</p></div>
+    <div class="pt"><span class="no">POINT 01</span><img class="ill" src="img/pt1.png" alt="" loading="lazy"><h3 class="jp">面倒なことは、<br>ぜんぶ丸投げ</h3><p>文章も、写真も、構成も、更新も。手のかかる部分はこちらで用意します。あなたがやるのは、質問に答えることと、できあがりを見ることだけ。パソコンが苦手でも問題ありません。</p></div>
+    <div class="pt"><span class="no">POINT 02</span><img class="ill" src="img/pt2.png" alt="" loading="lazy"><h3 class="jp">業種に合わせて、<br>一軒ずつ作る</h3><p>テンプレートの使い回しはしません。ラーメン店にはラーメン店の、サロンにはサロンの見せ方があります。実物のたたき台を先にお見せするので、完成イメージで迷いません。</p></div>
+    <div class="pt"><span class="no">POINT 03</span><img class="ill" src="img/pt3.png" alt="" loading="lazy"><h3 class="jp">作って終わり、<br>にしない</h3><p>公開したあとの更新も、年間¥10,000でまるごと引き受けます。作って終わりにはしません。ずっと隣にいる、お店のホームページ係です。</p></div>
   </div>
 </div></section>
 
@@ -214,12 +216,12 @@ footer b{color:#fff;}
   <div class="sec-head"><span class="en">OUR WORKS</span><h2 class="jp">制作実績</h2></div>
   <p class="sec-sub">業種に合わせて、一軒ずつ作ります。スワイプ／ドラッグで切り替えできます。</p>
   <div class="works-vp"><div class="works-track" id="wtrack">
-    <div class="work"><div class="label">飲食・ラーメン</div><div class="devices"><div class="laptop"><div class="scr"><img loading="lazy" src="img/works/ramen.png" alt="ラーメン店の制作サンプル"></div><div class="base"></div></div><div class="phone"><div class="pscr"><img loading="lazy" src="img/works/ramen.png" alt=""></div></div></div><div class="cap"><div class="n">麺屋 一徹</div><div class="d">黒×赤の縦書きで、老舗の一杯を主役に。お品書き・こだわり・LINEクーポン。</div></div></div>
-    <div class="work"><div class="label">飲食・カフェ</div><div class="devices"><div class="laptop"><div class="scr"><img loading="lazy" src="img/works/cafe.png" alt="カフェの制作サンプル"></div><div class="base"></div></div><div class="phone"><div class="pscr"><img loading="lazy" src="img/works/cafe.png" alt=""></div></div></div><div class="cap"><div class="n">Cafe 制作サンプル</div><div class="d">生成り×オリーブのやわらかい世界観。メニュー・お客さまの声・お取り置き。</div></div></div>
-    <div class="work"><div class="label">医療・歯科</div><div class="devices"><div class="laptop"><div class="scr"><img loading="lazy" src="img/works/dental.png" alt="歯科の制作サンプル"></div><div class="base"></div></div><div class="phone"><div class="pscr"><img loading="lazy" src="img/works/dental.png" alt=""></div></div></div><div class="cap"><div class="n">歯科クリニック サンプル</div><div class="d">白×ティールの清潔感。診療案内・選ばれる理由・LINE予約の導線まで。</div></div></div>
-    <div class="work"><div class="label">パーソナルジム</div><div class="devices"><div class="laptop"><div class="scr"><img loading="lazy" src="img/works/gym.png" alt="ジムの制作サンプル"></div><div class="base"></div></div><div class="phone"><div class="pscr"><img loading="lazy" src="img/works/gym.png" alt=""></div></div></div><div class="cap"><div class="n">Gym 制作サンプル</div><div class="d">力強い訴求で、体験予約まで一直線。料金・トレーナー・ビフォーアフター。</div></div></div>
-    <div class="work"><div class="label">美容・ネイル</div><div class="devices"><div class="laptop"><div class="scr"><img loading="lazy" src="img/works/nail.png" alt="ネイルの制作サンプル"></div><div class="base"></div></div><div class="phone"><div class="pscr"><img loading="lazy" src="img/works/nail.png" alt=""></div></div></div><div class="cap"><div class="n">ネイルサロン サンプル</div><div class="d">やわらかな配色で世界観を統一。メニュー・料金・LINE相談の入口。</div></div></div>
-    <div class="work"><div class="label">整体・整骨院</div><div class="devices"><div class="laptop"><div class="scr"><img loading="lazy" src="img/works/seitai.png" alt="整体の制作サンプル"></div><div class="base"></div></div><div class="phone"><div class="pscr"><img loading="lazy" src="img/works/seitai.png" alt=""></div></div></div><div class="cap"><div class="n">整体院 制作サンプル</div><div class="d">生成り×緑の和モダンで信頼感を。お悩み訴求・料金・来院の流れ。</div></div></div>
+    <div class="work"><div class="label">飲食・ラーメン</div><div class="devices"><div class="laptop"><div class="scr"><img loading="lazy" src="img/works/ramen.png" alt="ラーメン店の制作サンプル"></div><div class="base"></div></div><div class="phone"><div class="pscr"><img loading="lazy" src="img/works/ramen-m.png" alt=""></div></div></div><div class="cap"><div class="d">黒×赤の縦書きで、<wbr>老舗の一杯を主役に。<wbr>お品書きからLINEクーポンまで。</div></div></div>
+    <div class="work"><div class="label">飲食・カフェ</div><div class="devices"><div class="laptop"><div class="scr"><img loading="lazy" src="img/works/cafe.png" alt="カフェの制作サンプル"></div><div class="base"></div></div><div class="phone"><div class="pscr"><img loading="lazy" src="img/works/cafe-m.png" alt=""></div></div></div><div class="cap"><div class="d">生成り×オリーブの、<wbr>やわらかな世界観。<wbr>メニューとお客さまの声も。</div></div></div>
+    <div class="work"><div class="label">医療・歯科</div><div class="devices"><div class="laptop"><div class="scr"><img loading="lazy" src="img/works/dental.png" alt="歯科の制作サンプル"></div><div class="base"></div></div><div class="phone"><div class="pscr"><img loading="lazy" src="img/works/dental-m.png" alt=""></div></div></div><div class="cap"><div class="d">白×ティールの清潔感で、<wbr>診療案内からLINE予約まで一直線。</div></div></div>
+    <div class="work"><div class="label">パーソナルジム</div><div class="devices"><div class="laptop"><div class="scr"><img loading="lazy" src="img/works/gym.png" alt="ジムの制作サンプル"></div><div class="base"></div></div><div class="phone"><div class="pscr"><img loading="lazy" src="img/works/gym-m.png" alt=""></div></div></div><div class="cap"><div class="d">力強い訴求で、<wbr>体験予約まで一直線。<wbr>料金もトレーナーも一目で。</div></div></div>
+    <div class="work"><div class="label">美容・ネイル</div><div class="devices"><div class="laptop"><div class="scr"><img loading="lazy" src="img/works/nail.png" alt="ネイルの制作サンプル"></div><div class="base"></div></div><div class="phone"><div class="pscr"><img loading="lazy" src="img/works/nail-m.png" alt=""></div></div></div><div class="cap"><div class="d">やわらかな配色で、<wbr>世界観をひとつに。<wbr>メニューとLINE相談の入口も。</div></div></div>
+    <div class="work"><div class="label">整体・整骨院</div><div class="devices"><div class="laptop"><div class="scr"><img loading="lazy" src="img/works/seitai.png" alt="整体の制作サンプル"></div><div class="base"></div></div><div class="phone"><div class="pscr"><img loading="lazy" src="img/works/seitai-m.png" alt=""></div></div></div><div class="cap"><div class="d">生成り×緑の和モダンで、<wbr>お悩み訴求から来院の流れまで。</div></div></div>
   </div></div>
   <p class="note">画面はすべて実際に動く制作サンプルです。自動でも、スワイプでも切り替わります。</p>
   <div class="industries">
@@ -247,7 +249,7 @@ footer b{color:#fff;}
 
 <!-- 流れ -->
 <section class="flow" id="flow"><div class="wrap">
-  <div class="sec-head"><span class="en">STEP</span><h2 class="jp">5ステップで、公開まで。<br><span class="mk">あなたは、答えて見るだけ</span></h2></div>
+  <div class="sec-head"><span class="en">STEP</span><h2 class="jp">5ステップで、公開まで。<br><span class="mk">あなたは、答えて見るだけ</span></h2><img class="sec-ill" src="img/ill-flow.png" alt="" loading="lazy"></div>
   <div class="steps">
     <div class="step"><span class="num">1</span><div><h3 class="jp">無料相談</h3><p>LINEか電話で、お気軽に。「何から始めればいいか分からない」からで大丈夫です。しつこい営業はしません。</p></div></div>
     <div class="step"><span class="num">2</span><div><h3 class="jp">ヒアリングもお任せ</h3><p>必要なことは、こちらから質問します。あなたは思い浮かぶまま答えるだけ。まとめる作業はこちらでやります。</p></div></div>
