@@ -1,4 +1,5 @@
 <!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="robots" content="noindex,nofollow"><title>ぽいっとHP｜地域のお店のホームページ、まるっと丸投げ（by mono.create）</title>
+<link rel="icon" type="image/png" href="img/favicon.png"><link rel="apple-touch-icon" href="img/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Zen+Kaku+Gothic+New:wght@700;900&display=swap" rel="stylesheet">
 <style>
@@ -19,8 +20,9 @@ section{padding:56px 0;}
 /* header */
 header{position:sticky;top:0;z-index:50;background:rgba(255,253,245,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
 .nav{max-width:1180px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:14px;}
-.logo{font-size:20px;font-weight:900;}
-.logo b{color:var(--teal);}
+.logo{display:flex;align-items:center;}
+.logo img{height:46px;width:auto;display:block;}
+@media(max-width:600px){.logo img{height:38px;}}
 .nav ul{display:flex;gap:20px;list-style:none;margin-left:20px;font-size:13.5px;font-weight:700;}
 .nav ul a{color:var(--ink);text-decoration:none;}
 .nav ul a:hover{color:var(--teal-d);}
@@ -171,7 +173,7 @@ footer b{color:#fff;}
 </style></head><body>
 
 <header><div class="nav">
-  <div class="logo">ぽいっと<b>HP</b><span style="font-size:11px;font-weight:500;color:var(--mut);margin-left:6px;">by mono.create</span></div>
+  <div class="logo"><img src="img/logo.png" alt="ぽいっとHP（HP制作会社・by mono.create）"></div>
   <ul>
     <li><a href="#works">制作実績</a></li>
     <li><a href="#compare">料金・比較</a></li>
