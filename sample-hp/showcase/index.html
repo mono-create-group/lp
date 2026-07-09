@@ -1,0 +1,329 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="robots" content="noindex,nofollow"><title>ぽいっとHP｜地域のお店のホームページ、まるっと丸投げ（by mono.create）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Zen+Kaku+Gothic+New:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fffdf5;--bg2:#d8fbf3;--ink:#12201b;--mut:#66716b;--teal:#00c2a8;--teal-d:#009e88;--orange:#ff6a1a;--orange-d:#e8560c;--yellow:#ffd21e;--line:#dfeee8;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:"Noto Sans JP",sans-serif;background:var(--bg);color:var(--ink);line-height:1.9;word-break:keep-all;overflow-wrap:break-word;}
+img{max-width:100%;display:block;}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+.jp{font-family:"Zen Kaku Gothic New",sans-serif;}
+section{padding:72px 0;}
+.sec-head{text-align:center;margin-bottom:44px;}
+.sec-head .en{color:var(--teal);font-size:12.5px;font-weight:700;letter-spacing:.18em;}
+.sec-head h2{font-size:clamp(24px,3.6vw,34px);font-weight:900;margin-top:8px;line-height:1.4;}
+.mk{background:linear-gradient(transparent 56%,var(--yellow) 56%);padding:0 .06em;}
+
+/* header */
+header{position:sticky;top:0;z-index:50;background:rgba(255,253,245,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
+.nav{max-width:1180px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:14px;}
+.logo{font-size:20px;font-weight:900;}
+.logo b{color:var(--teal);}
+.nav ul{display:flex;gap:20px;list-style:none;margin-left:20px;font-size:13.5px;font-weight:700;}
+.nav ul a{color:var(--ink);text-decoration:none;}
+.nav ul a:hover{color:var(--teal-d);}
+.nav-cta{margin-left:auto;display:flex;gap:9px;}
+.btn{display:inline-flex;align-items:center;gap:7px;font-weight:700;border-radius:50px;transition:.18s;white-space:nowrap;text-decoration:none;cursor:pointer;}
+.btn svg{width:15px;height:15px;}
+.btn-t{background:var(--teal);color:#fff;padding:11px 19px;font-size:13.5px;box-shadow:0 6px 16px rgba(0,194,168,.34);}
+.btn-t:hover{background:var(--teal-d);}
+.btn-o{background:var(--orange);color:#fff;padding:11px 19px;font-size:13.5px;box-shadow:0 6px 16px rgba(255,106,26,.32);}
+.btn-o:hover{background:var(--orange-d);}
+.btn-g{background:#fff;border:1.5px solid var(--line);color:var(--ink);padding:11px 18px;font-size:13.5px;}
+@media(max-width:820px){.nav ul,.nav-cta .btn-g{display:none;}}
+
+/* hero */
+.hero{background:linear-gradient(160deg,var(--bg2) 0%,#fffdf5 70%);position:relative;overflow:hidden;}
+.hero-in{max-width:1080px;margin:0 auto;padding:60px 24px 54px;display:grid;grid-template-columns:1.05fr .95fr;gap:30px;align-items:center;}
+.eyebrow{display:inline-block;background:#fff;border:1px solid var(--line);color:var(--teal-d);font-size:12.5px;font-weight:700;padding:6px 14px;border-radius:50px;margin-bottom:18px;}
+.hero h1{font-size:clamp(29px,4.8vw,47px);font-weight:900;line-height:1.4;}
+.hero .lead{margin-top:20px;font-size:15.5px;color:#3a443f;max-width:520px;}
+.hero .btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px;}
+.hero .btn-t,.hero .btn-o{padding:15px 26px;font-size:15px;}
+.hero .price{margin-top:18px;font-size:13px;color:var(--mut);}
+.hero .price b{color:var(--ink);font-size:15px;}
+.hero-art img{width:100%;max-width:430px;margin-left:auto;filter:drop-shadow(0 20px 40px rgba(0,194,168,.18));}
+@media(max-width:820px){.hero-in{grid-template-columns:1fr;gap:6px;}.hero-art{order:-1;}.hero-art img{max-width:280px;margin:0 auto;}}
+
+/* トラストバンド（インパクト・正直な数字） */
+.trust{background:linear-gradient(180deg,#fff,var(--bg));border-top:3px solid var(--yellow);}
+.trust-in{max-width:1080px;margin:0 auto;padding:22px 24px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+.tb{flex:1 1 190px;max-width:250px;text-align:center;padding:6px 14px;border-right:1px solid var(--line);}
+.tb:last-child{border-right:none;}
+.tb .lbl{font-size:12px;color:var(--mut);font-weight:700;}
+.tb b{display:block;font-size:30px;font-weight:900;line-height:1.12;margin:2px 0;color:var(--orange-d);letter-spacing:-.01em;}
+.tb b.teal{color:var(--teal-d);font-size:25px;}
+.tb .sub{font-size:11.5px;color:var(--mut);}
+@media(max-width:600px){.tb{flex:1 1 44%;border-right:none;}}
+
+/* 悩み */
+.pains{background:#fff;}
+.pain-list{max-width:760px;margin:0 auto;display:grid;gap:14px;}
+.pain{display:flex;gap:14px;align-items:flex-start;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:18px 22px;font-size:15.5px;font-weight:500;}
+.pain .ck{flex:0 0 26px;width:26px;height:26px;border-radius:50%;background:var(--orange);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;margin-top:2px;}
+.pains .arrow{text-align:center;margin-top:34px;font-size:15px;font-weight:900;color:var(--teal-d);}
+
+/* 強み POINT */
+.points{background:linear-gradient(180deg,#fff,var(--bg2));}
+.pt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+@media(max-width:820px){.pt-grid{grid-template-columns:1fr;max-width:460px;margin:0 auto;}}
+.pt{background:#fff;border:1px solid var(--line);border-radius:18px;padding:30px 26px;box-shadow:0 12px 30px rgba(40,60,50,.06);position:relative;}
+.pt .no{position:absolute;top:-16px;left:24px;background:var(--teal);color:#fff;font-weight:900;font-size:14px;padding:5px 14px;border-radius:8px;letter-spacing:.05em;}
+.pt h3{font-size:19px;font-weight:900;margin:8px 0 12px;line-height:1.45;}
+.pt p{font-size:14px;color:#4a544f;line-height:1.95;}
+
+/* works carousel */
+.works .sec-sub{text-align:center;color:#4a544f;font-size:14.5px;margin:-28px 0 34px;}
+.works-vp{overflow:hidden;padding:16px 0 8px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);}
+.works-track{display:flex;gap:26px;will-change:transform;}
+.work{position:relative;flex:0 0 322px;width:322px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 12px 30px rgba(40,60,50,.07);padding:0 14px;transition:box-shadow .25s ease;}
+@media(max-width:600px){.work{flex:0 0 84vw;width:84vw;}}
+.label{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--yellow);color:var(--ink);font-size:12.5px;font-weight:900;padding:6px 18px;border-radius:8px;white-space:nowrap;box-shadow:0 6px 14px rgba(0,0,0,.16);z-index:3;}
+.devices{position:relative;padding:26px 0 14px;}
+.laptop{width:100%;background:#20302b;padding:9px 9px 0;border-radius:7px 7px 0 0;}
+.laptop .scr{width:100%;height:180px;background:#eef2f0;border-radius:3px;overflow:hidden;}
+.laptop .scr img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;}
+.laptop .base{height:8px;background:#2a3a34;border-radius:0 0 7px 7px;margin:0 -9px;position:relative;}
+.laptop .base::after{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:54px;height:3px;background:#1a2622;border-radius:0 0 4px 4px;}
+.phone{position:absolute;right:0;bottom:2px;width:70px;height:145px;background:#20302b;border-radius:12px;padding:4px;box-shadow:0 8px 18px rgba(0,0,0,.25);z-index:2;}
+.phone .pscr{width:100%;height:100%;background:#eef2f0;border-radius:8px;overflow:hidden;}
+.phone .pscr img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;}
+.work .cap{padding:4px 4px 17px;}
+.work .cap .n{font-size:15.5px;font-weight:900;margin-top:3px;}
+.work .cap .d{font-size:12.5px;color:var(--mut);margin-top:5px;line-height:1.7;}
+.note{text-align:center;color:var(--mut);font-size:12.5px;margin-top:26px;}
+.industries{max-width:820px;margin:36px auto 0;text-align:center;}
+.industries .tags{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-top:14px;}
+.industries .tag{background:#fff;border:1px solid var(--line);border-radius:50px;padding:7px 15px;font-size:13px;font-weight:500;}
+
+/* 比較 */
+.compare{background:#fff;}
+.ctable{max-width:880px;margin:0 auto;overflow-x:auto;}
+.ctable table{width:100%;border-collapse:collapse;min-width:640px;font-size:14px;}
+.ctable th,.ctable td{border:1px solid var(--line);padding:14px 12px;text-align:center;}
+.ctable thead th{background:var(--bg2);font-weight:900;font-size:14.5px;}
+.ctable thead th.us{background:var(--teal);color:#fff;}
+.ctable tbody th{background:var(--bg);text-align:left;font-weight:700;white-space:nowrap;}
+.ctable td.us{background:rgba(0,194,168,.09);font-weight:700;color:var(--teal-d);}
+.ctable td.us b{color:var(--orange-d);}
+
+/* 流れ */
+.flow{background:linear-gradient(180deg,var(--bg2),#fff);}
+.steps{max-width:820px;margin:0 auto;display:grid;gap:16px;}
+.step{display:flex;gap:18px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px 24px;}
+.step .num{flex:0 0 46px;width:46px;height:46px;border-radius:12px;background:var(--teal);color:#fff;font-weight:900;font-size:20px;display:flex;align-items:center;justify-content:center;}
+.step h3{font-size:17px;font-weight:900;}
+.step p{font-size:14px;color:#4a544f;margin-top:5px;}
+
+/* FAQ */
+.faq{background:#fff;}
+.qa{max-width:760px;margin:0 auto;display:grid;gap:12px;}
+.qa details{border:1px solid var(--line);border-radius:14px;background:var(--bg);overflow:hidden;}
+.qa summary{list-style:none;cursor:pointer;padding:18px 22px;font-weight:700;font-size:15px;display:flex;gap:12px;align-items:center;}
+.qa summary::-webkit-details-marker{display:none;}
+.qa summary .q{flex:0 0 24px;width:24px;height:24px;border-radius:50%;background:var(--teal);color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center;font-size:14px;}
+.qa summary::after{content:"＋";margin-left:auto;color:var(--teal-d);font-weight:900;}
+.qa details[open] summary::after{content:"−";}
+.qa .a{padding:0 22px 20px 58px;font-size:14px;color:#4a544f;line-height:1.95;}
+
+/* cta */
+.cta{background:linear-gradient(135deg,var(--teal),var(--teal-d));color:#fff;}
+.cta-in{max-width:1080px;margin:0 auto;padding:56px 24px;text-align:center;}
+.cta h2{font-size:clamp(22px,3.4vw,32px);font-weight:900;}
+.cta p{margin-top:14px;font-size:15px;opacity:.96;}
+.cta .btns{display:flex;gap:13px;justify-content:center;flex-wrap:wrap;margin-top:26px;}
+.cta .btn-o{padding:16px 30px;font-size:15px;}
+.cta .btn-w{background:#fff;color:var(--teal-d);padding:16px 30px;font-size:15px;font-weight:700;border-radius:50px;text-decoration:none;}
+
+/* リボン(繰り返しCTAバナー) */
+.ribbon{background:var(--yellow);text-align:center;padding:16px 24px;}
+.ribbon b{font-weight:900;font-size:16px;}
+.ribbon a{display:inline-block;margin-left:14px;background:var(--orange);color:#fff;font-weight:700;padding:9px 20px;border-radius:50px;text-decoration:none;font-size:14px;}
+
+footer{background:#20302b;color:#c8d3ce;font-size:12.5px;text-align:center;padding:26px 24px;line-height:1.9;}
+footer b{color:#fff;}
+</style></head><body>
+
+<header><div class="nav">
+  <div class="logo">ぽいっと<b>HP</b><span style="font-size:11px;font-weight:500;color:var(--mut);margin-left:6px;">by mono.create</span></div>
+  <ul>
+    <li><a href="#works">制作実績</a></li>
+    <li><a href="#compare">料金・比較</a></li>
+    <li><a href="#flow">制作の流れ</a></li>
+    <li><a href="#faq">よくある質問</a></li>
+  </ul>
+  <div class="nav-cta">
+    <a class="btn btn-g" href="#contact">資料請求</a>
+    <a class="btn btn-o" href="#contact">今すぐ相談する<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+  </div>
+</div></header>
+
+<!-- HERO -->
+<section class="hero" style="padding:0;"><div class="hero-in">
+  <div>
+    <span class="eyebrow">地域のお店のためのホームページ</span>
+    <h1 class="jp">「めんどくさい」は、<br><span class="mk">ぜんぶ丸投げ</span>でいい。</h1>
+    <p class="lead">ホームページを作るのも、あとで直すのも、集客の仕込みも。地味で手間のかかる部分は、旭川の mono.create がAIと一緒に引き受けます。あなたは、店に立つことだけ考えてください。</p>
+    <div class="btns">
+      <a class="btn btn-o" href="#contact">今すぐ相談する<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="btn btn-t" href="#contact">資料を請求する</a>
+    </div>
+    <p class="price">制作 <b>¥49,800</b> ／ 維持は <b>年間¥10,000</b>。月額なし、更新の追加料金なし。</p>
+  </div>
+  <div class="hero-art"><img src="img/ill-ai.png" alt="面倒な作業をAIに丸投げするイメージ"></div>
+</div></section>
+
+<!-- トラストバンド -->
+<div class="trust"><div class="trust-in">
+  <div class="tb"><span class="lbl">制作費</span><b>¥49,800</b><span class="sub">追加なし・明朗会計</span></div>
+  <div class="tb"><span class="lbl">月額</span><b>0<span style="font-size:18px;">円</span></b><span class="sub">サブスクなし</span></div>
+  <div class="tb"><span class="lbl">更新も</span><b class="teal">丸投げ</b><span class="sub">年間¥10,000で込み</span></div>
+  <div class="tb"><span class="lbl">旭川の</span><b class="teal">地元密着</b><span class="sub">顔が見える安心</span></div>
+</div></div>
+
+<!-- リボン -->
+<div class="ribbon"><b>いま無料相談で、たたき台を1枚おつくりします。</b><a href="#contact">無料で相談する</a></div>
+
+<!-- 悩み -->
+<section class="pains" id="pains"><div class="wrap">
+  <div class="sec-head"><span class="en">TROUBLES</span><h2 class="jp">こんなこと、思っていませんか？</h2></div>
+  <div class="pain-list">
+    <div class="pain"><span class="ck">✓</span>ホームページは欲しい。でも、なんだかめんどくさそうで、後回しにしている。</div>
+    <div class="pain"><span class="ck">✓</span>何から手をつければいいのか、正直よく分からない。</div>
+    <div class="pain"><span class="ck">✓</span>毎日忙しくて、作る時間も、あとで更新する時間もない。</div>
+    <div class="pain"><span class="ck">✓</span>パソコンやスマホの細かい操作が苦手。自分では無理だと思う。</div>
+    <div class="pain"><span class="ck">✓</span>昔ひとつ作ったけれど、古いまま放置している。</div>
+  </div>
+  <p class="arrow jp">その面倒、ぜんぶ ぽいっとHP が引き受けます。↓</p>
+</div></section>
+
+<!-- 強み -->
+<section class="points" id="points"><div class="wrap">
+  <div class="sec-head"><span class="en">3 POINTS</span><h2 class="jp">ぽいっとHP が選ばれる、<span class="mk">3つの理由</span></h2></div>
+  <div class="pt-grid">
+    <div class="pt"><span class="no">POINT 01</span><h3 class="jp">面倒なことは、<br>ぜんぶ丸投げ</h3><p>文章も、写真も、構成も、更新も。手のかかる部分はこちらで用意します。あなたがやるのは、質問に答えることと、できあがりを見ることだけ。パソコンが苦手でも問題ありません。</p></div>
+    <div class="pt"><span class="no">POINT 02</span><h3 class="jp">業種に合わせて、<br>一軒ずつ作る</h3><p>テンプレートの使い回しはしません。ラーメン店にはラーメン店の、サロンにはサロンの見せ方があります。実物のたたき台を先にお見せするので、完成イメージで迷いません。</p></div>
+    <div class="pt"><span class="no">POINT 03</span><h3 class="jp">作って終わり、<br>にしない</h3><p>公開したあとの更新も、年間¥10,000でまるごと引き受けます。旭川の地元だから、逃げも隠れもしません。ずっと隣にいる、お店のホームページ係です。</p></div>
+  </div>
+</div></section>
+
+<!-- 制作実績（カルーセル） -->
+<section class="works" id="works"><div class="wrap">
+  <div class="sec-head"><span class="en">OUR WORKS</span><h2 class="jp">制作実績</h2></div>
+  <p class="sec-sub">業種に合わせて、一軒ずつ作ります。スワイプ／ドラッグで切り替えできます。</p>
+  <div class="works-vp"><div class="works-track" id="wtrack">
+    <div class="work"><div class="label">飲食・ラーメン</div><div class="devices"><div class="laptop"><div class="scr"><img loading="lazy" src="https://image.thum.io/get/width/1200/crop/760/https://mono-create-group.github.io/lp/sample-hp/portfolio/ramen/" alt="ラーメン店の制作サンプル"></div><div class="base"></div></div><div class="phone"><div class="pscr"><img loading="lazy" src="https://image.thum.io/get/width/480/crop/1000/https://mono-create-group.github.io/lp/sample-hp/portfolio/ramen/" alt=""></div></div></div><div class="cap"><div class="n">麺屋 一徹</div><div class="d">黒×赤の縦書きで、老舗の一杯を主役に。お品書き・こだわり・LINEクーポン。</div></div></div>
+    <div class="work"><div class="label">飲食・カフェ</div><div class="devices"><div class="laptop"><div class="scr"><img loading="lazy" src="https://image.thum.io/get/width/1200/crop/760/https://mono-create-group.github.io/lp/sample-hp/portfolio/cafe/" alt="カフェの制作サンプル"></div><div class="base"></div></div><div class="phone"><div class="pscr"><img loading="lazy" src="https://image.thum.io/get/width/480/crop/1000/https://mono-create-group.github.io/lp/sample-hp/portfolio/cafe/" alt=""></div></div></div><div class="cap"><div class="n">Cafe 制作サンプル</div><div class="d">生成り×オリーブのやわらかい世界観。メニュー・お客さまの声・お取り置き。</div></div></div>
+    <div class="work"><div class="label">医療・歯科</div><div class="devices"><div class="laptop"><div class="scr"><img loading="lazy" src="https://image.thum.io/get/width/1200/crop/760/https://mono-create-group.github.io/lp/sample-hp/portfolio/dental/" alt="歯科の制作サンプル"></div><div class="base"></div></div><div class="phone"><div class="pscr"><img loading="lazy" src="https://image.thum.io/get/width/480/crop/1000/https://mono-create-group.github.io/lp/sample-hp/portfolio/dental/" alt=""></div></div></div><div class="cap"><div class="n">歯科クリニック サンプル</div><div class="d">白×ティールの清潔感。診療案内・選ばれる理由・LINE予約の導線まで。</div></div></div>
+    <div class="work"><div class="label">パーソナルジム</div><div class="devices"><div class="laptop"><div class="scr"><img loading="lazy" src="https://image.thum.io/get/width/1200/crop/760/https://mono-create-group.github.io/lp/sample-hp/portfolio/gym/" alt="ジムの制作サンプル"></div><div class="base"></div></div><div class="phone"><div class="pscr"><img loading="lazy" src="https://image.thum.io/get/width/480/crop/1000/https://mono-create-group.github.io/lp/sample-hp/portfolio/gym/" alt=""></div></div></div><div class="cap"><div class="n">Gym 制作サンプル</div><div class="d">力強い訴求で、体験予約まで一直線。料金・トレーナー・ビフォーアフター。</div></div></div>
+    <div class="work"><div class="label">美容・ネイル</div><div class="devices"><div class="laptop"><div class="scr"><img loading="lazy" src="https://image.thum.io/get/width/1200/crop/760/https://mono-create-group.github.io/lp/sample-hp/portfolio/nail/" alt="ネイルの制作サンプル"></div><div class="base"></div></div><div class="phone"><div class="pscr"><img loading="lazy" src="https://image.thum.io/get/width/480/crop/1000/https://mono-create-group.github.io/lp/sample-hp/portfolio/nail/" alt=""></div></div></div><div class="cap"><div class="n">ネイルサロン サンプル</div><div class="d">やわらかな配色で世界観を統一。メニュー・料金・LINE相談の入口。</div></div></div>
+    <div class="work"><div class="label">整体・整骨院</div><div class="devices"><div class="laptop"><div class="scr"><img loading="lazy" src="https://image.thum.io/get/width/1200/crop/760/https://mono-create-group.github.io/lp/sample-hp/portfolio/seitai/" alt="整体の制作サンプル"></div><div class="base"></div></div><div class="phone"><div class="pscr"><img loading="lazy" src="https://image.thum.io/get/width/480/crop/1000/https://mono-create-group.github.io/lp/sample-hp/portfolio/seitai/" alt=""></div></div></div><div class="cap"><div class="n">整体院 制作サンプル</div><div class="d">生成り×緑の和モダンで信頼感を。お悩み訴求・料金・来院の流れ。</div></div></div>
+  </div></div>
+  <p class="note">画面はすべて実際に動く制作サンプルです。自動でも、スワイプでも切り替わります。</p>
+  <div class="industries">
+    <p style="font-weight:700;font-size:15px;">対応してきた業種</p>
+    <div class="tags"><span class="tag">ラーメン・飲食</span><span class="tag">カフェ</span><span class="tag">居酒屋</span><span class="tag">美容室</span><span class="tag">ネイル</span><span class="tag">エステ</span><span class="tag">歯科</span><span class="tag">整体・整骨院</span><span class="tag">パーソナルジム</span><span class="tag">建築・工務店</span><span class="tag">車・整備</span><span class="tag">写真館</span><span class="tag">スナック・バー</span><span class="tag">小売・物販</span><span class="tag">教室・スクール</span><span class="tag">ほか</span></div>
+  </div>
+</div></section>
+
+<!-- 比較 -->
+<section class="compare" id="compare"><div class="wrap">
+  <div class="sec-head"><span class="en">COMPARE</span><h2 class="jp">他の選択肢と、<span class="mk">くらべてみてください</span></h2></div>
+  <div class="ctable"><table>
+    <thead><tr><th></th><th class="us">ぽいっとHP</th><th>一般の制作会社</th><th>自分で作る</th></tr></thead>
+    <tbody>
+      <tr><th>費用</th><td class="us"><b>制作¥49,800</b><br>＋年間¥10,000</td><td>20〜50万円</td><td>0〜数千円</td></tr>
+      <tr><th>あなたの手間</th><td class="us"><b>ほぼゼロ</b><br>（丸投げ）</td><td>打合せ・素材準備が多い</td><td>すべて自分</td></tr>
+      <tr><th>公開までの早さ</th><td class="us"><b>最短 数日</b></td><td>1〜3ヶ月</td><td>人による</td></tr>
+      <tr><th>公開後の更新</th><td class="us">年¥10,000で<b>丸投げ</b></td><td>1回ごとに追加料金</td><td>自分で（難しい）</td></tr>
+      <tr><th>デザイン</th><td class="us">業種に合わせて作り込み</td><td>高いが打合せ次第</td><td>テンプレ頼み</td></tr>
+      <tr><th>サポート</th><td class="us">地元・継続</td><td>会社による</td><td>なし</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">「安さ」だけでは選ばないでください。大事なのは、あなたの手間がゼロで、ずっと続くことです。</p>
+</div></section>
+
+<!-- 流れ -->
+<section class="flow" id="flow"><div class="wrap">
+  <div class="sec-head"><span class="en">STEP</span><h2 class="jp">5ステップで、公開まで。<br><span class="mk">あなたは、答えて見るだけ</span></h2></div>
+  <div class="steps">
+    <div class="step"><span class="num">1</span><div><h3 class="jp">無料相談</h3><p>LINEか電話で、お気軽に。「何から始めればいいか分からない」からで大丈夫です。しつこい営業はしません。</p></div></div>
+    <div class="step"><span class="num">2</span><div><h3 class="jp">ヒアリングもお任せ</h3><p>必要なことは、こちらから質問します。あなたは思い浮かぶまま答えるだけ。まとめる作業はこちらでやります。</p></div></div>
+    <div class="step"><span class="num">3</span><div><h3 class="jp">たたき台を制作</h3><p>写真も文章も構成も、こちらで用意して、実物のたたき台をお見せします。完成イメージで迷いません。</p></div></div>
+    <div class="step"><span class="num">4</span><div><h3 class="jp">確認するだけ</h3><p>「ここを直したい」と言うだけ。手は動かさなくて大丈夫です。納得いくまで調整します。</p></div></div>
+    <div class="step"><span class="num">5</span><div><h3 class="jp">公開・更新も丸投げ</h3><p>公開したあとの変更も、年間¥10,000でまるごと引き受け。あなたは、店に立ち続けてください。</p></div></div>
+  </div>
+</div></section>
+
+<!-- FAQ -->
+<section class="faq" id="faq"><div class="wrap">
+  <div class="sec-head"><span class="en">FAQ</span><h2 class="jp">よくあるご質問</h2></div>
+  <div class="qa">
+    <details><summary><span class="q">Q</span>料金は本当に¥49,800だけですか？あとから追加されませんか？</summary><div class="a">制作は¥49,800、維持は年間¥10,000だけです。月額はありません。文章や写真の用意、公開後の更新も、この中に含みます。「思っていたより高かった」は起こりません。</div></details>
+    <details><summary><span class="q">Q</span>パソコンが苦手でも、作れますか？</summary><div class="a">大丈夫です。あなたがやるのは、こちらの質問に答えることと、できあがりを見ることだけ。文字を打ったり、画像を用意したりする作業は、すべてこちらでやります。</div></details>
+    <details><summary><span class="q">Q</span>どのくらいで公開できますか？</summary><div class="a">最短で数日です。お店の情報と写真が揃えば、すぐにたたき台をお見せします。急ぎのご事情があれば、先に言ってください。</div></details>
+    <details><summary><span class="q">Q</span>お店の写真がないのですが、大丈夫ですか？</summary><div class="a">大丈夫です。イメージに合う写真をこちらで用意します。実際の店内やメニューの撮影が必要なら、その相談にも乗ります。</div></details>
+    <details><summary><span class="q">Q</span>作ったあと、放置されませんか？</summary><div class="a">しません。公開後も年間契約で更新を引き受けます。旭川の地元でやっているので、逃げも隠れもできません。困ったら、そのまま投げてください。</div></details>
+    <details><summary><span class="q">Q</span>やめたくなったら、どうなりますか？</summary><div class="a">年間の維持は、更新しなければ終了です。作ったホームページのデータはお渡しします。無理に続けさせることはしません。</div></details>
+  </div>
+</div></section>
+
+<!-- CTA -->
+<section class="cta" id="contact"><div class="cta-in">
+  <h2 class="jp">まずは、話を聞くだけでいい。</h2>
+  <p>「制作実績を見たい」「うちの店だといくら？」だけでも大丈夫です。相談は無料。しつこい営業はしません。</p>
+  <div class="btns">
+    <a class="btn btn-w" href="#">LINEで相談する</a>
+    <a class="btn btn-o" href="#">資料を請求する</a>
+  </div>
+</div></section>
+
+<footer>
+  <b>ぽいっとHP</b>（by mono.create／旭川）／ 地域で頑張るお店の「めんどくさい」を引き受けます<br>
+  制作 ¥49,800 ＋ 年間維持 ¥10,000 ／ 本ページは制作サンプルです。 © mono.create
+</footer>
+
+<script>
+(function(){
+  var track=document.getElementById('wtrack'); if(!track) return;
+  var vp=track.parentElement;
+  var reals=[].slice.call(track.children);
+  var N=reals.length, GAP=26;
+  function step(){return reals[0].getBoundingClientRect().width+GAP;}
+  var vis=Math.max(2, Math.ceil(vp.offsetWidth/step())+1);
+  var tail=document.createDocumentFragment(), head=document.createDocumentFragment();
+  for(var i=0;i<vis;i++){ tail.appendChild(reals[i].cloneNode(true)); }
+  for(var j=0;j<vis;j++){ head.insertBefore(reals[N-1-j].cloneNode(true), head.firstChild); }
+  track.appendChild(tail); track.insertBefore(head, track.firstChild);
+  var all=[].slice.call(track.children);
+  var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){
+    all.forEach(function(c,k){setTimeout(function(){c.classList.add('in');},55*k);});io.disconnect();
+  }});},{threshold:.1});
+  io.observe(track);
+  var idx=vis, timer=null, settle=null, dragging=false;
+  function setX(px,ms){ track.style.transition=ms?('transform '+ms+'ms cubic-bezier(.4,0,.2,1)'):'none'; track.style.transform='translateX('+px+'px)'; }
+  setX(-idx*step(),0);
+  function normalize(){ if(idx<vis){ idx+=N; setX(-idx*step(),0);} else if(idx>=vis+N){ idx-=N; setX(-idx*step(),0);} }
+  function goTo(i,ms){ idx=i; setX(-idx*step(),ms); clearTimeout(settle); settle=setTimeout(normalize,ms+40); }
+  function play(){ stop(); timer=setInterval(function(){ goTo(idx+1,1900); },3000); }
+  function stop(){ if(timer){clearInterval(timer);timer=null;} }
+  setTimeout(play,1600);
+  var startX=0, startPos=0, moved=0;
+  function curX(){ var m=/-?\d+\.?\d*/.exec(track.style.transform||''); return m?parseFloat(m[0]):-idx*step(); }
+  function down(e){ dragging=true; moved=0; stop(); clearTimeout(settle); startX=e.touches?e.touches[0].clientX:e.clientX; startPos=curX(); setX(startPos,0); track.style.cursor='grabbing'; }
+  function move(e){ if(!dragging)return; var x=e.touches?e.touches[0].clientX:e.clientX; moved=x-startX; setX(startPos+moved,0); if(e.cancelable&&Math.abs(moved)>6)e.preventDefault(); }
+  function up(){ if(!dragging)return; dragging=false; track.style.cursor='grab'; goTo(Math.round(-curX()/step()),420); play(); }
+  track.addEventListener('touchstart',down,{passive:true});
+  track.addEventListener('touchmove',move,{passive:false});
+  track.addEventListener('touchend',up);
+  track.addEventListener('mousedown',down);
+  window.addEventListener('mousemove',move);
+  window.addEventListener('mouseup',up);
+  track.addEventListener('dragstart',function(e){e.preventDefault();});
+  vp.addEventListener('mouseenter',stop);
+  vp.addEventListener('mouseleave',function(){ if(!dragging)play(); });
+  track.style.cursor='grab';
+})();
+</script>
+</body></html>
