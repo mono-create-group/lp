@@ -1,0 +1,212 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="robots" content="noindex,nofollow"><title>mono.create｜地域のお店が、本当に必要なことに集中できる環境をつくる（旭川）</title>
+<link rel="icon" type="image/png" href="img/favicon.png"><link rel="apple-touch-icon" href="img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Zen+Kaku+Gothic+New:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f8f9f7;--ink:#101c30;--mut:#5d6672;--navy:#101c30;--acc:#0aa58c;--acc-d:#088572;--gold:#c9a227;--line:#e3e7e3;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:"Noto Sans JP",sans-serif;background:var(--bg);color:var(--ink);line-height:1.95;word-break:keep-all;overflow-wrap:break-word;}
+img{max-width:100%;display:block;}
+.wrap{max-width:1040px;margin:0 auto;padding:0 24px;}
+.jp{font-family:"Zen Kaku Gothic New",sans-serif;}
+section{padding:64px 0;}
+.sec-head{text-align:center;margin-bottom:44px;}
+.sec-head .en{color:var(--acc);font-size:12.5px;font-weight:700;letter-spacing:.22em;}
+.sec-head h2{font-size:clamp(23px,3.4vw,32px);font-weight:900;margin-top:8px;line-height:1.5;}
+
+header{position:sticky;top:0;z-index:50;background:rgba(248,249,247,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
+.nav{max-width:1140px;margin:0 auto;padding:13px 24px;display:flex;align-items:center;gap:12px;}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);}
+.logo img{height:34px;width:34px;border-radius:8px;}
+.logo b{font-size:17px;font-weight:900;letter-spacing:.02em;}
+.nav ul{display:flex;gap:22px;list-style:none;margin-left:auto;font-size:13.5px;font-weight:700;}
+.nav ul a{color:var(--ink);text-decoration:none;}
+.nav ul a:hover{color:var(--acc-d);}
+.nav .cta{margin-left:14px;background:var(--navy);color:#fff;text-decoration:none;font-weight:700;font-size:13px;padding:10px 20px;border-radius:50px;}
+@media(max-width:820px){.nav ul{display:none;}.nav .cta{margin-left:auto;}}
+
+.hero{background:linear-gradient(165deg,#0e1a2e 0%,#15304b 60%,#0f5e50 130%);color:#fff;padding:0;}
+.hero-in{max-width:1040px;margin:0 auto;padding:96px 24px 88px;text-align:center;}
+.hero .en{color:#7fd6c6;font-size:13px;font-weight:700;letter-spacing:.3em;}
+.hero h1{font-size:clamp(26px,4.6vw,44px);font-weight:900;line-height:1.65;margin-top:18px;}
+.hero h1 .u{background:linear-gradient(transparent 68%,rgba(10,165,140,.65) 68%);padding:0 .04em;}
+.hero .lead{margin-top:26px;font-size:15px;color:#c9d4d2;max-width:640px;margin-left:auto;margin-right:auto;}
+.hero .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:34px;}
+.hero .b1{background:var(--acc);color:#fff;text-decoration:none;font-weight:700;font-size:14.5px;padding:15px 30px;border-radius:50px;box-shadow:0 10px 26px rgba(10,165,140,.35);}
+.hero .b1:hover{background:var(--acc-d);}
+.hero .b2{background:transparent;border:1.5px solid rgba(255,255,255,.5);color:#fff;text-decoration:none;font-weight:700;font-size:14.5px;padding:15px 30px;border-radius:50px;}
+
+.creed{background:#fff;}
+.creed-in{max-width:760px;margin:0 auto;padding:0 24px;text-align:center;}
+.creed p{font-size:15.5px;color:#333d4a;text-align:left;}
+.creed p+p{margin-top:18px;}
+
+.biz{background:var(--bg);}
+.biz-grid{display:grid;gap:22px;}
+.bz{background:#fff;border:1px solid var(--line);border-radius:18px;padding:34px 30px;box-shadow:0 12px 30px rgba(20,35,55,.05);display:grid;grid-template-columns:64px 1fr;gap:22px;align-items:start;}
+.bz .no{width:64px;height:64px;border-radius:16px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;font-family:"Zen Kaku Gothic New",sans-serif;letter-spacing:.04em;}
+.bz.n2 .no{background:#8a5ab5;}
+.bz.n3 .no{background:var(--acc);}
+.bz.n4 .no{background:#1f6fb2;}
+.bz.n5 .no{background:#b2691f;}
+.bz h3{font-size:19.5px;font-weight:900;line-height:1.5;}
+.bz .tag{display:inline-block;font-size:11.5px;font-weight:700;color:var(--acc-d);background:rgba(10,165,140,.1);border-radius:6px;padding:3px 10px;margin-left:10px;vertical-align:middle;}
+.bz p{font-size:14px;color:#4a5460;margin-top:10px;}
+.bz .price{margin-top:12px;font-size:13px;color:var(--mut);}
+.bz .price b{color:var(--ink);font-size:15px;}
+.bz .links{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;}
+.bz .links a{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;text-decoration:none;border-radius:50px;padding:9px 18px;}
+.bz .links .l1{background:var(--navy);color:#fff;}
+.bz .links .l2{border:1.5px solid var(--line);color:var(--ink);background:#fff;}
+.bz .links svg{width:13px;height:13px;}
+@media(max-width:640px){.bz{grid-template-columns:1fr;padding:26px 20px;}.bz .no{width:52px;height:52px;font-size:13px;}}
+
+.proof{background:var(--navy);color:#fff;}
+.proof-in{max-width:860px;margin:0 auto;padding:0 24px;text-align:center;}
+.proof h2{font-size:clamp(21px,3vw,28px);font-weight:900;line-height:1.6;}
+.proof p{margin-top:18px;font-size:14.5px;color:#b9c5c9;text-align:left;max-width:680px;margin-left:auto;margin-right:auto;}
+
+.about{background:#fff;}
+.about-t{max-width:640px;margin:0 auto;border:1px solid var(--line);border-radius:16px;overflow:hidden;}
+.about-t dl{display:grid;grid-template-columns:140px 1fr;font-size:14px;}
+.about-t dt{background:var(--bg);padding:15px 18px;font-weight:700;border-bottom:1px solid var(--line);}
+.about-t dd{padding:15px 18px;border-bottom:1px solid var(--line);color:#3c4552;}
+.about-t dt:last-of-type,.about-t dd:last-of-type{border-bottom:none;}
+@media(max-width:640px){.about-t dl{grid-template-columns:104px 1fr;}}
+
+.contact{background:linear-gradient(135deg,#0f5e50,var(--acc-d));color:#fff;}
+.contact-in{max-width:860px;margin:0 auto;padding:0 24px;text-align:center;}
+.contact h2{font-size:clamp(21px,3.2vw,30px);font-weight:900;}
+.contact p{margin-top:14px;font-size:14.5px;opacity:.95;}
+.contact .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:28px;}
+.contact a{text-decoration:none;font-weight:700;font-size:14.5px;padding:15px 28px;border-radius:50px;}
+.contact .c1{background:#fff;color:var(--acc-d);}
+.contact .c2{background:var(--navy);color:#fff;}
+.contact .c3{background:#06c755;color:#fff;display:inline-flex;align-items:center;gap:8px;}
+.contact .c3 svg{width:17px;height:17px;}
+
+footer{background:#0c1524;color:#9aa7b5;font-size:12.5px;text-align:center;padding:28px 24px;line-height:2;}
+footer b{color:#fff;}
+
+html,body{overflow-x:hidden;}
+@media(max-width:600px){
+  section{padding:48px 0;}
+  .wrap{padding:0 18px;}
+  .sec-head{margin-bottom:30px;}
+  .hero-in{padding:64px 20px 60px;}
+  .hero .lead{font-size:13.5px;}
+  .creed p{font-size:14px;}
+  .contact .btns a{width:100%;justify-content:center;display:inline-flex;}
+  footer{font-size:11.5px;}
+}
+</style></head><body>
+
+<header><div class="nav">
+  <a class="logo" href="#"><img src="img/logo.png" alt="mono.createのロゴ"><b>mono.create</b></a>
+  <ul>
+    <li><a href="#creed">理念</a></li>
+    <li><a href="#biz">事業内容</a></li>
+    <li><a href="#about">会社概要</a></li>
+  </ul>
+  <a class="cta" href="#contact">お問い合わせ</a>
+</div></header>
+
+<!-- HERO（理念） -->
+<section class="hero"><div class="hero-in">
+  <span class="en">MONO.CREATE / ASAHIKAWA</span>
+  <h1 class="jp">地域のお店が、<br><span class="u">本当に必要なことに集中できる</span><wbr>環境をつくる。</h1>
+  <p class="lead">ホームページも、SNSも、シフト表も、<wbr>日々の細かな業務も。<wbr>お店の「めんどくさい」を仕組みごと引き受けて、<wbr>オーナーの時間を本業に返します。</p>
+  <div class="btns">
+    <a class="b1" href="#biz">事業内容を見る</a>
+    <a class="b2" href="#contact">相談する</a>
+  </div>
+</div></section>
+
+<!-- 理念 -->
+<section class="creed" id="creed"><div class="creed-in">
+  <div class="sec-head"><span class="en">OUR CREED</span><h2 class="jp">私たちが考えていること</h2></div>
+  <p>お店の主役は、ラーメンの一杯であり、<wbr>カットの腕であり、施術の30分です。<wbr>ホームページの文言やシフト表の調整に、<wbr>店主が夜中まで向き合う必要はないと考えています。</p>
+  <p>mono.createは旭川の会社です。<wbr>2026年、自分たちの会社をAIと自社アプリで回しながら、<wbr>その仕組みをそのまま地域のお店に提供しています。<wbr>「面倒はぜんぶ外に投げて、本業に集中する」。<wbr>その受け皿になることが、私たちの仕事です。</p>
+</div></section>
+
+<!-- 事業 -->
+<section class="biz" id="biz"><div class="wrap">
+  <div class="sec-head"><span class="en">BUSINESS</span><h2 class="jp">5つの事業</h2></div>
+  <div class="biz-grid">
+
+    <div class="bz n1"><div class="no">01</div><div>
+      <h3 class="jp">HP制作＆公式LINE構築・運用<span class="tag">ぽいっとHP</span></h3>
+      <p>集客と採用の土台づくり。<wbr>文章も写真も更新も丸投げできる<wbr>ホームページ制作と、<wbr>問い合わせ・予約につながる<wbr>公式LINEの構築までを一式で。</p>
+      <p class="price">制作 <b>¥49,800</b>＋年間維持 <b>¥10,000</b>。月額なし・更新の追加料金なし。</p>
+      <div class="links">
+        <a class="l1" href="https://mono-create-group.github.io/lp/sample-hp/showcase/" target="_blank" rel="noopener">サービスサイトへ<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="l2" href="https://mono-create-group.github.io/lp/sample-hp/showcase/contact.html" target="_blank" rel="noopener">相談する</a>
+      </div>
+    </div></div>
+
+    <div class="bz n2"><div class="no">02</div><div>
+      <h3 class="jp">Instagram運用代行</h3>
+      <p>SNSの更新は、オーナーの仕事ではありません。<wbr>リールの企画・撮影・編集・投稿までを<wbr>まるごと引き受けます。<wbr>撮影はこちらから伺います。</p>
+      <p class="price">ライト <b>¥49,800/月</b>（リール4本・撮影込み）／スタンダード ¥99,800／プレミア ¥179,800（税別・縛りなし）。<wbr>HP同時申込でHP制作費が0円になります（12ヶ月継続が条件）。</p>
+      <div class="links"><a class="l2" href="#contact">相談する</a></div>
+    </div></div>
+
+    <div class="bz n3"><div class="no">03</div><div>
+      <h3 class="jp">シフトさん</h3>
+      <p>毎月のシフト作りに、何時間かけていますか。<wbr>LINEでスタッフの希望を集めるだけで<wbr>シフト表が自動でできる仕組みです。</p>
+      <p class="price">現在開発中。<b>旭川のお店限定で無料モニターを募集中</b>です。完成後は最優先・最安条件でご案内します。</p>
+      <div class="links"><a class="l2" href="#contact">モニターに申し込む</a></div>
+    </div></div>
+
+    <div class="bz n4"><div class="no">04</div><div>
+      <h3 class="jp">AI顧問</h3>
+      <p>地域の人手不足は、採用だけでは解決しません。<wbr>予約対応・事務・集計などをAIに任せて、<wbr>少ない人数でも回る仕組みを<wbr>お店ごとに設計・構築します。</p>
+      <p class="price">料金は業務内容に合わせた個別見積です。</p>
+      <div class="links"><a class="l2" href="#contact">相談する</a></div>
+    </div></div>
+
+    <div class="bz n5"><div class="no">05</div><div>
+      <h3 class="jp">社内アプリ開発</h3>
+      <p>市販ツールでは痒い所に手が届かない。<wbr>案件管理・シフト・売上集計・チーム連絡など、<wbr>その会社の業務にぴったり合わせた<wbr>社内アプリを開発します。</p>
+      <p class="price">第1号は自社の社内連絡アプリ。<wbr>自分たちが毎日使っている仕組みを、そのまま提供します。</p>
+      <div class="links"><a class="l2" href="#contact">相談する</a></div>
+    </div></div>
+
+  </div>
+</div></section>
+
+<!-- 自社実証 -->
+<section class="proof"><div class="proof-in">
+  <div class="sec-head" style="margin-bottom:0"><span class="en" style="color:#7fd6c6">WHY US</span><h2 class="jp">自分たちの会社で、<wbr>毎日実証しています。</h2></div>
+  <p>mono.createの営業リスト管理・KPI集計・チーム連絡は、<wbr>すべて自社開発のアプリとAIで動いています。<wbr>お客様に提案するのは、<wbr>他所から借りてきた理屈ではなく、<wbr>自分たちが今日も使っている仕組みです。</p>
+</div></section>
+
+<!-- 会社概要 -->
+<section class="about" id="about"><div class="wrap">
+  <div class="sec-head"><span class="en">COMPANY</span><h2 class="jp">会社概要</h2></div>
+  <div class="about-t"><dl>
+    <dt>屋号</dt><dd>mono.create（モノクリエイト）</dd>
+    <dt>代表</dt><dd>中村 航汰</dd>
+    <dt>拠点</dt><dd>北海道旭川市（対応はオンラインで全国可）</dd>
+    <dt>事業内容</dt><dd>HP制作・公式LINE構築運用／Instagram運用代行／シフト管理ツール開発／AI顧問／社内アプリ開発</dd>
+    <dt>連絡先</dt><dd>mono.create.group@gmail.com</dd>
+  </dl></div>
+</div></section>
+
+<!-- お問い合わせ -->
+<section class="contact" id="contact"><div class="contact-in">
+  <h2 class="jp">まずは、話すところから。</h2>
+  <p>「どの事業の話か決まっていない」<wbr>という段階で大丈夫です。相談は無料です。</p>
+  <div class="btns">
+    <a class="c2" href="https://mono-create-group.github.io/lp/sample-hp/showcase/contact.html" target="_blank" rel="noopener">お問い合わせフォーム</a>
+    <a class="c3" href="https://lin.ee/Umhvwwi" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.64 2 10.13c0 4.03 3.58 7.4 8.42 8.04.33.07.78.22.89.5.1.26.07.66.03.92l-.14.87c-.04.26-.2 1.01.88.55 1.09-.46 5.87-3.46 8.01-5.92C21.56 13.42 22 11.85 22 10.13 22 5.64 17.52 2 12 2z"/></svg>LINEで相談する</a>
+    <a class="c1" href="mailto:mono.create.group@gmail.com">メールで相談する</a>
+  </div>
+</div></section>
+
+<footer>
+  <b>mono.create</b>／ 北海道旭川市 ／ 地域のお店が、本当に必要なことに集中できる環境をつくる<br>
+  © mono.create
+</footer>
+</body></html>
