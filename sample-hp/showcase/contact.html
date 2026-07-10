@@ -1,0 +1,137 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="robots" content="noindex,nofollow"><title>お問い合わせ｜ぽいっとHP</title>
+<link rel="icon" type="image/png" href="img/favicon.png"><link rel="apple-touch-icon" href="img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Zen+Kaku+Gothic+New:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fffdf5;--bg2:#d8fbf3;--ink:#12201b;--mut:#66716b;--teal:#00c2a8;--teal-d:#009e88;--orange:#ff6a1a;--orange-d:#e8560c;--yellow:#ffd21e;--line:#dfeee8;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:"Noto Sans JP",sans-serif;background:var(--bg);color:var(--ink);line-height:1.9;word-break:keep-all;overflow-wrap:break-word;}
+img{max-width:100%;display:block;}
+.jp{font-family:"Zen Kaku Gothic New",sans-serif;}
+header{position:sticky;top:0;z-index:50;background:rgba(255,253,245,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
+.nav{max-width:1180px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:14px;}
+.logo{display:flex;align-items:center;}
+.logo a{display:block;}
+.logo img{height:46px;width:auto;display:block;}
+@media(max-width:600px){.logo img{height:38px;}}
+.nav ul{display:flex;gap:20px;list-style:none;margin-left:20px;font-size:13.5px;font-weight:700;}
+.nav ul a{color:var(--ink);text-decoration:none;}
+.nav ul a:hover{color:var(--teal-d);}
+@media(max-width:820px){.nav ul{display:none;}}
+.cta{background:linear-gradient(135deg,var(--teal),var(--teal-d));color:#fff;min-height:calc(100vh - 71px);}
+.cta-in{max-width:1080px;margin:0 auto;padding:52px 24px 64px;text-align:center;}
+.cta h1{font-size:clamp(23px,3.6vw,33px);font-weight:900;}
+.cta .sub{margin-top:14px;font-size:15px;opacity:.96;}
+.form-card{max-width:600px;margin:28px auto 0;background:#fff;border-radius:20px;padding:30px 26px;box-shadow:0 20px 50px rgba(0,0,0,.18);text-align:left;color:var(--ink);}
+.form-card .intent{display:flex;gap:10px;margin-bottom:18px;}
+.form-card .intent label{flex:1;position:relative;cursor:pointer;}
+.form-card .intent input{position:absolute;opacity:0;}
+.form-card .intent span{display:block;text-align:center;padding:12px 8px;border:1.5px solid var(--line);border-radius:12px;font-weight:700;font-size:14px;transition:.15s;}
+.form-card .intent input:checked+span{background:var(--teal);border-color:var(--teal);color:#fff;box-shadow:0 6px 14px rgba(0,194,168,.3);}
+.form-card .fld{margin-bottom:14px;}
+.form-card label.lb{display:block;font-size:13px;font-weight:700;margin-bottom:6px;}
+.form-card label.lb .req{color:var(--orange-d);font-size:11px;margin-left:6px;}
+.form-card input[type=text],.form-card input[type=email],.form-card select,.form-card textarea{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:12px 13px;font-size:15px;font-family:inherit;background:#fffefb;color:var(--ink);}
+.form-card input:focus,.form-card select:focus,.form-card textarea:focus{outline:none;border-color:var(--teal);}
+.form-card textarea{min-height:110px;resize:vertical;line-height:1.7;}
+.form-card .submit{width:100%;border:none;background:var(--orange);color:#fff;font-weight:900;font-size:16px;padding:16px;border-radius:50px;cursor:pointer;box-shadow:0 10px 24px rgba(255,106,26,.34);transition:.15s;margin-top:4px;}
+.form-card .submit:hover{background:var(--orange-d);}
+.form-card .submit:disabled{opacity:.6;cursor:default;}
+.form-card .privacy{font-size:11.5px;color:var(--mut);text-align:center;margin-top:12px;line-height:1.7;}
+.form-line{text-align:center;margin-top:16px;}
+.form-line a{display:inline-flex;align-items:center;gap:8px;background:#06c755;color:#fff;font-weight:700;padding:13px 24px;border-radius:50px;text-decoration:none;font-size:14.5px;}
+.form-line a svg{width:18px;height:18px;}
+.form-done{display:none;background:#fff;color:var(--ink);border-radius:20px;padding:34px 26px;max-width:600px;margin:28px auto 0;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.18);}
+.form-done h2{font-size:20px;font-weight:900;margin-bottom:12px;color:var(--teal-d);}
+.form-done p{font-size:14.5px;line-height:1.9;color:#3a443f;}
+.form-done .form-line{margin-top:20px;}
+.back{text-align:center;margin-top:26px;}
+.back a{color:#fff;font-size:13px;opacity:.9;}
+footer{background:#20302b;color:#c8d3ce;font-size:12.5px;text-align:center;padding:26px 24px;line-height:1.9;}
+footer b{color:#fff;}
+html,body{overflow-x:hidden;}
+@media(max-width:600px){
+  .cta-in{padding:38px 16px 52px;}
+  .cta h1{font-size:21px;}
+  .form-card{padding:22px 16px;}
+  .form-card .intent span{font-size:13px;padding:11px 4px;}
+  footer{font-size:11.5px;}
+}
+</style></head><body>
+
+<header><div class="nav">
+  <div class="logo"><a href="index.html"><img src="img/logo.png" alt="ぽいっとHP（HP制作会社・by mono.create）"></a></div>
+  <ul>
+    <li><a href="index.html#works">制作実績</a></li>
+    <li><a href="index.html#compare">料金・比較</a></li>
+    <li><a href="index.html#flow">制作の流れ</a></li>
+    <li><a href="index.html#faq">よくある質問</a></li>
+  </ul>
+</div></header>
+
+<section class="cta"><div class="cta-in">
+  <h1 class="jp">お問い合わせ</h1>
+  <p class="sub">「制作実績を見たい」「うちの店だといくら？」<wbr>だけでも大丈夫です。相談は無料です。</p>
+
+  <form class="form-card" id="cform" novalidate>
+    <div class="intent">
+      <label><input type="radio" name="intent" value="無料相談" checked><span>無料で相談する</span></label>
+      <label><input type="radio" name="intent" value="資料がほしい"><span>資料がほしい</span></label>
+    </div>
+    <div class="fld"><label class="lb">お名前<span class="req">必須</span></label><input type="text" name="name" required autocomplete="name"></div>
+    <div class="fld"><label class="lb">店名・屋号</label><input type="text" name="company" autocomplete="organization" placeholder="例）麺屋 一徹"></div>
+    <div class="fld"><label class="lb">メールアドレス<span class="req">必須</span></label><input type="email" name="email" required autocomplete="email" placeholder="例）info@example.com"></div>
+    <div class="fld"><label class="lb">業種</label><select name="genre">
+      <option value="">選んでください</option>
+      <option>ラーメン・飲食</option><option>カフェ</option><option>居酒屋・バー</option><option>美容室</option><option>ネイル・まつげ</option><option>エステ・サロン</option><option>歯科・クリニック</option><option>整体・整骨院</option><option>パーソナルジム</option><option>建築・工務店</option><option>教室・スクール</option><option>小売・物販</option><option>その他</option>
+    </select></div>
+    <div class="fld"><label class="lb">ご相談内容</label><textarea name="message" placeholder="「うちの店だといくら？」だけでもOKです。"></textarea></div>
+    <button type="submit" class="submit" id="csend">送信する</button>
+    <p class="privacy">送信いただいた内容は、ご相談への対応にのみ使用します。<wbr>1〜2営業日以内にご連絡します。</p>
+  </form>
+  <div class="form-line"><a href="https://lin.ee/Umhvwwi" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.64 2 10.13c0 4.03 3.58 7.4 8.42 8.04.33.07.78.22.89.5.1.26.07.66.03.92l-.14.87c-.04.26-.2 1.01.88.55 1.09-.46 5.87-3.46 8.01-5.92C21.56 13.42 22 11.85 22 10.13 22 5.64 17.52 2 12 2z"/></svg>LINEで相談する</a></div>
+
+  <div class="form-done" id="cdone">
+    <h2>送信しました。ありがとうございます。</h2>
+    <p>1〜2営業日以内に、<wbr>メールでご連絡します。<wbr>お急ぎの方は、<wbr>下のLINEからそのまま話しかけてください。</p>
+    <div class="form-line"><a href="https://lin.ee/Umhvwwi" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.64 2 10.13c0 4.03 3.58 7.4 8.42 8.04.33.07.78.22.89.5.1.26.07.66.03.92l-.14.87c-.04.26-.2 1.01.88.55 1.09-.46 5.87-3.46 8.01-5.92C21.56 13.42 22 11.85 22 10.13 22 5.64 17.52 2 12 2z"/></svg>LINEで友だち追加して相談する</a></div>
+  </div>
+
+  <p class="back"><a href="index.html">← トップページに戻る</a></p>
+</div></section>
+
+<script>
+(function(){
+  var EP='https://docs.google.com/forms/d/e/1FAIpQLSc_IODImjnCOj5MVR5LZtlE_KN0fOvk6ZEfZVsODzffu_ciIw/formResponse';
+  var f=document.getElementById('cform'); if(!f) return;
+  try{
+    var q=new URLSearchParams(location.search).get('intent');
+    if(q==='資料'||q==='資料がほしい'){ f.querySelector('input[value="資料がほしい"]').checked=true; }
+  }catch(e){}
+  f.addEventListener('submit',function(ev){
+    ev.preventDefault();
+    var name=f.name.value.trim(), email=f.email.value.trim();
+    if(!name){ f.name.focus(); return; }
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ f.email.focus(); return; }
+    var intent=f.querySelector('input[name=intent]:checked').value;
+    var btn=document.getElementById('csend'); btn.disabled=true; btn.textContent='送信中…';
+    var body=new URLSearchParams();
+    body.append('emailAddress',email);
+    body.append('entry.1462146476',intent);
+    body.append('entry.23696766',name);
+    body.append('entry.1891418988',f.company.value.trim());
+    body.append('entry.630828218',f.genre.value||'未選択');
+    body.append('entry.876814747',f.message.value.trim()||'（内容の記載なし）');
+    fetch(EP,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()})
+      .then(function(){ done(); }).catch(function(){ done(); });
+  });
+  function done(){ f.style.display='none'; var l=document.querySelectorAll('.form-line')[0]; if(l)l.style.display='none'; var d=document.getElementById('cdone'); d.style.display='block'; d.scrollIntoView({behavior:'smooth',block:'center'}); }
+})();
+</script>
+
+<footer>
+  <b>ぽいっとHP</b>（by mono.create）／ 地域で頑張るお店の「めんどくさい」を引き受けます<br>
+  制作 ¥49,800 ＋ 年間維持 ¥10,000 ／ 本ページは制作サンプルです。 © mono.create
+</footer>
+</body></html>

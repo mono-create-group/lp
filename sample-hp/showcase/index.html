@@ -224,8 +224,8 @@ html,body{overflow-x:hidden;}
     <li><a href="#faq">よくある質問</a></li>
   </ul>
   <div class="nav-cta">
-    <a class="btn btn-g" href="#contact">資料請求</a>
-    <a class="btn btn-o" href="#contact">今すぐ相談する<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    <a class="btn btn-g" href="contact.html?intent=資料">資料請求</a>
+    <a class="btn btn-o" href="contact.html">今すぐ相談する<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
   </div>
 </div></header>
 
@@ -236,8 +236,8 @@ html,body{overflow-x:hidden;}
     <h1 class="jp">「めんどくさい」は、<br><span class="mk">ぜんぶ丸投げ</span>でいい。</h1>
     <p class="lead">ホームページを作るのも、あとで直すのも、集客の仕込みも。地味で手間のかかる部分は、ぽいっとHPがまるっと引き受けます。</p>
     <div class="btns">
-      <a class="btn btn-o" href="#contact">今すぐ相談する<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-      <a class="btn btn-t" href="#contact">資料を請求する</a>
+      <a class="btn btn-o" href="contact.html">今すぐ相談する<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="btn btn-t" href="contact.html?intent=資料">資料を請求する</a>
     </div>
     <p class="price">制作 <b>¥49,800</b> ／ 維持は <b>年間¥10,000</b>。月額なし、更新の追加料金なし。</p>
   </div>
@@ -253,7 +253,7 @@ html,body{overflow-x:hidden;}
 </div></div>
 
 <!-- リボン -->
-<div class="ribbon"><b>いま無料相談で、完成イメージを1枚おつくりします。</b><a href="#contact">無料で相談する</a></div>
+<div class="ribbon"><b>いま無料相談で、完成イメージを1枚おつくりします。</b><a href="contact.html">無料で相談する</a></div>
 
 <!-- 悩み -->
 <section class="pains" id="pains"><div class="wrap">
@@ -315,7 +315,7 @@ html,body{overflow-x:hidden;}
 
 <!-- 流れ -->
 <section class="flow" id="flow"><div class="wrap">
-  <div class="sec-head"><span class="en">STEP</span><h2 class="jp">丸投げでOK！<br><span class="mk">あなたは、答えて見るだけ</span></h2><img class="sec-ill" src="img/ill-flow.png" alt="" loading="lazy"></div>
+  <div class="sec-head"><span class="en">STEP</span><h2 class="jp">丸投げでOK！<br><span class="mk">あなたは、完成品を見るだけ！</span></h2><img class="sec-ill" src="img/ill-flow.png" alt="" loading="lazy"></div>
   <div class="steps">
     <div class="step"><span class="num">1</span><div><h3 class="jp">無料相談</h3><p>LINEか電話で、お気軽に。<wbr>「何から始めればいいか分からない」<wbr>からで大丈夫です。</p></div></div>
     <div class="step"><span class="num">2</span><div><h3 class="jp">ヒアリングもお任せ</h3><p>必要なことは、こちらから質問します。<wbr>あなたは思い浮かぶまま答えるだけ。</p></div></div>
@@ -342,55 +342,12 @@ html,body{overflow-x:hidden;}
 <section class="cta" id="contact"><div class="cta-in">
   <h2 class="jp">まずは、完成イメージを<wbr>見てみませんか？</h2>
   <p>「制作実績を見たい」「うちの店だといくら？」<wbr>だけでも大丈夫です。相談は無料です。</p>
-
-  <form class="form-card" id="cform" novalidate>
-    <div class="intent">
-      <label><input type="radio" name="intent" value="無料相談" checked><span>無料で相談する</span></label>
-      <label><input type="radio" name="intent" value="資料がほしい"><span>資料がほしい</span></label>
-    </div>
-    <div class="fld"><label class="lb">お名前<span class="req">必須</span></label><input type="text" name="name" required autocomplete="name"></div>
-    <div class="fld"><label class="lb">店名・屋号</label><input type="text" name="company" autocomplete="organization" placeholder="例）麺屋 一徹"></div>
-    <div class="fld"><label class="lb">メールアドレス<span class="req">必須</span></label><input type="email" name="email" required autocomplete="email" placeholder="例）info@example.com"></div>
-    <div class="fld"><label class="lb">業種</label><select name="genre">
-      <option value="">選んでください</option>
-      <option>ラーメン・飲食</option><option>カフェ</option><option>居酒屋・バー</option><option>美容室</option><option>ネイル・まつげ</option><option>エステ・サロン</option><option>歯科・クリニック</option><option>整体・整骨院</option><option>パーソナルジム</option><option>建築・工務店</option><option>教室・スクール</option><option>小売・物販</option><option>その他</option>
-    </select></div>
-    <div class="fld"><label class="lb">ご相談内容</label><textarea name="message" placeholder="「うちの店だといくら？」だけでもOKです。"></textarea></div>
-    <button type="submit" class="submit" id="csend">送信する</button>
-    <p class="privacy">送信いただいた内容は、ご相談への対応にのみ使用します。<wbr>1〜2営業日以内にご連絡します。</p>
-  </form>
-  <div class="form-line"><a href="https://line.me/ti/p/@229dbicf" target="_blank" rel="noopener">LINEで相談する</a></div>
-
-  <div class="form-done" id="cdone">
-    <h3>送信しました。ありがとうございます。</h3>
-    <p>受付メールをお送りしました。<wbr>そのメールに、オンライン面談の予約リンクをのせています。<wbr>1〜2営業日以内にこちらからもご連絡します。</p>
+  <div class="btns">
+    <a class="btn btn-o" href="contact.html">お問い合わせフォームへ<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    <a class="btn-w" href="contact.html?intent=資料">資料を請求する</a>
   </div>
+  <div class="form-line"><a href="https://lin.ee/Umhvwwi" target="_blank" rel="noopener">LINEで相談する</a></div>
 </div></section>
-
-<script>
-(function(){
-  var GAS_URL='https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
-  var f=document.getElementById('cform'); if(!f) return;
-  f.addEventListener('submit',function(ev){
-    ev.preventDefault();
-    var name=f.name.value.trim(), email=f.email.value.trim();
-    if(!name){ f.name.focus(); return; }
-    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ f.email.focus(); return; }
-    var intent=f.querySelector('input[name=intent]:checked').value;
-    var genre=f.genre.value||'未選択';
-    var btn=document.getElementById('csend'); btn.disabled=true; btn.textContent='送信中…';
-    var payload={
-      name:name, company:f.company.value.trim(), email:email,
-      plan:'ぽいっとHP｜'+intent+'｜'+genre,
-      message:'【'+intent+'／'+genre+'】\n'+(f.message.value.trim()||'（内容の記載なし）'),
-      source:'poitto-hp'
-    };
-    fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
-      .then(function(){ done(); }).catch(function(){ done(); });
-  });
-  function done(){ f.style.display='none'; document.querySelector('.form-line').style.display='none'; var d=document.getElementById('cdone'); d.style.display='block'; d.scrollIntoView({behavior:'smooth',block:'center'}); }
-})();
-</script>
 
 <footer>
   <b>ぽいっとHP</b>（by mono.create）／ 地域で頑張るお店の「めんどくさい」を引き受けます<br>
