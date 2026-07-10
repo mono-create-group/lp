@@ -39,13 +39,9 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,253,245,.94);backdro
 .form-card .submit:hover{background:var(--orange-d);}
 .form-card .submit:disabled{opacity:.6;cursor:default;}
 .form-card .privacy{font-size:11.5px;color:var(--mut);text-align:center;margin-top:12px;line-height:1.7;}
-.form-line{text-align:center;margin-top:16px;}
-.form-line a{display:inline-flex;align-items:center;gap:8px;background:#06c755;color:#fff;font-weight:700;padding:13px 24px;border-radius:50px;text-decoration:none;font-size:14.5px;}
-.form-line a svg{width:18px;height:18px;}
 .form-done{display:none;background:#fff;color:var(--ink);border-radius:20px;padding:34px 26px;max-width:600px;margin:28px auto 0;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.18);}
 .form-done h2{font-size:20px;font-weight:900;margin-bottom:12px;color:var(--teal-d);}
 .form-done p{font-size:14.5px;line-height:1.9;color:#3a443f;}
-.form-done .form-line{margin-top:20px;}
 .back{text-align:center;margin-top:26px;}
 .back a{color:#fff;font-size:13px;opacity:.9;}
 footer{background:#20302b;color:#c8d3ce;font-size:12.5px;text-align:center;padding:26px 24px;line-height:1.9;}
@@ -89,12 +85,10 @@ html,body{overflow-x:hidden;}
     <button type="submit" class="submit" id="csend">送信する</button>
     <p class="privacy">送信いただいた内容は、ご相談への対応にのみ使用します。<wbr>1〜2営業日以内にご連絡します。</p>
   </form>
-  <div class="form-line"><a href="https://lin.ee/Umhvwwi" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.64 2 10.13c0 4.03 3.58 7.4 8.42 8.04.33.07.78.22.89.5.1.26.07.66.03.92l-.14.87c-.04.26-.2 1.01.88.55 1.09-.46 5.87-3.46 8.01-5.92C21.56 13.42 22 11.85 22 10.13 22 5.64 17.52 2 12 2z"/></svg>LINEで相談する</a></div>
 
   <div class="form-done" id="cdone">
     <h2>送信しました。ありがとうございます。</h2>
-    <p>1〜2営業日以内に、<wbr>メールでご連絡します。<wbr>お急ぎの方は、<wbr>下のLINEからそのまま話しかけてください。</p>
-    <div class="form-line"><a href="https://lin.ee/Umhvwwi" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.64 2 10.13c0 4.03 3.58 7.4 8.42 8.04.33.07.78.22.89.5.1.26.07.66.03.92l-.14.87c-.04.26-.2 1.01.88.55 1.09-.46 5.87-3.46 8.01-5.92C21.56 13.42 22 11.85 22 10.13 22 5.64 17.52 2 12 2z"/></svg>LINEで友だち追加して相談する</a></div>
+    <p>1〜2営業日以内に、<wbr>メールでご連絡します。</p>
   </div>
 
   <p class="back"><a href="index.html">← トップページに戻る</a></p>
@@ -125,7 +119,7 @@ html,body{overflow-x:hidden;}
     fetch(EP,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()})
       .then(function(){ done(); }).catch(function(){ done(); });
   });
-  function done(){ f.style.display='none'; var l=document.querySelectorAll('.form-line')[0]; if(l)l.style.display='none'; var d=document.getElementById('cdone'); d.style.display='block'; d.scrollIntoView({behavior:'smooth',block:'center'}); }
+  function done(){ f.style.display='none'; var d=document.getElementById('cdone'); d.style.display='block'; d.scrollIntoView({behavior:'smooth',block:'center'}); }
 })();
 </script>
 
