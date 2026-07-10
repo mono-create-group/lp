@@ -102,16 +102,29 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,253,245,.94);backdro
 .industries .tags{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-top:14px;}
 .industries .tag{background:#fff;border:1px solid var(--line);border-radius:50px;padding:7px 15px;font-size:13px;font-weight:500;}
 
-/* 比較 */
+/* 比較（できるくん方式・横スクロール＋1列目固定＋自社列強調） */
 .compare{background:#fff;}
-.ctable{max-width:880px;margin:0 auto;overflow-x:auto;}
-.ctable table{width:100%;border-collapse:collapse;min-width:640px;font-size:14px;}
-.ctable th,.ctable td{border:1px solid var(--line);padding:14px 12px;text-align:center;}
+.ctable-wrap{position:relative;max-width:880px;margin:0 auto;}
+.ctable{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px;}
+.ctable table{width:100%;border-collapse:separate;border-spacing:0;min-width:660px;font-size:14px;}
+.ctable th,.ctable td{border-bottom:1px solid var(--line);border-right:1px solid var(--line);padding:14px 12px;text-align:center;background:#fff;}
 .ctable thead th{background:var(--bg2);font-weight:900;font-size:14.5px;}
-.ctable thead th.us{background:var(--teal);color:#fff;}
-.ctable tbody th{background:var(--bg);text-align:left;font-weight:700;white-space:nowrap;}
-.ctable td.us{background:rgba(0,194,168,.09);font-weight:700;color:var(--teal-d);}
+.ctable thead th:first-child{border-top-left-radius:12px;}
+.ctable tbody tr:last-child th,.ctable tbody tr:last-child td{border-bottom:none;}
+/* 1列目（項目名）を固定 */
+.ctable tbody th,.ctable thead th:first-child{position:sticky;left:0;z-index:2;background:var(--bg);text-align:left;font-weight:700;white-space:nowrap;box-shadow:2px 0 0 var(--line);}
+.ctable thead th:first-child{background:var(--bg2);z-index:3;}
+/* 自社列（ぽいっとHP）を目立たせる */
+.ctable .us{background:rgba(0,194,168,.09);}
+.ctable thead th.us{background:var(--teal);color:#fff;font-size:16px;border-color:var(--teal);}
+.ctable td.us{font-weight:700;color:var(--teal-d);font-size:14.5px;border-left:2px solid var(--teal);border-right:2px solid var(--teal);}
+.ctable tbody tr:last-child td.us{border-bottom:2px solid var(--teal);}
 .ctable td.us b{color:var(--orange-d);}
+/* スクロールできますヒント */
+.ctable-hint{position:absolute;top:0;right:0;bottom:0;width:88px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,253,245,.92) 55%);color:var(--teal-d);font-size:11.5px;font-weight:700;pointer-events:none;border-radius:0 12px 12px 0;transition:opacity .4s ease;}
+.ctable-hint svg{width:26px;height:26px;animation:hintswipe 1.4s ease-in-out infinite;}
+.ctable-hint.hide{opacity:0;}
+@keyframes hintswipe{0%,100%{transform:translateX(4px);}50%{transform:translateX(-6px);}}
 
 /* 流れ */
 .flow{background:linear-gradient(180deg,var(--bg2),#fff);}
@@ -196,13 +209,13 @@ html,body{overflow-x:hidden;}
   .pt{padding:26px 22px;}
   /* 制作実績 */
   .works .sec-sub{font-size:12.5px;margin:-16px 0 24px;}
-  /* 比較表：全列をスマホ幅に収める */
-  .ctable{border:1px solid var(--line);border-radius:12px;overflow:hidden;}
-  .ctable table{min-width:0;font-size:11px;table-layout:fixed;}
-  .ctable th,.ctable td{padding:8px 4px;word-break:break-word;}
-  .ctable thead th{font-size:11px;}
-  .ctable tbody th{white-space:normal;font-size:11px;}
-  .ctable tbody th{width:22%;}
+  /* 比較表：横スクロール式（できるくん方式）。潰さず読みやすさ優先 */
+  .ctable table{font-size:12.5px;min-width:600px;}
+  .ctable th,.ctable td{padding:11px 9px;}
+  .ctable thead th{font-size:12.5px;}
+  .ctable thead th.us{font-size:14px;}
+  .ctable tbody th{font-size:12px;min-width:78px;}
+  .ctable td.us{font-size:12.5px;}
   /* 流れ */
   .step{padding:18px 16px;gap:14px;}
   .step .num{flex-basis:40px;width:40px;height:40px;font-size:18px;}
@@ -234,12 +247,12 @@ html,body{overflow-x:hidden;}
   <div>
     <span class="eyebrow">地域のお店のためのホームページ</span>
     <h1 class="jp">「めんどくさい」は、<br><span class="mk">ぜんぶ丸投げ</span>でいい。</h1>
-    <p class="lead">ホームページを作るのも、あとで直すのも、集客の仕込みも。地味で手間のかかる部分は、ぽいっとHPがまるっと引き受けます。</p>
+    <p class="lead">ホームページを<wbr>作るのも、<wbr>あとで<wbr>直すのも、<wbr>集客の<wbr>仕込みも。<wbr>地味で<wbr>手間の<wbr>かかる<wbr>部分は、<wbr>ぽいっと<wbr>HPが<wbr>まるっと<wbr>引き受けます。</p>
     <div class="btns">
       <a class="btn btn-o" href="contact.html">今すぐ相談する<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
       <a class="btn btn-t" href="contact.html?intent=資料">資料を請求する</a>
     </div>
-    <p class="price">制作 <b>¥49,800</b> ／ 維持は <b>年間¥10,000</b>。月額なし、更新の追加料金なし。</p>
+    <p class="price">制作 <b>¥49,800</b> ／ 維持は <b>年間¥10,000</b>。<wbr>月額なし、<wbr>更新の<wbr>追加料金なし。</p>
   </div>
   <div class="hero-art"><img src="img/ill-consult.png" alt="お店のホームページを相談しているイメージ"></div>
 </div></section>
@@ -259,11 +272,11 @@ html,body{overflow-x:hidden;}
 <section class="pains" id="pains"><div class="wrap">
   <div class="sec-head"><span class="en">TROUBLES</span><h2 class="jp">こんなこと、思っていませんか？</h2></div>
   <div class="pain-list">
-    <div class="pain"><span class="ck">✓</span>ホームページは欲しい。でも、なんだかめんどくさそうで、後回しにしている。</div>
-    <div class="pain"><span class="ck">✓</span>何から手をつければいいのか、正直よく分からない。</div>
-    <div class="pain"><span class="ck">✓</span>毎日忙しくて、作る時間も、あとで更新する時間もない。</div>
-    <div class="pain"><span class="ck">✓</span>パソコンやスマホの細かい操作が苦手。自分では無理だと思う。</div>
-    <div class="pain"><span class="ck">✓</span>昔ひとつ作ったけれど、古いまま放置している。</div>
+    <div class="pain"><span class="ck">✓</span>ホームページは<wbr>欲しい。<wbr>でも、<wbr>なんだか<wbr>めんどくさそうで、<wbr>後回しに<wbr>している。</div>
+    <div class="pain"><span class="ck">✓</span>何から<wbr>手を<wbr>つければ<wbr>いいのか、<wbr>正直よく<wbr>分からない。</div>
+    <div class="pain"><span class="ck">✓</span>毎日<wbr>忙しくて、<wbr>作る<wbr>時間も、<wbr>あとで<wbr>更新する<wbr>時間も<wbr>ない。</div>
+    <div class="pain"><span class="ck">✓</span>パソコンや<wbr>スマホの<wbr>細かい<wbr>操作が<wbr>苦手。<wbr>自分では<wbr>無理だと<wbr>思う。</div>
+    <div class="pain"><span class="ck">✓</span>昔<wbr>ひとつ<wbr>作ったけれど、<wbr>古いまま<wbr>放置している。</div>
   </div>
   <p class="arrow jp">その面倒、ぜんぶ ぽいっとHP が引き受けます。↓</p>
 </div></section>
@@ -300,7 +313,8 @@ html,body{overflow-x:hidden;}
 <!-- 比較 -->
 <section class="compare" id="compare"><div class="wrap">
   <div class="sec-head"><span class="en">COMPARE</span><h2 class="jp">他の選択肢と、<span class="mk">くらべてみてください</span></h2></div>
-  <div class="ctable"><table>
+  <div class="ctable-wrap">
+  <div class="ctable" id="ctable"><table>
     <thead><tr><th></th><th class="us">ぽいっとHP</th><th>一般の制作会社</th><th>自分で作る</th></tr></thead>
     <tbody>
       <tr><th>費用</th><td class="us"><b>制作¥49,800</b><br>＋年間¥10,000</td><td>20〜50万円</td><td>0〜数千円</td></tr>
@@ -311,7 +325,29 @@ html,body{overflow-x:hidden;}
       <tr><th>サポート</th><td class="us">継続・オンライン</td><td>会社による</td><td>なし</td></tr>
     </tbody>
   </table></div>
+  <div class="ctable-hint" id="ctablehint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V6a2 2 0 0 1 4 0v5"/><path d="M13 8a2 2 0 0 1 4 0v6a5 5 0 0 1-5 5h-2a5 5 0 0 1-4.5-2.8L4 16.5"/><path d="M13 11V9"/></svg>スクロール<wbr>できます</div>
+  </div>
 </div></section>
+
+<script>
+(function(){
+  var sc=document.getElementById('ctable'), hint=document.getElementById('ctablehint');
+  if(!sc||!hint) return;
+  var scrolled=false;
+  function refresh(){
+    if(scrolled) return;
+    // 表がはみ出す（横スクロール可能）ときだけヒントを出す
+    if(sc.scrollWidth>sc.clientWidth+4){ hint.classList.remove('hide'); }
+    else { hint.classList.add('hide'); }
+  }
+  function off(){ scrolled=true; hint.classList.add('hide'); sc.removeEventListener('scroll',off); }
+  sc.addEventListener('scroll',off,{passive:true});
+  window.addEventListener('resize',refresh);
+  window.addEventListener('load',refresh);
+  refresh();
+  setTimeout(refresh,300);
+})();
+</script>
 
 <!-- 流れ -->
 <section class="flow" id="flow"><div class="wrap">
