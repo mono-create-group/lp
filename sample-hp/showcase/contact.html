@@ -32,7 +32,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,253,245,.94);backdro
 .form-card .fld{margin-bottom:14px;}
 .form-card label.lb{display:block;font-size:13px;font-weight:700;margin-bottom:6px;}
 .form-card label.lb .req{color:var(--orange-d);font-size:11px;margin-left:6px;}
-.form-card input[type=text],.form-card input[type=email],.form-card select,.form-card textarea{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:12px 13px;font-size:15px;font-family:inherit;background:#fffefb;color:var(--ink);}
+.form-card input[type=text],.form-card input[type=email],.form-card input[type=tel],.form-card select,.form-card textarea{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:12px 13px;font-size:15px;font-family:inherit;background:#fffefb;color:var(--ink);}
 .form-card input:focus,.form-card select:focus,.form-card textarea:focus{outline:none;border-color:var(--teal);}
 .form-card textarea{min-height:110px;resize:vertical;line-height:1.7;}
 .form-card .submit{width:100%;border:none;background:var(--orange);color:#fff;font-weight:900;font-size:16px;padding:16px;border-radius:50px;cursor:pointer;box-shadow:0 10px 24px rgba(255,106,26,.34);transition:.15s;margin-top:4px;}
@@ -77,6 +77,7 @@ html,body{overflow-x:hidden;}
     <div class="fld"><label class="lb">お名前<span class="req">必須</span></label><input type="text" name="name" required autocomplete="name"></div>
     <div class="fld"><label class="lb">店名・屋号</label><input type="text" name="company" autocomplete="organization" placeholder="例）麺屋 一徹"></div>
     <div class="fld"><label class="lb">メールアドレス<span class="req">必須</span></label><input type="email" name="email" required autocomplete="email" placeholder="例）info@example.com"></div>
+    <div class="fld"><label class="lb">電話番号</label><input type="tel" name="phone" autocomplete="tel" placeholder="例）0166-12-3456"></div>
     <div class="fld"><label class="lb">業種</label><select name="genre">
       <option value="">選んでください</option>
       <option>ラーメン・飲食</option><option>カフェ</option><option>居酒屋・バー</option><option>美容室</option><option>ネイル・まつげ</option><option>エステ・サロン</option><option>歯科・クリニック</option><option>整体・整骨院</option><option>パーソナルジム</option><option>建築・工務店</option><option>教室・スクール</option><option>小売・物販</option><option>その他</option>
@@ -96,7 +97,7 @@ html,body{overflow-x:hidden;}
 
 <script>
 (function(){
-  var EP='https://docs.google.com/forms/d/e/1FAIpQLSc_IODImjnCOj5MVR5LZtlE_KN0fOvk6ZEfZVsODzffu_ciIw/formResponse';
+  var EP='https://script.google.com/macros/s/AKfycbzftG_O0GsR_8_TYwUwSGfSFPMCjXscWfw0jmTIB54H8NrH0SnjgH445IDDOKoHnNt8XA/exec';
   var f=document.getElementById('cform'); if(!f) return;
   try{
     var q=new URLSearchParams(location.search).get('intent');
@@ -109,14 +110,16 @@ html,body{overflow-x:hidden;}
     if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ f.email.focus(); return; }
     var intent=f.querySelector('input[name=intent]:checked').value;
     var btn=document.getElementById('csend'); btn.disabled=true; btn.textContent='送信中…';
-    var body=new URLSearchParams();
-    body.append('emailAddress',email);
-    body.append('entry.1462146476',intent);
-    body.append('entry.23696766',name);
-    body.append('entry.1891418988',f.company.value.trim());
-    body.append('entry.630828218',f.genre.value||'未選択');
-    body.append('entry.876814747',f.message.value.trim()||'（内容の記載なし）');
-    fetch(EP,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()})
+    var payload={
+      name:name,
+      company:f.company.value.trim(),
+      email:email,
+      phone:f.phone.value.trim(),
+      genre:f.genre.value||'未選択',
+      intent:intent,
+      message:f.message.value.trim()||'（内容の記載なし）'
+    };
+    fetch(EP,{method:'POST',redirect:'follow',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)})
       .then(function(){ done(); }).catch(function(){ done(); });
   });
   function done(){ f.style.display='none'; var d=document.getElementById('cdone'); d.style.display='block'; d.scrollIntoView({behavior:'smooth',block:'center'}); }
