@@ -47,7 +47,10 @@
           v.addEventListener('timeupdate',function(){
             if(v!==act||switching)return;
             var d=v.duration;
-            if(started&&d&&v.currentTime>=d-0.3&&Date.now()-clipStart>1500)advance();
+            if(started&&d&&v.currentTime>=d-0.3){
+              if(Date.now()-clipStart>3000){advance();}
+              else{try{v.currentTime=0;v.play();}catch(e){}}
+            }
           });
           v.addEventListener('error',function(){if(v===act&&started)advance();});
         });
