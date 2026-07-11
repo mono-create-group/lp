@@ -12,6 +12,7 @@
       var p=hv.play&&hv.play();
       if(p&&p.catch){p.catch(function(){hero.classList.remove('has-video');});}
       hv.addEventListener('error',function(){hero.classList.remove('has-video');});
+      setTimeout(function(){if(hv.currentTime===0||hv.readyState<2){hero.classList.remove('has-video');}},3000);
     }
   }
   // reveal
