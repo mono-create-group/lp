@@ -19,7 +19,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Zen+Kaku+Gothic+New:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/trn.css">
-<noscript><style>[data-rv]{opacity:1!important;transform:none!important}.hero .ov>.in>*{opacity:1!important;transform:none!important}.hero .cue{opacity:1!important}</style></noscript>
+<noscript><style>[data-rv]{opacity:1!important;transform:none!important}.hero .ov>.in>*{opacity:1!important;transform:none!important}.hero .cue{opacity:1!important}.bizsel{margin:26px 0 6px;}
+.bizsel-label{display:block;font-size:12px;letter-spacing:.14em;color:#666;margin-bottom:10px;}
+.bizsel-chips{display:flex;flex-wrap:wrap;gap:8px;}
+.bizsel-chips button{appearance:none;border:1px solid #111;background:#fff;color:#111;padding:9px 16px;border-radius:999px;font-size:13.5px;cursor:pointer;font-family:inherit;transition:background .2s,color .2s;}
+.bizsel-chips button.sel{background:#111;color:#fff;}
+</style></noscript>
 <style>
 .cwrap{padding:80px 0 90px;}
 .cwrap .grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;}
@@ -61,11 +66,34 @@
   <div data-rv>
     <div class="shead left"><span class="ja">お問い合わせ</span><span class="en">CONTACT</span><span class="rule"></span></div>
     <p class="lead">具体的に任せたい内容が<wbr>決まっていない段階でも大丈夫です。<wbr>「人が足りなくて困っている」<wbr>「仕組みがなくて<wbr>属人体制から抜け出せない」<wbr>そんなお悩みをお持ちなら、<wbr>お気軽にご相談ください。</p>
+    <div class="bizsel" id="bizsel" aria-label="ご相談の事業を選択">
+      <span class="bizsel-label">ご相談の事業</span>
+      <div class="bizsel-chips">
+        <button type="button" data-biz="AI顧問">AI顧問</button>
+        <button type="button" data-biz="業務アプリ開発">業務アプリ開発</button>
+        <button type="button" data-biz="ホームページ制作">ホームページ制作</button>
+        <button type="button" class="sel" data-biz="まだ決めていない">まだ決めていない</button>
+      </div>
+    </div>
     <div class="cbtns">
-      <a class="pill solid" href="../sample-hp/showcase/contact.html?intent=mono-create相談" target="_blank" rel="noopener">お問い合わせフォーム<span class="arw"></span></a>
-      <a class="pill" href="mailto:mono.create.group@gmail.com?subject=mono.create%20相談">メールで相談する<span class="arw"></span></a>
+      <a class="pill solid" id="formLink" href="../sample-hp/showcase/contact.html?intent=mono-create相談（まだ決めていない）" target="_blank" rel="noopener">お問い合わせフォーム<span class="arw"></span></a>
+      <a class="pill" id="mailLink" href="mailto:mono.create.group@gmail.com?subject=mono.create%20相談（まだ決めていない）">メールで相談する<span class="arw"></span></a>
       <a class="pill" href="assets/mono-create-doc.pdf" download>資料をダウンロード<span class="arw"></span></a>
     </div>
+    <script>
+    (function(){
+      var box=document.getElementById('bizsel');if(!box)return;
+      var f=document.getElementById('formLink'),m=document.getElementById('mailLink');
+      box.addEventListener('click',function(e){
+        var b=e.target.closest('button[data-biz]');if(!b)return;
+        [].slice.call(box.querySelectorAll('button')).forEach(function(x){x.classList.remove('sel');});
+        b.classList.add('sel');
+        var biz=b.getAttribute('data-biz');
+        f.href='../sample-hp/showcase/contact.html?intent='+encodeURIComponent('mono-create相談（'+biz+'）');
+        m.href='mailto:mono.create.group@gmail.com?subject='+encodeURIComponent('mono.create 相談（'+biz+'）');
+      });
+    })();
+    </script>
   </div>
   <div class="visual" role="img" aria-label="打ち合わせの様子"></div>
 </div></section>

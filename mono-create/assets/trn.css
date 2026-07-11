@@ -95,6 +95,8 @@ header{position:fixed;top:0;left:0;right:0;z-index:60;background:rgba(255,255,25
 .hero .herovid{display:none;z-index:1;}
 /* 映像あり: 動画を最前面・静止画はポスター代わりに背面へ */
 .hero.has-video .herovid{display:block;}
+.hero.playlist .herovid{opacity:0;transition:opacity .9s ease;}
+.hero.playlist .herovid.on{opacity:1;}
 /* 映像なし（fallback）: Ken Burnsでゆっくり寄る */
 .hero.kb .media,.hero:not(.has-video) .media{animation:kenburns 22s ease-in-out infinite alternate;transform-origin:60% 40%;}
 @keyframes kenburns{0%{transform:scale(1.04) translate(0,0);}100%{transform:scale(1.14) translate(-1.5%,-1.5%);}}
