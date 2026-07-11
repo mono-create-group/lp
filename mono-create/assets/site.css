@@ -1,0 +1,91 @@
+/* ============================================================
+   mono.create コーポレートサイト共通chrome
+   tokens.css（デザインシステム単一ソース）を前提に、
+   全ページ共通のヘッダー/ナビ/フッター/ヒーロー/汎用要素を定義。
+   ============================================================ */
+
+/* ── ヘッダー / メガナビ ── */
+header.site{position:sticky;top:0;z-index:60;background:rgba(251,251,249,.86);backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--line);}
+.nav{max-width:var(--maxw);margin:0 auto;padding:16px var(--gutter);display:flex;align-items:center;gap:14px;}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--ink);}
+.logo img{height:30px;width:30px;border-radius:7px;}
+.logo b{font-size:17px;font-weight:900;letter-spacing:.01em;}
+.nav ul{display:flex;gap:30px;list-style:none;margin-left:auto;font-size:13px;font-weight:700;letter-spacing:.02em;}
+.nav ul a{text-decoration:none;color:var(--ink);position:relative;padding-bottom:3px;}
+.nav ul a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1.5px;background:var(--acc);transition:width .25s ease;}
+.nav ul a:hover::after,.nav ul a[aria-current="page"]::after{width:100%;}
+.nav ul a[aria-current="page"]{color:var(--acc-d);}
+.nav .cta{margin-left:26px;background:var(--ink);color:var(--paper);text-decoration:none;font-weight:700;font-size:12.5px;letter-spacing:.04em;padding:11px 22px;border-radius:var(--radius-xs);transition:background .2s;}
+.nav .cta:hover{background:var(--acc-d);}
+/* モバイル: ハンバーガー（SVG・絵文字不使用） */
+.nav-toggle{display:none;margin-left:auto;width:44px;height:44px;border:1px solid var(--line-2);border-radius:var(--radius-xs);background:transparent;cursor:pointer;align-items:center;justify-content:center;color:var(--ink);}
+.nav-toggle svg{width:20px;height:20px;}
+.mnav{display:none;}
+@media(max-width:900px){
+  .nav ul,.nav>.cta{display:none;}
+  .nav-toggle{display:inline-flex;}
+  .mnav{display:block;position:fixed;inset:0 0 0 auto;width:min(78vw,320px);background:var(--paper);border-left:1px solid var(--line);z-index:70;transform:translateX(100%);transition:transform .3s ease;padding:88px 28px 32px;}
+  .mnav.open{transform:translateX(0);}
+  .mnav a{display:block;padding:16px 0;font-size:16px;font-weight:700;text-decoration:none;color:var(--ink);border-bottom:1px solid var(--line);}
+  .mnav a.cta{margin-top:22px;border-bottom:none;background:var(--acc);color:#fff;text-align:center;border-radius:var(--radius-xs);padding:16px;}
+  .mnav-close{position:absolute;top:22px;right:22px;width:40px;height:40px;border:1px solid var(--line-2);border-radius:var(--radius-xs);background:transparent;cursor:pointer;color:var(--ink);}
+  .mnav-scrim{display:none;position:fixed;inset:0;background:rgba(20,23,28,.4);z-index:65;}
+  .mnav-scrim.open{display:block;}
+}
+
+/* ── ページヒーロー（下層ページ用の小型ヒーロー） ── */
+.page-hero{border-bottom:1px solid var(--line);}
+.page-hero-in{max-width:var(--maxw);margin:0 auto;padding:clamp(60px,8vw,104px) var(--gutter) clamp(44px,6vw,72px);}
+.page-hero .eyebrow{margin-bottom:26px;}
+.page-hero h1{font-size:clamp(30px,5vw,58px);font-weight:900;line-height:1.3;letter-spacing:-.01em;max-width:16em;}
+.page-hero h1 .ac{color:var(--acc);}
+.page-hero .lead{margin-top:28px;font-size:var(--fs-lead);color:var(--sub);max-width:42em;line-height:2.05;}
+
+/* パンくず */
+.crumb{max-width:var(--maxw);margin:0 auto;padding:18px var(--gutter) 0;font-size:12px;color:var(--sub);letter-spacing:.02em;}
+.crumb a{color:var(--sub);text-decoration:none;}
+.crumb a:hover{color:var(--acc-d);}
+.crumb span{color:var(--line-2);margin:0 8px;}
+
+/* ── フッター ── */
+footer.site{background:#0a0c10;color:#8b93a0;font-size:12.5px;padding:56px var(--gutter) 40px;line-height:2;}
+.foot-in{max-width:var(--maxw);margin:0 auto;}
+.foot-top{display:grid;grid-template-columns:minmax(0,1.4fr) repeat(2,minmax(0,1fr));gap:32px;padding-bottom:32px;border-bottom:1px solid rgba(255,255,255,.08);}
+.foot-top>*{min-width:0;}
+.foot-brand b{color:#fff;font-weight:900;font-size:16px;letter-spacing:.01em;}
+.foot-brand p{margin-top:12px;color:#8b93a0;max-width:24em;line-height:1.9;}
+.foot-col h4{color:#fff;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px;}
+.foot-col a{display:block;color:#8b93a0;text-decoration:none;padding:5px 0;}
+.foot-col a:hover{color:#fff;}
+.foot-bot{padding-top:24px;font-size:11.5px;color:#6a7280;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+@media(max-width:720px){.foot-top{grid-template-columns:1fr;gap:26px;}}
+
+/* ── 次ページ導線（下層ページ末尾の大リンク） ── */
+.next-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--line-2);}
+.next-nav a{min-width:0;text-decoration:none;color:var(--ink);padding:clamp(30px,4vw,48px) 0;transition:background .25s;}
+.next-nav a:hover{background:var(--paper-2);}
+.next-nav a+a{border-left:1px solid var(--line-2);padding-left:clamp(24px,3vw,40px);}
+.next-nav .dir{font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--acc);text-transform:uppercase;}
+.next-nav .ttl{font-family:var(--font-display);font-size:clamp(18px,2vw,24px);font-weight:900;margin-top:10px;}
+@media(max-width:600px){.next-nav{grid-template-columns:1fr;}.next-nav a+a{border-left:none;border-top:1px solid var(--line-2);padding-left:0;}}
+
+/* ── アニメーション（vanilla・transform/opacityのみ・60fps）── */
+/* 段階ヒーロー: JSで .ready を付与してから順次表示 */
+[data-hero] > *{opacity:0;transform:translateY(20px);}
+[data-hero].ready > *{opacity:1;transform:none;transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1);}
+[data-hero].ready > *:nth-child(1){transition-delay:.05s;}
+[data-hero].ready > *:nth-child(2){transition-delay:.16s;}
+[data-hero].ready > *:nth-child(3){transition-delay:.27s;}
+[data-hero].ready > *:nth-child(4){transition-delay:.38s;}
+[data-hero].ready > *:nth-child(5){transition-delay:.49s;}
+/* スクロールreveal */
+[data-reveal]{opacity:0;transform:translateY(18px);transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1);will-change:opacity,transform;}
+[data-reveal].in-view{opacity:1;transform:none;}
+[data-reveal][data-delay="1"]{transition-delay:.08s;}
+[data-reveal][data-delay="2"]{transition-delay:.16s;}
+[data-reveal][data-delay="3"]{transition-delay:.24s;}
+
+@media(prefers-reduced-motion:reduce){
+  *{scroll-behavior:auto!important;}
+  [data-hero] > *,[data-reveal]{opacity:1!important;transform:none!important;transition:none!important;}
+}

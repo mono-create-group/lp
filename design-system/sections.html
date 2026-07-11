@@ -1,0 +1,151 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>mono.create デザインシステム — セクション雛形集</title>
+<!-- このファイルはコピペ元。実ページでは tokens.css を読み込み、下の各セクションを貼って中身を差し替える。
+     アニメを効かせる場合は mono-create/assets/site.css + site.js も併せて読み込み、data-hero / data-reveal を付ける。 -->
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Zen+Kaku+Gothic+New:wght@500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+/* このプレビュー用の最小レイアウト。実運用ではページ固有CSSに置き換える。 */
+.demo-hero-in{max-width:var(--maxw);margin:0 auto;padding:clamp(72px,10vw,120px) var(--gutter);}
+.demo-hero h1{font-size:var(--fs-hero);font-weight:900;line-height:var(--lh-hero);letter-spacing:-.01em;max-width:15em;}
+.demo-hero h1 .ac{color:var(--acc);}
+.demo-hero .lead{margin-top:36px;font-size:var(--fs-lead);color:var(--sub);max-width:44em;}
+.demo-hero .btns{display:flex;gap:14px;flex-wrap:wrap;margin-top:40px;}
+.ledger{border-top:1px solid var(--line-2);}
+.bz{display:grid;grid-template-columns:minmax(0,7.5em) minmax(0,1fr) minmax(0,15em);gap:clamp(20px,4vw,56px);padding:clamp(36px,4.5vw,52px) 0;border-bottom:1px solid var(--line-2);align-items:start;}
+.bz>*{min-width:0;}
+.bz .no{font-family:var(--font-display);font-size:clamp(30px,4vw,48px);font-weight:900;line-height:1;}
+.bz .no small{display:block;font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--acc);text-transform:uppercase;margin-top:12px;}
+.bz .main h3{font-size:var(--fs-h3);font-weight:900;}
+.bz .main p{font-size:14.5px;color:#454b56;margin-top:12px;max-width:34em;}
+.bz .aside .price b{display:block;font-family:var(--font-display);font-size:clamp(20px,2.4vw,26px);font-weight:900;color:var(--ink);}
+@media(max-width:860px){.bz{grid-template-columns:minmax(0,1fr);gap:18px;}}
+.plate-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;}
+.plate-grid>*{min-width:0;}
+.plate{border:1px solid var(--line-2);padding:26px 24px;text-decoration:none;color:inherit;transition:border-color .25s,transform .25s;display:block;}
+.plate:hover{border-color:var(--acc);transform:translateY(-3px);}
+.plate .k{font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--acc);text-transform:uppercase;}
+.plate h3{font-size:17px;font-weight:900;margin-top:10px;}
+.plate p{font-size:13px;color:var(--sub);margin-top:10px;}
+@media(max-width:820px){.plate-grid{grid-template-columns:1fr;}}
+.faq-list{max-width:820px;border-top:1px solid var(--line-2);}
+.faq-item{padding:26px 0;border-bottom:1px solid var(--line);}
+.faq-item h3{font-size:16px;font-weight:900;padding-left:30px;position:relative;}
+.faq-item h3::before{content:"Q";position:absolute;left:0;top:-1px;color:var(--acc);font-family:var(--font-display);font-weight:900;}
+.faq-item p{font-size:14px;color:#454b56;margin-top:12px;padding-left:30px;}
+.contact-in{max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter);}
+.contact-in .eyebrow{color:#7fd6c6;margin-bottom:24px;}
+.contact-in .eyebrow::before{background:#7fd6c6;}
+.contact-in h2{font-size:var(--fs-h2);font-weight:900;max-width:16em;}
+.contact-in p{margin-top:20px;color:#b9c3c0;max-width:38em;}
+.contact-in .btns{display:flex;gap:14px;flex-wrap:wrap;margin-top:36px;}
+.contact-in .c1{background:var(--acc);color:#fff;text-decoration:none;font-weight:700;padding:16px 32px;border-radius:var(--radius-xs);}
+.contact-in .c2{border:1px solid rgba(255,255,255,.32);color:#fff;text-decoration:none;font-weight:700;padding:16px 32px;border-radius:var(--radius-xs);}
+.demo-label{max-width:var(--maxw);margin:0 auto;padding:8px var(--gutter);font:700 11px var(--font-en);letter-spacing:.14em;color:var(--acc);text-transform:uppercase;}
+</style></head><body>
+
+<!-- ══════════════════════════════════════════════════════════
+     A) HERO（白背景・左寄せ・大見出し）— 全ページの顔。中央寄せにしない。
+     ══════════════════════════════════════════════════════════ -->
+<div class="demo-label">A / Hero</div>
+<section class="hero" style="border-bottom:1px solid var(--line)"><div class="demo-hero-in" data-hero>
+  <span class="eyebrow">Brand / Tagline</span>
+  <h1 class="jp">見出しは左寄せで、<br><span class="ac">要点を一言</span>で言い切る。</h1>
+  <p class="lead">サブコピーは1〜2文。<wbr>保険をかけず具体で言い切る（執筆ルール_反AI検出）。</p>
+  <div class="btns">
+    <a class="btn btn--primary" href="#">主アクション</a>
+    <a class="btn btn--ghost" href="#">副アクション</a>
+  </div>
+</div></section>
+
+<!-- ══════════════════════════════════════════════════════════
+     B) セクション見出し（左に英字ラベル＋罫線・右に見出し）
+     ══════════════════════════════════════════════════════════ -->
+<div class="demo-label">B / Section head</div>
+<section class="section"><div class="wrap">
+  <div class="head">
+    <div class="lft" data-reveal><span class="eyebrow">Section</span></div>
+    <div data-reveal>
+      <h2 class="jp">セクション見出し</h2>
+      <p class="lead">リード文。<wbr>このブロックは全セクション共通の骨格（tokens.cssの.head）。</p>
+    </div>
+  </div>
+
+  <!-- ── C) 番号付き台帳（3事業/工程など「順序or列挙が意味を持つ」時だけ使う）── -->
+  <div class="ledger">
+    <div class="bz" data-reveal>
+      <div class="no jp">01<small>Label</small></div>
+      <div class="main"><h3 class="jp">項目名</h3><p>説明文。<wbr>機械的3カードの代わりに、罫線区切りの台帳でリズムを作る。</p></div>
+      <div class="aside"><div class="price">価格<b>¥00,000</b>から。</div></div>
+    </div>
+    <div class="bz" data-reveal>
+      <div class="no jp">02<small>Label</small></div>
+      <div class="main"><h3 class="jp">項目名</h3><p>説明文。</p></div>
+      <div class="aside"><div class="price">価格<b>¥00,000</b>から。</div></div>
+    </div>
+  </div>
+</div></section>
+
+<!-- ══════════════════════════════════════════════════════════
+     D) 実績/showcaseプレート（3列・薄い罫線・hover持ち上げ）
+        3列は「3つの具体物」がある時だけ。埋め草の3カードは禁止。
+     ══════════════════════════════════════════════════════════ -->
+<div class="demo-label">D / Showcase plates</div>
+<section class="section section--wash"><div class="wrap">
+  <div class="head">
+    <div class="lft" data-reveal><span class="eyebrow">Showcase</span></div>
+    <div data-reveal><h2 class="jp">実物で見せる</h2></div>
+  </div>
+  <div class="plate-grid">
+    <a class="plate" href="#" data-reveal><div class="k">Category</div><h3 class="jp">実物1</h3><p>説明。<wbr>実在する成果物のみ。</p></a>
+    <a class="plate" href="#" data-reveal data-delay="1"><div class="k">Category</div><h3 class="jp">実物2</h3><p>説明。</p></a>
+    <a class="plate" href="#" data-reveal data-delay="2"><div class="k">Category</div><h3 class="jp">実物3</h3><p>説明。</p></a>
+  </div>
+</div></section>
+
+<!-- ══════════════════════════════════════════════════════════
+     E) 価格プレート（黒枠1本・大きな金額・チェックは罫線＋短い横棒）
+     ══════════════════════════════════════════════════════════ -->
+<div class="demo-label">E / Price</div>
+<section class="section"><div class="wrap">
+  <div class="head"><div class="lft" data-reveal><span class="eyebrow">Pricing</span></div><div data-reveal><h2 class="jp">料金</h2></div></div>
+  <div data-reveal style="max-width:760px;border:1px solid var(--ink);background:var(--paper);padding:clamp(30px,4vw,44px)">
+    <div style="font:700 11px var(--font-en);letter-spacing:.16em;color:var(--acc);text-transform:uppercase">Start Price</div>
+    <div class="jp" style="font-size:clamp(38px,7vw,58px);font-weight:900;line-height:1.1;margin-top:8px;letter-spacing:-.02em">¥00,000<span style="font-size:16px;color:var(--sub)">／月</span></div>
+    <ul style="list-style:none;margin-top:22px;display:grid">
+      <li style="font-size:14.5px;padding:14px 0 14px 30px;position:relative;border-top:1px solid var(--line)">含まれるもの1</li>
+      <li style="font-size:14.5px;padding:14px 0 14px 30px;position:relative;border-top:1px solid var(--line)">含まれるもの2</li>
+    </ul>
+    <a class="btn btn--primary" href="#" style="margin-top:26px">この価格で相談する</a>
+  </div>
+</div></section>
+
+<!-- ══════════════════════════════════════════════════════════
+     F) FAQ（罫線区切り・Qマーカー・アコーディオン不要の素直な列挙）
+     ══════════════════════════════════════════════════════════ -->
+<div class="demo-label">F / FAQ</div>
+<section class="section section--wash"><div class="wrap">
+  <div class="head"><div class="lft" data-reveal><span class="eyebrow">FAQ</span></div><div data-reveal><h2 class="jp">よくある質問</h2></div></div>
+  <div class="faq-list">
+    <div class="faq-item" data-reveal><h3 class="jp">質問文。</h3><p>回答文。<wbr>言い切る・具体で答える。</p></div>
+    <div class="faq-item" data-reveal><h3 class="jp">質問文。</h3><p>回答文。</p></div>
+  </div>
+</div></section>
+
+<!-- ══════════════════════════════════════════════════════════
+     G) CTA（暗色アンカー・単色。グラデ禁止）
+     ══════════════════════════════════════════════════════════ -->
+<div class="demo-label">G / CTA</div>
+<section class="section section--anchor"><div class="contact-in" data-reveal>
+  <span class="eyebrow">Contact</span>
+  <h2 class="jp">まずは、話すところから。</h2>
+  <p>低摩擦の一言。<wbr>相談は無料です。</p>
+  <div class="btns">
+    <a class="c1" href="#">お問い合わせ</a>
+    <a class="c2" href="mailto:mono.create.group@gmail.com">メールで相談する</a>
+  </div>
+</div></section>
+
+<script src="../mono-create/assets/site.js" defer></script>
+</body></html>

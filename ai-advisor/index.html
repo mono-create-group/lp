@@ -1,9 +1,9 @@
-<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>AI顧問｜人手不足を、人を増やさずに解消する（月額¥49,800〜・旭川 mono.create）</title>
-<meta name="description" content="予約対応・事務・集計をAIに任せて、少ない人数でも回る仕組みを店ごとに設計します。月次打ち合わせ＋常時相談＋月1件の小改善で月額¥49,800から。価格は隠しません。旭川のmono.createが自社で実証した仕組みをそのまま提供します。">
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>AI顧問｜人手不足を、人を増やさずに解消する（月額¥49,800〜・mono.create）</title>
+<meta name="description" content="予約対応・事務・集計をAIに任せて、少ない人数でも回る仕組みを店ごとに設計します。月次打ち合わせ＋常時相談＋月1件の小改善で月額¥49,800から。価格は隠しません。mono.createが自社で実証した仕組みをそのまま提供します。全国オンライン対応。">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ja_JP">
 <meta property="og:title" content="AI顧問｜人手不足を、人を増やさずに解消する">
-<meta property="og:description" content="月次打ち合わせ＋常時相談＋月1件の改善で月額¥49,800から。価格を明記するAI顧問。旭川 mono.create。">
+<meta property="og:description" content="月次打ち合わせ＋常時相談＋月1件の改善で月額¥49,800から。価格を明記するAI顧問。mono.create。全国オンライン対応。">
 <meta property="og:url" content="https://mono-create-group.github.io/lp/ai-advisor/">
 <script type="application/ld+json">
 {
@@ -12,133 +12,119 @@
   "name": "AI顧問（mono.create）",
   "serviceType": "AI導入・業務自動化の伴走支援",
   "provider": { "@type": "Organization", "name": "mono.create", "email": "mono.create.group@gmail.com" },
-  "areaServed": "旭川市・北海道",
+  "areaServed": "日本全国",
   "description": "月次打ち合わせ・常時相談・月1件の小改善を含むAI顧問。月額¥49,800から。",
   "offers": { "@type": "Offer", "priceSpecification": { "@type": "PriceSpecification", "price": "49800", "priceCurrency": "JPY", "description": "月額¥49,800〜" } }
 }
 </script>
 <link rel="icon" type="image/png" href="img/favicon.png"><link rel="apple-touch-icon" href="img/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Zen+Kaku+Gothic+New:wght@700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Zen+Kaku+Gothic+New:wght@500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../design-system/tokens.css">
+<link rel="stylesheet" href="../mono-create/assets/site.css">
 <style>
-:root{--bg:#f7f9f8;--ink:#0d1a2b;--mut:#586475;--navy:#0d1a2b;--acc:#0aa58c;--acc-d:#088572;--gold:#c9a227;--line:#e2e7e4;--tint:#eef6f3;}
-*{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{font-family:"Noto Sans JP",sans-serif;background:var(--bg);color:var(--ink);line-height:1.95;word-break:keep-all;overflow-wrap:break-word;}
-img{max-width:100%;display:block;}
-.wrap{max-width:1020px;margin:0 auto;padding:0 24px;}
-.jp{font-family:"Zen Kaku Gothic New",sans-serif;}
-section{padding:64px 0;}
-.sec-head{text-align:center;margin-bottom:40px;}
-.sec-head .en{color:var(--acc);font-size:12px;font-weight:700;letter-spacing:.22em;}
-.sec-head h2{font-size:clamp(22px,3.3vw,31px);font-weight:900;margin-top:8px;line-height:1.5;}
-.sec-head .lead{margin-top:14px;font-size:14.5px;color:var(--mut);max-width:620px;margin-left:auto;margin-right:auto;}
+/* ai-advisor 個別レイアウト（共通トークンは tokens.css。アクセントは既定の evergreen を使用） */
+header{position:sticky;top:0;z-index:50;background:rgba(251,251,249,.86);backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--line);}
+.nav{max-width:var(--maxw);margin:0 auto;padding:16px var(--gutter);display:flex;align-items:center;gap:14px;}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--ink);}
+.logo img{height:30px;width:30px;border-radius:7px;}
+.logo b{font-size:16px;font-weight:900;letter-spacing:.01em;}
+.logo small{display:block;font-size:9.5px;font-weight:700;color:var(--sub);letter-spacing:.14em;margin-top:1px;}
+.nav ul{display:flex;gap:28px;list-style:none;margin-left:auto;font-size:13px;font-weight:700;}
+.nav ul a{text-decoration:none;color:var(--ink);position:relative;padding-bottom:3px;}
+.nav ul a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1.5px;background:var(--acc);transition:width .25s;}
+.nav ul a:hover::after{width:100%;}
+.nav .cta{margin-left:24px;background:var(--ink);color:var(--paper);text-decoration:none;font-weight:700;font-size:12.5px;letter-spacing:.04em;padding:11px 22px;border-radius:var(--radius-xs);transition:background .2s;}
+.nav .cta:hover{background:var(--acc-d);}
+@media(max-width:900px){.nav ul{display:none;}.nav .cta{margin-left:auto;}}
 
-header{position:sticky;top:0;z-index:50;background:rgba(247,249,248,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
-.nav{max-width:1120px;margin:0 auto;padding:13px 24px;display:flex;align-items:center;gap:12px;}
-.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);}
-.logo img{height:34px;width:34px;border-radius:8px;}
-.logo b{font-size:16px;font-weight:900;}
-.logo small{display:block;font-size:9.5px;font-weight:700;color:var(--mut);letter-spacing:.12em;margin-top:1px;}
-.nav ul{display:flex;gap:20px;list-style:none;margin-left:auto;font-size:13.5px;font-weight:700;}
-.nav ul a{color:var(--ink);text-decoration:none;}
-.nav ul a:hover{color:var(--acc-d);}
-.nav .cta{margin-left:14px;background:var(--navy);color:#fff;text-decoration:none;font-weight:700;font-size:13px;padding:10px 20px;border-radius:50px;}
-@media(max-width:860px){.nav ul{display:none;}.nav .cta{margin-left:auto;}}
+/* ヒーロー（白背景・左寄せ・大見出し） */
+.hero{border-bottom:1px solid var(--line);}
+.hero-in{max-width:var(--maxw);margin:0 auto;padding:clamp(72px,10vw,120px) var(--gutter) clamp(56px,8vw,96px);}
+.hero .eyebrow{margin-bottom:32px;}
+.hero h1{font-size:clamp(30px,5.4vw,60px);font-weight:900;line-height:1.32;letter-spacing:-.01em;max-width:16em;}
+.hero h1 .u{color:var(--acc);}
+.hero .lead{margin-top:32px;font-size:var(--fs-lead);color:var(--sub);max-width:42em;line-height:2.05;}
+.hero .btns{display:flex;gap:14px;flex-wrap:wrap;margin-top:40px;}
+.hero .note{margin-top:22px;font-size:12.5px;color:var(--sub);}
 
-.hero{background:linear-gradient(160deg,#0b1a2e 0%,#123049 60%,#0c5a4d 130%);color:#fff;}
-.hero-in{max-width:960px;margin:0 auto;padding:92px 24px 84px;text-align:center;}
-.hero .en{color:#7fd6c6;font-size:12.5px;font-weight:700;letter-spacing:.28em;}
-.hero h1{font-size:clamp(27px,4.6vw,44px);font-weight:900;line-height:1.55;margin-top:18px;}
-.hero h1 .u{background:linear-gradient(transparent 66%,rgba(10,165,140,.7) 66%);padding:0 .04em;}
-.hero .lead{margin-top:24px;font-size:15px;color:#c9d4d2;max-width:620px;margin-left:auto;margin-right:auto;}
-.hero .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:34px;}
-.hero .b1{background:var(--acc);color:#fff;text-decoration:none;font-weight:700;font-size:14.5px;padding:15px 30px;border-radius:50px;box-shadow:0 10px 26px rgba(10,165,140,.35);}
-.hero .b1:hover{background:var(--acc-d);}
-.hero .b2{background:transparent;border:1.5px solid rgba(255,255,255,.5);color:#fff;text-decoration:none;font-weight:700;font-size:14.5px;padding:15px 30px;border-radius:50px;}
-.hero .note{margin-top:20px;font-size:12.5px;color:#9fb4ae;}
-
-/* ユースケース */
-.uc{background:#fff;}
-.uc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
-.uc-card{border:1px solid var(--line);border-radius:16px;padding:26px 24px;background:var(--bg);}
-.uc-card .k{font-size:11.5px;font-weight:700;color:var(--acc-d);letter-spacing:.06em;}
-.uc-card h3{font-size:17px;font-weight:900;margin-top:6px;line-height:1.5;}
-.uc-card p{font-size:13.5px;color:#4a5460;margin-top:9px;}
-.uc-card .ba{display:flex;align-items:center;gap:10px;margin-top:14px;font-family:"Zen Kaku Gothic New",sans-serif;}
-.uc-card .ba .from{font-size:13px;color:var(--mut);text-decoration:line-through;}
+/* できること（交互ではなく2列プレート・薄い罫線） */
+.uc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;border-top:1px solid var(--line-2);border-left:1px solid var(--line-2);}
+.uc-card{border-right:1px solid var(--line-2);border-bottom:1px solid var(--line-2);padding:clamp(26px,3vw,38px);min-width:0;}
+.uc-card .k{font-size:11px;font-weight:700;color:var(--acc);letter-spacing:.12em;text-transform:uppercase;}
+.uc-card h3{font-size:18px;font-weight:900;margin-top:10px;line-height:1.5;}
+.uc-card p{font-size:14px;color:#454b56;margin-top:12px;line-height:1.95;}
+.uc-card .ba{display:flex;align-items:center;gap:12px;margin-top:20px;font-family:var(--font-display);}
+.uc-card .ba .from{font-size:13px;color:var(--sub);text-decoration:line-through;}
 .uc-card .ba .ar{color:var(--acc);font-weight:900;}
-.uc-card .ba .to{font-size:18px;font-weight:900;color:var(--ink);}
-@media(max-width:720px){.uc-grid{grid-template-columns:1fr;}}
+.uc-card .ba .to{font-size:19px;font-weight:900;color:var(--ink);}
+@media(max-width:720px){.uc-grid{grid-template-columns:minmax(0,1fr);}}
 
-/* 価格 */
-.price{background:var(--bg);}
-.price-note{text-align:center;max-width:640px;margin:0 auto 34px;font-size:14px;color:var(--mut);}
-.plan{max-width:760px;margin:0 auto;background:#fff;border:2px solid var(--acc);border-radius:20px;padding:34px 32px;box-shadow:0 16px 40px rgba(10,165,140,.12);}
-.plan .now{text-align:center;}
-.plan .now .lbl{font-size:12px;font-weight:700;color:var(--acc-d);letter-spacing:.1em;}
-.plan .now .amt{font-size:clamp(34px,6vw,48px);font-weight:900;font-family:"Zen Kaku Gothic New",sans-serif;line-height:1.2;margin-top:4px;}
-.plan .now .amt small{font-size:16px;font-weight:700;color:var(--mut);}
-.plan .incl{list-style:none;margin:24px auto 0;max-width:440px;display:grid;gap:10px;}
-.plan .incl li{font-size:14px;padding-left:26px;position:relative;color:#3c4552;}
-.plan .incl li::before{content:"✓";position:absolute;left:0;top:0;color:var(--acc);font-weight:900;}
-.plan .go{display:block;text-align:center;margin:26px auto 0;max-width:340px;background:var(--navy);color:#fff;text-decoration:none;font-weight:700;font-size:15px;padding:15px;border-radius:50px;}
-.ladder{max-width:760px;margin:26px auto 0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;}
-.ladder .row{display:grid;grid-template-columns:120px minmax(0,1fr);font-size:13.5px;border-bottom:1px solid var(--line);}
-.ladder .row .ds{min-width:0;}
-.ladder .row:last-child{border-bottom:none;}
-.ladder .row .st{background:var(--tint);padding:13px 16px;font-weight:700;}
-.ladder .row .ds{padding:13px 16px;color:#3c4552;}
+/* 料金 */
+.price-note{max-width:44em;margin:0 0 clamp(32px,4vw,44px);font-size:14.5px;color:var(--sub);line-height:2;}
+.plan{max-width:760px;border:1px solid var(--ink);background:var(--paper);padding:clamp(30px,4vw,44px);}
+.plan .now .lbl{font-size:11px;font-weight:700;color:var(--acc);letter-spacing:.16em;text-transform:uppercase;}
+.plan .now .amt{font-size:clamp(38px,7vw,58px);font-weight:900;font-family:var(--font-display);line-height:1.1;margin-top:8px;letter-spacing:-.02em;}
+.plan .now .amt small{font-size:16px;font-weight:700;color:var(--sub);letter-spacing:0;}
+.plan .incl{list-style:none;margin:26px 0 0;display:grid;gap:0;}
+.plan .incl li{font-size:14.5px;padding:14px 0 14px 30px;position:relative;color:var(--ink-2);border-top:1px solid var(--line);}
+.plan .incl li:first-child{border-top:none;}
+.plan .incl li::before{content:"";position:absolute;left:2px;top:23px;width:9px;height:1.5px;background:var(--acc);}
+.plan .go{display:inline-flex;margin-top:28px;background:var(--acc);color:#fff;text-decoration:none;font-weight:700;font-size:15px;padding:16px 34px;border-radius:var(--radius-xs);transition:background .2s;}
+.plan .go:hover{background:var(--acc-d);}
+.ladder{max-width:760px;margin:clamp(28px,3vw,40px) 0 0;border-top:1px solid var(--line-2);}
+.ladder .row{display:grid;grid-template-columns:130px minmax(0,1fr);font-size:14px;border-bottom:1px solid var(--line);align-items:baseline;}
+.ladder .row .st{padding:16px 20px 16px 0;font-weight:700;color:var(--ink);font-family:var(--font-display);}
+.ladder .row .ds{padding:16px 0;color:#454b56;min-width:0;line-height:1.9;}
 .ladder .row .ds b{color:var(--ink);}
-.ladder-cap{max-width:760px;margin:12px auto 0;font-size:12px;color:var(--mut);text-align:center;}
-@media(max-width:600px){.ladder .row{grid-template-columns:88px minmax(0,1fr);}}
+.ladder-cap{max-width:760px;margin:14px 0 0;font-size:12.5px;color:var(--sub);}
+@media(max-width:600px){.ladder .row{grid-template-columns:96px minmax(0,1fr);}}
 
-/* 代表 */
-.rep{background:var(--navy);color:#fff;}
-.rep-in{max-width:720px;margin:0 auto;padding:0 24px;}
-.rep .sec-head h2{color:#fff;}
-.rep p{font-size:14.5px;color:#cbd6d3;}
-.rep p+p{margin-top:16px;}
-.rep .sig{margin-top:20px;font-family:"Zen Kaku Gothic New",sans-serif;font-weight:900;font-size:16px;}
-.rep .sig small{display:block;font-size:12px;color:#7fd6c6;font-weight:700;margin-top:2px;}
+/* 代表（暗色アンカー・単色） */
+.rep{background:var(--anchor);color:#fff;}
+.rep-in{max-width:820px;margin:0 auto;padding:0 var(--gutter);}
+.rep .eyebrow{color:#7fd6c6;margin-bottom:26px;}
+.rep .eyebrow::before{background:#7fd6c6;}
+.rep h2{font-size:var(--fs-h2);font-weight:900;line-height:1.4;letter-spacing:-.005em;max-width:18em;}
+.rep p{font-size:15px;color:#c3cdca;margin-top:22px;line-height:2.05;max-width:44em;}
+.rep .sig{margin-top:28px;font-family:var(--font-display);font-weight:900;font-size:17px;}
+.rep .sig small{display:block;font-size:12px;color:#7fd6c6;font-weight:700;margin-top:4px;letter-spacing:.04em;}
 
 /* FAQ */
-.faq{background:#fff;}
-.faq-list{max-width:720px;margin:0 auto;}
-.faq-item{border:1px solid var(--line);border-radius:14px;padding:22px 24px;background:var(--bg);}
-.faq-item+.faq-item{margin-top:14px;}
-.faq-item h3{font-size:15px;font-weight:900;line-height:1.5;padding-left:26px;position:relative;}
-.faq-item h3::before{content:"Q";position:absolute;left:0;top:-1px;color:var(--acc-d);font-family:"Zen Kaku Gothic New",sans-serif;}
-.faq-item p{font-size:13.5px;color:#4a5460;margin-top:9px;padding-left:26px;}
+.faq-list{max-width:820px;border-top:1px solid var(--line-2);}
+.faq-item{padding:26px 0;border-bottom:1px solid var(--line);}
+.faq-item h3{font-size:16px;font-weight:900;line-height:1.5;padding-left:30px;position:relative;}
+.faq-item h3::before{content:"Q";position:absolute;left:0;top:-1px;color:var(--acc);font-family:var(--font-display);font-weight:900;}
+.faq-item p{font-size:14px;color:#454b56;margin-top:12px;padding-left:30px;line-height:1.95;}
 
-.contact{background:linear-gradient(135deg,#0c5a4d,var(--acc-d));color:#fff;}
-.contact-in{max-width:820px;margin:0 auto;padding:0 24px;text-align:center;}
-.contact h2{font-size:clamp(21px,3.2vw,30px);font-weight:900;}
-.contact p{margin-top:14px;font-size:14.5px;opacity:.95;}
-.contact .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:28px;}
-.contact a{text-decoration:none;font-weight:700;font-size:14.5px;padding:15px 28px;border-radius:50px;}
-.contact .c1{background:#fff;color:var(--acc-d);}
-.contact .c2{background:var(--navy);color:#fff;}
+/* お問い合わせ */
+.contact{background:var(--anchor);color:#fff;border-top:1px solid var(--line);}
+.contact-in{max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter);}
+.contact .eyebrow{color:#7fd6c6;margin-bottom:26px;}
+.contact .eyebrow::before{background:#7fd6c6;}
+.contact h2{font-size:var(--fs-h2);font-weight:900;line-height:1.4;letter-spacing:-.005em;max-width:18em;}
+.contact p{margin-top:22px;font-size:15px;color:#b9c3c0;max-width:38em;line-height:2;}
+.contact .btns{display:flex;gap:14px;flex-wrap:wrap;margin-top:40px;}
+.contact a.c1,.contact a.c2{text-decoration:none;font-weight:700;font-size:14.5px;letter-spacing:.02em;padding:16px 32px;border-radius:var(--radius-xs);transition:background .2s,border-color .2s;}
+.contact .c1{background:var(--acc);color:#fff;}
+.contact .c1:hover{background:#0d6d5d;}
+.contact .c2{background:transparent;border:1px solid rgba(255,255,255,.32);color:#fff;}
+.contact .c2:hover{border-color:#fff;}
 
-footer{background:#0a121f;color:#9aa7b5;font-size:12.5px;text-align:center;padding:30px 24px;line-height:2;}
-footer b{color:#fff;}
-footer a{color:#9aa7b5;text-decoration:none;}
+footer{background:#0a0c10;color:#8b93a0;font-size:12.5px;padding:40px var(--gutter);line-height:2;}
+.foot-in{max-width:var(--maxw);margin:0 auto;}
+footer b{color:#fff;font-weight:900;}
+footer a{color:#8b93a0;text-decoration:none;}
 footer a:hover{color:#fff;}
-
-html,body{overflow-x:hidden;}
+footer .cp{margin-top:16px;font-size:11.5px;color:#6a7280;}
 @media(max-width:600px){
-  section{padding:48px 0;}
-  .wrap{padding:0 18px;}
-  .sec-head{margin-bottom:28px;}
-  .hero-in{padding:64px 20px 58px;}
-  .hero .lead{font-size:13.5px;}
-  .plan{padding:28px 22px;}
-  .contact .btns a{width:100%;justify-content:center;display:inline-flex;}
+  .hero .btns .btn{flex:1;text-align:center;justify-content:center;}
+  .contact .btns a{flex:1;text-align:center;}
 }
 </style></head><body>
 
 <header><div class="nav">
-  <a class="logo" href="../mono-create/"><img src="img/logo.png" alt="mono.createのロゴ"><span><b>mono.create</b><small>AI顧問</small></span></a>
+  <a class="logo" href="../mono-create/"><img src="img/logo.png" alt="mono.createのロゴ"><span><b>mono.create</b><small>AI ADVISOR</small></span></a>
   <ul>
     <li><a href="#uc">できること</a></li>
     <li><a href="#price">料金</a></li>
@@ -148,44 +134,46 @@ html,body{overflow-x:hidden;}
 </div></header>
 
 <!-- HERO -->
-<section class="hero"><div class="hero-in">
-  <span class="en">AI ADVISOR</span>
+<section class="hero"><div class="hero-in" data-hero>
+  <span class="eyebrow">AI Advisor</span>
   <h1 class="jp">人手不足、<wbr><span class="u">人を増やさずに</span><wbr>解消します。</h1>
   <p class="lead">予約対応も、事務も、集計も。<wbr>店の作業をAIに移して、少ない人数で回る形に組み替えます。<wbr>毎月の打ち合わせと、いつでも聞ける相談窓口が付いた月額の顧問です。</p>
   <div class="btns">
-    <a class="b1" href="#contact">無料で相談する</a>
-    <a class="b2" href="#price">料金を見る</a>
+    <a class="btn btn--primary" href="#contact">無料で相談する</a>
+    <a class="btn btn--ghost" href="#price">料金を見る</a>
   </div>
   <p class="note">料金は「まずはご相談ください」ではなく、金額をこのページに書いています。</p>
 </div></section>
 
-<!-- ユースケース -->
-<section class="uc" id="uc"><div class="wrap">
-  <div class="sec-head">
-    <span class="en">USE CASES</span>
-    <h2 class="jp">こういう作業を、AIに渡します。</h2>
-    <p class="lead">うちが自社で消した作業と、同じ仕組みを店に合わせて組み直します。</p>
+<!-- できること -->
+<section class="section" id="uc"><div class="wrap">
+  <div class="head">
+    <div class="lft"><span class="eyebrow">Use Cases</span></div>
+    <div>
+      <h2 class="jp">こういう作業を、AIに渡します。</h2>
+      <p class="lead">うちが自社で消した作業と、同じ仕組みを店に合わせて組み直します。</p>
+    </div>
   </div>
   <div class="uc-grid">
-    <div class="uc-card">
+    <div class="uc-card" data-reveal>
       <div class="k">予約・問い合わせ対応</div>
       <h3 class="jp">電話番とDM返信を、<wbr>AIに任せる</h3>
       <p>営業時間外の問い合わせも取りこぼさず、<wbr>内容を整理して手元に届く形にします。</p>
       <div class="ba"><span class="from">1日30分</span><span class="ar">→</span><span class="to jp">ほぼ0分</span></div>
     </div>
-    <div class="uc-card">
+    <div class="uc-card" data-reveal>
       <div class="k">シフト作成</div>
       <h3 class="jp">希望集めから表づくりまで<wbr>自動化</h3>
       <p>スタッフの希望をLINEで集めて、<wbr>シフト表が自動で組み上がる仕組みを入れます。</p>
       <div class="ba"><span class="from">週1時間</span><span class="ar">→</span><span class="to jp">10分</span></div>
     </div>
-    <div class="uc-card">
+    <div class="uc-card" data-reveal>
       <div class="k">売上・数値の集計</div>
       <h3 class="jp">週次の集計を、<wbr>開くだけの画面に</h3>
       <p>手打ちのExcel集計をやめて、<wbr>数字が自動でまとまる画面に置き換えます。</p>
       <div class="ba"><span class="from">週1〜2時間</span><span class="ar">→</span><span class="to jp">見るだけ</span></div>
     </div>
-    <div class="uc-card">
+    <div class="uc-card" data-reveal>
       <div class="k">営業・発信の文面</div>
       <h3 class="jp">メール・投稿の下書きを<wbr>量産する</h3>
       <p>うちは営業メール150通を1日で用意しています。<wbr>同じやり方を、店の販促にも使えます。</p>
@@ -195,12 +183,15 @@ html,body{overflow-x:hidden;}
 </div></section>
 
 <!-- 料金 -->
-<section class="price" id="price"><div class="wrap">
-  <div class="sec-head"><span class="en">PRICING</span><h2 class="jp">料金</h2></div>
+<section class="section section--wash" id="price"><div class="wrap">
+  <div class="head">
+    <div class="lft"><span class="eyebrow">Pricing</span></div>
+    <div><h2 class="jp">料金</h2></div>
+  </div>
   <p class="price-note">いま申し込む場合の月額は、下の金額です。<wbr>実績が増えたら新規のみ値上げしますが、契約中の店は据え置きます。</p>
-  <div class="plan">
+  <div class="plan" data-reveal>
     <div class="now">
-      <div class="lbl">START PRICE</div>
+      <div class="lbl">Start Price</div>
       <div class="amt jp">¥49,800<small>／月（税別）</small></div>
     </div>
     <ul class="incl">
@@ -214,36 +205,40 @@ html,body{overflow-x:hidden;}
   <div class="ladder">
     <div class="row"><div class="st jp">開始（今）</div><div class="ds"><b>¥49,800／月</b>　いま受ける案件は全てこの価格です。</div></div>
     <div class="row"><div class="st jp">中期</div><div class="ds"><b>¥98,000／月</b>　導入事例3件を掲載でき、継続率100%を3ヶ月保った時点で新規のみ改定。</div></div>
-    <div class="row"><div class="st jp">最終</div><div class="ds"><b>¥150,000／月</b>　事例10件と道レベルの露出が揃った時点で。それでも中堅向け相場の下限です。</div></div>
+    <div class="row"><div class="st jp">最終</div><div class="ds"><b>¥150,000／月</b>　事例10件と全国レベルの露出が揃った時点で。それでも中堅向け相場の下限です。</div></div>
   </div>
   <p class="ladder-cap">先に契約するほど、同じ内容を安い価格で持ち続けられます。</p>
 </div></section>
 
 <!-- 代表 -->
-<section class="rep"><div class="rep-in">
-  <div class="sec-head"><span class="en" style="color:#7fd6c6">REPRESENTATIVE</span><h2 class="jp">提案しているのは、自分でやっている人間です。</h2></div>
+<section class="section rep"><div class="rep-in" data-reveal>
+  <span class="eyebrow">Representative</span>
+  <h2 class="jp">提案しているのは、自分でやっている人間です。</h2>
   <p>mono.create代表の中村航汰、22歳です。<wbr>従業員は雇わず、営業・開発・分析の役割を持たせたAIで会社を運営しています。<wbr>営業メールの作成も、社内アプリの改修も、この事業計画そのものも、AIと一緒に日々進めています。</p>
   <p>だからこの顧問で渡すのは、本で読んだ理屈ではありません。<wbr>自分の会社で今日も動かしている仕組みを、店の業務に合わせて組み直して渡します。<wbr>合わなければ縛らず、続けたい所とだけ長く付き合う。それで十分だと思っています。</p>
   <div class="sig jp">中村 航汰<small>mono.create 代表</small></div>
 </div></section>
 
 <!-- FAQ -->
-<section class="faq" id="faq"><div class="wrap">
-  <div class="sec-head"><span class="en">FAQ</span><h2 class="jp">よくある質問</h2></div>
+<section class="section" id="faq"><div class="wrap">
+  <div class="head">
+    <div class="lft"><span class="eyebrow">FAQ</span></div>
+    <div><h2 class="jp">よくある質問</h2></div>
+  </div>
   <div class="faq-list">
-    <div class="faq-item">
+    <div class="faq-item" data-reveal>
       <h3 class="jp">エンジニアがいない店でも使えますか。</h3>
       <p>設計もセットアップもこちらでやります。<wbr>店側は普段どおりLINEや画面を触るだけで、専門知識はいりません。</p>
     </div>
-    <div class="faq-item">
+    <div class="faq-item" data-reveal>
       <h3 class="jp">ホームページと同時に頼めますか。</h3>
       <p>頼めます。HP制作（¥49,800）と公式LINE構築まで一式で受けているので、<wbr>集客の入口づくりと業務の自動化をまとめて進められます。</p>
     </div>
-    <div class="faq-item">
+    <div class="faq-item" data-reveal>
       <h3 class="jp">最低契約期間や解約金はありますか。</h3>
       <p>縛りは設けていません。<wbr>合わないと感じたら止められます。続けたいと思える価値を毎月出すのが、こちらの仕事です。</p>
     </div>
-    <div class="faq-item">
+    <div class="faq-item" data-reveal>
       <h3 class="jp">月1件の改善では足りない場合は。</h3>
       <p>作業量が多い月は、別途アプリ開発（初期¥29,800〜・買い切り）として切り出して見積もります。<wbr>顧問に無理に詰め込みません。</p>
     </div>
@@ -251,18 +246,19 @@ html,body{overflow-x:hidden;}
 </div></section>
 
 <!-- お問い合わせ -->
-<section class="contact" id="contact"><div class="contact-in">
+<section class="section contact" id="contact"><div class="contact-in" data-reveal>
+  <span class="eyebrow">Contact</span>
   <h2 class="jp">まず、いまの困りごとを聞かせてください。</h2>
   <p>「何から手をつければいいか分からない」段階で大丈夫です。<wbr>相談は無料です。</p>
   <div class="btns">
-    <a class="c2" href="../sample-hp/showcase/contact.html?intent=無料相談" target="_blank" rel="noopener">お問い合わせフォーム</a>
-    <a class="c1" href="mailto:mono.create.group@gmail.com">メールで相談する</a>
+    <a class="c1" href="../sample-hp/showcase/contact.html?intent=無料相談" target="_blank" rel="noopener">お問い合わせフォーム</a>
+    <a class="c2" href="mailto:mono.create.group@gmail.com">メールで相談する</a>
   </div>
 </div></section>
 
-<footer>
-  <b>mono.create</b>／ 北海道旭川市 ／ AI顧問<br>
-  <a href="../mono-create/">会社について</a>　／　<a href="../ai-apps/">AIアプリ開発</a>　／　<a href="../sample-hp/showcase/" target="_blank" rel="noopener">HP制作</a><br>
-  © mono.create
-</footer>
+<footer><div class="foot-in">
+  <b>mono.create</b>　北海道　AI顧問（全国オンライン対応）
+  <div class="cp"><a href="../mono-create/">会社について</a>　／　<a href="../ai-apps/">AIアプリ開発</a>　／　<a href="../sample-hp/showcase/" target="_blank" rel="noopener">HP制作</a><br>© mono.create</div>
+</div></footer>
+<script src="../mono-create/assets/site.js" defer></script>
 </body></html>

@@ -1,0 +1,130 @@
+/* ============================================================
+   mono.create デザインシステム — tokens.css
+   単一ソース: automation/データ/デザイン学習_大手HP100.md（大手30社の実測）
+   これを読み込めば、初稿から「大手コーポレート級」の土台になる。
+   前提: 背景は白/オフ白(90%)・アクセント1色・sans1系統・8pxスケール・
+         角丸8〜16px・影は最小or罫線・左寄せ見出し・広い余白。
+   ------------------------------------------------------------
+   使い方（3行）:
+   1) <link rel="stylesheet" href="../design-system/tokens.css"> を<head>に置く
+   2) 下のNoto Sans JP + Zen Kaku Gothic New をGoogle Fontsで読み込む
+   3) sections.html から必要なセクションをコピーして中身を差し替える
+   ============================================================ */
+
+:root{
+  /* ── 配色（白背景＋アクセント1色＋グレー階調）──
+     大手30社: 白/オフ白背景=90%、全面暗色グラデ=0%。だから面はこの--paper。 */
+  --paper:#fbfbf9;      /* 基本背景（オフホワイト） */
+  --paper-2:#f2f3ef;    /* セクション交互用の薄い面 */
+  --ink:#14171c;        /* 見出し・本文（ほぼ黒） */
+  --ink-2:#1b1e24;      /* リード文 */
+  --sub:#5b626e;        /* 補助テキスト */
+  --line:#e4e4df;       /* 罫線（薄） */
+  --line-2:#d7d7d0;     /* 罫線（やや濃・区切りの主役） */
+  --acc:#0b5c4f;        /* アクセント1色。案件ごとに1色だけ差し替える */
+  --acc-d:#0a3f37;      /* アクセント濃（hover/文字） */
+  --acc-wash:rgba(11,92,79,.12); /* アクセントの極薄（下線ハイライト等） */
+  --anchor:#14171c;     /* 暗色アンカー面（CTA/フッター）。グラデにしない・単色 */
+
+  /* ── 書体（sans 1系統・日本語＋見出しに重量差）──
+     大手30社: sans-serif=100%。装飾書体・多書体混在はしない。 */
+  --font-body:"Noto Sans JP","Hiragino Kaku Gothic ProN","Hiragino Sans",Meiryo,system-ui,sans-serif;
+  --font-display:"Zen Kaku Gothic New","Noto Sans JP",sans-serif;
+  --font-en:"Helvetica Neue",Arial,sans-serif; /* 英字ラベル/eyebrow用 */
+
+  /* ── 流体タイポ clamp()（学習§6-2準拠）── */
+  --fs-hero:clamp(34px,5.2vw,74px);   /* ヒーロー見出し */
+  --fs-h2:clamp(25px,3.6vw,42px);     /* セクション見出し */
+  --fs-h3:clamp(19px,2.2vw,26px);     /* 小見出し */
+  --fs-lead:clamp(15px,1.6vw,19px);   /* リード文 */
+  --fs-body:15px;                     /* 本文 */
+  --fs-sm:13px;                       /* 補助 */
+  --fs-eyebrow:11px;                  /* 英字ラベル */
+  --lh-hero:1.28;                     /* 見出しは詰める */
+  --lh-body:1.9;                      /* 日本語本文は広め */
+
+  /* ── スペーシング（8pxベース・学習§6-3）── */
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px;
+  --space-6:24px; --space-8:32px; --space-12:48px; --space-16:64px;
+  --space-24:96px; --space-32:128px;
+  --section-y:clamp(84px,10vw,140px); /* セクション縦余白（詰め込まない） */
+
+  /* ── レイアウト ── */
+  --maxw:1200px;        /* コンテンツ最大幅 */
+  --gutter:clamp(22px,4vw,40px); /* 左右パディング（モバイル22px→PC40px） */
+
+  /* ── 角丸・影（控えめ／最小・学習§6-5）──
+     角丸は8〜16pxまで。面全体に強い影は使わない。区切りは薄い罫線。 */
+  --radius-xs:2px;      /* ボタン（大手はほぼ角ばり〜微小角丸） */
+  --radius-sm:8px;
+  --radius-md:12px;
+  --radius-lg:16px;     /* 見せ場画像のみ */
+  --shadow-sm:0 1px 2px rgba(0,0,0,.06);
+  --shadow-md:0 4px 12px rgba(0,0,0,.08);
+}
+
+/* ── リセット＆ベース（日本語改行は keep-all を必ず維持）── */
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+body{
+  font-family:var(--font-body);background:var(--paper);color:var(--ink);
+  line-height:var(--lh-body);
+  word-break:keep-all;overflow-wrap:break-word; /* 破綻CSS(anywhere/auto-phrase)は使わない */
+  -webkit-font-smoothing:antialiased;
+}
+html,body{overflow-x:hidden;} /* 横スクロール防止（真390px検証の前提） */
+img{max-width:100%;display:block;}
+a{color:inherit;}
+.jp{font-family:var(--font-display);}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter);}
+
+/* ── 共通ユーティリティ ── */
+.section{padding:var(--section-y) 0;}
+.section--wash{background:var(--paper-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+.section--anchor{background:var(--anchor);color:#fff;} /* 暗色アンカー・単色（グラデ禁止） */
+
+/* 英字ラベル＋短い罫線（IR/コーポレート風インデックス） */
+.eyebrow{
+  font-family:var(--font-en);font-size:var(--fs-eyebrow);font-weight:700;
+  letter-spacing:.24em;color:var(--acc);text-transform:uppercase;
+  display:flex;align-items:center;gap:14px;
+}
+.eyebrow::before{content:"";width:26px;height:1px;background:currentColor;flex:none;}
+
+/* セクション見出しブロック（左に英字ラベル・右に見出し＝左寄せ基調） */
+.head{
+  display:grid;grid-template-columns:minmax(0,7.5em) minmax(0,1fr);
+  gap:clamp(20px,4vw,64px);align-items:baseline;margin-bottom:clamp(40px,5vw,64px);
+}
+.head>*{min-width:0;}
+.head h2{font-size:var(--fs-h2);font-weight:900;line-height:1.4;letter-spacing:-.005em;}
+.head .lead{margin-top:18px;font-size:var(--fs-body);color:var(--sub);max-width:40em;line-height:2;}
+@media(max-width:760px){.head{grid-template-columns:minmax(0,1fr);gap:18px;}}
+
+/* ボタン（角ばり・フラット・アクセント1色 or 黒） */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;text-decoration:none;
+  font-weight:700;font-size:14.5px;letter-spacing:.02em;
+  padding:16px 32px;border-radius:var(--radius-xs);
+  transition:background .2s,border-color .2s,transform .2s;
+}
+.btn--primary{background:var(--acc);color:#fff;}
+.btn--primary:hover{background:var(--acc-d);transform:translateY(-1px);}
+.btn--dark{background:var(--ink);color:var(--paper);}
+.btn--dark:hover{background:var(--acc-d);}
+.btn--ghost{background:transparent;border:1px solid var(--line-2);color:var(--ink);}
+.btn--ghost:hover{border-color:var(--ink);}
+.btn svg{width:13px;height:13px;}
+
+/* カード（薄い罫線＋最小の影。強い影・過剰角丸は使わない） */
+.card{background:var(--paper);border:1px solid var(--line-2);border-radius:var(--radius-md);}
+.card--flat{box-shadow:none;}
+.card--soft{box-shadow:var(--shadow-sm);}
+
+/* スクロール連動（控えめ1回・reduced-motion対応） */
+[data-reveal]{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease;}
+[data-reveal].in-view{opacity:1;transform:none;}
+@media(prefers-reduced-motion:reduce){
+  *{transition:none!important;scroll-behavior:auto!important;}
+  [data-reveal]{opacity:1;transform:none;}
+}
