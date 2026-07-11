@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://mono-create-group.github.io/lp/mono-create/sitemap.xml

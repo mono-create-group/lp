@@ -1,97 +1,132 @@
-<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>実績｜動いている実物で判断してもらう（mono.create・全国オンライン対応）</title>
-<meta name="description" content="スライドや口約束ではなく、動いている実物を公開します。業種別の店舗HPショーケース、稼働中の編集者派遣クリエイターズリスト、毎日使う社内アプリEditFlow。作ったものをそのまま見てください。全国オンライン対応。">
+<!DOCTYPE html><html lang="ja"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>実績紹介｜動いている実物で見てもらう（mono.create）</title>
+<meta name="description" content="スライドや口約束ではなく、公開中の実物で判断してください。飲食・宿泊・美容などのサンプルサイト、社内で動く案件管理アプリ、派遣マッチングサイト。mono.createが実際に作って動かしているものを並べています。全国オンライン対応。">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ja_JP">
-<meta property="og:title" content="実績｜動いている実物で判断してもらう">
-<meta property="og:description" content="店舗HPショーケース・編集者派遣サイト・社内アプリEditFlow。動く実物を公開。全国オンライン対応。mono.create。">
+<meta property="og:title" content="実績紹介｜mono.create">
+<meta property="og:description" content="公開中の実物で判断を。サンプルサイト・社内アプリ・派遣サイト。作って動かしているものを並べています。">
 <meta property="og:url" content="https://mono-create-group.github.io/lp/mono-create/works.html">
+<meta property="og:image" content="https://mono-create-group.github.io/lp/mono-create/img/photo/07_works_devices.png">
+<link rel="canonical" href="https://mono-create-group.github.io/lp/mono-create/works.html">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"TOP","item":"https://mono-create-group.github.io/lp/mono-create/"},{"@type":"ListItem","position":2,"name":"実績紹介","item":"https://mono-create-group.github.io/lp/mono-create/works.html"}]}
+</script>
 <link rel="icon" type="image/png" href="img/favicon.png"><link rel="apple-touch-icon" href="img/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Zen+Kaku+Gothic+New:wght@500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../design-system/tokens.css">
-<link rel="stylesheet" href="assets/site.css">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Zen+Kaku+Gothic+New:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/trn.css">
+<noscript><style>[data-rv]{opacity:1!important;transform:none!important}.hero .ov>.in>*{opacity:1!important;transform:none!important}.hero .cue{opacity:1!important}</style></noscript>
 <style>
-/* works 固有 — 実績プレート */
-.proof-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;}
-.proof-grid>*{min-width:0;}
-.pf{background:var(--paper);border:1px solid var(--line-2);display:flex;flex-direction:column;transition:border-color .25s,transform .25s;text-decoration:none;color:inherit;}
-.pf:hover{border-color:var(--acc);transform:translateY(-3px);}
-.pf .ph{aspect-ratio:16/10;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:900;font-size:16px;letter-spacing:.03em;text-align:center;padding:0 22px;line-height:1.7;position:relative;overflow:hidden;}
-.pf .ph::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(11,92,79,.55),transparent 60%);}
-.pf .ph span{position:relative;z-index:1;}
-.pf.p2 .ph{background:#1c2a26;}
-.pf.p3 .ph{background:#21201c;}
-.pf .cap{padding:22px 24px 26px;display:flex;flex-direction:column;flex:1;}
-.pf .cap .k{font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--acc);text-transform:uppercase;}
-.pf .cap h3{font-size:16px;font-weight:900;margin-top:10px;line-height:1.55;}
-.pf .cap p{font-size:13px;color:var(--sub);margin-top:10px;line-height:1.9;flex:1;}
-.pf .cap .go{margin-top:16px;font-size:12.5px;font-weight:700;color:var(--acc-d);}
-@media(max-width:820px){.proof-grid{grid-template-columns:1fr;gap:16px;}}
-</style></head><body>
+.wfig{height:44vh;min-height:280px;background:url('img/photo/07_works_devices.png') center/cover;position:relative;}
+.wfig .cap{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,26,24,.2),rgba(10,26,24,.7));display:flex;align-items:flex-end;}
+.wfig .cap .in{max-width:1200px;margin:0 auto;padding:0 40px 40px;width:100%;}
+.wfig .cap .eye{font-family:var(--font-en);font-size:12px;letter-spacing:.28em;color:var(--brand-l);}
+.wfig .cap h1{margin-top:12px;font-size:clamp(24px,3.4vw,40px);font-weight:700;color:#fff;letter-spacing:.04em;}
+.wgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:34px;padding:72px 0 40px;}
+.wcard{border:1px solid var(--line);background:#fff;display:flex;flex-direction:column;transition:transform .25s,box-shadow .25s;}
+.wcard:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(14,42,38,.1);}
+.wcard .thumb{aspect-ratio:16/9;background-size:cover;background-position:center;background-color:var(--paper-2);}
+.wcard .b{padding:26px 26px 28px;}
+.wcard .tag{font-family:var(--font-en);font-size:11px;letter-spacing:.16em;color:var(--brand);}
+.wcard h3{margin-top:10px;font-size:18px;font-weight:700;color:var(--ink);}
+.wcard p{margin-top:12px;font-size:14px;color:var(--body);line-height:2;}
+.wcard .more{margin-top:16px;color:var(--brand);}
+@media(max-width:760px){.wgrid{grid-template-columns:1fr;gap:22px;padding:52px 0 24px;}}
+</style>
+</head><body>
 
-<header class="site"><div class="nav">
-  <a class="logo" href="./"><img src="img/logo.png" alt="mono.createのロゴ"><b>mono.create</b></a>
-  <ul>
-    <li><a href="about.html">私たち</a></li>
-    <li><a href="team.html">AI組織</a></li>
-    <li><a href="services.html">事業</a></li>
-    <li><a href="works.html" aria-current="page">実績</a></li>
-  </ul>
-  <a class="cta" href="contact.html">相談する</a>
-  <button class="nav-toggle" aria-label="メニューを開く" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-</div></header>
-<div class="mnav-scrim"></div>
-<nav class="mnav" aria-label="モバイルメニュー">
-  <button class="mnav-close" aria-label="メニューを閉じる"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:20px;height:20px"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-  <a href="about.html">私たち</a>
-  <a href="team.html">AI組織</a>
-  <a href="services.html">事業</a>
-  <a href="works.html">実績</a>
-  <a class="cta" href="contact.html">相談する</a>
-</nav>
+<header>
+  <div class="hd">
+    <a class="brand" href="./" aria-label="mono.create トップ"><img class="mark" src="img/mark.svg" alt="" width="30" height="30"><span class="nm">mono<b>.</b>create</span></a>
+    <div class="cta"><a class="hideSm" href="works.html">実績を見る</a><a class="alt" href="contact.html">お問い合わせ</a></div>
+    <button class="nav-toggle" aria-label="メニューを開く"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 7h18M3 12h18M3 17h18"/></svg></button>
+  </div>
+  <nav class="gnav" aria-label="グローバル"><ul>
+    <li><a href="./">TOP</a></li>
+    <li><a href="about.html">企業情報</a></li>
+    <li><a href="services.html">事業紹介</a></li>
+    <li><a href="works.html" aria-current="page">実績紹介</a></li>
+    <li><a href="articles/">ニュース</a></li>
+    <li><a href="../editor-recruit.html">採用・募集</a></li>
+    <li><a href="assets/mono-create-doc.pdf" download>資料ダウンロード</a></li>
+  </ul></nav>
+</header>
+<div class="mnav" id="mnav">
+  <button class="mnav-close" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" style="width:22px;height:22px"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  <div class="in"><a href="./">TOP</a><a href="about.html">企業情報</a><a href="services.html">事業紹介</a><a href="works.html">実績紹介</a><a href="articles/">ニュース</a><a href="../editor-recruit.html">採用・募集</a><a href="assets/mono-create-doc.pdf" download>資料ダウンロード</a><a href="contact.html">お問い合わせ</a></div>
+</div>
 
-<div class="crumb"><a href="./">HOME</a><span>›</span>実績</div>
+<div class="pad-top"></div>
+<section class="wfig"><div class="cap"><div class="in">
+  <span class="eye">WORKS</span>
+  <h1>動いている実物で、判断してください。</h1>
+</div></div></section>
 
-<!-- ページヒーロー -->
-<section class="page-hero"><div class="page-hero-in" data-hero>
-  <span class="eyebrow">Showcase</span>
-  <h1 class="jp">作ったものを、<br>そのまま<span class="ac">見せます</span>。</h1>
-  <p class="lead">スライドや口約束ではなく、動いている実物で判断してください。<wbr>店舗HP・派遣マッチング・社内アプリ、どれも今この瞬間に稼働しています。</p>
-</div></section>
+<div class="wrap"><div class="crumb" style="padding:16px 0"><a href="./">TOP</a><span>›</span>実績紹介</div></div>
 
-<!-- 実績カード -->
-<section class="section"><div class="wrap">
-  <div class="proof-grid">
-    <a class="pf p1" href="../sample-hp/showcase/" target="_blank" rel="noopener" data-reveal>
-      <div class="ph"><span>店舗HP<br>ショーケース</span></div>
-      <div class="cap"><div class="k">HP制作</div><h3 class="jp">飲食・宿泊・美容の<wbr>サンプルサイト群</h3><p>ラーメン店・整体・ネイル・ジムなど、<wbr>業種別に作り込んだ実物を公開しています。<wbr>改行も写真も、納品と同じ品質です。</p><div class="go">実物を見る →</div></div>
+<section class="wrap">
+  <div class="callout" data-rv>スライドの見栄えはいくらでも作れます。<wbr>だから、うちは公開中のURLをそのまま見てもらいます。<wbr>クリックして触ってから決めてください。</div>
+
+  <div class="wgrid">
+    <a class="wcard" href="../sample-hp/showcase/" target="_blank" rel="noopener" data-rv>
+      <div class="thumb" style="background-image:url('img/photo/07_works_devices.png')"></div>
+      <div class="b">
+        <span class="tag">WEB / SAMPLE SITES</span>
+        <h3>サンプルサイト集</h3>
+        <p>飲食・宿泊・美容など、業種別に作った実物のサイト。<wbr>写真も文章もこちらで用意した状態で公開しています。</p>
+        <span class="more">サンプルを開く<span class="arw"></span></span>
+      </div>
     </a>
-    <a class="pf p2" href="../sample-hp/creators-list/" target="_blank" rel="noopener" data-reveal data-delay="1">
-      <div class="ph"><span>編集者派遣<br>クリエイターズリスト</span></div>
-      <div class="cap"><div class="k">運用中サービス</div><h3 class="jp">派遣マッチングの<wbr>公開サイト</h3><p>登録・希望提出・案件マッチングまで、<wbr>実際に稼働しているLPと管理画面です。<wbr>止まっていない、生きた仕組みです。</p><div class="go">実物を見る →</div></div>
+
+    <a class="wcard" href="../sample-hp/creators-list/" target="_blank" rel="noopener" data-rv>
+      <div class="thumb" style="background-image:url('img/photo/03_apps_kitchen_tablet.png')"></div>
+      <div class="b">
+        <span class="tag">APP / MATCHING</span>
+        <h3>動画編集者の派遣サイト</h3>
+        <p>編集者の登録から案件のマッチングまで動く、実運用中のサイト。<wbr>管理画面まで作り込んでいます。</p>
+        <span class="more">サイトを開く<span class="arw"></span></span>
+      </div>
     </a>
-    <a class="pf p3" href="../ai-apps/" data-reveal data-delay="2">
-      <div class="ph"><span>社内アプリ<br>EditFlow</span></div>
-      <div class="cap"><div class="k">自社運用アプリ</div><h3 class="jp">案件管理・KGIを<wbr>1画面で</h3><p>タスク・案件・経営数値をまとめた社内アプリ。<wbr>うちが毎日使っている仕組みそのものです。<wbr>重区分の見本になっています。</p><div class="go">AIアプリ開発を見る →</div></div>
+
+    <a class="wcard" href="../ai-advisor/" data-rv>
+      <div class="thumb" style="background-image:url('img/photo/02_advisor_owner_tablet.png')"></div>
+      <div class="b">
+        <span class="tag">AI ADVISOR</span>
+        <h3>AI顧問のサービス設計</h3>
+        <p>店の作業をAIに移すときの進め方と価格を、そのまま公開しています。<wbr>中身を見てから相談できます。</p>
+        <span class="more">くわしく見る<span class="arw"></span></span>
+      </div>
+    </a>
+
+    <a class="wcard" href="../ai-apps/" data-rv>
+      <div class="thumb" style="background-image:url('img/photo/01_hero_night_office.png')"></div>
+      <div class="b">
+        <span class="tag">APP / OPERATION</span>
+        <h3>社内で動く案件管理アプリ</h3>
+        <p>案件・売上・入金を1画面にまとめた社内アプリ。<wbr>この運用ノウハウを、業務アプリ開発にそのまま使っています。</p>
+        <span class="more">アプリ開発を見る<span class="arw"></span></span>
+      </div>
     </a>
   </div>
+</section>
+
+<section class="proof"><div class="in" data-rv>
+  <span class="eye">NEXT STEP</span>
+  <h2>気になった実物があれば、<wbr>それを起点に話しましょう。</h2>
+  <p>「このサンプルみたいなHPがほしい」「うちの店でもこの管理をやりたい」。<wbr>そこから始めれば、話が早いです。</p>
+  <div style="margin-top:34px"><a class="pill on-dark" href="contact.html">この実物をもとに相談する<span class="arw"></span></a></div>
 </div></section>
 
-<!-- 次ページ導線 -->
-<section class="section" style="padding-top:0"><div class="wrap">
-  <nav class="next-nav" aria-label="次のページ">
-    <a href="services.html"><div class="dir">Next</div><div class="ttl jp">3つの事業を見る →</div></a>
-    <a href="contact.html"><div class="dir">Next</div><div class="ttl jp">相談する →</div></a>
-  </nav>
-</div></section>
-
-<footer class="site"><div class="foot-in">
-  <div class="foot-top">
-    <div class="foot-brand"><b>mono.create</b><p>AIで会社を丸ごと動かす。<wbr>その仕組みを、地域の事業者へ。<wbr>全国オンライン対応。</p></div>
-    <div class="foot-col"><h4>事業</h4><a href="../ai-advisor/">AI顧問</a><a href="../ai-apps/">AIアプリ開発</a><a href="../sample-hp/showcase/" target="_blank" rel="noopener">HP制作</a></div>
-    <div class="foot-col"><h4>会社</h4><a href="about.html">私たち</a><a href="team.html">AI組織</a><a href="works.html">実績</a><a href="contact.html">お問い合わせ</a></div>
-  </div>
-  <div class="foot-bot"><span>© mono.create</span><span>北海道　AIで会社を回す、AI事業</span></div>
-</div></footer>
-<script src="assets/site.js" defer></script>
+<footer>
+  <div class="wrap"><div class="ft">
+    <div class="col brandcol"><img class="mark" src="img/mark.svg" alt="" width="34" height="34"><div class="nm">mono.create</div><p>地方の人手不足に、AIで挑む。<br>北海道拠点・全国オンライン対応。</p></div>
+    <div class="col"><h4>事業紹介</h4><a href="../ai-advisor/">AI顧問</a><a href="../ai-apps/">業務アプリ開発</a><a href="../hp-service/">ホームページ制作</a><a href="../sample-hp/showcase/" target="_blank" rel="noopener">サンプルサイト</a></div>
+    <div class="col"><h4>企業情報</h4><a href="about.html">わたしたちについて</a><a href="about.html#creed">理念</a><a href="about.html#profile">代表プロフィール</a><a href="about.html#overview">会社概要</a></div>
+    <div class="col"><h4>実績・ニュース</h4><a href="works.html">実績紹介</a><a href="articles/">ニュース一覧</a><a href="../editor-recruit.html">採用・パートナー募集</a></div>
+    <div class="col"><h4>お問い合わせ</h4><a href="contact.html">お問い合わせ</a><a href="mailto:mono.create.group@gmail.com">メールで相談</a><a href="assets/mono-create-doc.pdf" download>資料ダウンロード</a></div>
+  </div></div>
+  <div class="legal"><div class="in"><a href="about.html">このサイトについて</a><a href="contact.html">お問い合わせ</a><span class="cp">© 2026 mono.create</span></div></div>
+</footer>
+<script src="assets/trn.js"></script>
 </body></html>
