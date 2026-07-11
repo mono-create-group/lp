@@ -39,7 +39,15 @@
           function fail(){switching=false;idx=next;setTimeout(advance,300);}
           if(pr&&pr.then){pr.then(done).catch(fail);}else{done();}
         }
-        [hv,hvB].forEach(function(v){v.addEventListener('ended',function(){if(v===act)advance();});});
+        [hv,hvB].forEach(function(v){
+          v.addEventListener('ended',function(){
+            if(v!==act)return;
+            // バッファ切れ等による早期endedは再開し、正規の終端のみ次へ進む
+            if(v.duration&&v.currentTime<v.duration-0.5){try{v.play();}catch(e){}return;}
+            advance();
+          });
+          v.addEventListener('error',function(){if(v===act&&started)advance();});
+        });
         setSrc(act,playlist[0]);
         var p=act.play();
         function ok(){if(!started){started=true;act.classList.add('on');preload();}}
