@@ -1,6 +1,6 @@
 /* ============================================================
-   mono.create 会社サイト — TRN Group 構造の骨格を移植（配色はうちのブランド1色）
-   ブランド1色: teal #0b5c4f（濃）/ #0d6d5d / #7fd6c6（明）
+   mono.create 会社サイト — TRN Group 構造の骨格を移植（配色=黒と白のモノクロ）
+   ブランド: 黒 #14171c / 白 #ffffff / グレー階調。写真だけが色を持つ。
    絵文字ゼロ・装飾はSVG/記号・word-break:keep-all + <wbr> 改行
    ============================================================ */
 :root{
@@ -11,10 +11,10 @@
   --paper-2:#f3f4f1;    /* 薄い面（ABOUT/CONTACT背景） */
   --line:#e4e4df;
   --line-2:#d7d7d0;
-  --brand:#0b5c4f;      /* ブランド1色（TRNの紺の置換） */
-  --brand-d:#083f37;    /* 濃 */
-  --brand-l:#7fd6c6;    /* 明 */
-  --anchor:#0e2a26;     /* フッター暗色面（ブランド系の深緑） */
+  --brand:#14171c;      /* ブランド=黒（アクセント・ボタン・見出し罫） */
+  --brand-d:#000000;    /* 濃（純黒） */
+  --brand-l:#c9ccd1;    /* 明（暗色面上の淡いグレー・旧teal明の置換） */
+  --anchor:#14171c;     /* フッター暗色面=黒 */
   --font-body:"Noto Sans JP","Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
   --font-en:"Zen Kaku Gothic New","Noto Sans JP",sans-serif;
 }
@@ -52,7 +52,7 @@ header{position:fixed;top:0;left:0;right:0;z-index:60;background:rgba(255,255,25
   .gnav{display:none;}
   .nav-toggle{display:inline-flex;align-items:center;justify-content:center;width:56px;flex:none;background:var(--ink);border:none;cursor:pointer;color:#fff;}
   .nav-toggle svg{width:22px;height:22px;}
-  .mnav{display:block;position:fixed;inset:0;background:rgba(14,42,38,.98);z-index:80;opacity:0;pointer-events:none;transition:opacity .3s;}
+  .mnav{display:block;position:fixed;inset:0;background:rgba(15,16,18,.98);z-index:80;opacity:0;pointer-events:none;transition:opacity .3s;}
   .mnav.open{opacity:1;pointer-events:auto;}
   .mnav .in{padding:96px 30px 40px;}
   .mnav a{display:block;color:#fff;font-size:16px;letter-spacing:.06em;padding:16px 0;border-bottom:1px solid rgba(255,255,255,.14);}
@@ -89,7 +89,7 @@ header{position:fixed;top:0;left:0;right:0;z-index:60;background:rgba(255,255,25
 .more .arw::after{content:"";position:absolute;right:-1px;top:-3px;width:6px;height:6px;border-top:1px solid currentColor;border-right:1px solid currentColor;transform:rotate(45deg);}
 
 /* ── ヒーロー（全視口・映像/Ken Burns・理念オーバーレイ） ── */
-.hero{position:relative;height:100svh;min-height:560px;overflow:hidden;background:#0a0f1c;}
+.hero{position:relative;height:100svh;min-height:560px;overflow:hidden;background:#0b0c0e;}
 .hero .media,.hero .herovid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
 .hero .media{background-size:cover;background-position:center;}
 .hero .herovid{display:none;z-index:1;}
@@ -98,7 +98,7 @@ header{position:fixed;top:0;left:0;right:0;z-index:60;background:rgba(255,255,25
 /* 映像なし（fallback）: Ken Burnsでゆっくり寄る */
 .hero.kb .media,.hero:not(.has-video) .media{animation:kenburns 22s ease-in-out infinite alternate;transform-origin:60% 40%;}
 @keyframes kenburns{0%{transform:scale(1.04) translate(0,0);}100%{transform:scale(1.14) translate(-1.5%,-1.5%);}}
-.hero .tint{position:absolute;inset:0;z-index:2;background:linear-gradient(120deg,rgba(8,20,18,.78) 0%,rgba(10,26,24,.5) 48%,rgba(6,14,20,.62) 100%);}
+.hero .tint{position:absolute;inset:0;z-index:2;background:linear-gradient(120deg,rgba(10,11,13,.78) 0%,rgba(15,16,18,.5) 48%,rgba(8,9,11,.64) 100%);}
 .hero .ov{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;justify-content:center;}
 .hero .ov .in{max-width:1200px;margin:0 auto;padding:0 40px;width:100%;}
 .hero .ov .eye{font-family:var(--font-en);font-size:13px;letter-spacing:.34em;color:var(--brand-l);font-weight:500;}
@@ -136,13 +136,13 @@ header{position:fixed;top:0;left:0;right:0;z-index:60;background:rgba(255,255,25
 .brow .panel .rule{width:56px;height:2px;background:rgba(255,255,255,.6);margin:20px 0 0;}
 .brow .panel p{margin-top:24px;font-size:14.5px;line-height:2.1;color:rgba(255,255,255,.92);max-width:32em;}
 .brow .panel .price{margin-top:20px;font-size:14px;color:#fff;font-weight:500;letter-spacing:.02em;}
-.brow .panel .price b{font-family:var(--font-en);font-size:19px;font-weight:700;color:var(--brand-l);letter-spacing:.02em;}
+.brow .panel .price b{font-family:var(--font-en);font-size:19px;font-weight:700;color:#fff;letter-spacing:.02em;}
 .brow .panel .foot{margin-top:34px;display:flex;flex-wrap:wrap;gap:18px;align-items:center;}
 .brow .panel .pill.on-dark{padding:14px 34px;font-size:14px;}
-/* パネル色（ブランド1色の濃淡でトーンを分ける・別色にはしない） */
-.brow.b1 .panel{background:var(--brand);}
-.brow.b2 .panel{background:var(--brand-d);}
-.brow.b3 .panel{background:#0f6a5a;}
+/* パネル色（黒〜ダークグレーの濃淡でトーンを分ける・別色にはしない） */
+.brow.b1 .panel{background:#1f232a;}
+.brow.b2 .panel{background:#14171c;}
+.brow.b3 .panel{background:#2a2f37;}
 /* 交互配置（偶数は画像を右） */
 .brow.alt{direction:rtl;}
 .brow.alt>*{direction:ltr;}
@@ -152,7 +152,7 @@ header{position:fixed;top:0;left:0;right:0;z-index:60;background:rgba(255,255,25
   .brow .panel{padding:52px 24px;}
 }
 
-/* ── 証拠バンド（うちが自分で毎日使っている保証） ── */
+/* ── 証拠バンド（実際に現場で使っている保証） ── */
 .proof{background:var(--anchor);color:#fff;padding:92px 0;}
 .proof .in{max-width:900px;margin:0 auto;text-align:center;padding:0 40px;}
 .proof .eye{font-family:var(--font-en);font-size:12px;letter-spacing:.28em;color:var(--brand-l);}
@@ -225,7 +225,7 @@ footer{background:var(--anchor);color:#cfe0dc;}
 /* ── 記事一覧カード ── */
 .artgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:34px;padding:72px 0 96px;}
 .artcard{display:block;border:1px solid var(--line);background:#fff;transition:transform .25s,box-shadow .25s;}
-.artcard:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(14,42,38,.1);}
+.artcard:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(0,0,0,.09);}
 .artcard .thumb{aspect-ratio:16/10;background-size:cover;background-position:center;background-color:var(--paper-2);}
 .artcard .b{padding:22px 22px 26px;}
 .artcard .chip{display:inline-block;font-size:11px;color:#fff;background:var(--brand);padding:3px 11px;border-radius:2px;letter-spacing:.04em;}
