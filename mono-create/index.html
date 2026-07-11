@@ -46,14 +46,14 @@
 @media(max-width:640px){.hero .facts{grid-template-columns:1fr;}.hero .facts div.f{padding:22px 0;border-bottom:1px solid var(--line);}.hero .facts div.f:last-child{border-bottom:none;}}
 @media(max-width:600px){.hero .btns .btn{flex:1;text-align:center;justify-content:center;}}
 
-.creed .body{display:grid;grid-template-columns:minmax(0,7.5em) minmax(0,1fr);gap:clamp(20px,4vw,64px);}
-.creed .body>*{min-width:0;}
+.creed .cgrid{display:grid;grid-template-columns:minmax(0,7.5em) minmax(0,1fr);gap:clamp(20px,4vw,64px);}
+.creed .cgrid>*{min-width:0;}
 .creed .txt{max-width:38em;}
 .creed .txt p{font-size:clamp(16px,1.7vw,19px);color:var(--ink-2);line-height:2.1;font-weight:500;}
 .creed .txt p+p{margin-top:24px;}
 .creed .txt .mk{color:var(--acc);font-weight:700;}
 .creed .more{margin-top:32px;}
-@media(max-width:760px){.creed .body{grid-template-columns:minmax(0,1fr);gap:22px;}}
+@media(max-width:760px){.creed .cgrid{grid-template-columns:minmax(0,1fr);gap:22px;}}
 
 /* 事業ハブ（番号付き台帳） */
 .ledger{border-top:1px solid var(--line-2);}
@@ -146,7 +146,7 @@
 
 <!-- 理念 -->
 <section class="section creed" id="creed"><div class="wrap">
-  <div class="body">
+  <div class="cgrid">
     <div class="lft" data-reveal><span class="eyebrow">Our Creed</span></div>
     <div class="txt">
       <p data-reveal>地方の店も会社も、人が足りません。<wbr>採用してもすぐ辞める、募集をかけても応募が来ない。<wbr>この現実に<span class="mk">「人を増やす」以外の答え</span>を出したくて、<wbr>うちはAIで会社を運営する側に回りました。</p>
