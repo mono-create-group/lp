@@ -1,0 +1,90 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>mock</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;}
+body{background:#f4f6f8;color:#1c2430;}
+.bar{background:#fff;border-bottom:1px solid #e3e7ec;padding:14px 22px;display:flex;align-items:center;gap:12px;}
+.bar .logo{width:26px;height:26px;border-radius:6px;background:#111;color:#fff;font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center;}
+.bar b{font-size:15.5px;}
+.bar .tag{margin-left:auto;font-size:11.5px;background:#eef1f5;border-radius:20px;padding:5px 12px;color:#5a6472;}
+.wrap{padding:20px 22px;display:grid;gap:14px;}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.sp .cards{grid-template-columns:repeat(2,1fr);}
+.card{background:#fff;border:1px solid #e3e7ec;border-radius:12px;padding:14px 16px;}
+.card .k{font-size:11px;color:#7a8492;}
+.card .v{font-size:22px;font-weight:900;margin-top:4px;}
+.card .v small{font-size:11px;color:#33a06f;font-weight:700;margin-left:6px;}
+.panel{background:#fff;border:1px solid #e3e7ec;border-radius:12px;padding:16px;}
+.panel h3{font-size:13px;margin-bottom:10px;color:#39424e;}
+table{width:100%;border-collapse:collapse;font-size:12.5px;}
+th{font-size:11px;color:#7a8492;text-align:left;font-weight:600;padding:7px 8px;border-bottom:1px solid #e9edf1;}
+td{padding:9px 8px;border-bottom:1px solid #f0f3f6;}
+.chip{display:inline-block;font-size:10.5px;font-weight:700;padding:3px 10px;border-radius:20px;}
+.c-ok{background:#e3f5ec;color:#1e7f4f;} .c-wt{background:#fdf1dd;color:#a06a12;} .c-ng{background:#fde4e4;color:#b3312f;} .c-bl{background:#e5edfb;color:#2b5cb8;}
+.bars{display:flex;align-items:flex-end;gap:7px;height:110px;padding-top:8px;}
+.bars i{flex:1;background:#c9d4e2;border-radius:4px 4px 0 0;} .bars i.hi{background:#111;}
+.line{display:flex;gap:8px;align-items:center;margin-top:8px;font-size:11px;color:#7a8492;}
+.bub{max-width:78%;background:#fff;border:1px solid #e3e7ec;border-radius:4px 14px 14px 14px;padding:10px 13px;font-size:12.5px;line-height:1.7;}
+.bub.me{margin-left:auto;background:#d9f2d9;border:none;border-radius:14px 4px 14px 14px;}
+.chat{background:#8sinceb;}
+.chatwrap{background:#7d94ab;padding:16px;border-radius:12px;display:grid;gap:10px;}
+.btnrow{display:flex;gap:8px;margin-top:10px;}
+.btn{font-size:12px;font-weight:700;padding:8px 14px;border-radius:8px;background:#111;color:#fff;border:none;}
+.btn.gh{background:#fff;color:#111;border:1px solid #cfd6de;}
+.grid2{display:grid;grid-template-columns:1.4fr 1fr;gap:14px;}
+.sp .grid2{grid-template-columns:1fr;}
+.shift td{text-align:center;font-size:11.5px;padding:7px 3px;}
+.shift .on{background:#e9f0fa;font-weight:700;border-radius:6px;}
+.shift .off{color:#c3cad3;}
+.stars{color:#e8a33d;font-size:13px;letter-spacing:2px;}
+.rev{border-bottom:1px solid #f0f3f6;padding:10px 0;}
+.rev p{font-size:12px;color:#39424e;margin-top:4px;line-height:1.7;}
+.rev .rep{margin-top:8px;background:#f4f7fa;border-left:3px solid #111;padding:8px 11px;font-size:11.5px;color:#39424e;line-height:1.7;border-radius:0 8px 8px 0;}
+.kan{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.sp .kan{grid-template-columns:1fr;}
+.col{background:#eef1f5;border-radius:12px;padding:11px;}
+.col h4{font-size:12px;color:#5a6472;margin-bottom:9px;display:flex;justify-content:space-between;}
+.tkt{background:#fff;border:1px solid #e3e7ec;border-radius:10px;padding:11px 12px;margin-bottom:9px;font-size:12.5px;font-weight:700;}
+.tkt small{display:block;font-weight:400;font-size:11px;color:#7a8492;margin-top:5px;}
+</style></head><body>
+<script>
+const q=new URLSearchParams(location.search); const app=q.get('app')||'1';
+if(q.get('m')==='sp'){document.body.classList.add('sp');}else{document.documentElement.style.zoom=q.get('z')||'1.62';}
+const T={
+ '1':{name:'お問い合わせ通知',tag:'LINE連携 稼働中',body:`
+   <div class="cards"><div class="card"><div class="k">今日の問い合わせ</div><div class="v">6件<small>+2</small></div></div><div class="card"><div class="k">自動返信済み</div><div class="v">6件<small>100%</small></div></div><div class="card"><div class="k">平均一次応答</div><div class="v">0.4秒</div></div></div>
+   <div class="panel"><h3>新着の問い合わせ → LINEへ自動通知</h3><table><tr><th>受信</th><th>お名前</th><th>内容</th><th>状態</th></tr>
+   <tr><td>18:22</td><td>佐藤様</td><td>金曜19時 4名で予約できますか</td><td><span class="chip c-ok">LINE通知済</span></td></tr>
+   <tr><td>17:05</td><td>田中様</td><td>駐車場はありますか</td><td><span class="chip c-ok">自動返信済</span></td></tr>
+   <tr><td>15:48</td><td>高橋様</td><td>コースの内容について</td><td><span class="chip c-wt">折り返し待ち</span></td></tr>
+   <tr><td>12:31</td><td>鈴木様</td><td>個室はありますか</td><td><span class="chip c-ok">自動返信済</span></td></tr></table></div>`},
+ '2':{name:'シフト管理',tag:'今月の表 自動生成済み',body:`
+   <div class="cards"><div class="card"><div class="k">希望休 回収率</div><div class="v">14/15人<small>93%</small></div></div><div class="card"><div class="k">不足コマ</div><div class="v">2コマ<small>要調整</small></div></div><div class="card"><div class="k">作成時間</div><div class="v">10分</div></div></div>
+   <div class="panel"><h3>7月 第3週のシフト（自動割当）</h3><table class="shift"><tr><th>スタッフ</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th></tr>
+   <tr><td style="text-align:left">山田</td><td class="on">早</td><td class="on">早</td><td class="off">休</td><td class="on">遅</td><td class="on">遅</td><td class="on">早</td></tr>
+   <tr><td style="text-align:left">井上</td><td class="off">休</td><td class="on">遅</td><td class="on">早</td><td class="on">早</td><td class="off">休</td><td class="on">遅</td></tr>
+   <tr><td style="text-align:left">木村</td><td class="on">遅</td><td class="off">休</td><td class="on">遅</td><td class="off">休</td><td class="on">早</td><td class="on">早</td></tr></table>
+   <div class="btnrow"><button class="btn">LINEで全員に配布</button><button class="btn gh">再計算</button></div></div>`},
+ '3':{name:'売上ダッシュボード',tag:'毎朝6:00 自動更新',body:`
+   <div class="cards"><div class="card"><div class="k">今週の売上</div><div class="v">¥483,200<small>+12%</small></div></div><div class="card"><div class="k">客単価</div><div class="v">¥3,180<small>+4%</small></div></div><div class="card"><div class="k">組数</div><div class="v">152組</div></div></div>
+   <div class="panel"><h3>曜日別売上（自動集計）</h3><div class="bars"><i style="height:38%"></i><i style="height:44%"></i><i style="height:36%"></i><i style="height:58%"></i><i class="hi" style="height:92%"></i><i class="hi" style="height:100%"></i><i style="height:70%"></i></div><div class="line">月〜日 ｜ 手入力ゼロ・レジデータから自動反映</div></div>`},
+ '4':{name:'口コミ返信AI',tag:'Google口コミ 監視中',body:`
+   <div class="cards"><div class="card"><div class="k">今月の新着</div><div class="v">9件</div></div><div class="card"><div class="k">平均評価</div><div class="v">4.6</div></div><div class="card"><div class="k">返信済み</div><div class="v">9/9件<small>当日</small></div></div></div>
+   <div class="panel"><h3>新着口コミと返信案</h3>
+   <div class="rev"><span class="stars">★★★★★</span><p>スタッフさんの対応が丁寧で、料理も出てくるのが早かったです。</p><div class="rep">【返信案】ご来店ありがとうございます。お褒めの言葉、スタッフ一同励みになります。またのお越しをお待ちしております。</div></div>
+   <div class="rev"><span class="stars">★★★☆☆</span><p>味は良かったけど、金曜の夜は待ち時間が長め。</p><div class="rep">【返信案】お待たせしてしまい申し訳ありません。金曜夜は事前予約が確実です。貴重なご意見ありがとうございます。</div></div></div>`},
+ '5':{name:'予約リマインド',tag:'前日18:00 自動送信',body:`
+   <div class="cards"><div class="card"><div class="k">明日の予約</div><div class="v">11件</div></div><div class="card"><div class="k">リマインド送信</div><div class="v">11/11<small>済</small></div></div><div class="card"><div class="k">無断キャンセル</div><div class="v">0件<small>今月</small></div></div></div>
+   <div class="panel"><h3>自動送信メッセージ</h3><div class="chatwrap"><div class="bub">佐藤様、明日19:00より4名様でご予約を承っております。ご来店をお待ちしております。変更はこのトークからどうぞ。</div><div class="bub me">了解です！よろしくお願いします</div><div class="bub">かしこまりました。お気をつけてお越しください。</div></div></div>`},
+ '6':{name:'案件・工程管理',tag:'権限別ビュー 管理者',body:`
+   <div class="cards"><div class="card"><div class="k">進行中の案件</div><div class="v">14件</div></div><div class="card"><div class="k">今週納品</div><div class="v">3件</div></div><div class="card"><div class="k">遅延アラート</div><div class="v">1件<small>要対応</small></div></div></div>
+   <div class="panel"><h3>工程ボード</h3><div class="kan">
+   <div class="col"><h4>受注 <span>4</span></h4><div class="tkt">A社 予約システム<small>担当: 中村 ｜ 7/15 見積提出</small></div><div class="tkt">B店 HP改修<small>担当: 中村 ｜ ヒアリング済</small></div></div>
+   <div class="col"><h4>制作中 <span>7</span></h4><div class="tkt">C社 シフト管理<small>進捗 70% ｜ 7/18 テスト納品</small></div><div class="tkt">D店 口コミ返信AI<small>進捗 40% ｜ 7/22 納品</small></div></div>
+   <div class="col"><h4>検収 <span>3</span></h4><div class="tkt">E社 売上ダッシュボード<small>クライアント確認中</small></div><div class="tkt">F店 LINE通知<small>7/12 検収完了予定</small></div></div>
+   </div></div>`}
+};
+const t=T[app];
+document.body.insertAdjacentHTML('afterbegin',
+ `<div class="bar"><div class="logo">M</div><b>${t.name}</b><span class="tag">${t.tag}</span></div><div class="wrap">${t.body}</div>`);
+</script>
+</body></html>

@@ -119,6 +119,26 @@
 .contact .c2{background:transparent;border:1px solid rgba(255,255,255,.32);color:#fff;}
 .contact .c2:hover{border-color:#fff;}
 @media(max-width:600px){.hero .btns .btn{flex:1;text-align:center;justify-content:center;}.contact .btns a{flex:1;text-align:center;}}
+
+/* 制作事例カルーセル（showcase移植） */
+.works-vp{overflow:hidden;padding:16px 0 8px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);}
+.works-track{display:flex;gap:26px;will-change:transform;}
+.work{position:relative;flex:0 0 322px;width:322px;background:#fff;border:1px solid #dfeee8;border-radius:16px;box-shadow:0 12px 30px rgba(40,60,50,.07);padding:0 14px;transition:box-shadow .25s ease;}
+@media(max-width:600px){.work{flex:0 0 84vw;width:84vw;}}
+.work .label{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:#ffd21e;color:#12201b;font-size:12.5px;font-weight:900;padding:6px 18px;border-radius:8px;white-space:nowrap;box-shadow:0 6px 14px rgba(0,0,0,.16);z-index:3;}
+.work .devices{position:relative;padding:26px 0 14px;}
+.work .laptop{width:100%;background:#20302b;padding:9px 9px 0;border-radius:7px 7px 0 0;}
+.work .laptop .scr{width:100%;height:180px;background:#eef2f0;border-radius:3px;overflow:hidden;}
+.work .laptop .scr img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;}
+.work .laptop .base{height:8px;background:#2a3a34;border-radius:0 0 7px 7px;margin:0 -9px;position:relative;}
+.work .laptop .base::after{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:54px;height:3px;background:#1a2622;border-radius:0 0 4px 4px;}
+.work .phone{position:absolute;right:0;bottom:2px;width:70px;height:145px;background:#20302b;border-radius:12px;padding:4px;box-shadow:0 8px 18px rgba(0,0,0,.25);z-index:2;}
+.work .phone .pscr{width:100%;height:100%;background:#eef2f0;border-radius:8px;overflow:hidden;}
+.work .phone .pscr img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;}
+.work .cap{padding:4px 4px 17px;}
+.work .cap .n{font-size:15.5px;font-weight:900;margin-top:3px;}
+.work .cap .d{font-size:12.5px;color:#66716b;margin-top:5px;line-height:1.7;}
+.works-note{text-align:center;color:var(--sub);font-size:12.5px;margin-top:22px;}
 </style></head><body>
 
 <header class="site"><div class="nav">
@@ -126,7 +146,7 @@
   <ul>
     <li><a href="#model">引き渡し</a></li>
     <li><a href="#price">料金</a></li>
-    <li><a href="#judge">区分の目安</a></li>
+    <li><a href="#works">制作事例</a></li>
     <li><a href="#faq">FAQ</a></li>
   </ul>
   <a class="cta" href="#contact">相談する</a>
@@ -138,7 +158,7 @@
   <a href="../mono-create/">会社について</a>
   <a href="#model">引き渡し</a>
   <a href="#price">料金</a>
-  <a href="#judge">区分の目安</a>
+  <a href="#works">制作事例</a>
   <a href="#faq">FAQ</a>
   <a class="cta" href="#contact">相談する</a>
 </nav>
@@ -235,29 +255,29 @@
   </div>
 </div></section>
 
-<!-- 区分の見分け方 -->
-<section class="section" id="judge"><div class="wrap">
+<!-- 制作事例 -->
+<section class="section" id="works"><div class="wrap">
   <div class="head">
-    <div class="lft" data-reveal><span class="eyebrow">How we estimate</span></div>
-    <div data-reveal>
-      <h2 class="jp">区分の見分け方</h2>
-      <p class="lead">ヒアリングで下の表に当てはめて仮の区分を決め、<wbr>工数を見て最終確定します。</p>
-    </div>
+    <div class="lft" data-reveal><span class="eyebrow">Works</span></div>
+    <div data-reveal><h2 class="jp">制作事例</h2>
+      <p class="lead">スワイプ／ドラッグで切り替えできます。</p></div>
   </div>
-  <div class="jt" data-reveal>
-    <div class="hrow"><div>区分</div><div>画面数</div><div>外部連携</div><div>納期の目安</div></div>
-    <div class="brow"><div class="rk jp">軽</div><div>1〜2枚</div><div>0〜1</div><div>実装2〜3日</div></div>
-    <div class="brow"><div class="rk jp">中</div><div>3〜5枚</div><div>1〜2</div><div>実装1週間前後</div></div>
-    <div class="brow"><div class="rk jp">重</div><div>6枚以上</div><div>3以上</div><div>実装2週間</div></div>
-  </div>
-  <p class="judge-cap">どちらか迷う規模のときは、安い区分で見積もります。</p>
+  <div class="works-vp" data-reveal><div class="works-track" id="wtrack">
+    <div class="work"><div class="label">問い合わせ</div><div class="devices"><div class="laptop"><div class="scr"><img loading="lazy" src="img/works/app1.png" alt="LINE通知基盤の画面サンプル"></div><div class="base"></div></div><div class="phone"><div class="pscr"><img loading="lazy" src="img/works/app1-m.png" alt=""></div></div></div><div class="cap"><div class="n jp">LINE通知基盤</div><div class="d">問い合わせを受けて自動でLINEに届く仕組み。<wbr>軽区分のテンプレになっています。</div></div></div>
+    <div class="work"><div class="label">シフト管理</div><div class="devices"><div class="laptop"><div class="scr"><img loading="lazy" src="img/works/app2.png" alt="シフト自動作成の画面サンプル"></div><div class="base"></div></div><div class="phone"><div class="pscr"><img loading="lazy" src="img/works/app2-m.png" alt=""></div></div></div><div class="cap"><div class="n jp">シフト自動作成</div><div class="d">LINEで希望休を集めて、表まで自動生成。<wbr>中区分の代表例です。</div></div></div>
+    <div class="work"><div class="label">売上・集計</div><div class="devices"><div class="laptop"><div class="scr"><img loading="lazy" src="img/works/app3.png" alt="売上ダッシュボードの画面サンプル"></div><div class="base"></div></div><div class="phone"><div class="pscr"><img loading="lazy" src="img/works/app3-m.png" alt=""></div></div></div><div class="cap"><div class="n jp">売上ダッシュボード</div><div class="d">日々の売上が自動で集計され、<wbr>開くだけで数字が見えます。</div></div></div>
+    <div class="work"><div class="label">口コミ</div><div class="devices"><div class="laptop"><div class="scr"><img loading="lazy" src="img/works/app4.png" alt="口コミ返信AIの画面サンプル"></div><div class="base"></div></div><div class="phone"><div class="pscr"><img loading="lazy" src="img/works/app4-m.png" alt=""></div></div></div><div class="cap"><div class="n jp">口コミ返信AI</div><div class="d">Google口コミを分析し、<wbr>店の言葉で返信文まで用意します。</div></div></div>
+    <div class="work"><div class="label">予約</div><div class="devices"><div class="laptop"><div class="scr"><img loading="lazy" src="img/works/app5.png" alt="予約リマインドの画面サンプル"></div><div class="base"></div></div><div class="phone"><div class="pscr"><img loading="lazy" src="img/works/app5-m.png" alt=""></div></div></div><div class="cap"><div class="n jp">予約リマインド</div><div class="d">予約受付と前日リマインドを自動化。<wbr>無断キャンセルを減らします。</div></div></div>
+    <div class="work"><div class="label">業務基盤</div><div class="devices"><div class="laptop"><div class="scr"><img loading="lazy" src="img/works/app6.png" alt="案件・工程管理の画面サンプル"></div><div class="base"></div></div><div class="phone"><div class="pscr"><img loading="lazy" src="img/works/app6-m.png" alt=""></div></div></div><div class="cap"><div class="n jp">案件・工程管理</div><div class="d">案件・担当・進捗を1画面に。<wbr>重区分の業務基盤です。</div></div></div>
+  </div></div>
+  <p class="works-note">※画面はデモ用のサンプル表示です。</p>
 </div></section>
 
 <!-- 自社アプリ実証 -->
 <section class="section proof"><div class="proof-in" data-reveal>
   <span class="eyebrow">Our own apps</span>
-  <h2 class="jp">自分たちが使っているアプリで、実証しています。</h2>
-  <p class="lead">売るために作った見本ではなく、<wbr>私たちの会社が毎日動かしている本物です。</p>
+  <h2 class="jp">皆様に最高のアプリを<wbr>届けられるよう</h2>
+  <p class="lead">日々、私自身も業務の効率・自動化を<wbr>検証し続けています</p>
   <div class="proof-grid">
     <div class="pf"><div class="k">シフト管理</div><h3 class="jp">シフトさん</h3><p>LINEで希望を集めてシフト表を自動生成。<wbr>中区分の元になっているアプリです。</p></div>
     <div class="pf"><div class="k">社内基盤</div><h3 class="jp">EditFlow</h3><p>案件管理・KGI・経営数値をまとめた社内アプリ。<wbr>重区分はこれを1社専用に切り出します。</p></div>
@@ -274,15 +294,15 @@
   <div class="faq-list" data-reveal>
     <div class="faq-item">
       <h3 class="jp">本当に月額はかからないのですか。</h3>
-      <p>かかりません。初期費用だけで、アプリは会社のものになります。<wbr>納品後2週間は初期不良を無料で直し、それ以降の追加だけ都度見積です。</p>
+      <p>かかりません。初期費用だけで、アプリは会社のものになります。<wbr>納品後2週間は初期不良を無料で直します。<wbr>希望者には保守・修正オプション（月額¥5,000）で、アップデートや機能の増減に対応します。</p>
     </div>
     <div class="faq-item">
       <h3 class="jp">あとから機能を足したくなったら。</h3>
-      <p>そのときの内容を軽・中・重の基準で見積もります。<wbr>頻繁に手を入れたいなら、月額¥98,000〜のAI顧問にまとめた方が割安になります。</p>
+      <p>そのときの内容を軽・中・重の基準で見積もります。<wbr>頻繁に手を入れたいなら、保守・修正オプション（月額¥5,000）が割安です。</p>
     </div>
     <div class="faq-item">
       <h3 class="jp">どの区分になるか、先に知りたいです。</h3>
-      <p>やりたいことを聞かせてもらえれば、その場で軽・中・重の仮判定をお伝えします。<wbr>迷う規模なら安い区分に寄せます。</p>
+      <p>やりたいことを聞かせてもらえれば、その場で軽・中・重の仮判定をお伝えします。</p>
     </div>
     <div class="faq-item">
       <h3 class="jp">2週間で本当に納品できますか。</h3>
@@ -311,4 +331,41 @@
   <div class="foot-bot"><span>© mono.create</span><span>北海道　AIアプリ開発（全国オンライン対応）</span></div>
 </div></footer>
 <script src="../mono-create/assets/site.js" defer></script>
+<script>
+(function(){
+  var track=document.getElementById('wtrack'); if(!track) return;
+  var vp=track.parentElement;
+  var reals=[].slice.call(track.children);
+  var N=reals.length, GAP=26;
+  function step(){return reals[0].getBoundingClientRect().width+GAP;}
+  var vis=Math.max(2, Math.ceil(vp.offsetWidth/step())+1);
+  var tail=document.createDocumentFragment(), head=document.createDocumentFragment();
+  for(var i=0;i<vis;i++){ tail.appendChild(reals[i].cloneNode(true)); }
+  for(var j=0;j<vis;j++){ head.insertBefore(reals[N-1-j].cloneNode(true), head.firstChild); }
+  track.appendChild(tail); track.insertBefore(head, track.firstChild);
+  var idx=vis, timer=null, settle=null, dragging=false;
+  function setX(px,ms){ track.style.transition=ms?('transform '+ms+'ms cubic-bezier(.4,0,.2,1)'):'none'; track.style.transform='translateX('+px+'px)'; }
+  setX(-idx*step(),0);
+  function normalize(){ if(idx<vis){ idx+=N; setX(-idx*step(),0);} else if(idx>=vis+N){ idx-=N; setX(-idx*step(),0);} }
+  function goTo(i,ms){ idx=i; setX(-idx*step(),ms); clearTimeout(settle); settle=setTimeout(normalize,ms+40); }
+  function play(){ stop(); timer=setInterval(function(){ goTo(idx+1,1900); },3000); }
+  function stop(){ if(timer){clearInterval(timer);timer=null;} }
+  setTimeout(play,1600);
+  var startX=0, startPos=0, moved=0;
+  function curX(){ var m=/-?\d+\.?\d*/.exec(track.style.transform||''); return m?parseFloat(m[0]):-idx*step(); }
+  function down(e){ dragging=true; moved=0; stop(); clearTimeout(settle); startX=e.touches?e.touches[0].clientX:e.clientX; startPos=curX(); setX(startPos,0); track.style.cursor='grabbing'; }
+  function move(e){ if(!dragging)return; var x=e.touches?e.touches[0].clientX:e.clientX; moved=x-startX; setX(startPos+moved,0); if(e.cancelable&&Math.abs(moved)>6)e.preventDefault(); }
+  function up(){ if(!dragging)return; dragging=false; track.style.cursor='grab'; goTo(Math.round(-curX()/step()),420); play(); }
+  track.addEventListener('touchstart',down,{passive:true});
+  track.addEventListener('touchmove',move,{passive:false});
+  track.addEventListener('touchend',up);
+  track.addEventListener('mousedown',down);
+  window.addEventListener('mousemove',move);
+  window.addEventListener('mouseup',up);
+  track.addEventListener('dragstart',function(e){e.preventDefault();});
+  vp.addEventListener('mouseenter',stop);
+  vp.addEventListener('mouseleave',function(){ if(!dragging)play(); });
+  track.style.cursor='grab';
+})();
+</script>
 </body></html>
