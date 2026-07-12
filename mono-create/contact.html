@@ -74,7 +74,7 @@
       </div>
     </div>
     <div class="cbtns">
-      <a class="pill solid" id="formLink" href="../sample-hp/showcase/contact.html?intent=mono-create相談（まだ決めていない）" target="_blank" rel="noopener">お問い合わせフォーム<span class="arw"></span></a>
+      <a class="pill solid" id="formLink" href="../sample-hp/showcase/contact.html?intent=無料相談&biz=まだ決めていない" target="_blank" rel="noopener">お問い合わせフォーム<span class="arw"></span></a>
       <a class="pill" id="mailLink" href="mailto:mono.create.group@gmail.com?subject=mono.create%20相談（まだ決めていない）">メールで相談する<span class="arw"></span></a>
       <a class="pill" href="../sample-hp/showcase/contact.html?intent=資料がほしい">資料をダウンロード<span class="arw"></span></a>
     </div>
@@ -87,7 +87,7 @@
         [].slice.call(box.querySelectorAll('button')).forEach(function(x){x.classList.remove('sel');});
         b.classList.add('sel');
         var biz=b.getAttribute('data-biz');
-        f.href='../sample-hp/showcase/contact.html?intent='+encodeURIComponent('mono-create相談（'+biz+'）');
+        f.href='../sample-hp/showcase/contact.html?intent='+encodeURIComponent('無料相談')+'&biz='+encodeURIComponent(biz);
         m.href='mailto:mono.create.group@gmail.com?subject='+encodeURIComponent('mono.create 相談（'+biz+'）');
       });
     })();

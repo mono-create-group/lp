@@ -52,6 +52,9 @@ html,body{overflow-x:hidden;}
   .cta h1{font-size:21px;}
   .form-card{padding:22px 16px;}
   .form-card .intent span{font-size:13px;padding:11px 4px;}
+  .form-card .intent.bizrow{flex-wrap:wrap;}
+.form-card .intent.bizrow label{flex:1 1 46%;}
+  .form-card .intent.bizrow span{font-size:12.5px;padding:10px 2px;letter-spacing:0;}
   footer{font-size:11.5px;}
 }
 </style></head><body>
@@ -73,6 +76,13 @@ html,body{overflow-x:hidden;}
     <div class="intent">
       <label><input type="radio" name="intent" value="無料相談" checked><span>無料で相談する</span></label>
       <label><input type="radio" name="intent" value="資料がほしい"><span>資料がほしい</span></label>
+    </div>
+    <div class="fld"><label class="lb">ご相談の事業</label></div>
+    <div class="intent bizrow">
+      <label><input type="radio" name="biz" value="ホームページ制作" checked><span>ホームページ制作</span></label>
+      <label><input type="radio" name="biz" value="AI顧問"><span>AI顧問</span></label>
+      <label><input type="radio" name="biz" value="業務アプリ開発"><span>業務アプリ開発</span></label>
+      <label><input type="radio" name="biz" value="まだ決めていない"><span>まだ決めていない</span></label>
     </div>
     <div class="fld"><label class="lb">お名前<span class="req">必須</span></label><input type="text" name="name" required autocomplete="name"></div>
     <div class="fld"><label class="lb">店名・屋号</label><input type="text" name="company" autocomplete="organization" placeholder="例）麺屋 一徹"></div>
@@ -100,8 +110,14 @@ html,body{overflow-x:hidden;}
   var EP='https://script.google.com/macros/s/AKfycbzftG_O0GsR_8_TYwUwSGfSFPMCjXscWfw0jmTIB54H8NrH0SnjgH445IDDOKoHnNt8XA/exec';
   var f=document.getElementById('cform'); if(!f) return;
   try{
-    var q=new URLSearchParams(location.search).get('intent');
-    if(q==='資料'||q==='資料がほしい'){ f.querySelector('input[value="資料がほしい"]').checked=true; }
+    var qs=new URLSearchParams(location.search);
+    var q=qs.get('intent')||'';
+    if(q.indexOf('資料')>=0){ f.querySelector('input[value="資料がほしい"]').checked=true; }
+    var biz=qs.get('biz')||'';
+    if(!biz){ var mm=q.match(/（(.+?)）/); if(mm) biz=mm[1]; }
+    if(biz==='AIアプリ開発') biz='業務アプリ開発';
+    if(biz){ var bi=f.querySelector('input[name=biz][value="'+biz+'"]'); if(bi) bi.checked=true; }
+    var msg=qs.get('msg'); if(msg){ f.message.value=msg; }
   }catch(e){}
   f.addEventListener('submit',function(ev){
     ev.preventDefault();
@@ -109,6 +125,8 @@ html,body{overflow-x:hidden;}
     if(!name){ f.name.focus(); return; }
     if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ f.email.focus(); return; }
     var intent=f.querySelector('input[name=intent]:checked').value;
+    var bizv=f.querySelector('input[name=biz]:checked').value;
+    intent=intent+'（'+bizv+'）';
     var btn=document.getElementById('csend'); btn.disabled=true; btn.textContent='送信中…';
     var payload={
       name:name,
