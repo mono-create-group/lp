@@ -41,6 +41,15 @@ header{position:sticky;top:0;z-index:50;background:rgba(251,251,249,.86);backdro
 
 /* ヒーロー（白背景・左寄せ・大見出し） */
 .hero{border-bottom:1px solid var(--line);}
+.hero-media{position:relative;overflow:hidden;border-radius:var(--radius-xs);margin-top:clamp(34px,5vw,56px);}
+.hero-media::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(20,24,30,.10);border-radius:inherit;pointer-events:none;}
+.hero-media video,.hero-media img{width:100%;aspect-ratio:21/9;object-fit:cover;display:block;}
+@media(max-width:720px){.hero-media video,.hero-media img{aspect-ratio:16/10;}}
+.hero-media .cap{position:absolute;left:14px;bottom:12px;background:rgba(12,14,18,.72);color:#fff;font-size:11px;letter-spacing:.06em;padding:6px 12px;border-radius:2px;}
+.pband{margin-top:clamp(34px,5vw,56px);position:relative;overflow:hidden;border-radius:var(--radius-xs);}
+.pband img{width:100%;aspect-ratio:21/9;object-fit:cover;display:block;}
+@media(max-width:720px){.pband img{aspect-ratio:4/3;}}
+.pband .cap{position:absolute;left:14px;bottom:12px;background:rgba(12,14,18,.72);color:#fff;font-size:11px;letter-spacing:.06em;padding:6px 12px;border-radius:2px;}
 .hero-in{max-width:var(--maxw);margin:0 auto;padding:clamp(72px,10vw,120px) var(--gutter) clamp(56px,8vw,96px);}
 .hero .eyebrow{margin-bottom:32px;}
 .hero h1{font-size:clamp(30px,5.4vw,60px);font-weight:900;line-height:1.32;letter-spacing:-.01em;max-width:16em;}
@@ -82,7 +91,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(251,251,249,.86);backdro
 @media(max-width:600px){.ladder .row{grid-template-columns:96px minmax(0,1fr);}}
 
 /* 代表（暗色アンカー・単色） */
-.rep{background:var(--anchor);color:#fff;}
+.rep{background:linear-gradient(rgba(11,13,17,.90),rgba(11,13,17,.90)),url('../mono-create/img/photo/01_hero_night_office.png') center/cover;color:#fff;}
 .rep-in{max-width:820px;margin:0 auto;padding:0 var(--gutter);}
 .rep .eyebrow{color:#c9ccd1;margin-bottom:26px;}
 .rep .eyebrow::before{background:#c9ccd1;}
@@ -99,7 +108,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(251,251,249,.86);backdro
 .faq-item p{font-size:14px;color:#454b56;margin-top:12px;padding-left:30px;line-height:1.95;}
 
 /* お問い合わせ */
-.contact{background:var(--anchor);color:#fff;border-top:1px solid var(--line);}
+.contact{background:linear-gradient(rgba(11,13,17,.86),rgba(11,13,17,.86)),url('../mono-create/img/photo/06_contact_consult.png') center/cover;color:#fff;border-top:1px solid var(--line);}
 .contact-in{max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter);}
 .contact .eyebrow{color:#c9ccd1;margin-bottom:26px;}
 .contact .eyebrow::before{background:#c9ccd1;}
@@ -138,7 +147,7 @@ footer .cp{margin-top:16px;font-size:11.5px;color:#6a7280;}
 </div></header>
 
 <!-- HERO -->
-<section class="hero"><div class="hero-in" data-hero>
+<section class="hero"><div class="hero-in"><div class="hero-txt" data-hero>
   <span class="eyebrow">AI Advisor</span>
   <h1 class="jp">人手不足を<wbr><span class="u">仕組みで解消</span></h1>
   <p class="lead">予約対応も、事務も、集計も。<wbr>店の作業をAIに移して、少ない人数で回る形に組み替えます。<wbr>毎月の打ち合わせと、いつでも聞ける相談窓口が付いた月額の顧問です。</p>
@@ -147,6 +156,11 @@ footer .cp{margin-top:16px;font-size:11.5px;color:#6a7280;}
     <a class="btn btn--ghost" href="#price">料金を見る</a>
   </div>
   <p class="note">料金は「まずはご相談ください」ではなく、金額をこのページに書いています。</p>
+</div>
+<div class="hero-media" data-hero>
+  <video autoplay muted loop playsinline preload="metadata" poster="../mono-create/img/photo/hero3_poster.jpg" style="background:url('../mono-create/img/photo/hero3_poster.jpg') center/cover" src="../mono-create/img/photo/hero3.mp4"></video>
+  <span class="cap jp">現場での顧問支援</span>
+</div>
 </div></section>
 
 <!-- できること -->
@@ -182,6 +196,10 @@ footer .cp{margin-top:16px;font-size:11.5px;color:#6a7280;}
       <p>Googleの口コミをAIが分析し、<wbr>店の言葉で返信文まで用意。<wbr>放置レビューをなくします。</p>
       <div class="ba"><span class="from">後回し</span><span class="ar">→</span><span class="to jp">当日返信</span></div>
     </div>
+  </div>
+  <div class="pband" data-reveal>
+    <img src="../mono-create/img/photo/hero4_poster.jpg" alt="接客に集中する店主の後ろでタブレットが予約と発注を回す店内" loading="lazy">
+    <span class="cap jp">導入後の現場 — 人は接客、裏はAI</span>
   </div>
 </div></section>
 

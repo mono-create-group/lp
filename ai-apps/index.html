@@ -37,6 +37,15 @@
 
 /* ヒーロー（白背景・左寄せ・大見出し） */
 .hero{border-bottom:1px solid var(--line);}
+.hero-media{position:relative;overflow:hidden;border-radius:var(--radius-xs);margin-top:clamp(34px,5vw,56px);}
+.hero-media::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(20,24,30,.10);border-radius:inherit;pointer-events:none;}
+.hero-media video,.hero-media img{width:100%;aspect-ratio:21/9;object-fit:cover;display:block;}
+@media(max-width:720px){.hero-media video,.hero-media img{aspect-ratio:16/10;}}
+.hero-media .cap{position:absolute;left:14px;bottom:12px;background:rgba(12,14,18,.72);color:#fff;font-size:11px;letter-spacing:.06em;padding:6px 12px;border-radius:2px;}
+.pband{margin-top:clamp(34px,5vw,56px);position:relative;overflow:hidden;border-radius:var(--radius-xs);}
+.pband img{width:100%;aspect-ratio:21/9;object-fit:cover;display:block;}
+@media(max-width:720px){.pband img{aspect-ratio:4/3;}}
+.pband .cap{position:absolute;left:14px;bottom:12px;background:rgba(12,14,18,.72);color:#fff;font-size:11px;letter-spacing:.06em;padding:6px 12px;border-radius:2px;}
 .hero-in{max-width:var(--maxw);margin:0 auto;padding:clamp(72px,10vw,120px) var(--gutter) clamp(56px,8vw,96px);}
 .hero .eyebrow{margin-bottom:32px;}
 .hero h1{font-size:clamp(30px,5.4vw,60px);font-weight:900;line-height:1.32;letter-spacing:-.01em;max-width:16em;}
@@ -85,7 +94,7 @@
 @media(max-width:600px){.jt{font-size:12px;}.jt .hrow,.jt .brow{grid-template-columns:56px 1fr 1fr 1fr;}.jt .hrow div,.jt .brow div{padding:11px 8px;}}
 
 /* 自社アプリ実証（暗色アンカー・単色） */
-.proof{background:var(--anchor);color:#fff;border-top:1px solid var(--line);}
+.proof{background:linear-gradient(rgba(11,13,17,.90),rgba(11,13,17,.90)),url('../mono-create/img/photo/01_hero_night_office.png') center/cover;color:#fff;border-top:1px solid var(--line);}
 .proof-in{max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter);}
 .proof .eyebrow{color:#c9ccd1;margin-bottom:26px;}
 .proof .eyebrow::before{background:#c9ccd1;}
@@ -106,7 +115,7 @@
 .faq-item p{font-size:14px;color:#454b56;margin-top:12px;padding-left:30px;line-height:1.95;}
 
 /* お問い合わせ */
-.contact{background:var(--anchor);color:#fff;border-top:1px solid var(--line);}
+.contact{background:linear-gradient(rgba(11,13,17,.86),rgba(11,13,17,.86)),url('../mono-create/img/photo/06_contact_consult.png') center/cover;color:#fff;border-top:1px solid var(--line);}
 .contact-in{max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter);}
 .contact .eyebrow{color:#c9ccd1;margin-bottom:26px;}
 .contact .eyebrow::before{background:#c9ccd1;}
@@ -180,7 +189,7 @@
 </nav>
 
 <!-- HERO -->
-<section class="hero"><div class="hero-in" data-hero>
+<section class="hero"><div class="hero-in"><div class="hero-txt" data-hero>
   <span class="eyebrow">AI App Development</span>
   <h1 class="jp">その会社専用の業務アプリを<br><span class="u">月額の縛りなし</span>で。</h1>
   <p class="lead">市販ツールでは届かない業務を、<wbr>その会社に合わせたアプリで自動化します。<wbr>初期費用を払えばアプリは会社のもの。<wbr>あとから固定費は取りません。</p>
@@ -189,6 +198,11 @@
     <a class="btn btn--primary" href="#contact">無料で相談する</a>
     <a class="btn btn--ghost" href="#price">料金を見る</a>
   </div>
+</div>
+<div class="hero-media" data-hero>
+  <video autoplay muted loop playsinline preload="metadata" poster="../mono-create/img/photo/hero4_poster.jpg" style="background:url('../mono-create/img/photo/hero4_poster.jpg') center/cover" src="../mono-create/img/photo/hero4.mp4"></video>
+  <span class="cap jp">アプリ導入後の店内</span>
+</div>
 </div></section>
 
 <!-- 引き渡しモデル -->
@@ -209,13 +223,17 @@
     <div class="mc" data-reveal data-delay="1">
       <div class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
       <h3 class="jp">テスト納品2週間</h3>
-      <p>どの区分でも、動く形での確認は2週間以内。<wbr>納品後2週間は初期不良を無料で直します。<wbr>納品後2週間は、細かな修正を無料で受け付けます。</p>
+      <p>どの区分でも、動く形での確認は2週間以内。<wbr>納品後2週間は、細かな修正を無料で受け付けます。</p>
     </div>
     <div class="mc" data-reveal data-delay="2">
       <div class="ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 6h18M3 18h12"/></svg></div>
       <h3 class="jp">保守・修正は月額¥5,000</h3>
       <p>希望者だけのオプションです。<wbr>アプリのアップデートや機能の増減に対応します。<wbr>スポットの追加開発は都度見積もります。</p>
     </div>
+  </div>
+  <div class="pband" data-reveal>
+    <img src="../mono-create/img/photo/07_works_devices.jpg" alt="納品するアプリが動くPCとスマートフォン" loading="lazy">
+    <span class="cap jp">納品物はそのまま現場の道具になる</span>
   </div>
 </div></section>
 
