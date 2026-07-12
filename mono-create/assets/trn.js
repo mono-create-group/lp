@@ -16,6 +16,7 @@
         if(p0&&p0.catch){p0.catch(function(){hero.classList.remove('has-video');});}
         hv.addEventListener('error',function(){hero.classList.remove('has-video');});
         setTimeout(function(){if(hv.currentTime===0||hv.readyState<2){hero.classList.remove('has-video');}},3000);
+        ['touchend','click','scroll'].forEach(function(ev){window.addEventListener(ev,function(){if(!hv.paused)return;var pr=hv.play();if(pr&&pr.then){pr.then(function(){hero.classList.add('has-video');}).catch(function(){});}},{passive:true,once:true});});
       }else{
         hero.classList.add('playlist');
         hv.removeAttribute('loop');hv.muted=true;
@@ -70,6 +71,7 @@
         if(p&&p.then){p.then(ok).catch(function(){hero.classList.remove('has-video');});}else{ok();}
         act.addEventListener('error',function(){if(!started)hero.classList.remove('has-video');});
         setTimeout(function(){if(!started&&(act.currentTime===0||act.readyState<2)){hero.classList.remove('has-video');}},4000);
+        ['touchend','click','scroll'].forEach(function(ev){window.addEventListener(ev,function(){if(started)return;var pr=act.play();if(pr&&pr.then){pr.then(function(){hero.classList.add('has-video');ok();}).catch(function(){});}},{passive:true,once:true});});
       }
     }
   }

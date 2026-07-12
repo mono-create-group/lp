@@ -75,4 +75,14 @@
   function boot() { initHero(); initReveal(); initNav(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
+
+  /* 5) iOSの低電力モード等でautoplayが拒否された動画を、最初の操作で再生し直す */
+  function resumeVideos(){
+    [].slice.call(document.querySelectorAll('video[autoplay]')).forEach(function(v){
+      if(v.paused){var p=v.play();if(p&&p.catch)p.catch(function(){});}
+    });
+  }
+  ['touchend','click','scroll'].forEach(function(ev){
+    window.addEventListener(ev,resumeVideos,{passive:true,once:true});
+  });
 })();

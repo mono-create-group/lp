@@ -24,8 +24,8 @@
 .wfig .cap .in{max-width:1200px;margin:0 auto;padding:0 40px 40px;width:100%;}
 .wfig .cap .eye{font-family:var(--font-en);font-size:12px;letter-spacing:.28em;color:var(--brand-l);}
 .wfig .cap h1{margin-top:12px;font-size:clamp(24px,3.4vw,40px);font-weight:700;color:#fff;letter-spacing:.04em;}
-.wgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:34px;padding:72px 0 40px;}
-.wcard{border:1px solid var(--line);background:#fff;display:flex;flex-direction:column;transition:transform .25s,box-shadow .25s;}
+.wgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:34px;padding:72px 0 40px;}
+.wcard{min-width:0;border:1px solid var(--line);background:#fff;display:flex;flex-direction:column;transition:transform .25s,box-shadow .25s;}
 .wcard:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(0,0,0,.09);}
 .wcard .thumb{aspect-ratio:16/9;background-size:cover;background-position:center;background-color:var(--paper-2);}
 .wcard .b{padding:26px 26px 28px;}
@@ -33,14 +33,14 @@
 .wcard h3{margin-top:10px;font-size:18px;font-weight:700;color:var(--ink);}
 .wcard p{margin-top:12px;font-size:14px;color:var(--body);line-height:2;}
 .wcard .more{margin-top:16px;color:var(--brand);}
-@media(max-width:760px){.wgrid{grid-template-columns:1fr;gap:22px;padding:52px 0 24px;}}
+@media(max-width:760px){.wgrid{grid-template-columns:minmax(0,1fr);gap:22px;padding:52px 0 24px;}}
 </style>
 </head><body>
 
 <header>
   <div class="hd">
     <a class="brand" href="./" aria-label="mono.create トップ"><img class="mark" src="img/mark.png" alt="" width="30" height="30"><span class="nm">mono<b>.</b>create</span></a>
-    <div class="cta"><a class="hideSm" href="../sample-hp/showcase/contact.html?intent=資料請求（会社資料）" target="_blank" rel="noopener">資料ダウンロード</a><a class="alt" href="contact.html">お問い合わせ</a></div>
+    <div class="cta"><a class="hideSm" href="../sample-hp/showcase/contact.html?intent=資料がほしい">資料ダウンロード</a><a class="alt" href="contact.html">お問い<wbr>合わせ</a></div>
     <button class="nav-toggle" aria-label="メニューを開く"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 7h18M3 12h18M3 17h18"/></svg></button>
   </div>
   <nav class="gnav" aria-label="グローバル"><ul>
@@ -49,18 +49,18 @@
     <li><a href="services.html">事業紹介</a></li>
     <li><a href="works.html" aria-current="page">実績紹介</a></li>
     <li><a href="articles/">ニュース</a></li>
-    <li><a href="../sample-hp/showcase/contact.html?intent=資料請求（会社資料）" target="_blank" rel="noopener">資料ダウンロード</a></li>
+    <li><a href="../sample-hp/showcase/contact.html?intent=資料がほしい">資料ダウンロード</a></li>
   </ul></nav>
 </header>
 <div class="mnav" id="mnav">
   <button class="mnav-close" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" style="width:22px;height:22px"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-  <div class="in"><a href="./">TOP</a><a href="about.html">企業情報</a><a href="services.html">事業紹介</a><a href="articles/">ニュース</a><a href="../sample-hp/showcase/contact.html?intent=資料請求（会社資料）" target="_blank" rel="noopener">資料ダウンロード</a><a href="contact.html">お問い合わせ</a></div>
+  <div class="in"><a href="./">TOP</a><a href="about.html">企業情報</a><a href="services.html">事業紹介</a><a href="articles/">ニュース</a><a href="../sample-hp/showcase/contact.html?intent=資料がほしい">資料ダウンロード</a><a href="contact.html">お問い<wbr>合わせ</a></div>
 </div>
 
 <div class="pad-top"></div>
 <section class="wfig"><div class="cap"><div class="in">
   <span class="eye">WORKS</span>
-  <h1>動いている実物で、判断してください。</h1>
+  <h1>動いている<wbr>実物で、判断してください。</h1>
 </div></div></section>
 
 <div class="wrap"><div class="crumb" style="padding:16px 0"><a href="./">TOP</a><span>›</span>実績紹介</div></div>
@@ -73,7 +73,7 @@
       <div class="b">
         <span class="tag">WEB / SAMPLE SITES</span>
         <h3>サンプルサイト集</h3>
-        <p>飲食・宿泊・美容など、業種別に作った実物のサイト。<wbr>写真も文章もこちらで用意した状態で公開しています。</p>
+        <p>飲食・宿泊・美容など、業種別に<wbr>作った<wbr>実物の<wbr>サイト。<wbr>写真も<wbr>文章も<wbr>こちらで<wbr>用意した<wbr>状態で<wbr>公開しています。</p>
         <span class="more">サンプルを開く<span class="arw"></span></span>
       </div>
     </a>
@@ -82,8 +82,8 @@
       <div class="thumb" style="background-image:url('img/photo/03_apps_kitchen_tablet.png')"></div>
       <div class="b">
         <span class="tag">APP / MATCHING</span>
-        <h3>動画編集者の派遣サイト</h3>
-        <p>編集者の登録から案件のマッチングまで動く、実運用中のサイト。<wbr>管理画面まで作り込んでいます。</p>
+        <h3>動画編集者の<wbr>派遣サイト</h3>
+        <p>編集者の<wbr>登録から<wbr>案件の<wbr>マッチングまで<wbr>動く、実運用中の<wbr>サイト。<wbr>管理画面まで<wbr>作り込んでいます。</p>
         <span class="more">サイトを開く<span class="arw"></span></span>
       </div>
     </a>
@@ -92,8 +92,8 @@
       <div class="thumb" style="background-image:url('img/photo/02_advisor_owner_tablet.jpg')"></div>
       <div class="b">
         <span class="tag">AI ADVISOR</span>
-        <h3>AI顧問のサービス設計</h3>
-        <p>店の作業をAIに移すときの進め方と価格を、そのまま公開しています。<wbr>中身を見てから相談できます。</p>
+        <h3>AI顧問の<wbr>サービス設計</h3>
+        <p>店の作業を<wbr>AIに<wbr>移すときの<wbr>進め方と<wbr>価格を、そのまま<wbr>公開しています。<wbr>中身を<wbr>見てから<wbr>相談できます。</p>
         <span class="more">くわしく見る<span class="arw"></span></span>
       </div>
     </a>
@@ -102,8 +102,8 @@
       <div class="thumb" style="background-image:url('img/photo/01_hero_night_office.png')"></div>
       <div class="b">
         <span class="tag">APP / OPERATION</span>
-        <h3>社内で動く案件管理アプリ</h3>
-        <p>案件・売上・入金を1画面にまとめた社内アプリ。<wbr>この運用ノウハウを、業務アプリ開発にそのまま使っています。</p>
+        <h3>社内で<wbr>動く案件管理アプリ</h3>
+        <p>案件・売上・入金を<wbr>1画面に<wbr>まとめた<wbr>社内アプリ。<wbr>この運用ノウハウを、業務アプリ開発に<wbr>そのまま<wbr>使っています。</p>
         <span class="more">アプリ開発を見る<span class="arw"></span></span>
       </div>
     </a>
@@ -112,20 +112,20 @@
 
 <section class="proof"><div class="in" data-rv>
   <span class="eye">NEXT STEP</span>
-  <h2>気になった実物があれば、<wbr>それを起点に話しましょう。</h2>
-  <p>「このサンプルみたいなHPがほしい」「うちの店でもこの管理をやりたい」。<wbr>そこから始めれば、話が早いです。</p>
+  <h2>気になった<wbr>実物が<wbr>あれば<wbr>それを<wbr>起点に<wbr>話しましょう。</h2>
+  <p>「この<wbr>サンプルみたいな<wbr>HPが<wbr>ほしい」<wbr>「うちの<wbr>店でも<wbr>この管理を<wbr>やりたい」。<wbr>そこから<wbr>始めれば、話が早いです。</p>
   <div style="margin-top:34px"><a class="pill on-dark" href="contact.html">この実物をもとに相談する<span class="arw"></span></a></div>
 </div></section>
 
 <footer>
   <div class="wrap"><div class="ft">
-    <div class="col brandcol"><img class="mark" src="img/mark.png" alt="" width="34" height="34"><div class="nm">mono.create</div><p>地方の人手不足に、AIで挑む。<br>北海道拠点・全国オンライン対応。</p></div>
+    <div class="col brandcol"><img class="mark" src="img/mark.png" alt="" width="34" height="34"><div class="nm">mono.create</div><p>地方の<wbr>人手不足に、AIで<wbr>挑む。<br>北海道拠点・全国オンライン対応。</p></div>
     <div class="col"><h4>事業紹介</h4><a href="../ai-advisor/">AI顧問</a><a href="../ai-apps/">業務アプリ開発</a><a href="../hp-service/">ホームページ制作</a><a href="../sample-hp/showcase/" target="_blank" rel="noopener">サンプルサイト</a></div>
-    <div class="col"><h4>企業情報</h4><a href="about.html">わたしたちについて</a><a href="about.html#creed">理念</a><a href="about.html#profile">代表プロフィール</a><a href="about.html#overview">会社概要</a></div>
+    <div class="col"><h4>企業情報</h4><a href="about.html">わたしたちに<wbr>ついて</a><a href="about.html#creed">理念</a><a href="about.html#profile">代表プロフィール</a><a href="about.html#overview">会社概要</a></div>
     <div class="col"><h4>ニュース</h4><a href="articles/">ニュース一覧</a></div>
-    <div class="col"><h4>お問い合わせ</h4><a href="contact.html">お問い合わせ</a><a href="mailto:mono.create.group@gmail.com">メールで相談</a><a href="../sample-hp/showcase/contact.html?intent=資料請求（会社資料）" target="_blank" rel="noopener">資料ダウンロード</a></div>
+    <div class="col"><h4>お問い<wbr>合わせ</h4><a href="contact.html">お問い<wbr>合わせ</a><a href="mailto:mono.create.group@gmail.com">メールで相談</a><a href="../sample-hp/showcase/contact.html?intent=資料がほしい">資料ダウンロード</a></div>
   </div></div>
-  <div class="legal"><div class="in"><a href="about.html">このサイトについて</a><a href="contact.html">お問い合わせ</a><span class="cp">© 2026 mono.create</span></div></div>
+  <div class="legal"><div class="in"><a href="about.html">このサイトに<wbr>ついて</a><a href="contact.html">お問い<wbr>合わせ</a><span class="cp">© 2026 mono.create</span></div></div>
 </footer>
 <script src="assets/trn.js?v=20260712c"></script>
 </body></html>
