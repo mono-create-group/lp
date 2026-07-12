@@ -81,7 +81,96 @@ const T={
    <div class="col"><h4>受注 <span>4</span></h4><div class="tkt">A社 予約システム<small>担当: 中村 ｜ 7/15 見積提出</small></div><div class="tkt">B店 HP改修<small>担当: 中村 ｜ ヒアリング済</small></div></div>
    <div class="col"><h4>制作中 <span>7</span></h4><div class="tkt">C社 シフト管理<small>進捗 70% ｜ 7/18 テスト納品</small></div><div class="tkt">D店 口コミ返信AI<small>進捗 40% ｜ 7/22 納品</small></div></div>
    <div class="col"><h4>検収 <span>3</span></h4><div class="tkt">E社 売上ダッシュボード<small>クライアント確認中</small></div><div class="tkt">F店 LINE通知<small>7/12 検収完了予定</small></div></div>
-   </div></div>`}
+   </div></div>`},
+ '7':{name:'在庫発注アラート',tag:'毎日7:00 在庫チェック',body:`
+   <div class="cards"><div class="card"><div class="k">要発注</div><div class="v">4品目<small>本日</small></div></div><div class="card"><div class="k">発注済み</div><div class="v">3品目</div></div><div class="card"><div class="k">欠品防止</div><div class="v">27日<small>連続</small></div></div></div>
+   <div class="panel"><h3>在庫アラート一覧</h3><table><tr><th>品目</th><th>残数</th><th>発注点</th><th>状態</th></tr>
+   <tr><td>米(5kg)</td><td>2袋</td><td>3袋</td><td><span class="chip c-ng">要発注</span></td></tr>
+   <tr><td>ビール中瓶</td><td>18本</td><td>24本</td><td><span class="chip c-ng">要発注</span></td></tr>
+   <tr><td>キッチンペーパー</td><td>6個</td><td>8個</td><td><span class="chip c-wt">注意</span></td></tr>
+   <tr><td>割り箸</td><td>40膳</td><td>50膳</td><td><span class="chip c-ok">発注済</span></td></tr></table>
+   <div class="btnrow"><button class="btn">仕入先へ自動発注</button><button class="btn gh">在庫を再カウント</button></div></div>`},
+ '8':{name:'請求書自動整理',tag:'メール受信を毎時スキャン',body:`
+   <div class="cards"><div class="card"><div class="k">今月の受領</div><div class="v">32件</div></div><div class="card"><div class="k">仕訳済み</div><div class="v">32/32<small>100%</small></div></div><div class="card"><div class="k">支払期日超過</div><div class="v">0件</div></div></div>
+   <div class="panel"><h3>受領した請求書</h3><table><tr><th>取引先</th><th>金額</th><th>支払期限</th><th>状態</th></tr>
+   <tr><td>北央食材卸</td><td>¥184,600</td><td>7/末</td><td><span class="chip c-ok">仕訳済</span></td></tr>
+   <tr><td>旭川青果センター</td><td>¥62,300</td><td>7/末</td><td><span class="chip c-ok">仕訳済</span></td></tr>
+   <tr><td>丸富酒販</td><td>¥98,000</td><td>8/10</td><td><span class="chip c-bl">確認待ち</span></td></tr>
+   <tr><td>寺岡クリーニング</td><td>¥15,400</td><td>7/25</td><td><span class="chip c-ok">仕訳済</span></td></tr></table></div>`},
+ '9':{name:'勤怠・給与集計',tag:'打刻データ 自動連携',body:`
+   <div class="cards"><div class="card"><div class="k">今月の総労働</div><div class="v">1,248h</div></div><div class="card"><div class="k">残業超過者</div><div class="v">1名<small>要確認</small></div></div><div class="card"><div class="k">集計時間</div><div class="v">3分<small>従来6時間</small></div></div></div>
+   <div class="panel"><h3>スタッフ別 当月集計</h3><table><tr><th>氏名</th><th>出勤日数</th><th>労働時間</th><th>概算給与</th></tr>
+   <tr><td>山田</td><td>21日</td><td>168h</td><td>¥201,600</td></tr>
+   <tr><td>井上</td><td>18日</td><td>144h</td><td>¥172,800</td></tr>
+   <tr><td>木村</td><td>23日</td><td>189h<span class="chip c-ng" style="margin-left:6px">超過</span></td><td>¥226,800</td></tr></table>
+   <div class="btnrow"><button class="btn">給与ソフトへ出力</button><button class="btn gh">打刻ミスを確認</button></div></div>`},
+ '10':{name:'顧客カルテ',tag:'来店履歴 自動記録',body:`
+   <div class="cards"><div class="card"><div class="k">登録顧客</div><div class="v">312名</div></div><div class="card"><div class="k">今月の再来店</div><div class="v">89名<small>+11</small></div></div><div class="card"><div class="k">休眠顧客</div><div class="v">24名<small>要案内</small></div></div></div>
+   <div class="panel"><h3>顧客カルテ検索</h3><table><tr><th>お名前</th><th>最終来店</th><th>来店回数</th><th>メモ</th></tr>
+   <tr><td>中川様</td><td>7/9</td><td>14回</td><td>猫背肩こり強め</td></tr>
+   <tr><td>伊藤様</td><td>6/2<span class="chip c-wt" style="margin-left:6px">休眠</span></td><td>6回</td><td>次回はカラー希望</td></tr>
+   <tr><td>渡辺様</td><td>7/11</td><td>22回</td><td>硬めの施術を好む</td></tr></table></div>`},
+ '11':{name:'LINE予約ボット',tag:'24時間 自動応答',body:`
+   <div class="cards"><div class="card"><div class="k">今週の予約</div><div class="v">41件</div></div><div class="card"><div class="k">ボット完結率</div><div class="v">86%</div></div><div class="card"><div class="k">深夜帯の予約</div><div class="v">9件<small>営業時間外</small></div></div></div>
+   <div class="panel"><h3>予約チャット</h3><div class="chatwrap"><div class="bub">明日の空き時間を教えてください</div><div class="bub me">14時と16時が空いています。どちらになさいますか</div><div class="bub">14時でお願いします</div><div class="bub me">承知しました。明日14:00でご予約を確定しました。前日にリマインドをお送りします。</div></div></div>`},
+ '12':{name:'発注書OCR',tag:'FAX受信を自動読取',body:`
+   <div class="cards"><div class="card"><div class="k">今日の読取</div><div class="v">17件</div></div><div class="card"><div class="k">読取精度</div><div class="v">98.2%</div></div><div class="card"><div class="k">手入力ゼロ化</div><div class="v">月41時間<small>削減</small></div></div></div>
+   <div class="panel"><h3>読み取った発注書</h3><table><tr><th>受信</th><th>取引先</th><th>品目数</th><th>状態</th></tr>
+   <tr><td>09:14</td><td>すずらん薬局</td><td>12品目</td><td><span class="chip c-ok">出荷手配済</span></td></tr>
+   <tr><td>10:02</td><td>大雪ベーカリー</td><td>6品目</td><td><span class="chip c-ok">出荷手配済</span></td></tr>
+   <tr><td>11:37</td><td>常盤園芸</td><td>3品目</td><td><span class="chip c-wt">数量要確認</span></td></tr></table></div>`},
+ '13':{name:'日報自動集計',tag:'LINE報告を毎晩集約',body:`
+   <div class="cards"><div class="card"><div class="k">本日の報告</div><div class="v">8/8名<small>提出済</small></div></div><div class="card"><div class="k">ヒヤリハット</div><div class="v">1件</div></div><div class="card"><div class="k">要対応</div><div class="v">2件</div></div></div>
+   <div class="panel"><h3>本日の日報サマリー</h3><table><tr><th>担当</th><th>現場</th><th>進捗</th><th>特記事項</th></tr>
+   <tr><td>斎藤</td><td>永山3条現場</td><td>基礎打設完了</td><td><span class="chip c-ok">順調</span></td></tr>
+   <tr><td>阿部</td><td>神楽岡改修</td><td>資材到着待ち</td><td><span class="chip c-wt">遅延気味</span></td></tr>
+   <tr><td>横山</td><td>春光台新築</td><td>足場組完了</td><td><span class="chip c-ng">ヒヤリハット</span></td></tr></table></div>`},
+ '14':{name:'クーポン配信',tag:'セグメント別 自動配信',body:`
+   <div class="cards"><div class="card"><div class="k">配信数</div><div class="v">1,240件</div></div><div class="card"><div class="k">開封率</div><div class="v">68%</div></div><div class="card"><div class="k">来店転換</div><div class="v">94件<small>7.6%</small></div></div></div>
+   <div class="panel"><h3>配信中のクーポン</h3><table><tr><th>クーポン名</th><th>対象</th><th>使用数</th><th>状態</th></tr>
+   <tr><td>誕生月10%OFF</td><td>誕生月顧客</td><td>31件</td><td><span class="chip c-ok">配信中</span></td></tr>
+   <tr><td>休眠顧客おかえり券</td><td>90日未来店</td><td>18件</td><td><span class="chip c-ok">配信中</span></td></tr>
+   <tr><td>雨の日ドリンク無料</td><td>全顧客</td><td>45件</td><td><span class="chip c-bl">明日配信</span></td></tr></table></div>`},
+ '15':{name:'求人応募管理',tag:'応募フォーム 自動連携',body:`
+   <div class="cards"><div class="card"><div class="k">今月の応募</div><div class="v">13名</div></div><div class="card"><div class="k">面接設定済み</div><div class="v">8名</div></div><div class="card"><div class="k">採用</div><div class="v">2名</div></div></div>
+   <div class="panel"><h3>応募者一覧</h3><table><tr><th>氏名</th><th>応募経路</th><th>希望シフト</th><th>状態</th></tr>
+   <tr><td>K・S様</td><td>Indeed</td><td>平日夜</td><td><span class="chip c-ok">面接設定済</span></td></tr>
+   <tr><td>T・M様</td><td>紹介</td><td>土日終日</td><td><span class="chip c-bl">書類確認中</span></td></tr>
+   <tr><td>Y・H様</td><td>店頭ポスター</td><td>週3日</td><td><span class="chip c-ng">連絡待ち</span></td></tr></table>
+   <div class="btnrow"><button class="btn">面接日程をLINEで送信</button><button class="btn gh">不採用連絡を作成</button></div></div>`},
+ '16':{name:'宿泊清掃チェック',tag:'客室ごと 進捗を可視化',body:`
+   <div class="cards"><div class="card"><div class="k">本日の稼働室</div><div class="v">22室</div></div><div class="card"><div class="k">清掃完了</div><div class="v">17室<small>77%</small></div></div><div class="card"><div class="k">要確認</div><div class="v">1室</div></div></div>
+   <div class="panel"><h3>客室ステータス</h3><table><tr><th>部屋番号</th><th>担当</th><th>状態</th><th>更新</th></tr>
+   <tr><td>301</td><td>清水</td><td><span class="chip c-ok">清掃完了</span></td><td>13:12</td></tr>
+   <tr><td>302</td><td>清水</td><td><span class="chip c-wt">清掃中</span></td><td>13:20</td></tr>
+   <tr><td>405</td><td>大西</td><td><span class="chip c-ng">備品不足</span></td><td>13:05</td></tr>
+   <tr><td>410</td><td>大西</td><td><span class="chip c-ok">清掃完了</span></td><td>12:48</td></tr></table></div>`},
+ '17':{name:'席案内ボード',tag:'満席状況 リアルタイム',body:`
+   <div class="cards"><div class="card"><div class="k">現在の稼働</div><div class="v">18/24席<small>75%</small></div></div><div class="card"><div class="k">待ち組数</div><div class="v">3組</div></div><div class="card"><div class="k">平均待ち時間</div><div class="v">12分</div></div></div>
+   <div class="panel"><h3>フロアマップ</h3><div class="kan">
+   <div class="col"><h4>案内可 <span>2</span></h4><div class="tkt">テーブルB2<small>4名席 ｜ 空席</small></div><div class="tkt">カウンター5<small>1名席 ｜ 空席</small></div></div>
+   <div class="col"><h4>提供中 <span>5</span></h4><div class="tkt">テーブルA1<small>2名 ｜ 入店18分</small></div><div class="tkt">個室C<small>6名 ｜ 入店42分</small></div></div>
+   <div class="col"><h4>会計待ち <span>1</span></h4><div class="tkt">テーブルA3<small>3名 ｜ 伝票発行済</small></div></div>
+   </div></div>`},
+ '18':{name:'メニュー原価計算',tag:'仕入価格 連動更新',body:`
+   <div class="cards"><div class="card"><div class="k">平均原価率</div><div class="v">31.4%</div></div><div class="card"><div class="k">要見直し</div><div class="v">3品<small>原価率超過</small></div></div><div class="card"><div class="k">粗利改善見込</div><div class="v">月+¥68,000</div></div></div>
+   <div class="panel"><h3>メニュー別 原価率</h3><table><tr><th>メニュー</th><th>売価</th><th>原価</th><th>原価率</th></tr>
+   <tr><td>特製味噌ラーメン</td><td>¥980</td><td>¥312</td><td>31.8%</td></tr>
+   <tr><td>チャーシュー丼</td><td>¥750</td><td>¥298</td><td><span class="chip c-ng">39.7%</span></td></tr>
+   <tr><td>野菜炒め定食</td><td>¥850</td><td>¥221</td><td>26.0%</td></tr></table></div>`},
+ '19':{name:'施術履歴',tag:'カルテ 自動蓄積',body:`
+   <div class="cards"><div class="card"><div class="k">本日の施術</div><div class="v">9件</div></div><div class="card"><div class="k">薬剤アレルギー登録</div><div class="v">14名<small>要注意</small></div></div><div class="card"><div class="k">次回提案送信</div><div class="v">9/9件</div></div></div>
+   <div class="panel"><h3>本日の施術記録</h3><table><tr><th>お名前</th><th>施術内容</th><th>使用薬剤</th><th>次回提案</th></tr>
+   <tr><td>小林様</td><td>カラー+トリートメント</td><td>アルカリカラー7号</td><td>8週間後</td></tr>
+   <tr><td>加藤様</td><td>パーマ</td><td>コールドパーマ液</td><td><span class="chip c-wt">要問診</span></td></tr>
+   <tr><td>吉田様</td><td>縮毛矯正</td><td>ストレート剤</td><td>12週間後</td></tr></table></div>`},
+ '20':{name:'回数券管理',tag:'残回数 自動通知',body:`
+   <div class="cards"><div class="card"><div class="k">発行中の回数券</div><div class="v">156件</div></div><div class="card"><div class="k">残1回の顧客</div><div class="v">11名<small>更新提案対象</small></div></div><div class="card"><div class="k">更新率</div><div class="v">58%</div></div></div>
+   <div class="panel"><h3>回数券 残数一覧</h3><table><tr><th>お名前</th><th>コース</th><th>残回数</th><th>状態</th></tr>
+   <tr><td>藤田様</td><td>全身もみほぐし10回券</td><td>1回</td><td><span class="chip c-wt">更新提案送信済</span></td></tr>
+   <tr><td>松本様</td><td>フェイシャル5回券</td><td>3回</td><td><span class="chip c-ok">利用中</span></td></tr>
+   <tr><td>石川様</td><td>整体10回券</td><td>0回</td><td><span class="chip c-ng">期限間近</span></td></tr></table>
+   <div class="btnrow"><button class="btn">更新案内をLINE送信</button><button class="btn gh">利用履歴を出力</button></div></div>`}
 };
 const t=T[app];
 document.body.insertAdjacentHTML('afterbegin',
