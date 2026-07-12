@@ -35,7 +35,7 @@
           function done(){
             stb.classList.add('on');act.classList.remove('on');
             try{act.pause();}catch(e){}
-            var t=act;act=stb;stb=t;idx=next;switching=false;clipStart=Date.now();preload();
+            var t=act;act=stb;stb=t;idx=next;switching=false;clipStart=Date.now();setTimeout(preload,1100);
           }
           function fail(){switching=false;idx=next;setTimeout(advance,300);}
           if(pr&&pr.then){pr.then(done).catch(fail);}else{done();}
