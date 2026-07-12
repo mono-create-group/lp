@@ -7,11 +7,13 @@
 
   /* 1) ヒーロー段階登場 */
   function initHero() {
-    var hero = document.querySelector('[data-hero]');
-    if (!hero) return;
-    if (reduce) { hero.classList.add('ready'); return; }
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () { hero.classList.add('ready'); });
+    var heroes = document.querySelectorAll('[data-hero]');
+    if (!heroes.length) return;
+    heroes.forEach(function (hero) {
+      if (reduce) { hero.classList.add('ready'); return; }
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { hero.classList.add('ready'); });
+      });
     });
   }
 
