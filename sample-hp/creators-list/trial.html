@@ -30,9 +30,11 @@
   .logo .lg-sub{display:block;font-size:9.5px;font-weight:700;color:var(--sub);letter-spacing:.1em;}
 
   .wrap{max-width:640px;margin:0 auto;padding:36px 20px 64px;}
-  .card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:32px 26px;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:32px 26px;margin-bottom:20px;}
   .badge{display:inline-block;background:#ecfdf9;color:#0f766e;font-size:12px;font-weight:800;padding:6px 16px;border-radius:99px;margin-bottom:16px;}
   h1{font-size:clamp(19px,4vw,24px);font-weight:900;line-height:1.5;margin-bottom:10px;}
+  h2.sec{font-size:15px;font-weight:900;margin:28px 0 12px;padding-top:20px;border-top:1px solid var(--line);}
+  h2.sec:first-of-type{margin-top:0;padding-top:0;border-top:none;}
   .lead{color:var(--sub);font-size:13.5px;margin-bottom:26px;}
 
   .row{margin-bottom:20px;}
@@ -40,6 +42,20 @@
   .row .val{font-size:14.5px;font-weight:700;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 14px;}
   .row .val a{color:var(--brand2);text-decoration:underline;word-break:break-all;}
   .row .val.brief{white-space:pre-wrap;line-height:1.9;font-weight:500;}
+
+  .material-list{display:flex;flex-direction:column;gap:8px;}
+  .material-item{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 14px;}
+  .material-item .nm{font-size:13.5px;font-weight:700;}
+  .material-item a{font-size:12.5px;font-weight:800;color:var(--brand2);text-decoration:underline;white-space:nowrap;}
+
+  .rule-box{background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:14px 16px;font-size:13px;color:#9a3412;line-height:1.9;}
+  .rule-box b{font-weight:900;}
+
+  .deliver-title{background:var(--bg);border:1.5px dashed var(--brand);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;}
+  .deliver-title .t{font-size:15px;font-weight:900;}
+  .copy-btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:800;cursor:pointer;color:var(--ink);flex-shrink:0;}
+
+  pre.template{white-space:pre-wrap;font-family:"SF Mono",Consolas,monospace;font-size:12.5px;line-height:1.8;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:16px;color:var(--ink);overflow-x:auto;}
 
   .deadline-box{background:linear-gradient(135deg,#0f766e,#134e4a);color:#fff;border-radius:16px;padding:20px 22px;margin-bottom:24px;text-align:center;}
   .deadline-box .lb{font-size:11.5px;color:#bae6dc;font-weight:800;letter-spacing:.05em;margin-bottom:6px;}
@@ -97,6 +113,29 @@
 <script>
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbwa-9RybumgsbuFj5HrDFogrla7MefrnLRbOKuT-eJfJ-garxQXuUwFh3LOgdhsPYLxRw/exec';
 
+// トライアル共通素材（Google Drive・全応募者共通）
+const MATERIALS = {
+  original: 'https://drive.google.com/file/d/13AO8J3sRHlPZWxfjNHYN2vVpE1z6Owcs/view?usp=drivesdk',
+  trial:    'https://drive.google.com/file/d/1xFIA9wShiykKcct83x8ZS0dtiQLbfueQ/view?usp=drivesdk',
+  bgmSe:    'https://drive.google.com/file/d/1xkfrpYdslKXAM7agXIFVirdQ_MRT_puT/view?usp=drivesdk',
+  telop:    'https://drive.google.com/file/d/1BCBozZ3S_MXFJ2TercMhgXBvyMgaUEqa/view?usp=drivesdk',
+  storage:  'https://drive.google.com/drive/folders/15JYndigoC5vAttr6Inc1CRE3OKjX763T'
+};
+
+// 会長確定の逐語テンプレート（改変禁止）
+const DELIVERY_TEMPLATE =
+"【初稿提出】\n" +
+"お世話になっております！\n" +
+"下記動画の初稿を提出いたします。\n" +
+"ご確認のほど、よろしくお願いいたします。\n" +
+"-----------------------------------------\n" +
+"タイトル記入（トライアル時のみ「応募時の名前＋トライアル納品」）\n" +
+"--------------------------------------------\n" +
+"◇MP4（ドライブリンク）\n" +
+"\n" +
+"\n" +
+"◇プロマネ（ドライブリンク）";
+
 function qs(name) {
   return new URLSearchParams(location.search).get(name);
 }
@@ -123,6 +162,41 @@ function addDaysStr(dateStr, days) {
   const p = n => String(n).padStart(2, '0');
   return `${j.getUTCFullYear()}/${p(j.getUTCMonth()+1)}/${p(j.getUTCDate())}`;
 }
+function deliverTitle(name) {
+  return `${name}トライアル納品`;
+}
+
+// 課題内容（全応募者共通・固定）
+function taskSectionHtml() {
+  return `
+    <h2 class="sec">課題内容</h2>
+    <p class="lead">今回の<wbr>お題は<wbr>「指定動画の<wbr>完コピ」です。<wbr><span style="white-space:nowrap">テロップ・BGM・効果音・アニメーションなど</span><wbr>すべてを、<wbr>元動画どおりに<wbr>完全再現して<wbr>ください。</p>
+
+    <div class="material-list">
+      <div class="material-item"><span class="nm">完コピ元動画</span><a href="${MATERIALS.original}" target="_blank" rel="noopener">開く →</a></div>
+      <div class="material-item"><span class="nm">トライアル素材</span><a href="${MATERIALS.trial}" target="_blank" rel="noopener">開く →</a></div>
+      <div class="material-item"><span class="nm">BGM・効果音</span><a href="${MATERIALS.bgmSe}" target="_blank" rel="noopener">開く →</a></div>
+      <div class="material-item"><span class="nm">テロップ集</span><a href="${MATERIALS.telop}" target="_blank" rel="noopener">開く →</a></div>
+    </div>
+
+    <h2 class="sec">テロップの<wbr>ルール</h2>
+    <div class="rule-box">
+      テロップは<wbr>必ず<b>「テロップ集」</b>から<wbr>使用してください。<br>
+      トライアル<wbr>合格後も<wbr>当社の<wbr>テロップ集を<wbr>使用し、<wbr>ご自身の<wbr>テロップは<wbr>使わないで<wbr>ください。<br>
+      例外は<wbr>クライアント<wbr>指定が<wbr>ある<wbr>場合と、<wbr>完コピ案件のみです。
+    </div>
+  `;
+}
+
+// 納品方法（逐語テンプレート・改変禁止）
+function deliverySectionHtml() {
+  return `
+    <h2 class="sec">納品方法</h2>
+    <p class="lead">提出ファイル名は<wbr>必ず<wbr>依頼時の<wbr>タイトルどおりに<wbr>してください。<wbr>「〇〇_修正稿」<wbr>等は<wbr>付けないで<wbr>ください。</p>
+    <pre class="template">${esc(DELIVERY_TEMPLATE)}</pre>
+    <p class="lead" style="margin-top:12px;margin-bottom:0;">完成したら<a href="${MATERIALS.storage}" target="_blank" rel="noopener" style="color:var(--brand2);text-decoration:underline;font-weight:700;">トライアル<wbr>納品フォルダ</a>にも<wbr>格納して<wbr>ください。</p>
+  `;
+}
 
 const app = document.getElementById('app');
 const token = qs('token');
@@ -142,9 +216,9 @@ function renderInvited(d) {
       <h1>${esc(d.name)}<wbr> 様、<wbr>お試し<wbr>編集<wbr>課題の<wbr>ご案内です</h1>
       <p class="lead">開始日と<wbr>納期を<wbr>選んで<wbr>ください。<wbr>選択後、<wbr>納期の<wbr>日時が<wbr>確定します。</p>
 
-      <div class="row"><span class="lb">素材</span><div class="val"><a href="${esc(d.materialUrl)}" target="_blank" rel="noopener">${esc(d.materialUrl)}</a></div></div>
-      <div class="row"><span class="lb">編集内容</span><div class="val brief">${esc(d.brief)}</div></div>
+      ${taskSectionHtml()}
 
+      <h2 class="sec">開始日・納期の<wbr>選択</h2>
       <div class="row">
         <span class="lb">開始日</span>
         <input type="date" id="start-date" min="${todayJstDateStr()}" value="${todayJstDateStr()}">
@@ -161,6 +235,10 @@ function renderInvited(d) {
       <button class="btn" id="btn-start">この内容で開始する</button>
       <p class="err-text" id="err-start"></p>
       <p class="btn-note">開始すると納期のカウントが始まります。準備ができてから開始してください。</p>
+    </div>
+
+    <div class="card">
+      ${deliverySectionHtml()}
     </div>`;
 
   const dateInput = document.getElementById('start-date');
@@ -208,11 +286,12 @@ let countdownTimer = null;
 
 function renderRunning(d) {
   if (countdownTimer) clearInterval(countdownTimer);
+  const title = deliverTitle(d.name);
   app.innerHTML = `
     <div class="card">
       <span class="badge">進行中</span>
       <h1>${esc(d.name)}<wbr> 様</h1>
-      <p class="lead">納期までに<wbr>成果物リンクを<wbr>ご提出ください。</p>
+      <p class="lead">納期までに<wbr>MP4と<wbr>プロマネの<wbr>両方を<wbr>ご提出ください。</p>
 
       <div class="deadline-box" id="deadline-box">
         <div class="lb">納期</div>
@@ -221,12 +300,22 @@ function renderRunning(d) {
       </div>
 
       <div class="row"><span class="lb">開始日時</span><div class="val">${esc(d.startAt)}</div></div>
-      <div class="row"><span class="lb">素材</span><div class="val"><a href="${esc(d.materialUrl)}" target="_blank" rel="noopener">${esc(d.materialUrl)}</a></div></div>
-      <div class="row"><span class="lb">編集内容</span><div class="val brief">${esc(d.brief)}</div></div>
 
+      ${taskSectionHtml()}
+      ${deliverySectionHtml()}
+
+      <h2 class="sec">提出</h2>
+      <div class="deliver-title">
+        <span class="t">${esc(title)}</span>
+        <button type="button" class="copy-btn" id="btn-copy-title">タイトルをコピー</button>
+      </div>
       <div class="row">
-        <span class="lb">成果物URL(必須)</span>
-        <input type="url" id="submit-url" placeholder="https://drive.google.com/...">
+        <span class="lb">MP4のドライブリンク(必須)</span>
+        <input type="url" id="submit-mp4" placeholder="https://drive.google.com/...">
+      </div>
+      <div class="row">
+        <span class="lb">プロマネ(Premiereプロジェクト)のドライブリンク(必須)</span>
+        <input type="url" id="submit-promane" placeholder="https://drive.google.com/...">
       </div>
       <div class="row">
         <span class="lb">コメント(任意)</span>
@@ -255,18 +344,30 @@ function renderRunning(d) {
   tick();
   countdownTimer = setInterval(tick, 30000);
 
+  document.getElementById('btn-copy-title').addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(title);
+      const b = document.getElementById('btn-copy-title');
+      const orig = b.textContent;
+      b.textContent = 'コピーしました';
+      setTimeout(() => { b.textContent = orig; }, 1500);
+    } catch (e) {}
+  });
+
   document.getElementById('btn-submit').addEventListener('click', async () => {
     const btn = document.getElementById('btn-submit');
     const err = document.getElementById('err-submit');
-    const url = document.getElementById('submit-url').value.trim();
+    const mp4Url = document.getElementById('submit-mp4').value.trim();
+    const promaneUrl = document.getElementById('submit-promane').value.trim();
     err.style.display = 'none';
-    if (!url) { err.textContent = '成果物URLを入力してください。'; err.style.display = 'block'; return; }
+    if (!mp4Url) { err.textContent = 'MP4のドライブリンクを入力してください。'; err.style.display = 'block'; return; }
+    if (!promaneUrl) { err.textContent = 'プロマネのドライブリンクを入力してください。'; err.style.display = 'block'; return; }
     btn.disabled = true;
     btn.textContent = '送信中…';
     try {
       const res = await fetch(GAS_URL, {
         method: 'POST',
-        body: JSON.stringify({ action: 'trial_submit', token, url, notes: document.getElementById('submit-notes').value.trim() })
+        body: JSON.stringify({ action: 'trial_submit', token, mp4Url, promaneUrl, notes: document.getElementById('submit-notes').value.trim() })
       });
       const j = await res.json();
       if (j.error) { err.textContent = 'エラー: ' + j.error; err.style.display = 'block'; btn.disabled = false; btn.textContent = '成果物を提出する'; return; }
@@ -290,7 +391,8 @@ function renderSubmitted(d) {
       </div>
       <h1>提出<wbr>ありがとう<wbr>ございました</h1>
       <p class="lead">${esc(d.name)}<wbr> 様の<wbr>成果物を<wbr>受け付けました。<br>担当者が<wbr>内容を<wbr>確認のうえ、<wbr>面談の<wbr>ご案内を<wbr>メールで<wbr>お送りします。</p>
-      <div class="row" style="text-align:left;"><span class="lb">提出内容</span><div class="val"><a href="${esc(d.submitUrl)}" target="_blank" rel="noopener">${esc(d.submitUrl)}</a></div></div>
+      <div class="row" style="text-align:left;"><span class="lb">MP4</span><div class="val"><a href="${esc(d.mp4Url)}" target="_blank" rel="noopener">${esc(d.mp4Url)}</a></div></div>
+      <div class="row" style="text-align:left;margin-bottom:0;"><span class="lb">プロマネ</span><div class="val"><a href="${esc(d.promaneUrl)}" target="_blank" rel="noopener">${esc(d.promaneUrl)}</a></div></div>
     </div>`;
 }
 

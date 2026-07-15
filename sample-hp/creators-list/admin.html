@@ -2719,16 +2719,16 @@ function applyClientMasterToPaymentModal(name) {
       <button class="modal-close" onclick="closeTrialInviteModal()">×</button>
     </div>
     <div style="padding:24px;">
-      <p style="color:var(--sub);font-size:0.85rem;margin-bottom:16px;">トークン付きの<wbr>専用ページURLを<wbr>案内メールで<wbr>送信します。<br>素材URLと<wbr>編集指示を<wbr>入力してから<wbr>送信してください。</p>
+      <p style="color:var(--sub);font-size:0.85rem;margin-bottom:16px;">トークン付きの<wbr>専用ページURLを<wbr>案内メールで<wbr>送信します。<br><span style="white-space:nowrap">課題(完コピ・素材・テロップ規定・納品方法)は</span><wbr>トライアルページに<wbr>固定表示されるため、<wbr>下記は<wbr>個別補足が<wbr>ある<wbr>場合のみ<wbr>入力してください<span style="white-space:nowrap">(空欄可)</span>。</p>
       <div class="modal-row"><p class="modal-label">お名前</p><p class="modal-val" id="tim-name">—</p></div>
       <div class="modal-row"><p class="modal-label">メール</p><p class="modal-val" id="tim-email">—</p></div>
       <div class="modal-row">
-        <p class="modal-label">素材URL</p>
-        <input type="text" id="tim-material" placeholder="https://drive.google.com/..." style="width:100%;padding:9px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;font-family:inherit;">
+        <p class="modal-label">個別素材URL(任意)</p>
+        <input type="text" id="tim-material" placeholder="通常は空欄でOK(共通素材はページに固定表示)" style="width:100%;padding:9px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;font-family:inherit;">
       </div>
       <div class="modal-row">
-        <p class="modal-label">編集指示</p>
-        <textarea id="tim-brief" rows="4" placeholder="尺・テロップ・BGM・カットの方針など" style="width:100%;padding:9px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;font-family:inherit;resize:vertical;"></textarea>
+        <p class="modal-label">個別の補足指示(任意)</p>
+        <textarea id="tim-brief" rows="4" placeholder="この方だけに伝える特記事項があれば" style="width:100%;padding:9px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;font-family:inherit;resize:vertical;"></textarea>
       </div>
       <div class="modal-actions" style="margin-top:20px;">
         <button class="modal-btn" onclick="closeTrialInviteModal()" style="background:var(--bg2);color:var(--sub);">キャンセル</button>
@@ -4660,8 +4660,6 @@ async function submitTrialInvite() {
   if (!_trialInviteApp) return;
   const materialUrl = document.getElementById('tim-material').value.trim();
   const brief = document.getElementById('tim-brief').value.trim();
-  if (!materialUrl) { showToast('素材URLを入力してください', true); return; }
-  if (!brief) { showToast('編集指示を入力してください', true); return; }
   const btn = document.getElementById('tim-send-btn');
   btn.disabled = true; btn.textContent = '送信中...';
   try {
@@ -4714,8 +4712,11 @@ function renderTrialList() {
   };
   tbody.innerHTML = trialInvites.map(t => {
     const sc = statusColor[t.status] || 'var(--sub)';
-    const submitLink = t.submitUrl
-      ? `<a href="${esc(t.submitUrl)}" target="_blank" rel="noopener" style="color:#60a5fa;font-size:0.78rem;text-decoration:underline;">成果物を見る</a>`
+    const submitLink = (t.mp4Url || t.promaneUrl)
+      ? [
+          t.mp4Url ? `<a href="${esc(t.mp4Url)}" target="_blank" rel="noopener" style="display:block;color:#60a5fa;font-size:0.75rem;text-decoration:underline;">MP4</a>` : '',
+          t.promaneUrl ? `<a href="${esc(t.promaneUrl)}" target="_blank" rel="noopener" style="display:block;color:#60a5fa;font-size:0.75rem;text-decoration:underline;">プロマネ</a>` : ''
+        ].join('')
       : '<span style="color:var(--sub);font-size:0.75rem;">—</span>';
     return `
       <tr>
