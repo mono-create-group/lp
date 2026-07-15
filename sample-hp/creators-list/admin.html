@@ -574,6 +574,11 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
         📝 編集者応募
       </button>
+      <button id="tab-trial-btn" onclick="switchAdminTab('trial')"
+        style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        トライアル管理
+      </button>
       <button id="tab-sales-apps-btn" onclick="switchAdminTab('sales-apps')"
         style="padding:10px 16px;border:none;background:none;color:var(--sub);font-weight:700;font-size:0.85rem;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">
         💼 営業スタッフ
@@ -1656,6 +1661,39 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
       </div>
     </div><!-- /tab-editor-apps -->
 
+    <!-- ── 編集者トライアル管理タブ ── -->
+    <div id="tab-trial" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
+        <h2 style="font-size:1rem;font-weight:700;display:flex;align-items:center;gap:6px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          編集者トライアル管理
+        </h2>
+        <button class="refresh-btn" onclick="loadTrialList()">更新</button>
+      </div>
+      <p style="font-size:0.78rem;color:var(--sub);margin-bottom:18px;">「編集者応募」タブの各行から「トライアル案内」を送ると、ここに一覧が追加されます。提出後は面談メモと合否をここで記録してください。</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>案内日時</th>
+              <th>氏名</th>
+              <th>メール</th>
+              <th>ステータス</th>
+              <th>開始日時</th>
+              <th>納期日時</th>
+              <th>提出物</th>
+              <th>合否 / 面談メモ</th>
+              <th>アクション</th>
+            </tr>
+          </thead>
+          <tbody id="trial-body">
+            <tr><td colspan="9" class="table-empty"><span class="spinner"></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div><!-- /tab-trial -->
+
     <!-- ── 営業スタッフ応募タブ ── -->
     <div id="tab-sales-apps" style="display:none;">
 
@@ -2673,6 +2711,33 @@ function applyClientMasterToPaymentModal(name) {
   </div>
 </div>
 
+<!-- ── 編集者トライアル案内モーダル ── -->
+<div class="modal-overlay" id="trial-invite-modal" onclick="if(event.target===this)closeTrialInviteModal()">
+  <div class="modal" style="max-width:520px;">
+    <div class="modal-header">
+      <h2 class="modal-title">トライアル<wbr>課題を<wbr>案内する</h2>
+      <button class="modal-close" onclick="closeTrialInviteModal()">×</button>
+    </div>
+    <div style="padding:24px;">
+      <p style="color:var(--sub);font-size:0.85rem;margin-bottom:16px;">トークン付きの<wbr>専用ページURLを<wbr>案内メールで<wbr>送信します。<br>素材URLと<wbr>編集指示を<wbr>入力してから<wbr>送信してください。</p>
+      <div class="modal-row"><p class="modal-label">お名前</p><p class="modal-val" id="tim-name">—</p></div>
+      <div class="modal-row"><p class="modal-label">メール</p><p class="modal-val" id="tim-email">—</p></div>
+      <div class="modal-row">
+        <p class="modal-label">素材URL</p>
+        <input type="text" id="tim-material" placeholder="https://drive.google.com/..." style="width:100%;padding:9px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;font-family:inherit;">
+      </div>
+      <div class="modal-row">
+        <p class="modal-label">編集指示</p>
+        <textarea id="tim-brief" rows="4" placeholder="尺・テロップ・BGM・カットの方針など" style="width:100%;padding:9px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;font-family:inherit;resize:vertical;"></textarea>
+      </div>
+      <div class="modal-actions" style="margin-top:20px;">
+        <button class="modal-btn" onclick="closeTrialInviteModal()" style="background:var(--bg2);color:var(--sub);">キャンセル</button>
+        <button class="modal-btn mail" id="tim-send-btn" onclick="submitTrialInvite()">案内メールを送信</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ── 振込依頼モーダル ── -->
 <div class="modal-overlay" id="payment-req-modal" onclick="if(event.target===this)closePaymentReqModal()">
   <div class="modal" style="max-width:480px;">
@@ -2926,6 +2991,8 @@ function applyClientMasterToPaymentModal(name) {
 // ─── 設定 ──────────────────────────────────────────────────────
 // Google Apps Script Web App URL（全LPページ共通のGAS URL）
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
+// 編集者トライアル専用GAS（バージョン上限を避けるため既存GASとは別プロジェクト。パスワードはgetAdminPw()を共用）
+const TRIAL_GAS_URL = 'https://script.google.com/macros/s/AKfycbwa-9RybumgsbuFj5HrDFogrla7MefrnLRbOKuT-eJfJ-garxQXuUwFh3LOgdhsPYLxRw/exec';
 // ★ DEFAULT_PASSWORD はソースコードに記述しない（初回は setup-screen で設定）
 // ───────────────────────────────────────────────────────────────
 
@@ -3567,7 +3634,7 @@ function exportCSV() {
 }
 
 // ── Tab switch ──
-const ADMIN_TABS = ['dispatch','dispatch-pay','dispatch-editors','dispatch-contracts','dispatch-jobs','inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps','sales-apps','partner-apps','private-link','client-master','invoices','line','orders','revisions','payment-requests','trash','testimonials','line-followers','progress'];
+const ADMIN_TABS = ['dispatch','dispatch-pay','dispatch-editors','dispatch-contracts','dispatch-jobs','inquiries','payments','contracts','hearings','sales','schedule','portfolio','editors','settings','pf','content','editor-apps','trial','sales-apps','partner-apps','private-link','client-master','invoices','line','orders','revisions','payment-requests','trash','testimonials','line-followers','progress'];
 function switchAdminTab(tab) {
   ADMIN_TABS.forEach(t => {
     document.getElementById('tab-' + t).style.display = t === tab ? '' : 'none';
@@ -3589,6 +3656,7 @@ function switchAdminTab(tab) {
   if (tab === 'pf')          loadPFAdmin();
   if (tab === 'content')     loadLpContent();
   if (tab === 'editor-apps')  loadEditorApps();
+  if (tab === 'trial')        loadTrialList();
   if (tab === 'sales-apps')   loadSalesApps();
   if (tab === 'partner-apps') { loadPartnerRewards(); loadPartnerApps(); }
   if (tab === 'private-link') loadPrivateLinks();
@@ -4568,6 +4636,133 @@ async function submitHearingLink() {
   } finally {
     btn.disabled = false; btn.textContent = '📨 送信する';
   }
+}
+
+// ════════════════════════════════════════════════════════════════
+// ── 編集者トライアル（お試し編集課題）── 専用GAS(TRIAL_GAS_URL)を使用
+// ════════════════════════════════════════════════════════════════
+let trialInvites = [];
+let _trialInviteApp = null;
+
+function openTrialInviteModal(row, name, email, portfolio) {
+  _trialInviteApp = { row, name, email };
+  document.getElementById('tim-name').textContent  = name  || '—';
+  document.getElementById('tim-email').textContent = email || '—';
+  document.getElementById('tim-material').value = portfolio || '';
+  document.getElementById('tim-brief').value = '';
+  document.getElementById('trial-invite-modal').classList.add('open');
+}
+function closeTrialInviteModal() {
+  document.getElementById('trial-invite-modal').classList.remove('open');
+  _trialInviteApp = null;
+}
+async function submitTrialInvite() {
+  if (!_trialInviteApp) return;
+  const materialUrl = document.getElementById('tim-material').value.trim();
+  const brief = document.getElementById('tim-brief').value.trim();
+  if (!materialUrl) { showToast('素材URLを入力してください', true); return; }
+  if (!brief) { showToast('編集指示を入力してください', true); return; }
+  const btn = document.getElementById('tim-send-btn');
+  btn.disabled = true; btn.textContent = '送信中...';
+  try {
+    const res = await gasFetch(TRIAL_GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'trial_create', key: getAdminPw(),
+        name: _trialInviteApp.name, email: _trialInviteApp.email,
+        materialUrl, brief
+      })
+    });
+    const json = await res.json();
+    if (json.ok) {
+      showToast('トライアル案内メールを送信しました');
+      closeTrialInviteModal();
+      if (document.getElementById('tab-trial').style.display !== 'none') loadTrialList();
+    } else {
+      showToast('送信失敗: ' + (json.error || 'エラー'), true);
+    }
+  } catch (e) {
+    showToast('送信エラー', true);
+  } finally {
+    btn.disabled = false; btn.textContent = '案内メールを送信';
+  }
+}
+
+async function loadTrialList() {
+  document.getElementById('trial-body').innerHTML =
+    '<tr><td colspan="9" class="table-empty"><span class="spinner"></span></td></tr>';
+  try {
+    const res  = await gasFetch(`${TRIAL_GAS_URL}?action=trial_list&key=${encodeURIComponent(getAdminPw())}`);
+    const json = await res.json();
+    trialInvites = json.data || [];
+    renderTrialList();
+  } catch (e) {
+    document.getElementById('trial-body').innerHTML =
+      '<tr><td colspan="9" class="table-empty">読み込みに失敗しました。</td></tr>';
+  }
+}
+
+function renderTrialList() {
+  const tbody = document.getElementById('trial-body');
+  if (!trialInvites.length) {
+    tbody.innerHTML = '<tr><td colspan="9" class="table-empty">まだトライアル案内はありません。</td></tr>';
+    return;
+  }
+  const statusColor = {
+    '案内済': 'var(--sub)', '進行中': '#fbbf24', '提出済': '#60a5fa',
+    '面談待ち': '#c084fc', '合格': '#4ade80', '不合格': '#f87171'
+  };
+  tbody.innerHTML = trialInvites.map(t => {
+    const sc = statusColor[t.status] || 'var(--sub)';
+    const submitLink = t.submitUrl
+      ? `<a href="${esc(t.submitUrl)}" target="_blank" rel="noopener" style="color:#60a5fa;font-size:0.78rem;text-decoration:underline;">成果物を見る</a>`
+      : '<span style="color:var(--sub);font-size:0.75rem;">—</span>';
+    return `
+      <tr>
+        <td class="td-date">${esc(t.createdAt)}</td>
+        <td class="td-name">${esc(t.name)}</td>
+        <td style="font-size:0.75rem;">${esc(t.email)}</td>
+        <td>
+          <select onchange="updateTrialRow(${t.row},{status:this.value})"
+            style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:${sc};font-size:0.75rem;padding:4px 8px;font-family:inherit;font-weight:700;cursor:pointer;">
+            <option value="案内済"   ${t.status==='案内済'  ?'selected':''}>案内済</option>
+            <option value="進行中"   ${t.status==='進行中'  ?'selected':''}>進行中</option>
+            <option value="提出済"   ${t.status==='提出済'  ?'selected':''}>提出済</option>
+            <option value="面談待ち" ${t.status==='面談待ち'?'selected':''}>面談待ち</option>
+            <option value="合格"     ${t.status==='合格'    ?'selected':''}>合格</option>
+            <option value="不合格"   ${t.status==='不合格'  ?'selected':''}>不合格</option>
+          </select>
+        </td>
+        <td style="font-size:0.75rem;white-space:nowrap;">${esc(t.startAt || '—')}</td>
+        <td style="font-size:0.75rem;white-space:nowrap;">${esc(t.deadlineAt || '—')}</td>
+        <td>${submitLink}</td>
+        <td style="font-size:0.72rem;color:var(--sub);max-width:160px;">${esc(t.memo || '—')}</td>
+        <td>
+          <div class="td-actions">
+            <button class="action-btn" onclick="editTrialMemo(${t.row},'${esc(t.memo||'').replace(/'/g,"\\'")}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:3px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>面談メモ</button>
+          </div>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+async function updateTrialRow(row, patch) {
+  try {
+    await gasFetch(TRIAL_GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify(Object.assign({ action: 'trial_update', key: getAdminPw(), row }, patch))
+    });
+    const item = trialInvites.find(t => t.row === row);
+    if (item) Object.assign(item, patch);
+    showToast('更新しました');
+  } catch (e) {
+    showToast('更新に失敗しました', true);
+  }
+}
+function editTrialMemo(row, current) {
+  const val = prompt('面談メモ', current || '');
+  if (val === null) return;
+  updateTrialRow(row, { memo: val });
 }
 
 // ── 自動見積もり計算 ─────────────────────────────────────────
@@ -5852,6 +6047,9 @@ function renderEditorApps() {
               : `<button class="action-btn" style="background:rgba(99,102,241,0.15);color:#818cf8;border:1px solid rgba(99,102,241,0.4);font-weight:800;" onclick="openContractModal(${a.row},'${esc(a.name).replace(/'/g,"\\'")}','${esc(a.email||'').replace(/'/g,"\\'")}')">📜 契約書</button>`}
             ${a.status !== '見送り' && a.status !== '採用決定'
               ? `<button class="action-btn" style="background:rgba(248,113,113,0.12);color:#f87171;border:1px solid rgba(248,113,113,0.35);font-weight:800;" onclick="rejectEditorApp(${a.row},'${esc(a.name).replace(/'/g,"\\'")}')">✖ 不採用</button>`
+              : ''}
+            ${a.status !== '採用決定'
+              ? `<button class="action-btn" style="background:rgba(14,165,163,0.12);color:#0ea5a3;border:1px solid rgba(14,165,163,0.35);font-weight:800;display:inline-flex;align-items:center;gap:4px;" onclick="openTrialInviteModal(${a.row},'${esc(a.name).replace(/'/g,"\\'")}','${esc(a.email||'').replace(/'/g,"\\'")}','${esc(a.portfolio||'').replace(/'/g,"\\'")}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg> トライアル案内</button>`
               : ''}
             <button class="action-btn btn-mail" onclick="openEditorAppMail('${esc(a.email)}','${esc(a.name)}')">✉ メール</button>
             <button class="action-btn btn-expand" onclick="openEditorAppDetail(${a.row})">詳細</button>
