@@ -51,6 +51,12 @@
   .rule-box{background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:14px 16px;font-size:13px;color:#9a3412;line-height:1.9;}
   .rule-box b{font-weight:900;}
 
+  .notice-box{background:#f1f5f9;border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:13px;color:var(--sub);font-weight:700;line-height:1.9;margin-bottom:22px;}
+
+  .now-box{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center;margin-bottom:16px;}
+  .now-box .lb{font-size:11.5px;color:var(--sub);font-weight:800;letter-spacing:.05em;margin-bottom:6px;}
+  .now-box .dt{font-size:18px;font-weight:900;}
+
   .deliver-title{background:var(--bg);border:1.5px dashed var(--brand);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;}
   .deliver-title .t{font-size:15px;font-weight:900;}
   .copy-btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:800;cursor:pointer;color:var(--ink);flex-shrink:0;}
@@ -64,7 +70,6 @@
   .deadline-box.over{background:linear-gradient(135deg,#b91c1c,#7f1d1d);}
   .deadline-box.over .lb,.deadline-box.over .remain{color:#fecaca;}
 
-  input[type=date]{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;font-size:14.5px;font-family:inherit;color:var(--ink);background:#fff;}
   input[type=url],input[type=text],textarea{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;font-size:14.5px;font-family:inherit;color:var(--ink);background:#fff;}
   textarea{resize:vertical;min-height:90px;}
 
@@ -148,19 +153,11 @@ function jstStrToMs(s) {
   if (!m) return null;
   return Date.UTC(+m[1], +m[2]-1, +m[3], +m[4], +m[5]) - 9 * 60 * 60 * 1000;
 }
-function todayJstDateStr() {
-  const now = new Date();
-  const jstMs = now.getTime() + (9 * 60 - now.getTimezoneOffset()) * 60000;
-  const j = new Date(jstMs);
+// 絶対時刻(ms・UTC epoch)をJST壁時計の 'yyyy/MM/dd HH:mm' に変換(クライアントのタイムゾーン非依存・分単位)
+function msToJstStr(ms) {
+  const j = new Date(ms + 9 * 60 * 60 * 1000);
   const p = n => String(n).padStart(2, '0');
-  return `${j.getUTCFullYear()}-${p(j.getUTCMonth()+1)}-${p(j.getUTCDate())}`;
-}
-function addDaysStr(dateStr, days) {
-  const [y, m, d] = dateStr.split('-').map(Number);
-  const ms = Date.UTC(y, m - 1, d) + days * 24 * 60 * 60 * 1000;
-  const j = new Date(ms);
-  const p = n => String(n).padStart(2, '0');
-  return `${j.getUTCFullYear()}/${p(j.getUTCMonth()+1)}/${p(j.getUTCDate())}`;
+  return `${j.getUTCFullYear()}/${p(j.getUTCMonth()+1)}/${p(j.getUTCDate())} ${p(j.getUTCHours())}:${p(j.getUTCMinutes())}`;
 }
 function deliverTitle(name) {
   return `${name}トライアル納品`;
@@ -169,6 +166,7 @@ function deliverTitle(name) {
 // 課題内容（全応募者共通・固定）
 function taskSectionHtml() {
   return `
+    <div class="notice-box">このトライアルは<wbr>選考の<wbr>一環です。<wbr>報酬は<wbr>発生しません。<wbr>ご了承の<wbr>うえ、<wbr>お取り組み<wbr>ください。</div>
     <h2 class="sec">課題内容</h2>
     <p class="lead">今回の<wbr>お題は<wbr>「指定動画の<wbr>完コピ」です。<wbr><span style="white-space:nowrap">テロップ・BGM・効果音・アニメーションなど</span><wbr>すべてを、<wbr>元動画どおりに<wbr>完全再現して<wbr>ください。</p>
 
@@ -214,14 +212,14 @@ function renderInvited(d) {
     <div class="card">
       <span class="badge">トライアル課題</span>
       <h1>${esc(d.name)}<wbr> 様、<wbr>お試し<wbr>編集<wbr>課題の<wbr>ご案内です</h1>
-      <p class="lead">開始日と<wbr>納期を<wbr>選んで<wbr>ください。<wbr>選択後、<wbr>納期の<wbr>日時が<wbr>確定します。</p>
+      <p class="lead">「今すぐ<wbr>開始する」を<wbr>押した<wbr>時点から、<wbr>納期の<wbr>カウントが<wbr>始まります。</p>
 
       ${taskSectionHtml()}
 
-      <h2 class="sec">開始日・納期の<wbr>選択</h2>
-      <div class="row">
-        <span class="lb">開始日</span>
-        <input type="date" id="start-date" min="${todayJstDateStr()}" value="${todayJstDateStr()}">
+      <h2 class="sec">開始</h2>
+      <div class="now-box">
+        <div class="lb">現在時刻</div>
+        <div class="dt" id="now-clock"></div>
       </div>
       <div class="row">
         <span class="lb">納期</span>
@@ -232,34 +230,36 @@ function renderInvited(d) {
         <div class="preview" id="preview"></div>
       </div>
 
-      <button class="btn" id="btn-start">この内容で開始する</button>
+      <button class="btn" id="btn-start">今すぐ開始する</button>
       <p class="err-text" id="err-start"></p>
-      <p class="btn-note">開始すると納期のカウントが始まります。準備ができてから開始してください。</p>
+      <p class="btn-note">押した時点の時刻が開始時刻になります。準備ができてから押してください。</p>
     </div>
 
     <div class="card">
       ${deliverySectionHtml()}
     </div>`;
 
-  const dateInput = document.getElementById('start-date');
   const opt1 = document.getElementById('opt-1');
   const opt2 = document.getElementById('opt-2');
   const preview = document.getElementById('preview');
+  const nowClock = document.getElementById('now-clock');
 
   function updatePreview() {
     const dur = document.querySelector('input[name=dur]:checked').value;
     opt1.classList.toggle('on', dur === '1');
     opt2.classList.toggle('on', dur === '2');
-    const dateStr = dateInput.value || todayJstDateStr();
-    const deadline = addDaysStr(dateStr, Number(dur));
-    preview.innerHTML = `納期: <b>${esc(deadline)} 00:00</b>（JST）`;
+    const now = Date.now();
+    nowClock.textContent = msToJstStr(now) + '（JST）';
+    const deadlineMs = now + Number(dur) * 24 * 60 * 60 * 1000;
+    preview.innerHTML = `納期: <b>${esc(msToJstStr(deadlineMs))}</b>（JST・目安）`;
   }
-  dateInput.addEventListener('change', updatePreview);
   opt1.addEventListener('click', () => { opt1.querySelector('input').checked = true; updatePreview(); });
   opt2.addEventListener('click', () => { opt2.querySelector('input').checked = true; updatePreview(); });
   updatePreview();
+  const clockTimer = setInterval(updatePreview, 1000);
 
   document.getElementById('btn-start').addEventListener('click', async () => {
+    clearInterval(clockTimer);
     const btn = document.getElementById('btn-start');
     const err = document.getElementById('err-start');
     err.style.display = 'none';
@@ -268,16 +268,16 @@ function renderInvited(d) {
     try {
       const res = await fetch(GAS_URL, {
         method: 'POST',
-        body: JSON.stringify({ action: 'trial_start', token, startAt: dateInput.value, durationDays: Number(document.querySelector('input[name=dur]:checked').value) })
+        body: JSON.stringify({ action: 'trial_start', token, durationDays: Number(document.querySelector('input[name=dur]:checked').value) })
       });
       const j = await res.json();
-      if (j.error) { err.textContent = 'エラー: ' + j.error; err.style.display = 'block'; btn.disabled = false; btn.textContent = 'この内容で開始する'; return; }
+      if (j.error) { err.textContent = 'エラー: ' + j.error; err.style.display = 'block'; btn.disabled = false; btn.textContent = '今すぐ開始する'; return; }
       load();
     } catch (e) {
       err.textContent = '通信エラーが発生しました。時間をおいて再度お試しください。';
       err.style.display = 'block';
       btn.disabled = false;
-      btn.textContent = 'この内容で開始する';
+      btn.textContent = '今すぐ開始する';
     }
   });
 }
