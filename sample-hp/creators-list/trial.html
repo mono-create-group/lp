@@ -215,6 +215,7 @@ function renderInvited(d) {
       <p class="lead">「今すぐ<wbr>開始する」を<wbr>押した<wbr>時点から、<wbr>納期の<wbr>カウントが<wbr>始まります。</p>
 
       ${taskSectionHtml()}
+      ${deliverySectionHtml()}
 
       <h2 class="sec">開始</h2>
       <div class="now-box">
@@ -233,10 +234,6 @@ function renderInvited(d) {
       <button class="btn" id="btn-start">今すぐ開始する</button>
       <p class="err-text" id="err-start"></p>
       <p class="btn-note">押した時点の時刻が開始時刻になります。準備ができてから押してください。</p>
-    </div>
-
-    <div class="card">
-      ${deliverySectionHtml()}
     </div>`;
 
   const opt1 = document.getElementById('opt-1');
