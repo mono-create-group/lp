@@ -1626,6 +1626,7 @@ tbody td { padding: 14px 16px; font-size: 0.85rem; vertical-align: top; }
           <option value="">すべてのステータス</option>
           <option value="未対応">未対応</option>
           <option value="採用検討中">採用検討中</option>
+          <option value="トライアル">トライアル</option>
           <option value="採用決定">採用決定</option>
           <option value="見送り">見送り</option>
         </select>
@@ -4674,7 +4675,14 @@ async function submitTrialInvite() {
     const json = await res.json();
     if (json.ok) {
       showToast('トライアル案内メールを送信しました');
+      // 案内送付で応募ステータスを自動で「トライアル」へ（採用決定済みは降格しない）
+      const invitedRow = _trialInviteApp.row;
+      const invited = editorApps.find(a => a.row === invitedRow);
       closeTrialInviteModal();
+      if (invited && invited.status !== '採用決定' && invited.status !== 'トライアル') {
+        await updateEditorAppStatus(invitedRow, 'トライアル');
+        renderEditorApps();
+      }
       if (document.getElementById('tab-trial').style.display !== 'none') loadTrialList();
     } else {
       showToast('送信失敗: ' + (json.error || 'エラー'), true);
@@ -6001,6 +6009,7 @@ function renderEditorApps() {
 
   const statusColor = {
     '未対応': 'var(--red)', '採用検討中': 'var(--yellow)',
+    'トライアル': '#0ea5a3',
     '採用決定': 'var(--green)', '見送り': 'var(--sub)'
   };
   const caseColor = { 'ショート': '#60a5fa', '長尺': '#4ade80', 'どちらも': '#c084fc' };
@@ -6037,6 +6046,7 @@ function renderEditorApps() {
             style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:${sc};font-size:0.75rem;padding:4px 8px;font-family:inherit;font-weight:700;cursor:pointer;">
             <option value="未対応"      ${a.status==='未対応'      ?'selected':''}>🔴 未対応</option>
             <option value="採用検討中"  ${a.status==='採用検討中'  ?'selected':''}>🟡 採用検討中</option>
+            <option value="トライアル"  ${a.status==='トライアル'  ?'selected':''}>🔵 トライアル</option>
             <option value="採用決定"    ${a.status==='採用決定'    ?'selected':''}>🟢 採用決定</option>
             <option value="見送り"      ${a.status==='見送り'      ?'selected':''}>⚫ 見送り</option>
           </select>
@@ -6049,7 +6059,7 @@ function renderEditorApps() {
             ${a.status !== '見送り' && a.status !== '採用決定'
               ? `<button class="action-btn" style="background:rgba(248,113,113,0.12);color:#f87171;border:1px solid rgba(248,113,113,0.35);font-weight:800;" onclick="rejectEditorApp(${a.row},'${esc(a.name).replace(/'/g,"\\'")}')">✖ 不採用</button>`
               : ''}
-            ${a.status !== '採用決定'
+            ${a.status !== '採用決定' && a.status !== 'トライアル'
               ? `<button class="action-btn" style="background:rgba(14,165,163,0.12);color:#0ea5a3;border:1px solid rgba(14,165,163,0.35);font-weight:800;display:inline-flex;align-items:center;gap:4px;" onclick="openTrialInviteModal(${a.row},'${esc(a.name).replace(/'/g,"\\'")}','${esc(a.email||'').replace(/'/g,"\\'")}','${esc(a.portfolio||'').replace(/'/g,"\\'")}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg> トライアル案内</button>`
               : ''}
             <button class="action-btn btn-mail" onclick="openEditorAppMail('${esc(a.email)}','${esc(a.name)}')">✉ メール</button>
