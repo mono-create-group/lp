@@ -81,8 +81,12 @@ html,body{overflow-x:hidden;}
     <div class="intent bizrow">
       <label><input type="radio" name="biz" value="ホームページ制作" checked><span>ホームページ制作</span></label>
       <label><input type="radio" name="biz" value="AI顧問"><span>AI顧問</span></label>
-      <label><input type="radio" name="biz" value="業務アプリ開発"><span>業務アプリ開発</span></label>
+      <label><input type="radio" name="biz" value="自動化ツール開発"><span>自動化ツール開発</span></label>
       <label><input type="radio" name="biz" value="まだ決めていない"><span>まだ決めていない</span></label>
+    </div>
+    <!-- ハニーポット(ボット対策・人間には見えない位置に配置。埋まっていたらボット送信とみなす) -->
+    <div class="fld" aria-hidden="true" style="position:absolute;left:-9999px;top:-9999px;height:0;width:0;overflow:hidden;">
+      <label class="lb">Webサイト</label><input type="text" name="_hp" tabindex="-1" autocomplete="off">
     </div>
     <div class="fld"><label class="lb">お名前<span class="req">必須</span></label><input type="text" name="name" required autocomplete="name"></div>
     <div class="fld"><label class="lb">店名・屋号</label><input type="text" name="company" autocomplete="organization" placeholder="例）麺屋 一徹"></div>
@@ -108,14 +112,30 @@ html,body{overflow-x:hidden;}
 <script>
 (function(){
   var EP='https://script.google.com/macros/s/AKfycbzftG_O0GsR_8_TYwUwSGfSFPMCjXscWfw0jmTIB54H8NrH0SnjgH445IDDOKoHnNt8XA/exec';
+  // Cloudflare Turnstileのサイトキー。Cloudflareアカウント側でウィジェット登録後にここへ設定する
+  // (会長のみ実行可能なアカウント作成が前提のため、登録が済むまでは空のままにして
+  // フォームは通常どおり動作させる。空の間はハニーポット＋経過時間チェックのみで運用)
+  var TURNSTILE_SITE_KEY='';
+  var formShownAt=Date.now();
   var f=document.getElementById('cform'); if(!f) return;
+  if(TURNSTILE_SITE_KEY){
+    try{
+      var ts=document.createElement('script');
+      ts.src='https://challenges.cloudflare.com/turnstile/v0/api.js'; ts.async=true; ts.defer=true;
+      document.head.appendChild(ts);
+      var tsDiv=document.createElement('div');
+      tsDiv.className='cf-turnstile'; tsDiv.setAttribute('data-sitekey',TURNSTILE_SITE_KEY);
+      tsDiv.setAttribute('data-size','flexible');
+      f.insertBefore(tsDiv, document.getElementById('csend'));
+    }catch(e){}
+  }
   try{
     var qs=new URLSearchParams(location.search);
     var q=qs.get('intent')||'';
     if(q.indexOf('資料')>=0){ f.querySelector('input[value="資料がほしい"]').checked=true; }
     var biz=qs.get('biz')||'';
     if(!biz){ var mm=q.match(/（(.+?)）/); if(mm) biz=mm[1]; }
-    if(biz==='AIアプリ開発') biz='業務アプリ開発';
+    if(biz==='AIアプリ開発'||biz==='業務アプリ開発') biz='自動化ツール開発';
     if(biz){ var bi=f.querySelector('input[name=biz][value="'+biz+'"]'); if(bi) bi.checked=true; }
     var msg=qs.get('msg'); if(msg){ f.message.value=msg; }
     if(document.referrer && history.length>1){
@@ -139,7 +159,10 @@ html,body{overflow-x:hidden;}
       phone:f.phone.value.trim(),
       genre:f.genre.value||'未選択',
       intent:intent,
-      message:f.message.value.trim()||'（内容の記載なし）'
+      message:f.message.value.trim()||'（内容の記載なし）',
+      _hp:(f._hp?f._hp.value:''),
+      _t:formShownAt,
+      _ts:(function(){ try{ return window.turnstile?window.turnstile.getResponse():''; }catch(e){ return ''; } })()
     };
     fetch(EP,{method:'POST',redirect:'follow',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)})
       .then(function(){ done(); }).catch(function(){ done(); });
