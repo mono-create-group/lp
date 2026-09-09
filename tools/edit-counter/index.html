@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>編集本数カウンター | mono.create</title>
+<style>
+:root{
+  --bg:#f4f5f7;
+  --card:#ffffff;
+  --fg:#111827;
+  --muted:#6b7280;
+  --line:#e3e6ea;
+  --sub:#eef0f3;
+  --accent:#1f5fd0;
+  --accent-fg:#ffffff;
+  --ok:#0f7043;
+  --focus:#1f5fd0;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0e1116;
+    --card:#171b21;
+    --fg:#e6e9ee;
+    --muted:#9aa3ae;
+    --line:#2a3038;
+    --sub:#20252c;
+    --accent:#3b7ddd;
+    --accent-fg:#ffffff;
+    --ok:#4bb37a;
+    --focus:#6ea8ff;
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  padding:0;
+  background:var(--bg);
+  color:var(--fg);
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif;
+  font-size:15px;
+  line-height:1.6;
+  word-break:keep-all;
+  overflow-wrap:normal;
+  font-variant-numeric:tabular-nums;
+}
+[hidden]{display:none !important}
+button{font:inherit;color:inherit}
+/* ---------- メイン画面 ---------- */
+.wrap{max-width:480px;margin:0 auto;padding:16px 16px 32px}
+.head{margin:0 0 12px}
+.head h1{margin:0;font-size:18px;font-weight:700;letter-spacing:.01em}
+.head .today{margin:4px 0 0;color:var(--muted);font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px;margin:0 0 12px}
+.count-row{display:flex;align-items:baseline;gap:8px;justify-content:center;margin:4px 0 12px}
+.count{font-size:72px;line-height:1;font-weight:700;letter-spacing:-.02em}
+.count-unit{font-size:16px;color:var(--muted)}
+.bar{height:8px;background:var(--sub);border-radius:4px;overflow:hidden}
+.bar > i{display:block;height:100%;width:0%;background:var(--accent);transition:width .15s linear}
+.bar.done > i{background:var(--ok)}
+.target-line{margin:8px 0 0;text-align:center;font-size:13px;color:var(--muted)}
+.target-line.done{color:var(--ok);font-weight:700}
+.btns{display:flex;gap:8px;margin:16px 0 0}
+.btn{
+  min-height:48px;padding:8px 16px;border-radius:6px;border:1px solid var(--line);
+  background:var(--sub);cursor:pointer;font-weight:700;font-size:15px;
+}
+.btn:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-primary{flex:2;background:var(--accent);color:var(--accent-fg);border-color:var(--accent);font-size:18px}
+.btn-secondary{flex:1}
+.btn-line{width:100%;min-height:44px;margin:0 0 4px}
+.row{display:flex;align-items:center;gap:8px;justify-content:space-between}
+.row label{font-size:14px}
+input[type=number]{
+  width:88px;min-height:44px;padding:4px 8px;font:inherit;font-size:16px;text-align:right;
+  border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--fg);
+  font-variant-numeric:tabular-nums;
+}
+input[type=number]:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+h2{margin:0 0 8px;font-size:14px;font-weight:700}
+.hint{margin:8px 0 0;font-size:12px;color:var(--muted)}
+.note{margin:8px 0 0;font-size:12px;color:var(--ok)}
+.sum{display:flex;gap:16px;margin:0 0 12px;font-size:13px;color:var(--muted)}
+.sum b{color:var(--fg);font-size:16px;font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:4px 8px;border-bottom:1px solid var(--line);text-align:left}
+th{color:var(--muted);font-weight:400;font-size:12px}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+td.mark,th.mark{text-align:center;width:32px}
+tr.is-today td{font-weight:700}
+td.ok{color:var(--ok);font-weight:700}
+.foot{margin:16px 0 0;font-size:12px;color:var(--muted);text-align:center}
+.m-head{display:flex;align-items:baseline;justify-content:space-between;margin:0 0 8px}
+.m-head h2{margin:0}
+.m-head .m-pct{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.m-big{display:flex;align-items:baseline;gap:4px;margin:0 0 8px}
+.m-big .m-rest{font-size:36px;line-height:1.1;font-weight:700;letter-spacing:-.02em}
+.m-big .m-rest-u{font-size:14px;color:var(--muted)}
+.m-big.done .m-rest{font-size:24px;color:var(--ok)}
+.bar-lg{height:12px;background:var(--sub);border-radius:6px;overflow:hidden}
+.bar-lg > i{display:block;height:100%;width:0%;background:var(--accent);transition:width .15s linear}
+.bar-lg.done > i{background:var(--ok)}
+.m-sub{margin:8px 0 0;font-size:13px;color:var(--muted)}
+.m-sub2{margin:4px 0 0;font-size:13px;color:var(--muted)}
+.m-diff{font-weight:700}
+.m-diff.ahead{color:var(--ok)}
+.m-diff.behind{color:#c0392b}
+@media (prefers-color-scheme: dark){.m-diff.behind{color:#f06b5a}}
+.row + .row{margin-top:12px}
+kbd{
+  display:inline-block;padding:0 4px;border:1px solid var(--line);border-radius:4px;
+  background:var(--sub);font-size:11px;font-family:inherit;
+}
+/* ---------- コンパクト画面（常時表示） ---------- */
+body.compact{
+  background:#111827;color:#ffffff;height:100%;overflow:hidden;
+}
+html:has(body.compact){height:100%}
+.c-wrap{
+  width:100%;height:100%;padding:8px;display:flex;flex-direction:column;
+  align-items:stretch;justify-content:flex-start;overflow:hidden;
+}
+.c-date{font-size:11px;line-height:1.2;color:#9ca3af;text-align:center}
+.c-count{font-size:64px;line-height:1.0;font-weight:700;text-align:center;letter-spacing:-.02em;color:#ffffff}
+.c-target{font-size:11px;line-height:1.3;text-align:center;color:#9ca3af;margin:0 0 6px}
+.c-target.done{color:#4ade80;font-weight:700}
+.c-month{font-size:11px;line-height:1.3;text-align:center;color:#cbd5e1;font-variant-numeric:tabular-nums}
+.c-month.done{color:#4ade80;font-weight:700}
+.c-mbar{height:4px;background:#374151;border-radius:2px;overflow:hidden;margin:4px 0 8px}
+.c-mbar > i{display:block;height:100%;width:0%;background:#2563eb}
+.c-mbar.done > i{background:#4ade80}
+.c-btns{display:flex;gap:8px;margin-top:auto}
+.c-btn{
+  min-height:44px;border-radius:6px;border:1px solid #374151;background:#1f2937;color:#ffffff;
+  cursor:pointer;font-weight:700;
+}
+.c-btn:disabled{opacity:.35;cursor:not-allowed}
+.c-plus{flex:2;font-size:20px;background:#2563eb;border-color:#2563eb}
+.c-minus{flex:1;font-size:14px}
+</style>
+</head>
+<body>
+
+<main class="wrap" id="main">
+  <header class="head">
+    <h1>今日の編集本数</h1>
+    <p class="today" data-el="date">—</p>
+  </header>
+
+  <section class="card">
+    <div class="count-row">
+      <span class="count" data-el="count">0</span><span class="count-unit">本</span>
+    </div>
+    <div class="bar" data-el="barWrap"><i data-el="bar"></i></div>
+    <p class="target-line" data-el="targetLine">—</p>
+    <div class="btns">
+      <button type="button" class="btn btn-primary" data-act="inc">＋1本</button>
+      <button type="button" class="btn btn-secondary" data-act="dec">−1</button>
+    </div>
+    <p class="hint"><kbd>Space</kbd> <kbd>Enter</kbd> <kbd>+</kbd> で ＋1 ／ <kbd>Backspace</kbd> <kbd>-</kbd> で −1</p>
+  </section>
+
+  <section class="card">
+    <div class="row">
+      <label for="target">1日の目標本数</label>
+      <input type="number" id="target" data-el="targetInput" min="0" max="99" step="1" value="3" inputmode="numeric">
+    </div>
+    <div class="row">
+      <label for="mtarget">月間目標</label>
+      <input type="number" id="mtarget" data-el="monthTargetInput" min="0" max="999" step="1" value="60" inputmode="numeric">
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="m-head">
+      <h2>今月の進捗</h2>
+      <span class="m-pct" data-el="monthPct">0%</span>
+    </div>
+    <div class="m-big" data-el="monthBig">
+      <span class="m-rest" data-el="monthRest">0</span><span class="m-rest-u" data-el="monthRestUnit">本</span>
+    </div>
+    <div class="bar-lg" data-el="monthBarWrap"><i data-el="monthBar"></i></div>
+    <p class="m-sub" data-el="monthSum">今月の合計 0本 / 月間目標 0本</p>
+    <p class="m-sub2" data-el="monthPace">—</p>
+    <p class="m-sub2" data-el="monthExpect">—</p>
+  </section>
+
+  <section class="card">
+    <button type="button" class="btn btn-line" data-el="pipBtn">常時表示ウィンドウを開く</button>
+    <p class="hint">小窓が他アプリより前面に出ます。Premiere Pro の横に置いて使ってください。</p>
+    <p class="note" data-el="pipNote" hidden></p>
+  </section>
+
+  <section class="card">
+    <h2>直近14日</h2>
+    <div class="sum">
+      <span>今月の合計 <b data-el="monthTotal">0</b>本</span>
+      <span>連続達成 <b data-el="streak">0</b>日</span>
+    </div>
+    <table>
+      <thead><tr><th>日付</th><th class="num">本数</th><th class="mark">達成</th></tr></thead>
+      <tbody data-el="history"></tbody>
+    </table>
+  </section>
+
+  <section class="card">
+    <h2>書き出し</h2>
+    <button type="button" class="btn btn-line" data-act="csv-copy" data-el="csvCopy">CSVをコピー</button>
+    <button type="button" class="btn btn-line" data-act="csv-dl">CSVをダウンロード</button>
+    <p class="hint">今月分（日付・本数・時刻一覧）を書き出します。</p>
+  </section>
+
+  <p class="foot">データはこのブラウザ内（localStorage）にのみ保存されます。</p>
+</main>
+
+<template id="tpl-compact">
+  <div class="c-wrap">
+    <div class="c-date" data-el="date">—</div>
+    <div class="c-count" data-el="count">0</div>
+    <div class="c-target" data-el="targetLine">—</div>
+    <div class="c-month" data-el="monthLine">—</div>
+    <div class="c-mbar" data-el="monthBarWrap"><i data-el="monthBar"></i></div>
+    <div class="c-btns">
+      <button type="button" class="c-btn c-plus" data-act="inc">＋1</button>
+      <button type="button" class="c-btn c-minus" data-act="dec">−1</button>
+    </div>
+  </div>
+</template>
+
+<script>
+var App = (function () {
+  'use strict';
+
+  var KEY = 'mc_edit_counter_v1';
+  var DEFAULT_TARGET = 3;
+  var DEFAULT_MONTH_TARGET = 60;
+  var WD = ['日', '月', '火', '水', '木', '金', '土'];
+
+  var state = { target: DEFAULT_TARGET, monthTarget: DEFAULT_MONTH_TARGET, days: {} };
+  var views = [];          // [{root, kind}]
+  var curKey = '';
+  var pipWin = null;
+  var storageOK = true;
+
+  /* ---------- 日付ユーティリティ（ローカル時刻のみ。toISOStringは使わない） ---------- */
+  function pad(n) { return n < 10 ? '0' + n : '' + n; }
+  function keyOf(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function todayKey() { return keyOf(new Date()); }
+  function dateFromKey(k) { var p = k.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  function shiftKey(k, n) { var d = dateFromKey(k); d.setDate(d.getDate() + n); return keyOf(d); }
+  function fmtJP(k) { var d = dateFromKey(k); return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日（' + WD[d.getDay()] + '）'; }
+  function fmtShort(k) { var d = dateFromKey(k); return (d.getMonth() + 1) + '/' + d.getDate() + '（' + WD[d.getDay()] + '）'; }
+  function fmtTime(iso) { var d = new Date(iso); return isNaN(d.getTime()) ? '' : pad(d.getHours()) + ':' + pad(d.getMinutes()); }
+
+  /* ---------- 保存・読み込み ---------- */
+  function normalize(o) {
+    var s = { target: DEFAULT_TARGET, monthTarget: DEFAULT_MONTH_TARGET, days: {} }, k, t, a;
+    if (o && typeof o === 'object') {
+      t = Number(o.target);
+      if (isFinite(t)) s.target = Math.max(0, Math.min(99, Math.floor(t)));
+      t = Number(o.monthTarget);
+      if (isFinite(t)) s.monthTarget = Math.max(0, Math.min(999, Math.floor(t)));
+      if (o.days && typeof o.days === 'object') {
+        for (k in o.days) {
+          a = o.days[k];
+          if (/^\d{4}-\d{2}-\d{2}$/.test(k) && Object.prototype.toString.call(a) === '[object Array]') {
+            s.days[k] = a.map(function (e) {
+              return { t: (e && e.t) || '', note: (e && e.note) || '' };
+            });
+          }
+        }
+      }
+    }
+    return s;
+  }
+  function load() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      state = normalize(raw ? JSON.parse(raw) : null);
+    } catch (e) {
+      storageOK = false;
+      state = normalize(null);
+    }
+  }
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); }
+    catch (e) { storageOK = false; }
+  }
+
+  /* ---------- 純関数（テスト対象） ---------- */
+  function reachedAt(target, c) { return target <= 0 ? c > 0 : c >= target; }
+
+  function computeStats(s, tk) {
+    s = s || {};
+    var days = s.days || {};
+    var target = Number(s.target) || 0;
+    function cnt(k) { var a = days[k]; return a && a.length ? a.length : 0; }
+
+    var ym = tk.slice(0, 7);
+    var monthTotal = 0, k;
+    for (k in days) { if (k.slice(0, 7) === ym && days[k] && days[k].length) monthTotal += days[k].length; }
+
+    var last14 = [], i, dk, c;
+    for (i = 0; i < 14; i++) {
+      dk = shiftKey(tk, -i);
+      c = cnt(dk);
+      last14.push({ date: dk, count: c, reached: reachedAt(target, c) });
+    }
+
+    var streak = 0;
+    var cur = reachedAt(target, cnt(tk)) ? tk : shiftKey(tk, -1);
+    for (i = 0; i < 366; i++) {
+      if (reachedAt(target, cnt(cur))) { streak++; cur = shiftKey(cur, -1); }
+      else break;
+    }
+
+    // ---- 月間目標 ----
+    var monthTarget = Number(s.monthTarget);
+    if (!isFinite(monthTarget) || monthTarget < 0) monthTarget = 0;
+    var td = dateFromKey(tk);
+    var dayOfMonth = td.getDate();
+    var daysInMonth = new Date(td.getFullYear(), td.getMonth() + 1, 0).getDate();
+    var daysLeft = daysInMonth - dayOfMonth + 1;              // 今日を含む残り日数
+    var monthRemaining = Math.max(0, monthTarget - monthTotal);
+    var perDayNeeded = monthRemaining > 0 ? Math.ceil(monthRemaining / daysLeft) : 0;
+    var expectedByToday = Math.round(monthTarget * dayOfMonth / daysInMonth);
+    var diffVsExpected = monthTotal - expectedByToday;
+    var monthPercent = monthTarget > 0 ? Math.min(100, Math.round(monthTotal / monthTarget * 100)) : 0;
+
+    return {
+      today: cnt(tk), monthTotal: monthTotal, streak: streak, last14: last14,
+      monthTarget: monthTarget, monthRemaining: monthRemaining,
+      daysInMonth: daysInMonth, daysLeft: daysLeft, perDayNeeded: perDayNeeded,
+      expectedByToday: expectedByToday, diffVsExpected: diffVsExpected,
+      monthPercent: monthPercent
+    };
+  }
+
+  /* ---------- 更新 ---------- */
+  function inc() {
+    var k = todayKey();
+    if (!state.days[k]) state.days[k] = [];
+    state.days[k].push({ t: new Date().toISOString(), note: '' });
+    save(); paint();
+  }
+  function dec() {
+    var k = todayKey(), a = state.days[k];
+    if (!a || a.length === 0) return;
+    a.pop();
+    if (a.length === 0) delete state.days[k];
+    save(); paint();
+  }
+  function setTarget(n) {
+    n = Math.max(0, Math.min(99, Math.floor(Number(n) || 0)));
+    state.target = n; save(); paint();
+  }
+  function setMonthTarget(n) {
+    n = Math.max(0, Math.min(999, Math.floor(Number(n) || 0)));
+    state.monthTarget = n; save(); paint();
+  }
+
+  /* ---------- 描画 ---------- */
+  function q(root, name) { return root.querySelector('[data-el="' + name + '"]'); }
+
+  function paint() {
+    curKey = todayKey();
+    var st = computeStats(state, curKey);
+    for (var i = 0; i < views.length; i++) paintView(views[i], st);
+  }
+
+  function paintView(v, st) {
+    var r = v.root, t = state.target, done = reachedAt(t, st.today);
+    var el;
+
+    el = q(r, 'date'); if (el) el.textContent = (v.kind === 'compact' ? fmtShort(curKey) : fmtJP(curKey));
+    el = q(r, 'count'); if (el) el.textContent = String(st.today);
+
+    el = q(r, 'targetLine');
+    if (el) {
+      el.textContent = (t <= 0) ? '目標なし' : (done ? '目標達成' : '目標 ' + t + '本 / 残り ' + (t - st.today) + '本');
+      el.className = (v.kind === 'compact' ? 'c-target' : 'target-line') + (done && t > 0 ? ' done' : '');
+    }
+
+    el = q(r, 'bar');
+    if (el) {
+      el.style.width = (t <= 0 ? (st.today > 0 ? 100 : 0) : Math.min(100, Math.round(st.today / t * 100))) + '%';
+      var w = q(r, 'barWrap'); if (w) w.className = 'bar' + (done && t > 0 ? ' done' : '');
+    }
+
+    el = r.querySelector('[data-act="dec"]'); if (el) el.disabled = (st.today <= 0);
+
+    var mDone = (st.monthTarget > 0 && st.monthTotal >= st.monthTarget);
+
+    el = q(r, 'monthBar');
+    if (el) {
+      el.style.width = st.monthPercent + '%';
+      var mw = q(r, 'monthBarWrap');
+      if (mw) mw.className = (v.kind === 'compact' ? 'c-mbar' : 'bar-lg') + (mDone ? ' done' : '');
+    }
+
+    el = q(r, 'monthLine');
+    if (el) {
+      el.textContent = (st.monthTarget <= 0)
+        ? ('今月 ' + st.monthTotal + '本')
+        : (mDone ? ('今月 ' + st.monthTotal + '/' + st.monthTarget + ' ・ 月間目標達成')
+                 : ('今月 ' + st.monthTotal + '/' + st.monthTarget + ' ・ あと ' + st.monthRemaining + '本'));
+      el.className = 'c-month' + (mDone ? ' done' : '');
+    }
+
+    if (v.kind !== 'main') return;
+
+    el = q(r, 'targetInput');
+    if (el && el !== r.ownerDocument.activeElement) el.value = String(t);
+    el = q(r, 'monthTargetInput');
+    if (el && el !== r.ownerDocument.activeElement) el.value = String(st.monthTarget);
+
+    el = q(r, 'monthPct'); if (el) el.textContent = st.monthPercent + '%';
+    el = q(r, 'monthRest'); if (el) el.textContent = mDone ? '月間目標達成' : ('あと ' + st.monthRemaining);
+    el = q(r, 'monthRestUnit'); if (el) el.textContent = mDone ? '' : '本';
+    el = q(r, 'monthBig'); if (el) el.className = 'm-big' + (mDone ? ' done' : '');
+    el = q(r, 'monthSum');
+    if (el) el.textContent = '今月の合計 ' + st.monthTotal + '本 / 月間目標 ' + st.monthTarget + '本';
+    el = q(r, 'monthPace');
+    if (el) {
+      el.textContent = mDone
+        ? ('残り ' + st.daysLeft + '日 → 1日あたり 0本ペースで達成')
+        : ('残り ' + st.daysLeft + '日 → 1日あたり ' + st.perDayNeeded + '本ペースで達成');
+    }
+    el = q(r, 'monthExpect');
+    if (el) {
+      var d = st.diffVsExpected;
+      var tag = (d > 0 ? '+' + d + '本 先行' : (d < 0 ? '−' + Math.abs(d) + '本 遅れ' : '目安どおり'));
+      var cls = (d > 0 ? 'm-diff ahead' : (d < 0 ? 'm-diff behind' : 'm-diff'));
+      el.innerHTML = '今日までの目安 ' + st.expectedByToday + '本　<span class="' + cls + '">' + tag + '</span>';
+    }
+
+    el = q(r, 'monthTotal'); if (el) el.textContent = String(st.monthTotal);
+    el = q(r, 'streak'); if (el) el.textContent = String(st.streak);
+
+    el = q(r, 'history');
+    if (el) {
+      var html = '', i, d;
+      for (i = 0; i < st.last14.length; i++) {
+        d = st.last14[i];
+        html += '<tr' + (i === 0 ? ' class="is-today"' : '') + '>' +
+          '<td>' + fmtShort(d.date) + '</td>' +
+          '<td class="num">' + d.count + '</td>' +
+          '<td class="mark' + (d.reached ? ' ok' : '') + '">' + (d.reached ? '✓' : '') + '</td>' +
+          '</tr>';
+      }
+      el.innerHTML = html;
+    }
+  }
+
+  /* ---------- CSV ---------- */
+  function csvText() {
+    var ym = todayKey().slice(0, 7);
+    var keys = Object.keys(state.days).filter(function (k) { return k.slice(0, 7) === ym; }).sort();
+    var out = '日付,本数,時刻一覧\n';
+    keys.forEach(function (k) {
+      var a = state.days[k];
+      var times = a.map(function (e) { return fmtTime(e.t); }).filter(Boolean).join(' ');
+      out += k + ',' + a.length + ',"' + times.replace(/"/g, '""') + '"\n';
+    });
+    return out;
+  }
+  var csvCopyTimer = null, csvCopyLabel = '';
+  function copyCsv(btn) {
+    var text = csvText();
+    var done = function () {
+      if (!btn) return;
+      if (csvCopyTimer) clearTimeout(csvCopyTimer);
+      else csvCopyLabel = btn.textContent;
+      btn.textContent = 'コピーしました';
+      csvCopyTimer = setTimeout(function () {
+        btn.textContent = csvCopyLabel;
+        csvCopyTimer = null;
+      }, 1600);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () { legacyCopy(text); done(); });
+    } else { legacyCopy(text); done(); }
+  }
+  function legacyCopy(text) {
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+      document.body.removeChild(ta);
+    } catch (e) { /* 何もしない */ }
+  }
+  function downloadCsv() {
+    var ym = todayKey().slice(0, 7);
+    var blob = new Blob(['﻿' + csvText()], { type: 'text/csv;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = '編集本数_' + ym + '.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+  }
+
+  /* ---------- 常時表示ウィンドウ ---------- */
+  function pipBtn() { return document.querySelector('[data-el="pipBtn"]'); }
+
+  function openFallback() {
+    var note = document.querySelector('[data-el="pipNote"]');
+    if (note) {
+      note.textContent = '常時最前面にするには Chrome 116以降が必要です（Safariは非対応）';
+      note.hidden = false;
+    }
+    try {
+      window.open(location.href.split('?')[0] + '?compact=1', 'mc_counter', 'popup,width=240,height=240');
+    } catch (e) { /* ポップアップ拒否時は注記のみ */ }
+  }
+
+  function openPip() {
+    var btn = pipBtn();
+    if (pipWin) { try { pipWin.close(); } catch (e) { } return; }
+    if (!window.documentPictureInPicture) { openFallback(); return; }
+
+    window.documentPictureInPicture.requestWindow({ width: 240, height: 210 }).then(function (w) {
+      pipWin = w;
+      var styles = document.querySelectorAll('style');
+      for (var i = 0; i < styles.length; i++) {
+        var c = w.document.createElement('style');
+        c.textContent = styles[i].textContent;
+        w.document.head.appendChild(c);
+      }
+      w.document.documentElement.lang = 'ja';
+      w.document.body.className = 'compact';
+      w.document.body.appendChild(document.getElementById('tpl-compact').content.cloneNode(true));
+
+      var root = w.document.body.querySelector('.c-wrap');
+      var view = { root: root, kind: 'compact' };
+      bindRoot(root);
+      bindKeys(w.document);
+      views.push(view);
+      paint();
+      if (btn) btn.textContent = '常時表示ウィンドウを閉じる';
+
+      w.addEventListener('pagehide', function () {
+        views = views.filter(function (x) { return x !== view; });
+        pipWin = null;
+        var b = pipBtn();
+        if (b) b.textContent = '常時表示ウィンドウを開く';
+      });
+    }, function () { openFallback(); });
+  }
+
+  /* ---------- イベント ---------- */
+  function bindRoot(root) {
+    root.addEventListener('click', function (ev) {
+      var b = ev.target.closest ? ev.target.closest('[data-act]') : null;
+      if (!b) return;
+      var a = b.getAttribute('data-act');
+      if (a === 'inc') inc();
+      else if (a === 'dec') dec();
+      else if (a === 'csv-copy') copyCsv(b);
+      else if (a === 'csv-dl') downloadCsv();
+    });
+  }
+
+  function isField(el) {
+    if (!el) return false;
+    var tag = (el.tagName || '').toLowerCase();
+    return tag === 'input' || tag === 'textarea' || tag === 'select' || el.isContentEditable === true;
+  }
+
+  function bindKeys(doc) {
+    doc.addEventListener('keydown', function (ev) {
+      if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
+      var el = ev.target;
+      if (isField(el)) return;
+      var onBtn = ((el && el.tagName) || '').toLowerCase() === 'button';
+      var k = ev.key;
+      if (k === ' ' || k === 'Spacebar' || k === 'Enter') {
+        if (onBtn) return;           // ボタン上は既定のclickに任せる（二重加算防止）
+        ev.preventDefault(); inc();
+      } else if (k === '+' || k === '＋') {
+        ev.preventDefault(); inc();
+      } else if (k === 'Backspace' || k === '-' || k === '−' || k === 'ー') {
+        ev.preventDefault(); dec();
+      }
+    });
+  }
+
+  function bindMain(root) {
+    var ti = q(root, 'targetInput');
+    if (ti) {
+      ti.addEventListener('input', function () { setTarget(ti.value); });
+      ti.addEventListener('change', function () { setTarget(ti.value); ti.value = String(state.target); });
+    }
+    var mi = q(root, 'monthTargetInput');
+    if (mi) {
+      mi.addEventListener('input', function () { setMonthTarget(mi.value); });
+      mi.addEventListener('change', function () { setMonthTarget(mi.value); mi.value = String(state.monthTarget); });
+    }
+    var pb = q(root, 'pipBtn');
+    if (pb) pb.addEventListener('click', openPip);
+  }
+
+  /* ---------- 起動 ---------- */
+  function init() {
+    load();
+    var compact = /[?&]compact=1/.test(location.search);
+    if (compact) {
+      document.body.className = 'compact';
+      var main = document.getElementById('main');
+      if (main) main.parentNode.removeChild(main);
+      document.body.appendChild(document.getElementById('tpl-compact').content.cloneNode(true));
+      var croot = document.body.querySelector('.c-wrap');
+      bindRoot(croot);
+      views.push({ root: croot, kind: 'compact' });
+    } else {
+      var mroot = document.getElementById('main');
+      bindRoot(mroot);
+      bindMain(mroot);
+      views.push({ root: mroot, kind: 'main' });
+    }
+    bindKeys(document);
+
+    window.addEventListener('storage', function (ev) {
+      if (ev.key && ev.key !== KEY) return;
+      load(); paint();
+    });
+
+    curKey = todayKey();
+    setInterval(function () { if (todayKey() !== curKey) paint(); }, 30000);
+
+    paint();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+
+  return {
+    computeStats: computeStats,
+    keyOf: keyOf,
+    todayKey: todayKey,
+    csvText: csvText,
+    getState: function () { return state; },
+    storageOK: function () { return storageOK; }
+  };
+})();
+</script>
+</body>
+</html>
