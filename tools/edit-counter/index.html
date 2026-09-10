@@ -111,6 +111,9 @@ td.ok{color:var(--ok);font-weight:700}
 .m-diff.ahead{color:var(--ok)}
 .m-diff.behind{color:var(--warn)}
 .row + .row{margin-top:12px}
+.row .lbl{font-size:14px}
+.row .lbl-v{font-size:14px;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+.t-tgt{color:var(--muted);font-size:11px;font-weight:400}
 kbd{
   display:inline-block;padding:0 4px;border:1px solid var(--line);border-radius:4px;
   background:var(--sub);font-size:11px;font-family:inherit;
@@ -205,6 +208,26 @@ html:has(body.compact){height:100%;overflow:hidden}
 .c-btn:disabled{opacity:.35;cursor:not-allowed}
 .c-plus{flex:2;font-size:20px;background:#2563eb;border-color:#2563eb}
 .c-minus{flex:1;font-size:14px}
+/* コンパクトの小さな調整行（今日だけの目標・ポモドーロ分） */
+.c-ctl{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin:0 0 6px}
+.c-ctl-l{font-size:10px;line-height:1.3;color:#9ca3af}
+.c-ctl-v{font-size:12px;line-height:1.3;font-weight:700;color:#ffffff;font-variant-numeric:tabular-nums}
+.c-ctl-chip{
+  padding:0 3px;border:1px solid #3b5e9e;border-radius:3px;
+  font-size:9px;line-height:1.6;color:#93b4f5;
+}
+.c-ctl-b{display:flex;gap:4px;margin-left:auto}
+.c-btn-s{
+  min-height:28px;min-width:26px;padding:0 4px;border-radius:5px;border:1px solid #374151;
+  background:#1f2937;color:#ffffff;cursor:pointer;font-weight:700;font-size:13px;line-height:1;
+  -webkit-app-region:no-drag;app-region:no-drag;
+}
+.c-btn-s.is-txt{min-width:0;padding:0 5px;font-size:10px}
+.c-btn-s:disabled{opacity:.35;cursor:not-allowed}
+.c-btn-s:focus-visible{outline:2px solid #6ea8ff;outline-offset:-2px}
+.c-pre{display:flex;gap:4px;margin:4px 0 0}
+.c-pre > .c-btn-s{flex:1}
+body.compact .tm .c-ctl{margin:4px 0 0}
 /* コンパクト側の色・寸法の上書き */
 body.compact .tm + .tm{margin-top:10px;padding-top:10px;border-top:1px solid #374151}
 body.compact .tm-h{color:#9ca3af;font-size:11px;margin:0 0 2px}
@@ -253,9 +276,14 @@ body.compact .tk-link{color:#93b4f5;-webkit-app-region:no-drag;app-region:no-dra
 
   <section class="card">
     <div class="row">
-      <label for="target">1日の目標本数</label>
-      <input type="number" id="target" data-el="targetInput" min="0" max="99" step="1" value="3" inputmode="numeric">
+      <span class="lbl">今日の目標（自動換算）</span>
+      <span class="lbl-v" data-el="autoTargetLine">—</span>
     </div>
+    <div class="row">
+      <label for="daytarget">今日だけの目標</label>
+      <input type="number" id="daytarget" data-el="dayTargetInput" min="0" max="99" step="1" placeholder="自動" inputmode="numeric">
+    </div>
+    <p class="note" data-el="dayTargetNote" hidden></p>
     <div class="row">
       <label for="mtarget">月間目標</label>
       <input type="number" id="mtarget" data-el="monthTargetInput" min="0" max="999" step="1" value="60" inputmode="numeric">
@@ -356,6 +384,16 @@ body.compact .tk-link{color:#93b4f5;-webkit-app-region:no-drag;app-region:no-dra
     <div class="c-pane" data-pane="count">
       <div class="c-count" data-el="count">0</div>
       <div class="c-target" data-el="targetLine">—</div>
+      <div class="c-ctl">
+        <span class="c-ctl-l">今日の目標</span>
+        <span class="c-ctl-v" data-el="dayTargetVal">—</span>
+        <span class="c-ctl-chip" data-el="dayTargetChip" hidden>今日だけ</span>
+        <span class="c-ctl-b">
+          <button type="button" class="c-btn-s" data-act="dt-dec" aria-label="今日だけの目標を1本減らす">−</button>
+          <button type="button" class="c-btn-s" data-act="dt-inc" aria-label="今日だけの目標を1本増やす">＋</button>
+          <button type="button" class="c-btn-s is-txt" data-act="dt-auto" data-el="dayTargetAuto" hidden>自動</button>
+        </span>
+      </div>
       <div class="c-month" data-el="monthLine">—</div>
       <div class="c-mbar" data-el="monthBarWrap"><i data-el="monthBar"></i></div>
       <div class="c-btns">
@@ -375,6 +413,27 @@ body.compact .tk-link{color:#93b4f5;-webkit-app-region:no-drag;app-region:no-dra
           <button type="button" class="tm-btn" data-act="pomo-reset">リセット</button>
         </div>
         <p class="tm-sub" data-el="pomoSets">今日 0 セット</p>
+        <div class="c-ctl">
+          <span class="c-ctl-l">作業</span>
+          <span class="c-ctl-v" data-el="workMinVal">25分</span>
+          <span class="c-ctl-b">
+            <button type="button" class="c-btn-s" data-act="work-dec" aria-label="作業分を5分減らす">−</button>
+            <button type="button" class="c-btn-s" data-act="work-inc" aria-label="作業分を5分増やす">＋</button>
+          </span>
+        </div>
+        <div class="c-ctl">
+          <span class="c-ctl-l">休憩</span>
+          <span class="c-ctl-v" data-el="breakMinVal">5分</span>
+          <span class="c-ctl-b">
+            <button type="button" class="c-btn-s" data-act="break-dec" aria-label="休憩分を1分減らす">−</button>
+            <button type="button" class="c-btn-s" data-act="break-inc" aria-label="休憩分を1分増やす">＋</button>
+          </span>
+        </div>
+        <div class="c-pre">
+          <button type="button" class="c-btn-s is-txt" data-act="preset-25-5">25/5</button>
+          <button type="button" class="c-btn-s is-txt" data-act="preset-50-10">50/10</button>
+          <button type="button" class="c-btn-s is-txt" data-act="preset-90-15">90/15</button>
+        </div>
       </div>
       <div class="tm">
         <p class="tm-h">ストップウォッチ（1本あたり）</p>
@@ -409,11 +468,12 @@ var App = (function () {
   var DEFAULT_MONTH_TARGET = 60;
   var DEFAULT_WORK_MIN = 25;
   var DEFAULT_BREAK_MIN = 5;
+  var DAY_TARGET_KEEP = 60;   // 今日だけの目標を残す日数（これより古い日は読み込み時に掃除）
   var PIP_W = 260, PIP_H = 380;
   var TABS = ['count', 'timer', 'tasks'];
   var WD = ['日', '月', '火', '水', '木', '金', '土'];
 
-  var state = { target: DEFAULT_TARGET, monthTarget: DEFAULT_MONTH_TARGET, days: {} };
+  var state = { target: DEFAULT_TARGET, monthTarget: DEFAULT_MONTH_TARGET, days: {}, dayTargets: {} };
   var tstate = defTimer();
   var views = [];          // [{root, kind}]
   var curKey = '';
@@ -444,12 +504,20 @@ var App = (function () {
 
   /* ---------- 保存・読み込み（カウンター） ---------- */
   function normalize(o) {
-    var s = { target: DEFAULT_TARGET, monthTarget: DEFAULT_MONTH_TARGET, days: {} }, k, t, a;
+    var s = { target: DEFAULT_TARGET, monthTarget: DEFAULT_MONTH_TARGET, days: {}, dayTargets: {} }, k, t, a;
     if (o && typeof o === 'object') {
+      // target は後方互換のため残すだけ。1日の目標としては使わない
       t = Number(o.target);
       if (isFinite(t)) s.target = Math.max(0, Math.min(99, Math.floor(t)));
       t = Number(o.monthTarget);
       if (isFinite(t)) s.monthTarget = Math.max(0, Math.min(999, Math.floor(t)));
+      if (o.dayTargets && typeof o.dayTargets === 'object') {
+        for (k in o.dayTargets) {
+          if (!/^\d{4}-\d{2}-\d{2}$/.test(k)) continue;
+          t = Number(o.dayTargets[k]);
+          if (isFinite(t) && t >= 0) s.dayTargets[k] = Math.max(0, Math.min(99, Math.floor(t)));
+        }
+      }
       if (o.days && typeof o.days === 'object') {
         for (k in o.days) {
           a = o.days[k];
@@ -466,10 +534,19 @@ var App = (function () {
     }
     return s;
   }
+  // 古い「今日だけの目標」を掃除する。消した件数を返す
+  function pruneDayTargets(s, tk) {
+    var limit = shiftKey(tk, -DAY_TARGET_KEEP), dt = s.dayTargets || {}, k, n = 0;
+    for (k in dt) {
+      if (k < limit) { delete dt[k]; n++; }
+    }
+    return n;
+  }
   function load() {
     try {
       var raw = localStorage.getItem(KEY);
       state = normalize(raw ? JSON.parse(raw) : null);
+      if (pruneDayTargets(state, todayKey()) > 0) save();
     } catch (e) {
       storageOK = false;
       state = normalize(null);
@@ -537,6 +614,55 @@ var App = (function () {
   /* ---------- 純関数（テスト対象） ---------- */
   function reachedAt(target, c) { return target <= 0 ? c > 0 : c >= target; }
 
+  function daysInMonthOf(dateKey) {
+    var d = dateFromKey(dateKey);
+    return new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+  }
+  // その日を含む、その月の残り日数
+  function daysLeftFrom(dateKey) {
+    return daysInMonthOf(dateKey) - dateFromKey(dateKey).getDate() + 1;
+  }
+  // 月間目標からの自動換算。その日より前の実績だけで決まる（当日の本数では動かない）
+  function autoCalc(s, dateKey) {
+    var mt = Number(s && s.monthTarget);
+    if (!isFinite(mt) || mt < 0) mt = 0;
+    var days = (s && s.days) || {}, ym = dateKey.slice(0, 7), k, before = 0;
+    for (k in days) {
+      if (k.slice(0, 7) === ym && k < dateKey && days[k] && days[k].length) before += days[k].length;
+    }
+    var left = daysLeftFrom(dateKey);
+    var remain = Math.max(0, mt - before);
+    var value = (mt <= 0 || left <= 0) ? 0 : Math.ceil(remain / left);
+    return { value: value, remain: remain, left: left, before: before, monthTarget: mt };
+  }
+  // その月に、その日までの実績が1件でもあるか
+  function monthHasEventsUpTo(s, dateKey) {
+    var days = (s && s.days) || {}, ym = dateKey.slice(0, 7), k;
+    for (k in days) {
+      if (k.slice(0, 7) === ym && k <= dateKey && days[k] && days[k].length) return true;
+    }
+    return false;
+  }
+  // その日の目標。dayTargets に整数があればそれが優先（source='day'）、無ければ自動換算。
+  // 使い始める前の日（その月に実績が1件もない過去日）は目標なし（value=null, source='none'）。今日は必ず自動換算する
+  function targetFor(s, dateKey, tk) {
+    var dt = (s && s.dayTargets) || {}, n;
+    if (Object.prototype.hasOwnProperty.call(dt, dateKey)) {
+      n = Number(dt[dateKey]);
+      if (isFinite(n) && n >= 0 && Math.floor(n) === n) return { value: n, source: 'day' };
+    }
+    if (dateKey !== (tk || todayKey()) && !monthHasEventsUpTo(s, dateKey)) {
+      return { value: null, source: 'none' };
+    }
+    return { value: autoCalc(s, dateKey).value, source: 'auto' };
+  }
+  // 目標オブジェクトに対する達成判定。value=null は常に未達成、明示の目標（source='day'）は0本でも達成
+  function reachedFor(tt, c) {
+    if (!tt || tt.value === null) return false;
+    if (tt.source === 'day') return c >= tt.value;
+    return reachedAt(tt.value, c);
+  }
+
   function durStats(s, k) {
     var days = (s && s.days) || {};
     var a = days[k] || [], arr = [], i, d;
@@ -557,24 +683,28 @@ var App = (function () {
   function computeStats(s, tk) {
     s = s || {};
     var days = s.days || {};
-    var target = Number(s.target) || 0;
     function cnt(k) { var a = days[k]; return a && a.length ? a.length : 0; }
+    function tgt(k) { return targetFor(s, k, tk); }
 
     var ym = tk.slice(0, 7);
     var monthTotal = 0, k;
     for (k in days) { if (k.slice(0, 7) === ym && days[k] && days[k].length) monthTotal += days[k].length; }
 
-    var last14 = [], i, dk, c;
+    var todayTarget = targetFor(s, tk, tk);
+    var auto = autoCalc(s, tk);
+
+    var last14 = [], i, dk, c, dt;
     for (i = 0; i < 14; i++) {
       dk = shiftKey(tk, -i);
       c = cnt(dk);
-      last14.push({ date: dk, count: c, reached: reachedAt(target, c), dur: durStats(s, dk) });
+      dt = tgt(dk);
+      last14.push({ date: dk, count: c, target: dt.value, targetSource: dt.source, reached: reachedFor(dt, c), dur: durStats(s, dk) });
     }
 
     var streak = 0;
-    var cur = reachedAt(target, cnt(tk)) ? tk : shiftKey(tk, -1);
+    var cur = reachedFor(todayTarget, cnt(tk)) ? tk : shiftKey(tk, -1);
     for (i = 0; i < 366; i++) {
-      if (reachedAt(target, cnt(cur))) { streak++; cur = shiftKey(cur, -1); }
+      if (reachedFor(tgt(cur), cnt(cur))) { streak++; cur = shiftKey(cur, -1); }
       else break;
     }
 
@@ -594,6 +724,7 @@ var App = (function () {
     return {
       today: cnt(tk), monthTotal: monthTotal, streak: streak, last14: last14,
       todayDur: durStats(s, tk),
+      todayTarget: todayTarget, autoTarget: auto.value, autoRemain: auto.remain,
       monthTarget: monthTarget, monthRemaining: monthRemaining,
       daysInMonth: daysInMonth, daysLeft: daysLeft, perDayNeeded: perDayNeeded,
       expectedByToday: expectedByToday, diffVsExpected: diffVsExpected,
@@ -618,9 +749,23 @@ var App = (function () {
     if (a.length === 0) delete state.days[k];
     save(); paint();
   }
-  function setTarget(n) {
-    n = Math.max(0, Math.min(99, Math.floor(Number(n) || 0)));
-    state.target = n; save(); paint();
+  // 今日だけの目標。空文字なら自動換算へ戻す
+  function setDayTarget(v) {
+    var k = todayKey(), n = Number(v);
+    if (!state.dayTargets) state.dayTargets = {};
+    if (v === '' || v === null || v === undefined || !isFinite(n)) { delete state.dayTargets[k]; }
+    else { state.dayTargets[k] = Math.max(0, Math.min(99, Math.floor(n))); }
+    save(); paint();
+  }
+  function clearDayTarget() {
+    if (state.dayTargets) delete state.dayTargets[todayKey()];
+    save(); paint();
+  }
+  // 現在の実効値（自動換算でも上書きでも）を起点に ±1 する
+  function bumpDayTarget(d) {
+    var k = todayKey();
+    var cur = targetFor(state, k, k).value;
+    setDayTarget(Math.max(0, (cur === null ? 0 : cur) + d));
   }
   function setMonthTarget(n) {
     n = Math.max(0, Math.min(999, Math.floor(Number(n) || 0)));
@@ -673,6 +818,18 @@ var App = (function () {
     if (!p.running && p.mode === 'break') p.remainMs = durOf(p, 'break');
     saveTimer(); paint();
   }
+  // コンパクト側の ± ボタン。作業は5分刻み（5〜180）、休憩は1分刻み（1〜60）
+  function bumpWorkMin(d) { setWorkMin(clampInt(tstate.pomo.workMin + d, 5, 180, DEFAULT_WORK_MIN)); }
+  function bumpBreakMin(d) { setBreakMin(clampInt(tstate.pomo.breakMin + d, 1, 60, DEFAULT_BREAK_MIN)); }
+  // プリセット（作業/休憩をまとめて切り替え）。走行中の endAt は動かさない
+  function setPreset(w, b) {
+    var p = tstate.pomo;
+    p.workMin = clampInt(w, 1, 180, DEFAULT_WORK_MIN);
+    p.breakMin = clampInt(b, 1, 120, DEFAULT_BREAK_MIN);
+    if (!p.running) p.remainMs = durOf(p, p.mode);
+    saveTimer(); paint();
+  }
+
   // 時間切れの処理。endAt 照合で1回だけ書き込む（先に気付いた文書が処理する）
   function pomoCheck() {
     var p = tstate.pomo;
@@ -961,6 +1118,18 @@ var App = (function () {
     el = act(r, 'pomo-start'); if (el) el.hidden = !!p.running;
     el = act(r, 'pomo-pause'); if (el) el.hidden = !p.running;
 
+    el = q(r, 'workMinVal'); if (el) el.textContent = p.workMin + '分';
+    el = q(r, 'breakMinVal'); if (el) el.textContent = p.breakMin + '分';
+    el = act(r, 'work-dec'); if (el) el.disabled = (p.workMin <= 5);
+    el = act(r, 'work-inc'); if (el) el.disabled = (p.workMin >= 180);
+    el = act(r, 'break-dec'); if (el) el.disabled = (p.breakMin <= 1);
+    el = act(r, 'break-inc'); if (el) el.disabled = (p.breakMin >= 60);
+    // メイン側の入力欄もここで同期する（他文書からの分変更を storage 経由で反映するため）
+    el = q(r, 'workMinInput');
+    if (el && el !== r.ownerDocument.activeElement) el.value = String(p.workMin);
+    el = q(r, 'breakMinInput');
+    if (el && el !== r.ownerDocument.activeElement) el.value = String(p.breakMin);
+
     el = q(r, 'swTime'); if (el) el.textContent = mmss(swElapsed());
     el = act(r, 'sw-start'); if (el) el.hidden = !!w.running;
     el = act(r, 'sw-done'); if (el) el.hidden = !w.running;
@@ -978,7 +1147,9 @@ var App = (function () {
   }
 
   function paintView(v, st) {
-    var r = v.root, t = state.target, done = reachedAt(t, st.today);
+    var r = v.root, tt = st.todayTarget, t = tt.value, isDay = (tt.source === 'day');
+    var done = reachedFor(tt, st.today);
+    var showDone = done && (t > 0 || isDay);
     var el;
 
     el = q(r, 'date'); if (el) el.textContent = (v.kind === 'compact' ? (fmtShort(curKey) + '・ドラッグで移動') : fmtJP(curKey));
@@ -986,17 +1157,27 @@ var App = (function () {
 
     el = q(r, 'targetLine');
     if (el) {
-      el.textContent = (t <= 0) ? '目標なし' : (done ? '目標達成' : '目標 ' + t + '本 / 残り ' + (t - st.today) + '本');
-      el.className = (v.kind === 'compact' ? 'c-target' : 'target-line') + (done && t > 0 ? ' done' : '');
+      el.textContent = (t === null)
+        ? '—'
+        : ((t <= 0)
+          ? (isDay ? '目標達成' : (st.monthTarget > 0 ? '月間目標達成済み' : '目標なし'))
+          : (done ? '目標達成' : '目標 ' + t + '本 / 残り ' + (t - st.today) + '本'));
+      el.className = (v.kind === 'compact' ? 'c-target' : 'target-line') + (showDone ? ' done' : '');
     }
 
     el = q(r, 'bar');
     if (el) {
-      el.style.width = (t <= 0 ? (st.today > 0 ? 100 : 0) : Math.min(100, Math.round(st.today / t * 100))) + '%';
-      var w = q(r, 'barWrap'); if (w) w.className = 'bar' + (done && t > 0 ? ' done' : '');
+      el.style.width = (!t || t <= 0 ? (st.today > 0 ? 100 : 0) : Math.min(100, Math.round(st.today / t * 100))) + '%';
+      var w = q(r, 'barWrap'); if (w) w.className = 'bar' + (showDone ? ' done' : '');
     }
 
     el = r.querySelector('[data-act="dec"]'); if (el) el.disabled = (st.today <= 0);
+
+    el = q(r, 'dayTargetVal'); if (el) el.textContent = (t === null ? '—' : t + '本');
+    el = q(r, 'dayTargetChip'); if (el) el.hidden = !isDay;
+    el = q(r, 'dayTargetAuto'); if (el) el.hidden = !isDay;
+    el = act(r, 'dt-dec'); if (el) el.disabled = (t !== null && t <= 0);
+    el = act(r, 'dt-inc'); if (el) el.disabled = (t !== null && t >= 99);
 
     var mDone = (st.monthTarget > 0 && st.monthTotal >= st.monthTarget);
 
@@ -1018,15 +1199,23 @@ var App = (function () {
 
     if (v.kind !== 'main') return;
 
-    el = q(r, 'targetInput');
-    if (el && el !== r.ownerDocument.activeElement) el.value = String(t);
+    el = q(r, 'autoTargetLine');
+    if (el) {
+      el.textContent = (st.monthTarget <= 0)
+        ? '目標なし'
+        : (st.autoTarget <= 0
+          ? '月間目標達成済み'
+          : (st.autoTarget + '本 — 残り' + st.autoRemain + '本 ÷ ' + st.daysLeft + '日'));
+    }
+    el = q(r, 'dayTargetInput');
+    if (el && el !== r.ownerDocument.activeElement) el.value = isDay ? String(t) : '';
+    el = q(r, 'dayTargetNote');
+    if (el) {
+      el.textContent = isDay ? ('今日だけ ' + t + '本（明日からは自動に戻ります）') : '';
+      el.hidden = !isDay;
+    }
     el = q(r, 'monthTargetInput');
     if (el && el !== r.ownerDocument.activeElement) el.value = String(st.monthTarget);
-    el = q(r, 'workMinInput');
-    if (el && el !== r.ownerDocument.activeElement) el.value = String(tstate.pomo.workMin);
-    el = q(r, 'breakMinInput');
-    if (el && el !== r.ownerDocument.activeElement) el.value = String(tstate.pomo.breakMin);
-
     el = q(r, 'monthPct'); if (el) el.textContent = st.monthPercent + '%';
     el = q(r, 'monthRest'); if (el) el.textContent = mDone ? '月間目標達成' : ('あと ' + st.monthRemaining);
     el = q(r, 'monthRestUnit'); if (el) el.textContent = mDone ? '' : '本';
@@ -1058,7 +1247,7 @@ var App = (function () {
         av = dd.dur ? (toMin(dd.dur.avg) + '分') : '';
         html += '<tr' + (i === 0 ? ' class="is-today"' : '') + '>' +
           '<td>' + fmtShort(dd.date) + '</td>' +
-          '<td class="num">' + dd.count + '</td>' +
+          '<td class="num">' + dd.count + ' <span class="t-tgt">/ ' + (dd.target === null ? '—' : dd.target) + '</span></td>' +
           '<td class="num">' + av + '</td>' +
           '<td class="mark' + (dd.reached ? ' ok' : '') + '">' + (dd.reached ? '✓' : '') + '</td>' +
           '</tr>';
@@ -1094,13 +1283,14 @@ var App = (function () {
 
   /* ---------- CSV ---------- */
   function csvText() {
-    var ym = todayKey().slice(0, 7);
+    var tk = todayKey(), ym = tk.slice(0, 7);
     var keys = Object.keys(state.days).filter(function (k) { return k.slice(0, 7) === ym; }).sort();
-    var out = '日付,本数,時刻一覧\n';
+    var out = '日付,本数,目標,時刻一覧\n';
     keys.forEach(function (k) {
       var a = state.days[k];
       var times = a.map(function (e) { return fmtTime(e.t); }).filter(Boolean).join(' ');
-      out += k + ',' + a.length + ',"' + times.replace(/"/g, '""') + '"\n';
+      var tv = targetFor(state, k, tk).value;
+      out += k + ',' + a.length + ',' + (tv === null ? '—' : tv) + ',"' + times.replace(/"/g, '""') + '"\n';
     });
     return out;
   }
@@ -1227,6 +1417,16 @@ var App = (function () {
       else if (a === 'sw-start') swStart();
       else if (a === 'sw-done') swDone();
       else if (a === 'sw-abort') swAbort();
+      else if (a === 'dt-inc') bumpDayTarget(1);
+      else if (a === 'dt-dec') bumpDayTarget(-1);
+      else if (a === 'dt-auto') clearDayTarget();
+      else if (a === 'work-inc') bumpWorkMin(5);
+      else if (a === 'work-dec') bumpWorkMin(-5);
+      else if (a === 'break-inc') bumpBreakMin(1);
+      else if (a === 'break-dec') bumpBreakMin(-1);
+      else if (a === 'preset-25-5') setPreset(25, 5);
+      else if (a === 'preset-50-10') setPreset(50, 10);
+      else if (a === 'preset-90-15') setPreset(90, 15);
     });
   }
 
@@ -1258,10 +1458,14 @@ var App = (function () {
   }
 
   function bindMain(root) {
-    var ti = q(root, 'targetInput');
+    var ti = q(root, 'dayTargetInput');
     if (ti) {
-      ti.addEventListener('input', function () { setTarget(ti.value); });
-      ti.addEventListener('change', function () { setTarget(ti.value); ti.value = String(state.target); });
+      ti.addEventListener('input', function () { setDayTarget(ti.value === '' ? '' : ti.value); });
+      ti.addEventListener('change', function () {
+        setDayTarget(ti.value === '' ? '' : ti.value);
+        var tt = targetFor(state, todayKey());
+        ti.value = (tt.source === 'day') ? String(tt.value) : '';
+      });
     }
     var mi = q(root, 'monthTargetInput');
     if (mi) {
@@ -1339,6 +1543,9 @@ var App = (function () {
 
   return {
     computeStats: computeStats,
+    targetFor: targetFor,
+    reachedFor: reachedFor,
+    daysLeftFrom: daysLeftFrom,
     durStats: durStats,
     groupTasks: groupTasks,
     keyOf: keyOf,
