@@ -122,6 +122,8 @@ html:has(body.compact){height:100%}
 .c-wrap{
   width:100%;height:100%;padding:8px;display:flex;flex-direction:column;
   align-items:stretch;justify-content:flex-start;overflow:hidden;
+  -webkit-app-region:drag;app-region:drag;cursor:move;
+  -webkit-user-select:none;user-select:none;
 }
 .c-date{font-size:11px;line-height:1.2;color:#9ca3af;text-align:center}
 .c-count{font-size:64px;line-height:1.0;font-weight:700;text-align:center;letter-spacing:-.02em;color:#ffffff}
@@ -136,6 +138,7 @@ html:has(body.compact){height:100%}
 .c-btn{
   min-height:44px;border-radius:6px;border:1px solid #374151;background:#1f2937;color:#ffffff;
   cursor:pointer;font-weight:700;
+  -webkit-app-region:no-drag;app-region:no-drag;
 }
 .c-btn:disabled{opacity:.35;cursor:not-allowed}
 .c-plus{flex:2;font-size:20px;background:#2563eb;border-color:#2563eb}
@@ -375,7 +378,7 @@ var App = (function () {
     var r = v.root, t = state.target, done = reachedAt(t, st.today);
     var el;
 
-    el = q(r, 'date'); if (el) el.textContent = (v.kind === 'compact' ? fmtShort(curKey) : fmtJP(curKey));
+    el = q(r, 'date'); if (el) el.textContent = (v.kind === 'compact' ? (fmtShort(curKey) + '・ドラッグで移動') : fmtJP(curKey));
     el = q(r, 'count'); if (el) el.textContent = String(st.today);
 
     el = q(r, 'targetLine');
@@ -521,7 +524,15 @@ var App = (function () {
     if (pipWin) { try { pipWin.close(); } catch (e) { } return; }
     if (!window.documentPictureInPicture) { openFallback(); return; }
 
-    window.documentPictureInPicture.requestWindow({ width: 240, height: 210 }).then(function (w) {
+    var pipW = 240, pipH = 210;
+    try {
+      var sw = parseInt(localStorage.getItem('mc_pip_w'), 10);
+      var sh = parseInt(localStorage.getItem('mc_pip_h'), 10);
+      if (isFinite(sw) && sw > 0) pipW = sw;
+      if (isFinite(sh) && sh > 0) pipH = sh;
+    } catch (e) { /* 無視 */ }
+
+    window.documentPictureInPicture.requestWindow({ width: pipW, height: pipH }).then(function (w) {
       pipWin = w;
       var styles = document.querySelectorAll('style');
       for (var i = 0; i < styles.length; i++) {
@@ -540,6 +551,13 @@ var App = (function () {
       views.push(view);
       paint();
       if (btn) btn.textContent = '常時表示ウィンドウを閉じる';
+
+      w.addEventListener('resize', function () {
+        try {
+          localStorage.setItem('mc_pip_w', String(w.innerWidth));
+          localStorage.setItem('mc_pip_h', String(w.innerHeight));
+        } catch (e) { /* 無視 */ }
+      });
 
       w.addEventListener('pagehide', function () {
         views = views.filter(function (x) { return x !== view; });
