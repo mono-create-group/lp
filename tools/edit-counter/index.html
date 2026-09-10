@@ -118,6 +118,33 @@ kbd{
   display:inline-block;padding:0 4px;border:1px solid var(--line);border-radius:4px;
   background:var(--sub);font-size:11px;font-family:inherit;
 }
+/* ---------- 編集時間の記録（メイン） ---------- */
+.sub-h{margin:16px 0 6px;font-size:13px;font-weight:700}
+input[type=text]{
+  width:100%;min-height:44px;padding:4px 8px;font:inherit;font-size:16px;
+  border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--fg);
+}
+input[type=text]:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+.nm{margin:0 0 8px}
+.nm-l{display:block;margin:6px 0 2px;font-size:12px;color:var(--muted)}
+.nm-l:first-child{margin-top:0}
+tr.acc-r{cursor:pointer}
+tr.acc-r.is-open td{font-weight:700}
+tr.acc-exp td{background:var(--sub);font-size:12px;color:var(--muted)}
+.acc-l{font-variant-numeric:tabular-nums;line-height:1.5}
+.acc-empty{margin:6px 0 0;font-size:12px;color:var(--muted)}
+.ev{
+  display:flex;align-items:center;gap:8px;padding:5px 0;
+  border-bottom:1px solid var(--line);font-size:13px;
+}
+.ev-d{flex:none;width:48px;color:var(--muted);font-variant-numeric:tabular-nums}
+.ev-n{flex:1;min-width:0;overflow-wrap:break-word}
+.ev-t{flex:none;font-weight:700;font-variant-numeric:tabular-nums}
+.ev-x{
+  flex:none;min-height:28px;padding:0 8px;border:1px solid var(--line);border-radius:5px;
+  background:var(--sub);font-size:11px;font-weight:700;cursor:pointer;
+}
+.ev-x:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
 /* ---------- タイマー（メイン・コンパクト共用） ---------- */
 .tm{margin:0}
 .tm + .tm{margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
@@ -173,7 +200,7 @@ html:has(body.compact){height:100%;overflow:hidden}
   -webkit-user-select:none;user-select:none;
 }
 .c-tabs{
-  display:flex;height:36px;min-height:36px;background:#0b0f16;border-bottom:1px solid #374151;
+  display:flex;flex:0 0 auto;height:36px;min-height:36px;background:#0b0f16;border-bottom:1px solid #374151;
 }
 .c-tab{
   flex:1;min-width:0;padding:0 2px;border:0;background:transparent;color:#9ca3af;
@@ -190,7 +217,11 @@ html:has(body.compact){height:100%;overflow:hidden}
 .c-pane::-webkit-scrollbar{width:6px}
 .c-pane::-webkit-scrollbar-thumb{background:#4b5563;border-radius:3px}
 .c-pane::-webkit-scrollbar-track{background:transparent}
-.c-date{font-size:11px;line-height:1.3;color:#9ca3af;text-align:center;padding:3px 6px 0}
+.c-date{
+  flex:0 0 auto;font-size:11px;line-height:1.3;color:#9ca3af;text-align:center;
+  padding:3px 6px 4px;background:#111827;border-bottom:1px solid #374151;position:relative;z-index:1;
+  -webkit-app-region:drag;app-region:drag;cursor:move;
+}
 .c-count{font-size:52px;line-height:1.0;font-weight:700;text-align:center;letter-spacing:-.02em;color:#ffffff}
 .c-target{font-size:11px;line-height:1.3;text-align:center;color:#9ca3af;margin:0 0 6px}
 .c-target.done{color:#4ade80;font-weight:700}
@@ -241,6 +272,24 @@ body.compact .tm-btn{
 }
 body.compact .tm-btn.is-main{background:#2563eb;border-color:#2563eb}
 body.compact .tm-sub,body.compact .tm-sub2{color:#9ca3af;font-size:11px}
+/* ---------- クライアント名・アカウント名（タイマー共用） ---------- */
+.tm-name{
+  margin:0 0 2px;font-size:13px;line-height:1.4;text-align:center;font-weight:700;
+  overflow-wrap:break-word;font-variant-numeric:tabular-nums;
+}
+.tm-warn{margin:6px 0 0;font-size:12px;line-height:1.4;color:var(--warn);text-align:center}
+.tm-acc{margin:4px 0 0;font-size:12px;line-height:1.4;color:var(--muted);text-align:center}
+.c-nm{display:flex;flex-direction:column;gap:4px;margin:4px 0 0}
+body.compact .c-in{
+  width:100%;min-height:28px;height:28px;padding:2px 6px;font:inherit;font-size:12px;line-height:1.2;
+  border:1px solid #374151;border-radius:5px;background:#1f2937;color:#ffffff;
+  -webkit-app-region:no-drag;app-region:no-drag;
+}
+body.compact .c-in::placeholder{color:#9ca3af}
+body.compact .c-in:focus-visible{outline:2px solid #6ea8ff;outline-offset:-2px}
+body.compact .tm-name{color:#ffffff;font-size:12px}
+body.compact .tm-warn{color:#f6a5a0;font-size:11px;margin:4px 0 0}
+body.compact .tm-acc{color:#9ca3af;font-size:11px}
 body.compact .tk{background:#1f2937;border-color:#374151;border-left-color:#374151}
 body.compact .tk-now{background:#111827;border-left-color:#2563eb;box-shadow:0 0 0 1px #2563eb inset}
 body.compact .tk-over{border-left-color:#f06b5a}
@@ -313,12 +362,22 @@ body.compact .tk-link{color:#93b4f5;-webkit-app-region:no-drag;app-region:no-dra
     </div>
     <div class="tm">
       <p class="tm-h">ストップウォッチ（1本あたりの編集時間）</p>
+      <div class="nm" data-el="swNameBox">
+        <label class="nm-l" for="swclient">クライアント名</label>
+        <input type="text" id="swclient" data-el="swClient" list="dl-client" maxlength="40" autocomplete="off" placeholder="例 A社">
+        <datalist id="dl-client" data-el="dlClient"></datalist>
+        <label class="nm-l" for="swaccount">アカウント名（任意）</label>
+        <input type="text" id="swaccount" data-el="swAccount" list="dl-account" maxlength="40" autocomplete="off" placeholder="例 メインch">
+        <datalist id="dl-account" data-el="dlAccount"></datalist>
+      </div>
+      <p class="tm-name" data-el="swNameRun" hidden>—</p>
       <div class="tm-time" data-el="swTime">00:00</div>
       <div class="tm-btns">
         <button type="button" class="tm-btn is-main" data-act="sw-start">編集開始</button>
         <button type="button" class="tm-btn is-main" data-act="sw-done" hidden>完了 ＋1本</button>
         <button type="button" class="tm-btn" data-act="sw-abort" hidden>中断</button>
       </div>
+      <p class="tm-warn" data-el="swNameHint" hidden>クライアント名を入力してください</p>
       <p class="tm-sub" data-el="swAvg">今日の平均 —</p>
       <p class="tm-sub2" data-el="swMinMax"></p>
     </div>
@@ -363,10 +422,26 @@ body.compact .tk-link{color:#93b4f5;-webkit-app-region:no-drag;app-region:no-dra
   </section>
 
   <section class="card">
+    <h2>編集時間の記録</h2>
+    <p class="m-sub" data-el="allSum">全期間 —</p>
+    <p class="m-sub2" data-el="allMinMax"></p>
+    <h3 class="sub-h">アカウント別</h3>
+    <table>
+      <thead><tr><th>クライアント</th><th>アカウント</th><th class="num">本数</th><th class="num">平均</th><th class="num">最終日</th></tr></thead>
+      <tbody data-el="accTable"></tbody>
+    </table>
+    <p class="acc-empty" data-el="accEmpty" hidden>まだ記録がありません</p>
+    <h3 class="sub-h">直近の記録</h3>
+    <div data-el="recentList"></div>
+  </section>
+
+  <section class="card">
     <h2>書き出し</h2>
     <button type="button" class="btn btn-line" data-act="csv-copy" data-el="csvCopy">CSVをコピー</button>
     <button type="button" class="btn btn-line" data-act="csv-dl">CSVをダウンロード</button>
     <p class="hint">今月分（日付・本数・時刻一覧）を書き出します。</p>
+    <button type="button" class="btn btn-line" data-act="ev-csv-dl">編集ログCSV</button>
+    <p class="hint">全期間の1本ごと（日付・時刻・クライアント・アカウント・所要分）を書き出します。</p>
   </section>
 
   <p class="foot">データはこのブラウザ内（localStorage）にのみ保存されます。</p>
@@ -437,12 +512,21 @@ body.compact .tk-link{color:#93b4f5;-webkit-app-region:no-drag;app-region:no-dra
       </div>
       <div class="tm">
         <p class="tm-h">ストップウォッチ（1本あたり）</p>
+        <div class="c-nm" data-el="swNameBox">
+          <input type="text" class="c-in" data-el="swClient" list="dl-client" maxlength="40" autocomplete="off" placeholder="クライアント名" aria-label="クライアント名">
+          <datalist id="dl-client" data-el="dlClient"></datalist>
+          <input type="text" class="c-in" data-el="swAccount" list="dl-account" maxlength="40" autocomplete="off" placeholder="アカウント名（任意）" aria-label="アカウント名（任意）">
+          <datalist id="dl-account" data-el="dlAccount"></datalist>
+        </div>
+        <p class="tm-name" data-el="swNameRun" hidden>—</p>
         <div class="tm-time" data-el="swTime">00:00</div>
         <div class="tm-btns">
           <button type="button" class="tm-btn is-main" data-act="sw-start">編集開始</button>
           <button type="button" class="tm-btn is-main" data-act="sw-done" hidden>完了 ＋1本</button>
           <button type="button" class="tm-btn" data-act="sw-abort" hidden>中断</button>
         </div>
+        <p class="tm-warn" data-el="swNameHint" hidden>クライアント名を入力してください</p>
+        <p class="tm-acc" data-el="swAcc">このアカウント 記録なし</p>
         <p class="tm-sub" data-el="swAvg">今日の平均 —</p>
         <p class="tm-sub2" data-el="swMinMax"></p>
       </div>
@@ -473,11 +557,14 @@ var App = (function () {
   var TABS = ['count', 'timer', 'tasks'];
   var WD = ['日', '月', '火', '水', '木', '金', '土'];
 
-  var state = { target: DEFAULT_TARGET, monthTarget: DEFAULT_MONTH_TARGET, days: {}, dayTargets: {} };
+  var MAX_NAME = 40;          // クライアント名・アカウント名の最大文字数
+  var RECENT_MAX = 20;        // 入力候補として残す件数
+  var state = defState();
   var tstate = defTimer();
   var views = [];          // [{root, kind}]
   var curKey = '';
   var curTab = 'count';
+  var openAcc = '';        // 「編集時間の記録」で開いているアカウント行
   var pipWin = null;
   var pipReq = false;
   var storageOK = true;
@@ -502,9 +589,81 @@ var App = (function () {
     return Math.max(lo, Math.min(hi, n));
   }
 
+  /* ---------- 名前（クライアント・アカウント）の正規化 ---------- */
+  // 保存・比較用。前後の空白を落とし、連続する空白を1つにまとめ、40文字で切る
+  function cleanName(v) {
+    var t = (typeof v === 'string') ? v : (v === null || v === undefined ? '' : String(v));
+    t = t.replace(/[\s\u3000]+/g, ' ').replace(/^ +/, '').replace(/ +$/, '');
+    return t.length > MAX_NAME ? t.slice(0, MAX_NAME) : t;
+  }
+  // 入力欄にそのまま戻す用。途中の空白は残すが改行と長さだけ抑える
+  function rawName(v) {
+    var t = (typeof v === 'string') ? v : (v === null || v === undefined ? '' : String(v));
+    t = t.replace(/[\r\n\t]+/g, ' ');
+    return t.length > MAX_NAME ? t.slice(0, MAX_NAME) : t;
+  }
+  function normNameList(a) {
+    var out = [], seen = Object.create(null), i, v;
+    if (Object.prototype.toString.call(a) !== '[object Array]') return out;
+    for (i = 0; i < a.length; i++) {
+      v = cleanName(a[i]);
+      if (!v || seen[v]) continue;
+      seen[v] = 1;
+      out.push(v);
+      if (out.length >= RECENT_MAX) break;
+    }
+    return out;
+  }
+  function pushRecent(arr, v) {
+    var i = arr.indexOf(v);
+    if (i >= 0) arr.splice(i, 1);
+    arr.unshift(v);
+    if (arr.length > RECENT_MAX) arr.length = RECENT_MAX;
+    return arr;
+  }
+  // 自前のキーだけを見る（'constructor' や 'toString' という名前でも Object.prototype を拾わない）
+  function ownArr(o, k) {
+    if (!o || !Object.prototype.hasOwnProperty.call(o, k)) return null;
+    return Object.prototype.toString.call(o[k]) === '[object Array]' ? o[k] : null;
+  }
+  // 使ったクライアント・アカウントを候補の先頭へ動かす
+  function touchRecent(client, account) {
+    if (!state.recent) state.recent = { clients: [], accounts: {} };
+    var r = state.recent;
+    if (!client) return;
+    pushRecent(r.clients, client);
+    if (!account) return;
+    if (!ownArr(r.accounts, client)) r.accounts[client] = [];
+    if (ownArr(r.accounts, client)) pushRecent(r.accounts[client], account);
+  }
+  // 入力中のクライアントに紐づくアカウント候補。無ければ全クライアント分をまとめて返す
+  function accountSuggest(client) {
+    var r = state.recent || { clients: [], accounts: {} };
+    var c = cleanName(client), own = c ? ownArr(r.accounts, c) : null;
+    var out = [], seen = Object.create(null), k, a, i;
+    if (own && own.length) return own.slice(0, RECENT_MAX);
+    for (k in r.accounts) {
+      a = ownArr(r.accounts, k);
+      if (!a) continue;
+      for (i = 0; i < a.length; i++) {
+        if (seen[a[i]]) continue;
+        seen[a[i]] = 1;
+        out.push(a[i]);
+        if (out.length >= RECENT_MAX) return out;
+      }
+    }
+    return out;
+  }
+
   /* ---------- 保存・読み込み（カウンター） ---------- */
+  function defState() {
+    return {
+      target: DEFAULT_TARGET, monthTarget: DEFAULT_MONTH_TARGET,
+      days: {}, dayTargets: {}, recent: { clients: [], accounts: {} }
+    };
+  }
   function normalize(o) {
-    var s = { target: DEFAULT_TARGET, monthTarget: DEFAULT_MONTH_TARGET, days: {}, dayTargets: {} }, k, t, a;
+    var s = defState(), k, t, a, ck, cl;
     if (o && typeof o === 'object') {
       // target は後方互換のため残すだけ。1日の目標としては使わない
       t = Number(o.target);
@@ -526,8 +685,22 @@ var App = (function () {
               var ev = { t: (e && e.t) || '', note: (e && e.note) || '' };
               var d = e ? Number(e.dur) : 0;
               if (isFinite(d) && d > 0) ev.dur = Math.round(d);
+              // 旧データ（client 無し）は '' のまま。表示側で「未設定」にする
+              ev.client = cleanName(e && e.client);
+              ev.account = cleanName(e && e.account);
               return ev;
             });
+          }
+        }
+      }
+      if (o.recent && typeof o.recent === 'object') {
+        s.recent.clients = normNameList(o.recent.clients);
+        if (o.recent.accounts && typeof o.recent.accounts === 'object') {
+          for (k in o.recent.accounts) {
+            ck = cleanName(k);
+            if (!ck) continue;
+            cl = normNameList(o.recent.accounts[k]);
+            if (cl.length) s.recent.accounts[ck] = cl;
           }
         }
       }
@@ -564,7 +737,7 @@ var App = (function () {
         mode: 'work', running: false, endAt: 0, remainMs: 25 * 60000,
         workMin: 25, breakMin: 5, sets: {}
       },
-      sw: { running: false, startAt: 0, accMs: 0 }
+      sw: { running: false, startAt: 0, accMs: 0, client: '', account: '' }
     };
   }
   function normTimer(o) {
@@ -595,6 +768,8 @@ var App = (function () {
         s.sw.running = !!w.running;
         n = Number(w.startAt); s.sw.startAt = isFinite(n) && n > 0 ? n : 0;
         n = Number(w.accMs); s.sw.accMs = isFinite(n) && n >= 0 ? n : 0;
+        s.sw.client = rawName(w.client);
+        s.sw.account = rawName(w.account);
         if (s.sw.running && !s.sw.startAt) s.sw.running = false;
       }
     }
@@ -644,14 +819,18 @@ var App = (function () {
     return false;
   }
   // その日の目標。dayTargets に整数があればそれが優先（source='day'）、無ければ自動換算。
-  // 使い始める前の日（その月に実績が1件もない過去日）は目標なし（value=null, source='none'）。今日は必ず自動換算する
+  // 今月以外の日と、使い始める前の日（その月に実績が1件もない過去日）は目標なし（value=null, source='none'）。今日は必ず自動換算する
   function targetFor(s, dateKey, tk) {
-    var dt = (s && s.dayTargets) || {}, n;
+    var dt = (s && s.dayTargets) || {}, n, today = tk || todayKey();
     if (Object.prototype.hasOwnProperty.call(dt, dateKey)) {
       n = Number(dt[dateKey]);
       if (isFinite(n) && n >= 0 && Math.floor(n) === n) return { value: n, source: 'day' };
     }
-    if (dateKey !== (tk || todayKey()) && !monthHasEventsUpTo(s, dateKey)) {
+    // 今月以外の日は自動換算しない（今の月間目標と残り日数で決めると過去日が不当に大きくなる）
+    if (String(dateKey).slice(0, 7) !== String(today).slice(0, 7)) {
+      return { value: null, source: 'none' };
+    }
+    if (dateKey !== today && !monthHasEventsUpTo(s, dateKey)) {
       return { value: null, source: 'none' };
     }
     return { value: autoCalc(s, dateKey).value, source: 'auto' };
@@ -678,6 +857,105 @@ var App = (function () {
       if (arr[i] > mx) mx = arr[i];
     }
     return { n: arr.length, avg: sum / arr.length, min: mn, max: mx };
+  }
+
+  // 全期間の1本ごとの記録。所要が入っているものだけ（日付の古い順・同じ日は記録順）
+  function allEvents(s) {
+    var days = (s && s.days) || {}, keys = Object.keys(days).sort();
+    var out = [], i, j, a, e, d;
+    for (i = 0; i < keys.length; i++) {
+      a = days[keys[i]];
+      if (Object.prototype.toString.call(a) !== '[object Array]') continue;
+      for (j = 0; j < a.length; j++) {
+        e = a[j];
+        d = Number(e && e.dur);
+        if (!isFinite(d) || d <= 0) continue;
+        out.push({
+          date: keys[i], t: (e && e.t) || '', dur: Math.round(d),
+          client: cleanName(e && e.client), account: cleanName(e && e.account)
+        });
+      }
+    }
+    return out;
+  }
+  // client を渡すとそのクライアントだけ。account も渡すとその組だけ（'' は「アカウント無し」）
+  function timeStats(s, f) {
+    f = f || {};
+    var hasC = (f.client !== null && f.client !== undefined);
+    var hasA = (f.account !== null && f.account !== undefined);
+    var c = hasC ? cleanName(f.client) : '';
+    var ac = hasA ? cleanName(f.account) : '';
+    var all = allEvents(s), arr = [], i, e;
+    for (i = 0; i < all.length; i++) {
+      e = all[i];
+      if (hasC && e.client !== c) continue;
+      if (hasA && e.account !== ac) continue;
+      arr.push(e);
+    }
+    if (!arr.length) {
+      return { count: 0, avgMs: null, minMs: null, maxMs: null, totalMs: null, lastMs: null, last10: [] };
+    }
+    var sum = 0, mn = arr[0].dur, mx = arr[0].dur, last10 = [];
+    for (i = 0; i < arr.length; i++) {
+      sum += arr[i].dur;
+      if (arr[i].dur < mn) mn = arr[i].dur;
+      if (arr[i].dur > mx) mx = arr[i].dur;
+    }
+    for (i = arr.length - 1; i >= 0 && last10.length < 10; i--) {
+      last10.push({ date: arr[i].date, dur: arr[i].dur });
+    }
+    return {
+      count: arr.length, avgMs: sum / arr.length, minMs: mn, maxMs: mx,
+      totalMs: sum, lastMs: arr[arr.length - 1].dur, last10: last10
+    };
+  }
+  // クライアント×アカウントで集計。本数の多い順、同数なら平均の短い順
+  function groupByAccount(s) {
+    var all = allEvents(s), map = {}, keys = [], out = [], i, e, kk, g;
+    for (i = 0; i < all.length; i++) {
+      e = all[i];
+      kk = e.client + '\u0000' + e.account;
+      g = map[kk];
+      if (!g) {
+        g = map[kk] = { client: e.client, account: e.account, count: 0, avgMs: 0, lastDate: '', totalMs: 0 };
+        keys.push(kk);
+      }
+      g.count++;
+      g.totalMs += e.dur;
+      if (e.date > g.lastDate) g.lastDate = e.date;
+    }
+    for (i = 0; i < keys.length; i++) {
+      g = map[keys[i]];
+      g.avgMs = g.totalMs / g.count;
+      out.push(g);
+    }
+    out.sort(function (a, b) {
+      if (b.count !== a.count) return b.count - a.count;
+      if (a.avgMs !== b.avgMs) return a.avgMs - b.avgMs;
+      if (a.client !== b.client) return a.client < b.client ? -1 : 1;
+      return a.account < b.account ? -1 : (a.account > b.account ? 1 : 0);
+    });
+    return out;
+  }
+  // 直近の完了ぶん（新しい順）。削除できるよう、その日の配列内の位置も持たせる
+  function recentEvents(s, n) {
+    var days = (s && s.days) || {}, keys = Object.keys(days).sort();
+    var out = [], i, j, a, e, d;
+    for (i = keys.length - 1; i >= 0; i--) {
+      a = days[keys[i]];
+      if (Object.prototype.toString.call(a) !== '[object Array]') continue;
+      for (j = a.length - 1; j >= 0; j--) {
+        e = a[j];
+        d = Number(e && e.dur);
+        if (!isFinite(d) || d <= 0) continue;
+        out.push({
+          date: keys[i], i: j, dur: Math.round(d), t: (e && e.t) || '',
+          client: cleanName(e && e.client), account: cleanName(e && e.account)
+        });
+        if (out.length >= n) return out;
+      }
+    }
+    return out;
   }
 
   function computeStats(s, tk) {
@@ -733,14 +1011,27 @@ var App = (function () {
   }
 
   /* ---------- 更新（カウンター） ---------- */
-  function inc(durMs) {
+  function inc(durMs, client, account) {
     var k = todayKey();
     if (!state.days[k]) state.days[k] = [];
     var ev = { t: new Date().toISOString(), note: '' };
     var d = Number(durMs);
     if (isFinite(d) && d > 0) ev.dur = Math.round(d);
+    ev.client = cleanName(client);
+    ev.account = cleanName(account);
     state.days[k].push(ev);
+    touchRecent(ev.client, ev.account);
     save(); paint();
+  }
+  // 直近の記録から1件だけ消す。その日の本数もその分だけ減る
+  function delEvent(dateKey, idx) {
+    var a = state.days[dateKey];
+    idx = Math.floor(Number(idx));
+    if (!a || !isFinite(idx) || idx < 0 || idx >= a.length) return false;
+    a.splice(idx, 1);
+    if (a.length === 0) delete state.days[dateKey];
+    save(); paint();
+    return true;
   }
   function dec() {
     var k = todayKey(), a = state.days[k];
@@ -864,9 +1155,18 @@ var App = (function () {
     if (w.running && w.startAt) return Math.max(0, w.accMs + (Date.now() - w.startAt));
     return Math.max(0, w.accMs);
   }
+  // 入力中のクライアント名・アカウント名。走行中は動かさない
+  function setSwNames(client, account) {
+    var w = tstate.sw;
+    if (w.running) return;
+    w.client = rawName(client);
+    w.account = rawName(account);
+    saveTimer(); paintTimersOnly();
+  }
   function swStart() {
     var w = tstate.sw;
     if (w.running) return;
+    if (!cleanName(w.client)) return;      // クライアント名は必須
     w.running = true; w.startAt = Date.now(); w.accMs = 0;
     saveTimer(); paint();
   }
@@ -878,9 +1178,11 @@ var App = (function () {
   function swDone() {
     var w = tstate.sw;
     var ms = swElapsed();
+    var c = cleanName(w.client), a = cleanName(w.account);
     w.running = false; w.startAt = 0; w.accMs = 0;
+    // 名前は次の1本のために残す（同じアカウントの連投を1クリックで始められる）
     saveTimer();
-    inc(ms);
+    inc(ms, c, a);
   }
 
   /* ---------- 時刻表示・音・タイトル ---------- */
@@ -893,6 +1195,10 @@ var App = (function () {
     return pad(m) + ':' + pad(sec);
   }
   function toMin(ms) { return Math.max(1, Math.round(ms / 60000)); }
+  function fmtHM(ms) {
+    var m = Math.round(Math.max(0, ms) / 60000), h = Math.floor(m / 60);
+    return h > 0 ? (h + '時間' + (m % 60) + '分') : (m + '分');
+  }
   function ensureAudio() {
     if (actx) return;
     try {
@@ -1087,6 +1393,16 @@ var App = (function () {
   }
 
   /* ---------- 描画 ---------- */
+  // option の value は属性代入なので、名前に < や " が入っていてもそのまま文字として扱われる
+  function fillDatalist(dl, arr) {
+    var doc = dl.ownerDocument, i, o;
+    clearEl(dl);
+    for (i = 0; i < arr.length; i++) {
+      o = doc.createElement('option');
+      o.value = arr[i];
+      dl.appendChild(o);
+    }
+  }
   function q(root, name) { return root.querySelector('[data-el="' + name + '"]'); }
   function act(root, name) { return root.querySelector('[data-act="' + name + '"]'); }
 
@@ -1131,9 +1447,33 @@ var App = (function () {
     if (el && el !== r.ownerDocument.activeElement) el.value = String(p.breakMin);
 
     el = q(r, 'swTime'); if (el) el.textContent = mmss(swElapsed());
-    el = act(r, 'sw-start'); if (el) el.hidden = !!w.running;
     el = act(r, 'sw-done'); if (el) el.hidden = !w.running;
     el = act(r, 'sw-abort'); if (el) el.hidden = !w.running;
+
+    // ---- クライアント名・アカウント名 ----
+    var rc = rawName(w.client), ra = rawName(w.account);
+    var cc = cleanName(rc), ca = cleanName(ra);
+    var doc = r.ownerDocument;
+    el = act(r, 'sw-start');
+    if (el) { el.hidden = !!w.running; el.disabled = !cc; }
+    el = q(r, 'swNameBox'); if (el) el.hidden = !!w.running;
+    el = q(r, 'swNameHint'); if (el) el.hidden = !!w.running || !!cc;
+    el = q(r, 'swNameRun');
+    if (el) {
+      el.hidden = !w.running;
+      el.textContent = (cc || '未設定') + (ca ? ' / ' + ca : '') + '　' + mmss(swElapsed());
+    }
+    el = q(r, 'swClient'); if (el && el !== doc.activeElement) el.value = rc;
+    el = q(r, 'swAccount'); if (el && el !== doc.activeElement) el.value = ra;
+    el = q(r, 'dlClient'); if (el) fillDatalist(el, (state.recent && state.recent.clients) || []);
+    el = q(r, 'dlAccount'); if (el) fillDatalist(el, accountSuggest(rc));
+    el = q(r, 'swAcc');
+    if (el) {
+      var as = cc ? timeStats(state, { client: cc, account: ca }) : null;
+      el.textContent = (as && as.count > 0)
+        ? ('このアカウント 平均 ' + toMin(as.avgMs) + '分 / 直近 ' + toMin(as.lastMs) + '分（' + as.count + '本）')
+        : 'このアカウント 記録なし';
+    }
 
     var ds = st ? st.todayDur : durStats(state, curKey || todayKey());
     el = q(r, 'swAvg');
@@ -1144,6 +1484,105 @@ var App = (function () {
     }
     el = q(r, 'swMinMax');
     if (el) el.textContent = ds ? ('最短 ' + toMin(ds.min) + '分 / 最長 ' + toMin(ds.max) + '分') : '';
+  }
+
+  function accKey(c, a) { return c + '\u0000' + a; }
+  function tdOf(doc, text, cls) {
+    var td = doc.createElement('td');
+    if (cls) td.className = cls;
+    td.textContent = text;
+    return td;
+  }
+  // 「編集時間の記録」カード。名前はすべて textContent で入れる（innerHTML は使わない）
+  function paintHistoryCard(v) {
+    var r = v.root, doc = r.ownerDocument, el, i, j;
+    var a = timeStats(state, {});
+    el = q(r, 'allSum');
+    if (el) {
+      el.textContent = a.count > 0
+        ? ('全期間 平均 ' + toMin(a.avgMs) + '分/本（' + a.count + '本）')
+        : '全期間 —';
+    }
+    el = q(r, 'allMinMax');
+    if (el) {
+      el.textContent = a.count > 0
+        ? ('最短 ' + toMin(a.minMs) + '分 / 最長 ' + toMin(a.maxMs) + '分 ・ 合計 ' + fmtHM(a.totalMs))
+        : '最短 — / 最長 — ・ 合計 —';
+    }
+
+    var tb = q(r, 'accTable');
+    if (tb) {
+      clearEl(tb);
+      var g = groupByAccount(state), row, kk, ts, ec, ln;
+      for (i = 0; i < g.length; i++) {
+        kk = accKey(g[i].client, g[i].account);
+        row = doc.createElement('tr');
+        row.className = 'acc-r' + (openAcc === kk ? ' is-open' : '');
+        row.setAttribute('data-act', 'acc-toggle');
+        row.setAttribute('data-client', g[i].client);
+        row.setAttribute('data-account', g[i].account);
+        row.appendChild(tdOf(doc, g[i].client || '未設定', ''));
+        row.appendChild(tdOf(doc, g[i].account || '—', ''));
+        row.appendChild(tdOf(doc, String(g[i].count), 'num'));
+        row.appendChild(tdOf(doc, toMin(g[i].avgMs) + '分', 'num'));
+        row.appendChild(tdOf(doc, fmtMD(g[i].lastDate), 'num'));
+        tb.appendChild(row);
+        if (openAcc !== kk) continue;
+        ts = timeStats(state, { client: g[i].client, account: g[i].account });
+        row = doc.createElement('tr');
+        row.className = 'acc-exp';
+        ec = doc.createElement('td');
+        ec.colSpan = 5;
+        for (j = 0; j < ts.last10.length; j++) {
+          ln = doc.createElement('div');
+          ln.className = 'acc-l';
+          ln.textContent = fmtMD(ts.last10[j].date) + '　' + mmss(ts.last10[j].dur);
+          ec.appendChild(ln);
+        }
+        row.appendChild(ec);
+        tb.appendChild(row);
+      }
+      el = q(r, 'accEmpty');
+      if (el) el.hidden = (g.length > 0);
+    }
+
+    var rl = q(r, 'recentList');
+    if (rl) {
+      clearEl(rl);
+      var list = recentEvents(state, 20), e, d, sp, bx;
+      if (!list.length) {
+        d = doc.createElement('p');
+        d.className = 'acc-empty';
+        d.textContent = 'まだ記録がありません';
+        rl.appendChild(d);
+      }
+      for (i = 0; i < list.length; i++) {
+        e = list[i];
+        d = doc.createElement('div');
+        d.className = 'ev';
+        sp = doc.createElement('span');
+        sp.className = 'ev-d';
+        sp.textContent = fmtMD(e.date);
+        d.appendChild(sp);
+        sp = doc.createElement('span');
+        sp.className = 'ev-n';
+        sp.textContent = (e.client || '未設定') + (e.account ? ' / ' + e.account : '');
+        d.appendChild(sp);
+        sp = doc.createElement('span');
+        sp.className = 'ev-t';
+        sp.textContent = mmss(e.dur);
+        d.appendChild(sp);
+        bx = doc.createElement('button');
+        bx.type = 'button';
+        bx.className = 'ev-x';
+        bx.setAttribute('data-act', 'ev-del');
+        bx.setAttribute('data-date', e.date);
+        bx.setAttribute('data-i', String(e.i));
+        bx.textContent = '削除';
+        d.appendChild(bx);
+        rl.appendChild(d);
+      }
+    }
   }
 
   function paintView(v, st) {
@@ -1254,6 +1693,8 @@ var App = (function () {
       }
       el.innerHTML = html;
     }
+
+    paintHistoryCard(v);
   }
 
   /* ---------- タブ ---------- */
@@ -1294,6 +1735,22 @@ var App = (function () {
     });
     return out;
   }
+  function csvQ(v) {
+    var t = str(v);
+    return /["\n\r,]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t;
+  }
+  // 1行＝1本。全期間ぶんを書き出す
+  function eventCsvText() {
+    var all = allEvents(state), out = '日付,時刻,クライアント,アカウント,所要分\n', i, e;
+    for (i = 0; i < all.length; i++) {
+      e = all[i];
+      out += [
+        e.date, fmtTime(e.t), csvQ(e.client || '未設定'), csvQ(e.account),
+        String(Math.max(1, Math.round(e.dur / 60000)))
+      ].join(',') + '\n';
+    }
+    return out;
+  }
   var csvCopyTimer = null, csvCopyLabel = '';
   function copyCsv(btn) {
     var text = csvText();
@@ -1325,6 +1782,16 @@ var App = (function () {
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.href = url; a.download = '編集本数_' + ym + '.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+  }
+
+  function downloadEventCsv() {
+    var ym = todayKey().slice(0, 7);
+    var blob = new Blob(['\ufeff' + eventCsvText()], { type: 'text/csv;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = '編集ログ_' + ym + '.csv';
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
     setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
   }
@@ -1411,6 +1878,9 @@ var App = (function () {
       else if (a === 'dec') dec();
       else if (a === 'csv-copy') copyCsv(b);
       else if (a === 'csv-dl') downloadCsv();
+      else if (a === 'ev-csv-dl') downloadEventCsv();
+      else if (a === 'acc-toggle') toggleAcc(b.getAttribute('data-client'), b.getAttribute('data-account'));
+      else if (a === 'ev-del') askDelEvent(root, b);
       else if (a === 'pomo-start') pomoStart();
       else if (a === 'pomo-pause') pomoPause();
       else if (a === 'pomo-reset') pomoReset();
@@ -1428,6 +1898,29 @@ var App = (function () {
       else if (a === 'preset-50-10') setPreset(50, 10);
       else if (a === 'preset-90-15') setPreset(90, 15);
     });
+    root.addEventListener('input', function (ev) {
+      var t = ev.target;
+      if (!t || !t.getAttribute) return;
+      var nm = t.getAttribute('data-el');
+      if (nm !== 'swClient' && nm !== 'swAccount') return;
+      var ci = q(root, 'swClient'), ai = q(root, 'swAccount');
+      setSwNames(ci ? ci.value : '', ai ? ai.value : '');
+    });
+  }
+  function toggleAcc(c, a) {
+    var kk = accKey(cleanName(c), cleanName(a));
+    openAcc = (openAcc === kk) ? '' : kk;
+    paint();
+  }
+  // 削除直後は一覧が詰まって別の記録のボタンが同じ位置に来る。連打で2件消さないよう少しだけ受け付けない
+  var lastDelAt = 0;
+  var DEL_GUARD_MS = 500;
+  function askDelEvent(root, btn) {
+    var dk = btn.getAttribute('data-date'), ix = btn.getAttribute('data-i');
+    if (Date.now() - lastDelAt < DEL_GUARD_MS) return;
+    var win = root.ownerDocument.defaultView || window, ok = true;
+    try { ok = win.confirm('この記録を削除しますか'); } catch (e) { ok = true; }
+    if (ok && delEvent(dk, ix)) lastDelAt = Date.now();
   }
 
   function isField(el) {
@@ -1547,10 +2040,17 @@ var App = (function () {
     reachedFor: reachedFor,
     daysLeftFrom: daysLeftFrom,
     durStats: durStats,
+    allEvents: allEvents,
+    timeStats: timeStats,
+    groupByAccount: groupByAccount,
+    recentEvents: recentEvents,
+    cleanName: cleanName,
+    delEvent: delEvent,
     groupTasks: groupTasks,
     keyOf: keyOf,
     todayKey: todayKey,
     csvText: csvText,
+    eventCsvText: eventCsvText,
     mmss: mmss,
     getState: function () { return state; },
     getTimer: function () { return tstate; },
