@@ -16,6 +16,7 @@
   --accent:#1f5fd0;
   --accent-fg:#ffffff;
   --ok:#0f7043;
+  --warn:#c0392b;
   --focus:#1f5fd0;
 }
 @media (prefers-color-scheme: dark){
@@ -29,6 +30,7 @@
     --accent:#3b7ddd;
     --accent-fg:#ffffff;
     --ok:#4bb37a;
+    --warn:#f06b5a;
     --focus:#6ea8ff;
   }
 }
@@ -107,26 +109,86 @@ td.ok{color:var(--ok);font-weight:700}
 .m-sub2{margin:4px 0 0;font-size:13px;color:var(--muted)}
 .m-diff{font-weight:700}
 .m-diff.ahead{color:var(--ok)}
-.m-diff.behind{color:#c0392b}
-@media (prefers-color-scheme: dark){.m-diff.behind{color:#f06b5a}}
+.m-diff.behind{color:var(--warn)}
 .row + .row{margin-top:12px}
 kbd{
   display:inline-block;padding:0 4px;border:1px solid var(--line);border-radius:4px;
   background:var(--sub);font-size:11px;font-family:inherit;
 }
-/* ---------- コンパクト画面（常時表示） ---------- */
-body.compact{
-  background:#111827;color:#ffffff;height:100%;overflow:hidden;
+/* ---------- タイマー（メイン・コンパクト共用） ---------- */
+.tm{margin:0}
+.tm + .tm{margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+.tm-h{margin:0 0 6px;font-size:13px;font-weight:700;color:var(--muted)}
+.tm-mode{font-size:12px;color:var(--muted);text-align:center;line-height:1.3}
+.tm-mode.is-break{color:var(--ok);font-weight:700}
+.tm-time{
+  font-size:44px;line-height:1.05;font-weight:700;text-align:center;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;
 }
-html:has(body.compact){height:100%}
+.tm-btns{display:flex;gap:8px;margin:10px 0 0}
+.tm-btn{
+  flex:1;min-width:0;min-height:40px;padding:4px 6px;border-radius:6px;border:1px solid var(--line);
+  background:var(--sub);cursor:pointer;font-weight:700;font-size:14px;white-space:nowrap;
+}
+.tm-btn:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.tm-btn.is-main{flex:2;background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.tm-sub{margin:8px 0 0;font-size:12px;color:var(--muted);text-align:center}
+.tm-sub2{margin:2px 0 0;font-size:12px;color:var(--muted);text-align:center}
+/* ---------- タスク（メイン・コンパクト共用） ---------- */
+.tk-group{margin:10px 0 0;font-size:11px;font-weight:700;color:var(--muted)}
+.tk-group:first-child{margin-top:0}
+.tk{
+  margin:6px 0 0;padding:6px 8px;border:1px solid var(--line);border-left:3px solid var(--line);
+  border-radius:6px;background:var(--sub);
+}
+.tk-now{border-left-color:var(--accent);background:var(--card);box-shadow:0 0 0 1px var(--accent) inset}
+.tk-over{border-left-color:var(--warn)}
+.tk-t{
+  font-size:13px;font-weight:700;line-height:1.35;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.tk-m{display:flex;flex-wrap:wrap;gap:4px;margin:3px 0 0;font-size:11px;color:var(--muted)}
+.tk-chip{padding:0 4px;border:1px solid var(--line);border-radius:3px;line-height:1.5}
+.tk-chip.p-high{color:var(--warn);border-color:var(--warn)}
+.tk-chip.p-mid{color:var(--accent);border-color:var(--accent)}
+.tk-chip.due{color:var(--warn);border-color:var(--warn);font-weight:700}
+.tk-empty{margin:6px 0 0;font-size:12px;color:var(--muted)}
+.tk-foot{margin:10px 0 0;font-size:12px;color:var(--muted)}
+.tk-note{margin:6px 0 0;font-size:11px;color:var(--muted)}
+.tk-link{color:var(--accent);font-size:12px}
+/* ---------- コンパクト画面（常時表示） ---------- */
+html.cpt{height:100%;overflow:hidden}
+html.cpt > body{height:100%;overflow:hidden}
+body.compact{
+  background:#111827;color:#ffffff;height:100%;overflow:hidden;font-size:13px;
+}
+html:has(body.compact){height:100%;overflow:hidden}
 .c-wrap{
-  width:100%;height:100%;padding:8px;display:flex;flex-direction:column;
+  width:100%;height:100%;display:flex;flex-direction:column;
   align-items:stretch;justify-content:flex-start;overflow:hidden;
   -webkit-app-region:drag;app-region:drag;cursor:move;
   -webkit-user-select:none;user-select:none;
 }
-.c-date{font-size:11px;line-height:1.2;color:#9ca3af;text-align:center}
-.c-count{font-size:64px;line-height:1.0;font-weight:700;text-align:center;letter-spacing:-.02em;color:#ffffff}
+.c-tabs{
+  display:flex;height:36px;min-height:36px;background:#0b0f16;border-bottom:1px solid #374151;
+}
+.c-tab{
+  flex:1;min-width:0;padding:0 2px;border:0;background:transparent;color:#9ca3af;
+  font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  -webkit-app-region:no-drag;app-region:no-drag;
+}
+.c-tab[aria-selected="true"]{color:#ffffff;box-shadow:inset 0 -2px 0 #2563eb}
+.c-tab:focus-visible{outline:2px solid #6ea8ff;outline-offset:-2px}
+.c-pane{
+  flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:6px 8px 8px;
+  scrollbar-width:thin;scrollbar-color:#4b5563 transparent;
+  -webkit-app-region:no-drag;app-region:no-drag;cursor:auto;
+}
+.c-pane::-webkit-scrollbar{width:6px}
+.c-pane::-webkit-scrollbar-thumb{background:#4b5563;border-radius:3px}
+.c-pane::-webkit-scrollbar-track{background:transparent}
+.c-date{font-size:11px;line-height:1.3;color:#9ca3af;text-align:center;padding:3px 6px 0}
+.c-count{font-size:52px;line-height:1.0;font-weight:700;text-align:center;letter-spacing:-.02em;color:#ffffff}
 .c-target{font-size:11px;line-height:1.3;text-align:center;color:#9ca3af;margin:0 0 6px}
 .c-target.done{color:#4ade80;font-weight:700}
 .c-month{font-size:11px;line-height:1.3;text-align:center;color:#cbd5e1;font-variant-numeric:tabular-nums}
@@ -134,7 +196,7 @@ html:has(body.compact){height:100%}
 .c-mbar{height:4px;background:#374151;border-radius:2px;overflow:hidden;margin:4px 0 8px}
 .c-mbar > i{display:block;height:100%;width:0%;background:#2563eb}
 .c-mbar.done > i{background:#4ade80}
-.c-btns{display:flex;gap:8px;margin-top:auto}
+.c-btns{display:flex;gap:8px;margin-top:8px}
 .c-btn{
   min-height:44px;border-radius:6px;border:1px solid #374151;background:#1f2937;color:#ffffff;
   cursor:pointer;font-weight:700;
@@ -143,6 +205,29 @@ html:has(body.compact){height:100%}
 .c-btn:disabled{opacity:.35;cursor:not-allowed}
 .c-plus{flex:2;font-size:20px;background:#2563eb;border-color:#2563eb}
 .c-minus{flex:1;font-size:14px}
+/* コンパクト側の色・寸法の上書き */
+body.compact .tm + .tm{margin-top:10px;padding-top:10px;border-top:1px solid #374151}
+body.compact .tm-h{color:#9ca3af;font-size:11px;margin:0 0 2px}
+body.compact .tm-mode{color:#9ca3af;font-size:11px}
+body.compact .tm-mode.is-break{color:#4ade80}
+body.compact .tm-time{font-size:34px;color:#ffffff}
+body.compact .tm-btns{gap:6px;margin:6px 0 0}
+body.compact .tm-btn{
+  min-height:34px;font-size:12px;background:#1f2937;border-color:#374151;color:#ffffff;
+  -webkit-app-region:no-drag;app-region:no-drag;
+}
+body.compact .tm-btn.is-main{background:#2563eb;border-color:#2563eb}
+body.compact .tm-sub,body.compact .tm-sub2{color:#9ca3af;font-size:11px}
+body.compact .tk{background:#1f2937;border-color:#374151;border-left-color:#374151}
+body.compact .tk-now{background:#111827;border-left-color:#2563eb;box-shadow:0 0 0 1px #2563eb inset}
+body.compact .tk-over{border-left-color:#f06b5a}
+body.compact .tk-t{color:#ffffff;font-size:12px}
+body.compact .tk-m,body.compact .tk-group,body.compact .tk-empty,
+body.compact .tk-foot,body.compact .tk-note{color:#9ca3af}
+body.compact .tk-chip{border-color:#374151}
+body.compact .tk-chip.p-high,body.compact .tk-chip.due{color:#f06b5a;border-color:#f06b5a}
+body.compact .tk-chip.p-mid{color:#93b4f5;border-color:#3b5e9e}
+body.compact .tk-link{color:#93b4f5;-webkit-app-region:no-drag;app-region:no-drag}
 </style>
 </head>
 <body>
@@ -175,6 +260,46 @@ html:has(body.compact){height:100%}
       <label for="mtarget">月間目標</label>
       <input type="number" id="mtarget" data-el="monthTargetInput" min="0" max="999" step="1" value="60" inputmode="numeric">
     </div>
+    <div class="row">
+      <label for="workmin">作業分（ポモドーロ）</label>
+      <input type="number" id="workmin" data-el="workMinInput" min="1" max="180" step="1" value="25" inputmode="numeric">
+    </div>
+    <div class="row">
+      <label for="breakmin">休憩分（ポモドーロ）</label>
+      <input type="number" id="breakmin" data-el="breakMinInput" min="1" max="120" step="1" value="5" inputmode="numeric">
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>タイマー</h2>
+    <div class="tm">
+      <p class="tm-h">ポモドーロ</p>
+      <div class="tm-mode" data-el="pomoMode">作業</div>
+      <div class="tm-time" data-el="pomoTime">25:00</div>
+      <div class="tm-btns">
+        <button type="button" class="tm-btn is-main" data-act="pomo-start">開始</button>
+        <button type="button" class="tm-btn is-main" data-act="pomo-pause" hidden>一時停止</button>
+        <button type="button" class="tm-btn" data-act="pomo-reset">リセット</button>
+      </div>
+      <p class="tm-sub" data-el="pomoSets">今日 0 セット</p>
+    </div>
+    <div class="tm">
+      <p class="tm-h">ストップウォッチ（1本あたりの編集時間）</p>
+      <div class="tm-time" data-el="swTime">00:00</div>
+      <div class="tm-btns">
+        <button type="button" class="tm-btn is-main" data-act="sw-start">編集開始</button>
+        <button type="button" class="tm-btn is-main" data-act="sw-done" hidden>完了 ＋1本</button>
+        <button type="button" class="tm-btn" data-act="sw-abort" hidden>中断</button>
+      </div>
+      <p class="tm-sub" data-el="swAvg">今日の平均 —</p>
+      <p class="tm-sub2" data-el="swMinMax"></p>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>今日のタスク（EditFlow）<span data-el="taskCount"></span></h2>
+    <div data-el="taskList"></div>
+    <p class="tk-note">完了操作は EditFlow 側で行います（表示専用）</p>
   </section>
 
   <section class="card">
@@ -204,7 +329,7 @@ html:has(body.compact){height:100%}
       <span>連続達成 <b data-el="streak">0</b>日</span>
     </div>
     <table>
-      <thead><tr><th>日付</th><th class="num">本数</th><th class="mark">達成</th></tr></thead>
+      <thead><tr><th>日付</th><th class="num">本数</th><th class="num">平均</th><th class="mark">達成</th></tr></thead>
       <tbody data-el="history"></tbody>
     </table>
   </section>
@@ -221,14 +346,52 @@ html:has(body.compact){height:100%}
 
 <template id="tpl-compact">
   <div class="c-wrap">
+    <div class="c-tabs" role="tablist">
+      <button type="button" class="c-tab" role="tab" data-tab="count" data-el="tabCount">本数</button>
+      <button type="button" class="c-tab" role="tab" data-tab="timer" data-el="tabTimer">タイマー</button>
+      <button type="button" class="c-tab" role="tab" data-tab="tasks" data-el="tabTasks">タスク</button>
+    </div>
     <div class="c-date" data-el="date">—</div>
-    <div class="c-count" data-el="count">0</div>
-    <div class="c-target" data-el="targetLine">—</div>
-    <div class="c-month" data-el="monthLine">—</div>
-    <div class="c-mbar" data-el="monthBarWrap"><i data-el="monthBar"></i></div>
-    <div class="c-btns">
-      <button type="button" class="c-btn c-plus" data-act="inc">＋1</button>
-      <button type="button" class="c-btn c-minus" data-act="dec">−1</button>
+
+    <div class="c-pane" data-pane="count">
+      <div class="c-count" data-el="count">0</div>
+      <div class="c-target" data-el="targetLine">—</div>
+      <div class="c-month" data-el="monthLine">—</div>
+      <div class="c-mbar" data-el="monthBarWrap"><i data-el="monthBar"></i></div>
+      <div class="c-btns">
+        <button type="button" class="c-btn c-plus" data-act="inc">＋1</button>
+        <button type="button" class="c-btn c-minus" data-act="dec">−1</button>
+      </div>
+    </div>
+
+    <div class="c-pane" data-pane="timer" hidden>
+      <div class="tm">
+        <p class="tm-h">ポモドーロ</p>
+        <div class="tm-mode" data-el="pomoMode">作業</div>
+        <div class="tm-time" data-el="pomoTime">25:00</div>
+        <div class="tm-btns">
+          <button type="button" class="tm-btn is-main" data-act="pomo-start">開始</button>
+          <button type="button" class="tm-btn is-main" data-act="pomo-pause" hidden>一時停止</button>
+          <button type="button" class="tm-btn" data-act="pomo-reset">リセット</button>
+        </div>
+        <p class="tm-sub" data-el="pomoSets">今日 0 セット</p>
+      </div>
+      <div class="tm">
+        <p class="tm-h">ストップウォッチ（1本あたり）</p>
+        <div class="tm-time" data-el="swTime">00:00</div>
+        <div class="tm-btns">
+          <button type="button" class="tm-btn is-main" data-act="sw-start">編集開始</button>
+          <button type="button" class="tm-btn is-main" data-act="sw-done" hidden>完了 ＋1本</button>
+          <button type="button" class="tm-btn" data-act="sw-abort" hidden>中断</button>
+        </div>
+        <p class="tm-sub" data-el="swAvg">今日の平均 —</p>
+        <p class="tm-sub2" data-el="swMinMax"></p>
+      </div>
+    </div>
+
+    <div class="c-pane" data-pane="tasks" hidden>
+      <div data-el="taskList"></div>
+      <p class="tk-note">完了操作は EditFlow 側で行います（表示専用）</p>
     </div>
   </div>
 </template>
@@ -238,15 +401,29 @@ var App = (function () {
   'use strict';
 
   var KEY = 'mc_edit_counter_v1';
+  var TKEY = 'mc_timer_v1';
+  var TABKEY = 'mc_tab';
+  var EFKEY = 'ef_v5';
+  var EF_URL = 'https://mono-create-group.github.io/editflow-app/editflow.html';
   var DEFAULT_TARGET = 3;
   var DEFAULT_MONTH_TARGET = 60;
+  var DEFAULT_WORK_MIN = 25;
+  var DEFAULT_BREAK_MIN = 5;
+  var PIP_W = 260, PIP_H = 380;
+  var TABS = ['count', 'timer', 'tasks'];
   var WD = ['日', '月', '火', '水', '木', '金', '土'];
 
   var state = { target: DEFAULT_TARGET, monthTarget: DEFAULT_MONTH_TARGET, days: {} };
+  var tstate = defTimer();
   var views = [];          // [{root, kind}]
   var curKey = '';
+  var curTab = 'count';
   var pipWin = null;
+  var pipReq = false;
   var storageOK = true;
+  var actx = null;
+  var baseTitle = '';
+  var titleTimer = null;
 
   /* ---------- 日付ユーティリティ（ローカル時刻のみ。toISOStringは使わない） ---------- */
   function pad(n) { return n < 10 ? '0' + n : '' + n; }
@@ -256,9 +433,16 @@ var App = (function () {
   function shiftKey(k, n) { var d = dateFromKey(k); d.setDate(d.getDate() + n); return keyOf(d); }
   function fmtJP(k) { var d = dateFromKey(k); return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日（' + WD[d.getDay()] + '）'; }
   function fmtShort(k) { var d = dateFromKey(k); return (d.getMonth() + 1) + '/' + d.getDate() + '（' + WD[d.getDay()] + '）'; }
+  function fmtMD(k) { var p = String(k).split('-'); return p.length === 3 ? (+p[1]) + '/' + (+p[2]) : String(k); }
   function fmtTime(iso) { var d = new Date(iso); return isNaN(d.getTime()) ? '' : pad(d.getHours()) + ':' + pad(d.getMinutes()); }
+  function clampInt(v, lo, hi, dflt) {
+    var n = Number(v);
+    if (!isFinite(n)) return dflt;
+    n = Math.floor(n);
+    return Math.max(lo, Math.min(hi, n));
+  }
 
-  /* ---------- 保存・読み込み ---------- */
+  /* ---------- 保存・読み込み（カウンター） ---------- */
   function normalize(o) {
     var s = { target: DEFAULT_TARGET, monthTarget: DEFAULT_MONTH_TARGET, days: {} }, k, t, a;
     if (o && typeof o === 'object') {
@@ -271,7 +455,10 @@ var App = (function () {
           a = o.days[k];
           if (/^\d{4}-\d{2}-\d{2}$/.test(k) && Object.prototype.toString.call(a) === '[object Array]') {
             s.days[k] = a.map(function (e) {
-              return { t: (e && e.t) || '', note: (e && e.note) || '' };
+              var ev = { t: (e && e.t) || '', note: (e && e.note) || '' };
+              var d = e ? Number(e.dur) : 0;
+              if (isFinite(d) && d > 0) ev.dur = Math.round(d);
+              return ev;
             });
           }
         }
@@ -293,8 +480,79 @@ var App = (function () {
     catch (e) { storageOK = false; }
   }
 
+  /* ---------- 保存・読み込み（タイマー） ---------- */
+  function defTimer() {
+    return {
+      pomo: {
+        mode: 'work', running: false, endAt: 0, remainMs: 25 * 60000,
+        workMin: 25, breakMin: 5, sets: {}
+      },
+      sw: { running: false, startAt: 0, accMs: 0 }
+    };
+  }
+  function normTimer(o) {
+    var s = defTimer(), p, w, k, n;
+    if (o && typeof o === 'object') {
+      p = o.pomo;
+      if (p && typeof p === 'object') {
+        s.pomo.mode = (p.mode === 'break') ? 'break' : 'work';
+        s.pomo.workMin = clampInt(p.workMin, 1, 180, DEFAULT_WORK_MIN);
+        s.pomo.breakMin = clampInt(p.breakMin, 1, 120, DEFAULT_BREAK_MIN);
+        s.pomo.running = !!p.running;
+        n = Number(p.endAt); s.pomo.endAt = isFinite(n) && n > 0 ? n : 0;
+        n = Number(p.remainMs);
+        s.pomo.remainMs = isFinite(n) && n >= 0 ? n : durOf(s.pomo, s.pomo.mode);
+        if (!s.pomo.running) s.pomo.endAt = 0;
+        if (s.pomo.running && !s.pomo.endAt) s.pomo.running = false;
+        if (p.sets && typeof p.sets === 'object') {
+          for (k in p.sets) {
+            if (/^\d{4}-\d{2}-\d{2}$/.test(k)) {
+              n = Math.floor(Number(p.sets[k]));
+              if (isFinite(n) && n > 0) s.pomo.sets[k] = n;
+            }
+          }
+        }
+      }
+      w = o.sw;
+      if (w && typeof w === 'object') {
+        s.sw.running = !!w.running;
+        n = Number(w.startAt); s.sw.startAt = isFinite(n) && n > 0 ? n : 0;
+        n = Number(w.accMs); s.sw.accMs = isFinite(n) && n >= 0 ? n : 0;
+        if (s.sw.running && !s.sw.startAt) s.sw.running = false;
+      }
+    }
+    return s;
+  }
+  function loadTimer() {
+    try {
+      var raw = localStorage.getItem(TKEY);
+      tstate = normTimer(raw ? JSON.parse(raw) : null);
+    } catch (e) { tstate = defTimer(); }
+  }
+  function saveTimer() {
+    try { localStorage.setItem(TKEY, JSON.stringify(tstate)); }
+    catch (e) { storageOK = false; }
+  }
+
   /* ---------- 純関数（テスト対象） ---------- */
   function reachedAt(target, c) { return target <= 0 ? c > 0 : c >= target; }
+
+  function durStats(s, k) {
+    var days = (s && s.days) || {};
+    var a = days[k] || [], arr = [], i, d;
+    for (i = 0; i < a.length; i++) {
+      d = Number(a[i] && a[i].dur);
+      if (isFinite(d) && d > 0) arr.push(d);
+    }
+    if (!arr.length) return null;
+    var sum = 0, mn = arr[0], mx = arr[0];
+    for (i = 0; i < arr.length; i++) {
+      sum += arr[i];
+      if (arr[i] < mn) mn = arr[i];
+      if (arr[i] > mx) mx = arr[i];
+    }
+    return { n: arr.length, avg: sum / arr.length, min: mn, max: mx };
+  }
 
   function computeStats(s, tk) {
     s = s || {};
@@ -310,7 +568,7 @@ var App = (function () {
     for (i = 0; i < 14; i++) {
       dk = shiftKey(tk, -i);
       c = cnt(dk);
-      last14.push({ date: dk, count: c, reached: reachedAt(target, c) });
+      last14.push({ date: dk, count: c, reached: reachedAt(target, c), dur: durStats(s, dk) });
     }
 
     var streak = 0;
@@ -335,6 +593,7 @@ var App = (function () {
 
     return {
       today: cnt(tk), monthTotal: monthTotal, streak: streak, last14: last14,
+      todayDur: durStats(s, tk),
       monthTarget: monthTarget, monthRemaining: monthRemaining,
       daysInMonth: daysInMonth, daysLeft: daysLeft, perDayNeeded: perDayNeeded,
       expectedByToday: expectedByToday, diffVsExpected: diffVsExpected,
@@ -342,11 +601,14 @@ var App = (function () {
     };
   }
 
-  /* ---------- 更新 ---------- */
-  function inc() {
+  /* ---------- 更新（カウンター） ---------- */
+  function inc(durMs) {
     var k = todayKey();
     if (!state.days[k]) state.days[k] = [];
-    state.days[k].push({ t: new Date().toISOString(), note: '' });
+    var ev = { t: new Date().toISOString(), note: '' };
+    var d = Number(durMs);
+    if (isFinite(d) && d > 0) ev.dur = Math.round(d);
+    state.days[k].push(ev);
     save(); paint();
   }
   function dec() {
@@ -365,13 +627,354 @@ var App = (function () {
     state.monthTarget = n; save(); paint();
   }
 
+  /* ---------- ポモドーロ ---------- */
+  function durOf(p, mode) {
+    return ((mode === 'break' ? p.breakMin : p.workMin) || 1) * 60000;
+  }
+  function pomoRemain() {
+    var p = tstate.pomo;
+    if (p.running && p.endAt) return Math.max(0, p.endAt - Date.now());
+    return Math.max(0, p.remainMs);
+  }
+  function pomoStart() {
+    var p = tstate.pomo;
+    if (p.running) return;
+    var ms = p.remainMs > 0 ? p.remainMs : durOf(p, p.mode);
+    p.remainMs = ms;
+    p.endAt = Date.now() + ms;
+    p.running = true;
+    saveTimer(); paint();
+  }
+  function pomoPause() {
+    var p = tstate.pomo;
+    if (!p.running) return;
+    p.remainMs = pomoRemain();
+    p.running = false;
+    p.endAt = 0;
+    saveTimer(); paint();
+  }
+  function pomoReset() {
+    var p = tstate.pomo;
+    p.mode = 'work';
+    p.running = false;
+    p.endAt = 0;
+    p.remainMs = durOf(p, 'work');
+    saveTimer(); paint();
+  }
+  function setWorkMin(n) {
+    var p = tstate.pomo;
+    p.workMin = clampInt(n, 1, 180, DEFAULT_WORK_MIN);
+    if (!p.running && p.mode === 'work') p.remainMs = durOf(p, 'work');
+    saveTimer(); paint();
+  }
+  function setBreakMin(n) {
+    var p = tstate.pomo;
+    p.breakMin = clampInt(n, 1, 120, DEFAULT_BREAK_MIN);
+    if (!p.running && p.mode === 'break') p.remainMs = durOf(p, 'break');
+    saveTimer(); paint();
+  }
+  // 時間切れの処理。endAt 照合で1回だけ書き込む（先に気付いた文書が処理する）
+  function pomoCheck() {
+    var p = tstate.pomo;
+    if (!p.running || !p.endAt) return 0;
+    if (Date.now() < p.endAt) return 0;
+    var endAt = p.endAt;
+    loadTimer();
+    p = tstate.pomo;
+    if (!p.running || p.endAt !== endAt) return 1;   // 他文書が処理済み → 再描画だけ
+    var wasWork = (p.mode === 'work');
+    if (wasWork) {
+      var k = todayKey();
+      p.sets[k] = (Number(p.sets[k]) || 0) + 1;
+      p.mode = 'break';
+      p.remainMs = durOf(p, 'break');
+      p.endAt = Date.now() + p.remainMs;
+      p.running = true;
+    } else {
+      p.mode = 'work';
+      p.running = false;
+      p.endAt = 0;
+      p.remainMs = durOf(p, 'work');
+    }
+    saveTimer();
+    notifyDone();
+    return 2;
+  }
+
+  /* ---------- ストップウォッチ ---------- */
+  function swElapsed() {
+    var w = tstate.sw;
+    if (w.running && w.startAt) return Math.max(0, w.accMs + (Date.now() - w.startAt));
+    return Math.max(0, w.accMs);
+  }
+  function swStart() {
+    var w = tstate.sw;
+    if (w.running) return;
+    w.running = true; w.startAt = Date.now(); w.accMs = 0;
+    saveTimer(); paint();
+  }
+  function swAbort() {
+    var w = tstate.sw;
+    w.running = false; w.startAt = 0; w.accMs = 0;
+    saveTimer(); paint();
+  }
+  function swDone() {
+    var w = tstate.sw;
+    var ms = swElapsed();
+    w.running = false; w.startAt = 0; w.accMs = 0;
+    saveTimer();
+    inc(ms);
+  }
+
+  /* ---------- 時刻表示・音・タイトル ---------- */
+  function mmss(ms) {
+    var s = Math.ceil(Math.max(0, ms) / 1000);
+    var h = Math.floor(s / 3600);
+    var m = Math.floor((s % 3600) / 60);
+    var sec = s % 60;
+    if (h > 0) return h + ':' + pad(m) + ':' + pad(sec);
+    return pad(m) + ':' + pad(sec);
+  }
+  function toMin(ms) { return Math.max(1, Math.round(ms / 60000)); }
+  function ensureAudio() {
+    if (actx) return;
+    try {
+      var C = window.AudioContext || window.webkitAudioContext;
+      if (C) actx = new C();
+    } catch (e) { actx = null; }
+  }
+  function beep3() {
+    if (!actx) return;
+    try {
+      if (actx.state === 'suspended' && actx.resume) actx.resume();
+      for (var i = 0; i < 3; i++) {
+        var o = actx.createOscillator(), g = actx.createGain();
+        var t0 = actx.currentTime + i * 0.22;
+        o.type = 'sine';
+        o.frequency.value = 880;
+        o.connect(g); g.connect(actx.destination);
+        g.gain.setValueAtTime(0.0001, t0);
+        g.gain.exponentialRampToValueAtTime(0.18, t0 + 0.012);
+        g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.16);
+        o.start(t0); o.stop(t0 + 0.2);
+      }
+    } catch (e) { /* 音が出せない環境は無視 */ }
+  }
+  function notifyDone() {
+    beep3();
+    try {
+      if (!baseTitle) baseTitle = document.title;
+      document.title = '時間です';
+      if (titleTimer) clearTimeout(titleTimer);
+      titleTimer = setTimeout(function () {
+        document.title = baseTitle;
+        titleTimer = null;
+      }, 4000);
+    } catch (e) { /* 無視 */ }
+  }
+
+  /* ---------- EditFlow のタスク（読み取り専用。ef_* へは絶対に書かない） ---------- */
+  function readEF() {
+    try {
+      var raw = localStorage.getItem(EFKEY);
+      if (!raw) return null;
+      var o = JSON.parse(raw);
+      return (o && typeof o === 'object') ? o : null;
+    } catch (e) { return null; }
+  }
+  function str(v) { return (typeof v === 'string') ? v : (v == null ? '' : String(v)); }
+  function prioRank(v) {
+    var p = str(v).toLowerCase();
+    if (p === 'high') return 0;
+    if (p === 'medium' || p === 'mid') return 1;
+    if (p === 'low') return 2;
+    return 3;
+  }
+  function prioLabel(v) {
+    var r = prioRank(v);
+    return r === 0 ? '高' : (r === 1 ? '中' : (r === 2 ? '低' : ''));
+  }
+  function sortToday(arr) {
+    return arr.map(function (t, i) { return { t: t, i: i }; }).sort(function (a, b) {
+      var as = str(a.t.startTime), bs = str(b.t.startTime);
+      if (as && bs) { if (as !== bs) return as < bs ? -1 : 1; }
+      else if (as) return -1;
+      else if (bs) return 1;
+      var ap = prioRank(a.t.priority), bp = prioRank(b.t.priority);
+      if (ap !== bp) return ap - bp;
+      return a.i - b.i;
+    }).map(function (x) { return x.t; });
+  }
+  function groupTasks(S, today) {
+    var out = { now: null, overdue: [], today: [], doneCount: 0, badge: 0 };
+    var arr = (S && Object.prototype.toString.call(S.tasks) === '[object Array]') ? S.tasks : [];
+    var nowId = (S && S.frogId) || (S && S.settings && S.settings.nowTaskId) || null;
+    var act = [], i, t, dd;
+    for (i = 0; i < arr.length; i++) {
+      t = arr[i];
+      if (!t || typeof t !== 'object') continue;
+      if (t.deleted) continue;
+      if (t.done) { if (str(t.doneDate) === today) out.doneCount++; continue; }
+      act.push(t);
+    }
+    if (nowId != null && nowId !== '') {
+      for (i = 0; i < act.length; i++) {
+        if (String(act[i].id) === String(nowId)) { out.now = act[i]; break; }
+      }
+    }
+    for (i = 0; i < act.length; i++) {
+      t = act[i];
+      if (t === out.now) continue;
+      dd = str(t.dueDate);
+      if (dd && dd < today) out.overdue.push(t);
+      else if (dd === today || !dd) out.today.push(t);
+    }
+    out.today = sortToday(out.today);
+    out.badge = (out.now ? 1 : 0) + out.overdue.length + out.today.length;
+    return out;
+  }
+  function chip(doc, text, cls) {
+    var s = doc.createElement('span');
+    s.className = 'tk-chip' + (cls ? ' ' + cls : '');
+    s.textContent = text;
+    return s;
+  }
+  function taskCard(doc, t, opts) {
+    var d = doc.createElement('div');
+    d.className = 'tk' + (opts && opts.now ? ' tk-now' : '') + (opts && opts.overdue ? ' tk-over' : '');
+    var ti = doc.createElement('div');
+    ti.className = 'tk-t';
+    ti.textContent = str(t.title) || '（無題）';
+    d.appendChild(ti);
+
+    var meta = doc.createElement('div');
+    meta.className = 'tk-m';
+    var st = str(t.startTime), et = str(t.endTime), dt = str(t.dueTime);
+    if (st) meta.appendChild(chip(doc, et ? (st + '〜' + et) : (st + '〜'), 'time'));
+    else if (dt) meta.appendChild(chip(doc, dt, 'time'));
+    if (opts && opts.overdue && str(t.dueDate)) meta.appendChild(chip(doc, '期限 ' + fmtMD(str(t.dueDate)), 'due'));
+    var pl = prioLabel(t.priority);
+    if (pl) meta.appendChild(chip(doc, pl, prioRank(t.priority) === 0 ? 'p-high' : (prioRank(t.priority) === 1 ? 'p-mid' : 'p-low')));
+    if (Object.prototype.toString.call(t.subtasks) === '[object Array]' && t.subtasks.length) {
+      var dn = 0, j;
+      for (j = 0; j < t.subtasks.length; j++) { if (t.subtasks[j] && t.subtasks[j].done) dn++; }
+      meta.appendChild(chip(doc, 'サブ ' + dn + '/' + t.subtasks.length, 'sub'));
+    }
+    var em = Number(t.estimatedMinutes);
+    if (isFinite(em) && em > 0) meta.appendChild(chip(doc, '見積 ' + Math.round(em) + '分', 'est'));
+    if (meta.childNodes.length) d.appendChild(meta);
+    return d;
+  }
+  function groupHead(doc, text) {
+    var h = doc.createElement('div');
+    h.className = 'tk-group';
+    h.textContent = text;
+    return h;
+  }
+  function clearEl(el) { while (el.firstChild) el.removeChild(el.firstChild); }
+
+  function paintTasks(v) {
+    var root = v.root, box = q(root, 'taskList');
+    if (!box) return;
+    var doc = root.ownerDocument;
+    var S = readEF();
+    clearEl(box);
+    var badge = 0, i;
+    if (!S) {
+      var p = doc.createElement('p');
+      p.className = 'tk-empty';
+      p.textContent = 'EditFlowのデータがありません。同じブラウザで EditFlow（github.io）を一度開くと表示されます';
+      box.appendChild(p);
+      var ap = doc.createElement('p');
+      ap.className = 'tk-empty';
+      var a = doc.createElement('a');
+      a.className = 'tk-link';
+      a.href = EF_URL;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.textContent = 'EditFlow を開く';
+      ap.appendChild(a);
+      box.appendChild(ap);
+    } else {
+      var g = groupTasks(S, curKey || todayKey());
+      badge = g.badge;
+      if (g.now) {
+        box.appendChild(groupHead(doc, '今の1件'));
+        box.appendChild(taskCard(doc, g.now, { now: true }));
+      }
+      if (g.overdue.length) {
+        box.appendChild(groupHead(doc, '期限切れ'));
+        for (i = 0; i < g.overdue.length; i++) box.appendChild(taskCard(doc, g.overdue[i], { overdue: true }));
+      }
+      box.appendChild(groupHead(doc, '今日'));
+      if (g.today.length) {
+        for (i = 0; i < g.today.length; i++) box.appendChild(taskCard(doc, g.today[i], {}));
+      } else {
+        var e = doc.createElement('p');
+        e.className = 'tk-empty';
+        e.textContent = '今日のタスクはありません';
+        box.appendChild(e);
+      }
+      var f = doc.createElement('p');
+      f.className = 'tk-foot';
+      f.textContent = '今日完了 ' + g.doneCount + '件';
+      box.appendChild(f);
+    }
+    var tb = q(root, 'tabTasks');
+    if (tb) tb.textContent = badge > 0 ? ('タスク ' + badge) : 'タスク';
+    var tc = q(root, 'taskCount');
+    if (tc) tc.textContent = badge > 0 ? ('　' + badge + '件') : '';
+  }
+  function paintTasksAll() {
+    for (var i = 0; i < views.length; i++) paintTasks(views[i]);
+  }
+
   /* ---------- 描画 ---------- */
   function q(root, name) { return root.querySelector('[data-el="' + name + '"]'); }
+  function act(root, name) { return root.querySelector('[data-act="' + name + '"]'); }
 
   function paint() {
     curKey = todayKey();
     var st = computeStats(state, curKey);
-    for (var i = 0; i < views.length; i++) paintView(views[i], st);
+    for (var i = 0; i < views.length; i++) {
+      paintView(views[i], st);
+      paintTimer(views[i], st);
+      paintTasks(views[i]);
+    }
+  }
+  function paintTimersOnly() {
+    var st = computeStats(state, curKey || todayKey());
+    for (var i = 0; i < views.length; i++) paintTimer(views[i], st);
+  }
+
+  function paintTimer(v, st) {
+    var r = v.root, el, p = tstate.pomo, w = tstate.sw;
+
+    el = q(r, 'pomoTime'); if (el) el.textContent = mmss(pomoRemain());
+    el = q(r, 'pomoMode');
+    if (el) {
+      el.textContent = (p.mode === 'break' ? '休憩' : '作業');
+      el.className = 'tm-mode' + (p.mode === 'break' ? ' is-break' : '');
+    }
+    el = q(r, 'pomoSets');
+    if (el) el.textContent = '今日 ' + (Number(p.sets[curKey || todayKey()]) || 0) + ' セット';
+    el = act(r, 'pomo-start'); if (el) el.hidden = !!p.running;
+    el = act(r, 'pomo-pause'); if (el) el.hidden = !p.running;
+
+    el = q(r, 'swTime'); if (el) el.textContent = mmss(swElapsed());
+    el = act(r, 'sw-start'); if (el) el.hidden = !!w.running;
+    el = act(r, 'sw-done'); if (el) el.hidden = !w.running;
+    el = act(r, 'sw-abort'); if (el) el.hidden = !w.running;
+
+    var ds = st ? st.todayDur : durStats(state, curKey || todayKey());
+    el = q(r, 'swAvg');
+    if (el) {
+      el.textContent = ds
+        ? ('今日の平均 ' + toMin(ds.avg) + '分/本（' + ds.n + '本）')
+        : '今日の平均 —';
+    }
+    el = q(r, 'swMinMax');
+    if (el) el.textContent = ds ? ('最短 ' + toMin(ds.min) + '分 / 最長 ' + toMin(ds.max) + '分') : '';
   }
 
   function paintView(v, st) {
@@ -419,6 +1022,10 @@ var App = (function () {
     if (el && el !== r.ownerDocument.activeElement) el.value = String(t);
     el = q(r, 'monthTargetInput');
     if (el && el !== r.ownerDocument.activeElement) el.value = String(st.monthTarget);
+    el = q(r, 'workMinInput');
+    if (el && el !== r.ownerDocument.activeElement) el.value = String(tstate.pomo.workMin);
+    el = q(r, 'breakMinInput');
+    if (el && el !== r.ownerDocument.activeElement) el.value = String(tstate.pomo.breakMin);
 
     el = q(r, 'monthPct'); if (el) el.textContent = st.monthPercent + '%';
     el = q(r, 'monthRest'); if (el) el.textContent = mDone ? '月間目標達成' : ('あと ' + st.monthRemaining);
@@ -445,17 +1052,44 @@ var App = (function () {
 
     el = q(r, 'history');
     if (el) {
-      var html = '', i, d;
+      var html = '', i, dd, av;
       for (i = 0; i < st.last14.length; i++) {
-        d = st.last14[i];
+        dd = st.last14[i];
+        av = dd.dur ? (toMin(dd.dur.avg) + '分') : '';
         html += '<tr' + (i === 0 ? ' class="is-today"' : '') + '>' +
-          '<td>' + fmtShort(d.date) + '</td>' +
-          '<td class="num">' + d.count + '</td>' +
-          '<td class="mark' + (d.reached ? ' ok' : '') + '">' + (d.reached ? '✓' : '') + '</td>' +
+          '<td>' + fmtShort(dd.date) + '</td>' +
+          '<td class="num">' + dd.count + '</td>' +
+          '<td class="num">' + av + '</td>' +
+          '<td class="mark' + (dd.reached ? ' ok' : '') + '">' + (dd.reached ? '✓' : '') + '</td>' +
           '</tr>';
       }
       el.innerHTML = html;
     }
+  }
+
+  /* ---------- タブ ---------- */
+  function loadTab() {
+    var t = 'count';
+    try { t = localStorage.getItem(TABKEY) || 'count'; } catch (e) { t = 'count'; }
+    curTab = TABS.indexOf(t) >= 0 ? t : 'count';
+  }
+  function applyTabs() {
+    for (var i = 0; i < views.length; i++) {
+      var v = views[i];
+      if (v.kind !== 'compact') continue;
+      var panes = v.root.querySelectorAll('[data-pane]'), j;
+      for (j = 0; j < panes.length; j++) panes[j].hidden = (panes[j].getAttribute('data-pane') !== curTab);
+      var tabs = v.root.querySelectorAll('[data-tab]');
+      for (j = 0; j < tabs.length; j++) {
+        tabs[j].setAttribute('aria-selected', tabs[j].getAttribute('data-tab') === curTab ? 'true' : 'false');
+      }
+    }
+  }
+  function setTab(name) {
+    curTab = TABS.indexOf(name) >= 0 ? name : 'count';
+    try { localStorage.setItem(TABKEY, curTab); } catch (e) { /* 無視 */ }
+    applyTabs();
+    paint();
   }
 
   /* ---------- CSV ---------- */
@@ -515,16 +1149,18 @@ var App = (function () {
       note.hidden = false;
     }
     try {
-      window.open(location.href.split('?')[0] + '?compact=1', 'mc_counter', 'popup,width=240,height=240');
+      window.open(location.href.split('?')[0] + '?compact=1', 'mc_counter',
+        'popup,width=' + PIP_W + ',height=' + PIP_H);
     } catch (e) { /* ポップアップ拒否時は注記のみ */ }
   }
 
   function openPip() {
     var btn = pipBtn();
     if (pipWin) { try { pipWin.close(); } catch (e) { } return; }
+    if (pipReq) return;                                 // 連打で二重要求しない
     if (!window.documentPictureInPicture) { openFallback(); return; }
 
-    var pipW = 240, pipH = 210;
+    var pipW = PIP_W, pipH = PIP_H;
     try {
       var sw = parseInt(localStorage.getItem('mc_pip_w'), 10);
       var sh = parseInt(localStorage.getItem('mc_pip_h'), 10);
@@ -532,7 +1168,9 @@ var App = (function () {
       if (isFinite(sh) && sh > 0) pipH = sh;
     } catch (e) { /* 無視 */ }
 
+    pipReq = true;
     window.documentPictureInPicture.requestWindow({ width: pipW, height: pipH }).then(function (w) {
+      pipReq = false;
       pipWin = w;
       var styles = document.querySelectorAll('style');
       for (var i = 0; i < styles.length; i++) {
@@ -541,14 +1179,17 @@ var App = (function () {
         w.document.head.appendChild(c);
       }
       w.document.documentElement.lang = 'ja';
+      w.document.documentElement.className = 'cpt';
       w.document.body.className = 'compact';
       w.document.body.appendChild(document.getElementById('tpl-compact').content.cloneNode(true));
 
       var root = w.document.body.querySelector('.c-wrap');
       var view = { root: root, kind: 'compact' };
       bindRoot(root);
-      bindKeys(w.document);
+      bindKeys(w.document, 'compact');
+      w.document.addEventListener('click', ensureAudio, true);
       views.push(view);
+      applyTabs();
       paint();
       if (btn) btn.textContent = '常時表示ウィンドウを閉じる';
 
@@ -565,19 +1206,27 @@ var App = (function () {
         var b = pipBtn();
         if (b) b.textContent = '常時表示ウィンドウを開く';
       });
-    }, function () { openFallback(); });
+    }, function () { pipReq = false; openFallback(); });
   }
 
   /* ---------- イベント ---------- */
   function bindRoot(root) {
     root.addEventListener('click', function (ev) {
-      var b = ev.target.closest ? ev.target.closest('[data-act]') : null;
+      var b = ev.target.closest ? ev.target.closest('[data-act],[data-tab]') : null;
       if (!b) return;
+      var tab = b.getAttribute('data-tab');
+      if (tab) { setTab(tab); return; }
       var a = b.getAttribute('data-act');
       if (a === 'inc') inc();
       else if (a === 'dec') dec();
       else if (a === 'csv-copy') copyCsv(b);
       else if (a === 'csv-dl') downloadCsv();
+      else if (a === 'pomo-start') pomoStart();
+      else if (a === 'pomo-pause') pomoPause();
+      else if (a === 'pomo-reset') pomoReset();
+      else if (a === 'sw-start') swStart();
+      else if (a === 'sw-done') swDone();
+      else if (a === 'sw-abort') swAbort();
     });
   }
 
@@ -587,12 +1236,15 @@ var App = (function () {
     return tag === 'input' || tag === 'textarea' || tag === 'select' || el.isContentEditable === true;
   }
 
-  function bindKeys(doc) {
+  function bindKeys(doc, kind) {
     doc.addEventListener('keydown', function (ev) {
       if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
+      if (ev.repeat) return;                                  // 長押しの連射で水増ししない
+      if (kind === 'compact' && curTab !== 'count') return;   // 本数タブ以外では加算しない
       var el = ev.target;
       if (isField(el)) return;
-      var onBtn = ((el && el.tagName) || '').toLowerCase() === 'button';
+      var tg = ((el && el.tagName) || '').toLowerCase();
+      var onBtn = (tg === 'button' || tg === 'a' || tg === 'summary');
       var k = ev.key;
       if (k === ' ' || k === 'Spacebar' || k === 'Enter') {
         if (onBtn) return;           // ボタン上は既定のclickに任せる（二重加算防止）
@@ -616,15 +1268,29 @@ var App = (function () {
       mi.addEventListener('input', function () { setMonthTarget(mi.value); });
       mi.addEventListener('change', function () { setMonthTarget(mi.value); mi.value = String(state.monthTarget); });
     }
+    var wi = q(root, 'workMinInput');
+    if (wi) {
+      wi.addEventListener('input', function () { setWorkMin(wi.value); });
+      wi.addEventListener('change', function () { setWorkMin(wi.value); wi.value = String(tstate.pomo.workMin); });
+    }
+    var bi = q(root, 'breakMinInput');
+    if (bi) {
+      bi.addEventListener('input', function () { setBreakMin(bi.value); });
+      bi.addEventListener('change', function () { setBreakMin(bi.value); bi.value = String(tstate.pomo.breakMin); });
+    }
     var pb = q(root, 'pipBtn');
     if (pb) pb.addEventListener('click', openPip);
   }
 
   /* ---------- 起動 ---------- */
   function init() {
+    baseTitle = document.title;
     load();
+    loadTimer();
+    loadTab();
     var compact = /[?&]compact=1/.test(location.search);
     if (compact) {
+      document.documentElement.className = 'cpt';
       document.body.className = 'compact';
       var main = document.getElementById('main');
       if (main) main.parentNode.removeChild(main);
@@ -632,21 +1298,38 @@ var App = (function () {
       var croot = document.body.querySelector('.c-wrap');
       bindRoot(croot);
       views.push({ root: croot, kind: 'compact' });
+      bindKeys(document, 'compact');
     } else {
       var mroot = document.getElementById('main');
       bindRoot(mroot);
       bindMain(mroot);
       views.push({ root: mroot, kind: 'main' });
+      bindKeys(document, 'main');
     }
-    bindKeys(document);
+    document.addEventListener('click', ensureAudio, true);
+    applyTabs();
 
     window.addEventListener('storage', function (ev) {
-      if (ev.key && ev.key !== KEY) return;
-      load(); paint();
+      var k = ev.key;
+      if (!k) { load(); loadTimer(); loadTab(); applyTabs(); paint(); return; }
+      if (k === KEY) { load(); paint(); }
+      else if (k === TKEY) { loadTimer(); paintTimersOnly(); }
+      else if (k === EFKEY) { paintTasksAll(); }
+      else if (k === TABKEY) { loadTab(); applyTabs(); }
     });
 
     curKey = todayKey();
-    setInterval(function () { if (todayKey() !== curKey) paint(); }, 30000);
+    setInterval(function () {
+      if (todayKey() !== curKey) { paint(); return; }
+      paintTasksAll();
+    }, 30000);
+
+    setInterval(function () {
+      var r = pomoCheck();
+      if (r === 2) paint();
+      else if (r === 1) { loadTimer(); paintTimersOnly(); }
+      else paintTimersOnly();
+    }, 1000);
 
     paint();
   }
@@ -656,10 +1339,15 @@ var App = (function () {
 
   return {
     computeStats: computeStats,
+    durStats: durStats,
+    groupTasks: groupTasks,
     keyOf: keyOf,
     todayKey: todayKey,
     csvText: csvText,
+    mmss: mmss,
     getState: function () { return state; },
+    getTimer: function () { return tstate; },
+    getTab: function () { return curTab; },
     storageOK: function () { return storageOK; }
   };
 })();
