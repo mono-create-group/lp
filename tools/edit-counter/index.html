@@ -424,6 +424,14 @@ body.compact .tk-link{color:#93b4f5;-webkit-app-region:no-drag;app-region:no-dra
     <p class="m-sub" data-el="monthSum">今月の合計 0本 / 月間目標 0本</p>
     <p class="m-sub2" data-el="monthPace">—</p>
     <p class="m-sub2" data-el="monthExpect">—</p>
+    <div class="row count-edit">
+      <label for="monthcount">今月の進捗本数を変更</label>
+      <div class="count-edit-controls">
+        <input type="number" id="monthcount" data-el="monthCountInput" min="0" max="99999" step="1" inputmode="numeric" aria-label="今月の進捗本数">
+        <button type="button" class="btn" data-act="month-count-set">反映</button>
+      </div>
+    </div>
+    <p class="count-edit-note">月間の合計だけを調整します。日別の記録と編集時間はそのまま残ります。</p>
   </section>
 
   <section class="card">
@@ -494,6 +502,11 @@ body.compact .tk-link{color:#93b4f5;-webkit-app-region:no-drag;app-region:no-dra
       </div>
       <div class="c-month" data-el="monthLine">—</div>
       <div class="c-mbar" data-el="monthBarWrap"><i data-el="monthBar"></i></div>
+      <div class="c-ctl c-count-edit">
+        <span class="c-ctl-l">今月の進捗本数</span>
+        <input type="number" class="c-in" data-el="monthCountInput" min="0" max="99999" step="1" inputmode="numeric" aria-label="今月の進捗本数">
+        <button type="button" class="c-btn-s is-txt" data-act="month-count-set">反映</button>
+      </div>
       <div class="c-btns">
         <button type="button" class="c-btn c-plus" data-act="inc">＋1</button>
         <button type="button" class="c-btn c-minus" data-act="dec">−1</button>
@@ -690,7 +703,7 @@ var App = (function () {
   function defState() {
     return {
       target: DEFAULT_TARGET, monthTarget: DEFAULT_MONTH_TARGET,
-      days: {}, dayTargets: {}, manualCounts: {}, recent: { clients: [], accounts: {} }
+      days: {}, dayTargets: {}, manualCounts: {}, monthAdjustments: {}, recent: { clients: [], accounts: {} }
     };
   }
   function normalize(o) {
@@ -713,6 +726,13 @@ var App = (function () {
           if (!/^\d{4}-\d{2}-\d{2}$/.test(k)) continue;
           t = Number(o.manualCounts[k]);
           if (isFinite(t) && t >= 0) s.manualCounts[k] = Math.max(0, Math.min(9999, Math.floor(t)));
+        }
+      }
+      if (o.monthAdjustments && typeof o.monthAdjustments === 'object') {
+        for (k in o.monthAdjustments) {
+          if (!/^\d{4}-\d{2}$/.test(k)) continue;
+          t = Number(o.monthAdjustments[k]);
+          if (isFinite(t)) s.monthAdjustments[k] = Math.max(-99999, Math.min(99999, Math.floor(t)));
         }
       }
       if (o.days && typeof o.days === 'object') {
@@ -754,6 +774,21 @@ var App = (function () {
     }
     a = s && s.days && s.days[dateKey];
     return a && a.length ? a.length : 0;
+  }
+  function monthNaturalTotal(s, ym) {
+    var days = (s && s.days) || {}, manual = (s && s.manualCounts) || {}, keys = Object.create(null), k, total = 0;
+    for (k in days) keys[k] = 1;
+    for (k in manual) keys[k] = 1;
+    for (k in keys) if (k.slice(0, 7) === ym) total += countFor(s, k);
+    return total;
+  }
+  function monthTotalFor(s, ym) {
+    var total = monthNaturalTotal(s, ym), a = s && s.monthAdjustments, d = 0;
+    if (a && Object.prototype.hasOwnProperty.call(a, ym)) {
+      d = Number(a[ym]);
+      if (isFinite(d)) total += Math.floor(d);
+    }
+    return Math.max(0, total);
   }
   // 古い「今日だけの目標」を掃除する。消した件数を返す
   function pruneDayTargets(s, tk) {
@@ -857,6 +892,7 @@ var App = (function () {
     for (k in keys) {
       if (k.slice(0, 7) === ym && k < dateKey) before += countFor(s, k);
     }
+    before = Math.max(0, before + (s && s.monthAdjustments && isFinite(Number(s.monthAdjustments[ym])) ? Math.floor(Number(s.monthAdjustments[ym])) : 0));
     var left = daysLeftFrom(dateKey);
     var remain = Math.max(0, mt - before);
     var value = (mt <= 0 || left <= 0) ? 0 : Math.ceil(remain / left);
@@ -1019,11 +1055,7 @@ var App = (function () {
     function tgt(k) { return targetFor(s, k, tk); }
 
     var ym = tk.slice(0, 7);
-    var monthTotal = 0, k;
-    var countKeys = Object.create(null);
-    for (k in (s.days || {})) countKeys[k] = 1;
-    for (k in (s.manualCounts || {})) countKeys[k] = 1;
-    for (k in countKeys) { if (k.slice(0, 7) === ym) monthTotal += cnt(k); }
+    var monthTotal = monthTotalFor(s, ym);
 
     var todayTarget = targetFor(s, tk, tk);
     var auto = autoCalc(s, tk);
@@ -1113,6 +1145,16 @@ var App = (function () {
     if (!state.manualCounts) state.manualCounts = {};
     if (n === natural) delete state.manualCounts[k];
     else state.manualCounts[k] = n;
+    save(); paint();
+  }
+  // 今月の進捗合計だけを直接変更する。日別の記録と編集時間は保持する
+  function setMonthCount(v) {
+    var ym = todayKey().slice(0, 7), n = Number(v), natural = monthNaturalTotal(state, ym);
+    if (!isFinite(n)) n = 0;
+    n = Math.max(0, Math.min(99999, Math.floor(n)));
+    if (!state.monthAdjustments) state.monthAdjustments = {};
+    if (n === natural) delete state.monthAdjustments[ym];
+    else state.monthAdjustments[ym] = n - natural;
     save(); paint();
   }
   // 今日だけの目標。空文字なら自動換算へ戻す
@@ -1769,6 +1811,8 @@ var App = (function () {
                  : ('今月 ' + st.monthTotal + '/' + st.monthTarget + ' ・ あと ' + st.monthRemaining + '本'));
       el.className = 'c-month' + (mDone ? ' done' : '');
     }
+    el = q(r, 'monthCountInput');
+    if (el && el !== r.ownerDocument.activeElement) el.value = String(st.monthTotal);
 
     if (v.kind !== 'main') return;
 
@@ -2009,6 +2053,11 @@ var App = (function () {
     if (!input) return;
     setCurrentCount(input.value);
   }
+  function setMonthCountFromRoot(root) {
+    var input = q(root, 'monthCountInput');
+    if (!input) return;
+    setMonthCount(input.value);
+  }
   function bindRoot(root) {
     root.addEventListener('click', function (ev) {
       var b = ev.target.closest ? ev.target.closest('[data-act],[data-tab]') : null;
@@ -2024,6 +2073,7 @@ var App = (function () {
       else if (a === 'acc-toggle') toggleAcc(b.getAttribute('data-client'), b.getAttribute('data-account'));
       else if (a === 'ev-del') askDelEvent(root, b);
       else if (a === 'count-set') setCurrentCountFromRoot(root);
+      else if (a === 'month-count-set') setMonthCountFromRoot(root);
       else if (a === 'sound-test') { beepAlarm(); flashTitle('音を確認しました'); }
       else if (a === 'pomo-start') pomoStart();
       else if (a === 'pomo-pause') pomoPause();
@@ -2052,9 +2102,10 @@ var App = (function () {
     });
     root.addEventListener('keydown', function (ev) {
       var t = ev.target;
-      if (t && t.getAttribute && t.getAttribute('data-el') === 'countInput' && ev.key === 'Enter') {
+      if (t && t.getAttribute && ev.key === 'Enter' && (t.getAttribute('data-el') === 'countInput' || t.getAttribute('data-el') === 'monthCountInput')) {
         ev.preventDefault();
-        setCurrentCountFromRoot(root);
+        if (t.getAttribute('data-el') === 'monthCountInput') setMonthCountFromRoot(root);
+        else setCurrentCountFromRoot(root);
       }
     });
   }
