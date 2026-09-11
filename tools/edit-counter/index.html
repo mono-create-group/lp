@@ -132,6 +132,11 @@ input[type=text]{
   border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--fg);
 }
 input[type=text]:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+.nm-select{
+  width:100%;min-height:44px;padding:4px 36px 4px 8px;font:inherit;font-size:16px;
+  border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--fg);
+}
+.nm-select:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
 .nm{margin:0 0 8px}
 .nm-l{display:block;margin:6px 0 2px;font-size:12px;color:var(--muted)}
 .nm-l:first-child{margin-top:0}
@@ -298,6 +303,8 @@ body.compact .c-in{
   -webkit-app-region:no-drag;app-region:no-drag;
 }
 body.compact .c-in::placeholder{color:#9ca3af}
+body.compact .c-select{width:100%;min-height:28px;height:28px;padding:2px 24px 2px 6px;font:inherit;font-size:12px;line-height:1.2;border:1px solid #374151;border-radius:5px;background:#1f2937;color:#ffffff;-webkit-app-region:no-drag;app-region:no-drag}
+body.compact .c-select:focus-visible{outline:2px solid #6ea8ff;outline-offset:-2px}
 body.compact .c-in:focus-visible{outline:2px solid #6ea8ff;outline-offset:-2px}
 body.compact .tm-name{color:#ffffff;font-size:12px}
 body.compact .tm-warn{color:#f6a5a0;font-size:11px;margin:4px 0 0}
@@ -386,7 +393,11 @@ body.compact .tk-link{color:#93b4f5;-webkit-app-region:no-drag;app-region:no-dra
     <div class="tm">
       <p class="tm-h">ストップウォッチ（1本あたりの編集時間）</p>
       <div class="nm" data-el="swNameBox">
-        <label class="nm-l" for="swclient">クライアント名</label>
+        <label class="nm-l" for="swclientselect">クライアント名（過去登録から選択可）</label>
+        <select id="swclientselect" class="nm-select" data-el="swClientSelect" aria-label="過去登録したクライアント">
+          <option value="">過去登録したクライアントを選択</option>
+        </select>
+        <label class="nm-l" for="swclient">新しいクライアント名を入力する場合</label>
         <input type="text" id="swclient" data-el="swClient" list="dl-client" maxlength="40" autocomplete="off" placeholder="例 A社">
         <datalist id="dl-client" data-el="dlClient"></datalist>
         <label class="nm-l" for="swaccount">アカウント名（任意）</label>
@@ -557,6 +568,9 @@ body.compact .tk-link{color:#93b4f5;-webkit-app-region:no-drag;app-region:no-dra
       <div class="tm">
         <p class="tm-h">ストップウォッチ（1本あたり）</p>
         <div class="c-nm" data-el="swNameBox">
+          <select class="c-select" data-el="swClientSelect" aria-label="過去登録したクライアント">
+            <option value="">過去登録したクライアントを選択</option>
+          </select>
           <input type="text" class="c-in" data-el="swClient" list="dl-client" maxlength="40" autocomplete="off" placeholder="クライアント名" aria-label="クライアント名">
           <datalist id="dl-client" data-el="dlClient"></datalist>
           <input type="text" class="c-in" data-el="swAccount" list="dl-account" maxlength="40" autocomplete="off" placeholder="アカウント名（任意）" aria-label="アカウント名（任意）">
@@ -695,6 +709,24 @@ var App = (function () {
         out.push(a[i]);
         if (out.length >= RECENT_MAX) return out;
       }
+    }
+    return out;
+  }
+  function clientSuggest() {
+    var out = [], seen = Object.create(null), r = state.recent || { clients: [] }, i, j, k, a, v;
+    function add(value) {
+      v = cleanName(value);
+      if (!v || seen[v]) return false;
+      seen[v] = 1; out.push(v);
+      return out.length >= 50;
+    }
+    for (i = 0; i < (r.clients || []).length; i++) if (add(r.clients[i])) return out;
+    if (add(tstate.sw && tstate.sw.client)) return out;
+    var days = state.days || {}, keys = Object.keys(days).sort().reverse();
+    for (i = 0; i < keys.length; i++) {
+      a = days[keys[i]];
+      if (Object.prototype.toString.call(a) !== '[object Array]') continue;
+      for (j = a.length - 1; j >= 0; j--) if (add(a[j] && a[j].client)) return out;
     }
     return out;
   }
@@ -1577,6 +1609,23 @@ var App = (function () {
       dl.appendChild(o);
     }
   }
+  function fillClientSelect(sel, arr, current) {
+    if (sel === sel.ownerDocument.activeElement) return;
+    var doc = sel.ownerDocument, i, o, found = false;
+    clearEl(sel);
+    o = doc.createElement('option');
+    o.value = '';
+    o.textContent = '過去登録したクライアントを選択';
+    sel.appendChild(o);
+    for (i = 0; i < arr.length; i++) {
+      o = doc.createElement('option');
+      o.value = arr[i];
+      o.textContent = arr[i];
+      sel.appendChild(o);
+      if (arr[i] === current) found = true;
+    }
+    sel.value = found ? current : '';
+  }
   function q(root, name) { return root.querySelector('[data-el="' + name + '"]'); }
   function act(root, name) { return root.querySelector('[data-act="' + name + '"]'); }
 
@@ -1638,6 +1687,7 @@ var App = (function () {
       el.textContent = (cc || '未設定') + (ca ? ' / ' + ca : '') + '　' + mmss(swElapsed());
     }
     el = q(r, 'swClient'); if (el && el !== doc.activeElement) el.value = rc;
+    el = q(r, 'swClientSelect'); if (el) fillClientSelect(el, clientSuggest(), cc);
     el = q(r, 'swAccount'); if (el && el !== doc.activeElement) el.value = ra;
     el = q(r, 'dlClient'); if (el) fillDatalist(el, (state.recent && state.recent.clients) || []);
     el = q(r, 'dlAccount'); if (el) fillDatalist(el, accountSuggest(rc));
@@ -2099,6 +2149,12 @@ var App = (function () {
       if (nm !== 'swClient' && nm !== 'swAccount') return;
       var ci = q(root, 'swClient'), ai = q(root, 'swAccount');
       setSwNames(ci ? ci.value : '', ai ? ai.value : '');
+    });
+    root.addEventListener('change', function (ev) {
+      var t = ev.target;
+      if (!t || !t.getAttribute || t.getAttribute('data-el') !== 'swClientSelect') return;
+      var ai = q(root, 'swAccount');
+      setSwNames(t.value, ai ? ai.value : '');
     });
     root.addEventListener('keydown', function (ev) {
       var t = ev.target;
