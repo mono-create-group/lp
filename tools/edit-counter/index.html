@@ -74,6 +74,13 @@ button{font:inherit;color:inherit}
 .btn-primary{flex:2;background:var(--accent);color:var(--accent-fg);border-color:var(--accent);font-size:18px}
 .btn-secondary{flex:1}
 .btn-line{width:100%;min-height:44px;margin:0 0 4px}
+.count-edit{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.count-edit label{font-size:13px;font-weight:700}
+.count-edit-controls{display:flex;align-items:center;gap:6px}
+.count-edit-controls input{width:82px;min-height:40px;padding:4px 8px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--fg);font:inherit;font-size:16px;text-align:right;font-variant-numeric:tabular-nums}
+.count-edit-controls input:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+.count-edit-controls .btn{min-height:40px;padding:4px 10px;font-size:13px}
+.count-edit-note{margin:5px 0 0;font-size:11px;color:var(--muted)}
 .row{display:flex;align-items:center;gap:8px;justify-content:space-between}
 .row label{font-size:14px}
 input[type=number]{
@@ -256,6 +263,9 @@ html:has(body.compact){height:100%;overflow:hidden}
 .c-btn-s.is-txt{min-width:0;padding:0 5px;font-size:10px}
 .c-btn-s:disabled{opacity:.35;cursor:not-allowed}
 .c-btn-s:focus-visible{outline:2px solid #6ea8ff;outline-offset:-2px}
+.c-count-edit{margin-top:8px;padding-top:8px;border-top:1px solid #374151}
+.c-count-edit .c-in{flex:1;min-width:0;text-align:right;font-variant-numeric:tabular-nums}
+.c-count-edit .c-btn-s{flex:none}
 .c-pre{display:flex;gap:4px;margin:4px 0 0}
 .c-pre > .c-btn-s{flex:1}
 body.compact .tm .c-ctl{margin:4px 0 0}
@@ -272,6 +282,8 @@ body.compact .tm-btn{
 }
 body.compact .tm-btn.is-main{background:#2563eb;border-color:#2563eb}
 body.compact .tm-sub,body.compact .tm-sub2{color:#9ca3af;font-size:11px}
+.tm-audio-btns{margin-top:6px}
+.tm-audio-btns .tm-btn{font-size:12px;min-height:34px}
 /* ---------- クライアント名・アカウント名（タイマー共用） ---------- */
 .tm-name{
   margin:0 0 2px;font-size:13px;line-height:1.4;text-align:center;font-weight:700;
@@ -320,6 +332,14 @@ body.compact .tk-link{color:#93b4f5;-webkit-app-region:no-drag;app-region:no-dra
       <button type="button" class="btn btn-primary" data-act="inc">＋1本</button>
       <button type="button" class="btn btn-secondary" data-act="dec">−1</button>
     </div>
+    <div class="row count-edit">
+      <label for="currentcount">今日の完了本数を変更</label>
+      <div class="count-edit-controls">
+        <input type="number" id="currentcount" data-el="countInput" min="0" max="9999" step="1" inputmode="numeric" aria-label="今日の完了本数">
+        <button type="button" class="btn" data-act="count-set">反映</button>
+      </div>
+    </div>
+    <p class="count-edit-note" data-el="countSetNote">数字を入力して反映すると、今日の本数を直接変更できます。</p>
     <p class="hint"><kbd>Space</kbd> <kbd>Enter</kbd> <kbd>+</kbd> で ＋1 ／ <kbd>Backspace</kbd> <kbd>-</kbd> で −1</p>
   </section>
 
@@ -357,6 +377,9 @@ body.compact .tk-link{color:#93b4f5;-webkit-app-region:no-drag;app-region:no-dra
         <button type="button" class="tm-btn is-main" data-act="pomo-start">開始</button>
         <button type="button" class="tm-btn is-main" data-act="pomo-pause" hidden>一時停止</button>
         <button type="button" class="tm-btn" data-act="pomo-reset">リセット</button>
+      </div>
+      <div class="tm-btns tm-audio-btns">
+        <button type="button" class="tm-btn" data-act="sound-test">♪ 音を確認</button>
       </div>
       <p class="tm-sub" data-el="pomoSets">今日 0 セット</p>
     </div>
@@ -410,7 +433,7 @@ body.compact .tk-link{color:#93b4f5;-webkit-app-region:no-drag;app-region:no-dra
   </section>
 
   <section class="card">
-    <h2>直近14日</h2>
+    <h2>直近30日（1か月）</h2>
     <div class="sum">
       <span>今月の合計 <b data-el="monthTotal">0</b>本</span>
       <span>連続達成 <b data-el="streak">0</b>日</span>
@@ -475,6 +498,11 @@ body.compact .tk-link{color:#93b4f5;-webkit-app-region:no-drag;app-region:no-dra
         <button type="button" class="c-btn c-plus" data-act="inc">＋1</button>
         <button type="button" class="c-btn c-minus" data-act="dec">−1</button>
       </div>
+      <div class="c-ctl c-count-edit">
+        <span class="c-ctl-l">今日の完了本数</span>
+        <input type="number" class="c-in" data-el="countInput" min="0" max="9999" step="1" inputmode="numeric" aria-label="今日の完了本数">
+        <button type="button" class="c-btn-s is-txt" data-act="count-set">反映</button>
+      </div>
     </div>
 
     <div class="c-pane" data-pane="timer" hidden>
@@ -486,6 +514,9 @@ body.compact .tk-link{color:#93b4f5;-webkit-app-region:no-drag;app-region:no-dra
           <button type="button" class="tm-btn is-main" data-act="pomo-start">開始</button>
           <button type="button" class="tm-btn is-main" data-act="pomo-pause" hidden>一時停止</button>
           <button type="button" class="tm-btn" data-act="pomo-reset">リセット</button>
+        </div>
+        <div class="tm-btns tm-audio-btns">
+          <button type="button" class="tm-btn" data-act="sound-test">♪ 音を確認</button>
         </div>
         <p class="tm-sub" data-el="pomoSets">今日 0 セット</p>
         <div class="c-ctl">
@@ -659,7 +690,7 @@ var App = (function () {
   function defState() {
     return {
       target: DEFAULT_TARGET, monthTarget: DEFAULT_MONTH_TARGET,
-      days: {}, dayTargets: {}, recent: { clients: [], accounts: {} }
+      days: {}, dayTargets: {}, manualCounts: {}, recent: { clients: [], accounts: {} }
     };
   }
   function normalize(o) {
@@ -675,6 +706,13 @@ var App = (function () {
           if (!/^\d{4}-\d{2}-\d{2}$/.test(k)) continue;
           t = Number(o.dayTargets[k]);
           if (isFinite(t) && t >= 0) s.dayTargets[k] = Math.max(0, Math.min(99, Math.floor(t)));
+        }
+      }
+      if (o.manualCounts && typeof o.manualCounts === 'object') {
+        for (k in o.manualCounts) {
+          if (!/^\d{4}-\d{2}-\d{2}$/.test(k)) continue;
+          t = Number(o.manualCounts[k]);
+          if (isFinite(t) && t >= 0) s.manualCounts[k] = Math.max(0, Math.min(9999, Math.floor(t)));
         }
       }
       if (o.days && typeof o.days === 'object') {
@@ -707,6 +745,16 @@ var App = (function () {
     }
     return s;
   }
+  // 本数は通常 days の記録数。手入力した日のみ manualCounts を優先する
+  function countFor(s, dateKey) {
+    var m = s && s.manualCounts, n, a;
+    if (m && Object.prototype.hasOwnProperty.call(m, dateKey)) {
+      n = Number(m[dateKey]);
+      if (isFinite(n) && n >= 0) return Math.floor(n);
+    }
+    a = s && s.days && s.days[dateKey];
+    return a && a.length ? a.length : 0;
+  }
   // 古い「今日だけの目標」を掃除する。消した件数を返す
   function pruneDayTargets(s, tk) {
     var limit = shiftKey(tk, -DAY_TARGET_KEEP), dt = s.dayTargets || {}, k, n = 0;
@@ -737,7 +785,7 @@ var App = (function () {
         mode: 'work', running: false, endAt: 0, remainMs: 25 * 60000,
         workMin: 25, breakMin: 5, sets: {}
       },
-      sw: { running: false, startAt: 0, accMs: 0, client: '', account: '' }
+      sw: { running: false, startAt: 0, accMs: 0, client: '', account: '', hourBeeped: false }
     };
   }
   function normTimer(o) {
@@ -770,6 +818,7 @@ var App = (function () {
         n = Number(w.accMs); s.sw.accMs = isFinite(n) && n >= 0 ? n : 0;
         s.sw.client = rawName(w.client);
         s.sw.account = rawName(w.account);
+        s.sw.hourBeeped = !!w.hourBeeped;
         if (s.sw.running && !s.sw.startAt) s.sw.running = false;
       }
     }
@@ -801,9 +850,12 @@ var App = (function () {
   function autoCalc(s, dateKey) {
     var mt = Number(s && s.monthTarget);
     if (!isFinite(mt) || mt < 0) mt = 0;
-    var days = (s && s.days) || {}, ym = dateKey.slice(0, 7), k, before = 0;
-    for (k in days) {
-      if (k.slice(0, 7) === ym && k < dateKey && days[k] && days[k].length) before += days[k].length;
+    var days = (s && s.days) || {}, manual = (s && s.manualCounts) || {}, ym = dateKey.slice(0, 7), k, before = 0;
+    var keys = Object.create(null);
+    for (k in days) keys[k] = 1;
+    for (k in manual) keys[k] = 1;
+    for (k in keys) {
+      if (k.slice(0, 7) === ym && k < dateKey) before += countFor(s, k);
     }
     var left = daysLeftFrom(dateKey);
     var remain = Math.max(0, mt - before);
@@ -812,9 +864,12 @@ var App = (function () {
   }
   // その月に、その日までの実績が1件でもあるか
   function monthHasEventsUpTo(s, dateKey) {
-    var days = (s && s.days) || {}, ym = dateKey.slice(0, 7), k;
-    for (k in days) {
-      if (k.slice(0, 7) === ym && k <= dateKey && days[k] && days[k].length) return true;
+    var days = (s && s.days) || {}, manual = (s && s.manualCounts) || {}, ym = dateKey.slice(0, 7), k;
+    var keys = Object.create(null);
+    for (k in days) keys[k] = 1;
+    for (k in manual) keys[k] = 1;
+    for (k in keys) {
+      if (k.slice(0, 7) === ym && k <= dateKey && countFor(s, k) > 0) return true;
     }
     return false;
   }
@@ -960,23 +1015,25 @@ var App = (function () {
 
   function computeStats(s, tk) {
     s = s || {};
-    var days = s.days || {};
-    function cnt(k) { var a = days[k]; return a && a.length ? a.length : 0; }
+    function cnt(k) { return countFor(s, k); }
     function tgt(k) { return targetFor(s, k, tk); }
 
     var ym = tk.slice(0, 7);
     var monthTotal = 0, k;
-    for (k in days) { if (k.slice(0, 7) === ym && days[k] && days[k].length) monthTotal += days[k].length; }
+    var countKeys = Object.create(null);
+    for (k in (s.days || {})) countKeys[k] = 1;
+    for (k in (s.manualCounts || {})) countKeys[k] = 1;
+    for (k in countKeys) { if (k.slice(0, 7) === ym) monthTotal += cnt(k); }
 
     var todayTarget = targetFor(s, tk, tk);
     var auto = autoCalc(s, tk);
 
-    var last14 = [], i, dk, c, dt;
-    for (i = 0; i < 14; i++) {
+    var last30 = [], i, dk, c, dt;
+    for (i = 0; i < 30; i++) {
       dk = shiftKey(tk, -i);
       c = cnt(dk);
       dt = tgt(dk);
-      last14.push({ date: dk, count: c, target: dt.value, targetSource: dt.source, reached: reachedFor(dt, c), dur: durStats(s, dk) });
+      last30.push({ date: dk, count: c, target: dt.value, targetSource: dt.source, reached: reachedFor(dt, c), dur: durStats(s, dk) });
     }
 
     var streak = 0;
@@ -1000,7 +1057,7 @@ var App = (function () {
     var monthPercent = monthTarget > 0 ? Math.min(100, Math.round(monthTotal / monthTarget * 100)) : 0;
 
     return {
-      today: cnt(tk), monthTotal: monthTotal, streak: streak, last14: last14,
+      today: cnt(tk), monthTotal: monthTotal, streak: streak, last30: last30, last14: last30,
       todayDur: durStats(s, tk),
       todayTarget: todayTarget, autoTarget: auto.value, autoRemain: auto.remain,
       monthTarget: monthTarget, monthRemaining: monthRemaining,
@@ -1020,6 +1077,9 @@ var App = (function () {
     ev.client = cleanName(client);
     ev.account = cleanName(account);
     state.days[k].push(ev);
+    if (Object.prototype.hasOwnProperty.call(state.manualCounts || {}, k)) {
+      state.manualCounts[k] = Math.min(9999, countFor(state, k) + 1);
+    }
     touchRecent(ev.client, ev.account);
     save(); paint();
   }
@@ -1034,10 +1094,25 @@ var App = (function () {
     return true;
   }
   function dec() {
-    var k = todayKey(), a = state.days[k];
-    if (!a || a.length === 0) return;
-    a.pop();
-    if (a.length === 0) delete state.days[k];
+    var k = todayKey(), a = state.days[k], current = countFor(state, k);
+    if (current <= 0) return;
+    if (Object.prototype.hasOwnProperty.call(state.manualCounts || {}, k)) {
+      state.manualCounts[k] = current - 1;
+    } else {
+      if (!a || a.length === 0) return;
+      a.pop();
+      if (a.length === 0) delete state.days[k];
+    }
+    save(); paint();
+  }
+  // 今日の完了本数だけを直接変更する。編集時間の記録は残す
+  function setCurrentCount(v) {
+    var k = todayKey(), n = Number(v), natural = (state.days[k] && state.days[k].length) || 0;
+    if (!isFinite(n)) n = 0;
+    n = Math.max(0, Math.min(9999, Math.floor(n)));
+    if (!state.manualCounts) state.manualCounts = {};
+    if (n === natural) delete state.manualCounts[k];
+    else state.manualCounts[k] = n;
     save(); paint();
   }
   // 今日だけの目標。空文字なら自動換算へ戻す
@@ -1075,6 +1150,7 @@ var App = (function () {
   function pomoStart() {
     var p = tstate.pomo;
     if (p.running) return;
+    ensureAudio();
     var ms = p.remainMs > 0 ? p.remainMs : durOf(p, p.mode);
     p.remainMs = ms;
     p.endAt = Date.now() + ms;
@@ -1145,6 +1221,7 @@ var App = (function () {
       p.remainMs = durOf(p, 'work');
     }
     saveTimer();
+    // 作業終了時と休憩終了時のどちらも同じアラームを鳴らす
     notifyDone();
     return 2;
   }
@@ -1167,22 +1244,37 @@ var App = (function () {
     var w = tstate.sw;
     if (w.running) return;
     if (!cleanName(w.client)) return;      // クライアント名は必須
-    w.running = true; w.startAt = Date.now(); w.accMs = 0;
+    ensureAudio();
+    w.running = true; w.startAt = Date.now(); w.accMs = 0; w.hourBeeped = false;
     saveTimer(); paint();
   }
   function swAbort() {
     var w = tstate.sw;
-    w.running = false; w.startAt = 0; w.accMs = 0;
+    w.running = false; w.startAt = 0; w.accMs = 0; w.hourBeeped = false;
     saveTimer(); paint();
   }
   function swDone() {
     var w = tstate.sw;
     var ms = swElapsed();
     var c = cleanName(w.client), a = cleanName(w.account);
-    w.running = false; w.startAt = 0; w.accMs = 0;
+    w.running = false; w.startAt = 0; w.accMs = 0; w.hourBeeped = false;
     // 名前は次の1本のために残す（同じアカウントの連投を1クリックで始められる）
     saveTimer();
     inc(ms, c, a);
+  }
+
+  // ストップウォッチが1時間を超えた瞬間に1回だけ通知する
+  function swCheck() {
+    var w = tstate.sw;
+    if (!w.running || w.hourBeeped || swElapsed() < 60 * 60 * 1000) return false;
+    var startAt = w.startAt;
+    loadTimer();
+    w = tstate.sw;
+    if (!w.running || w.startAt !== startAt || w.hourBeeped) return true;
+    w.hourBeeped = true;
+    saveTimer();
+    notifyStopwatchHour();
+    return true;
   }
 
   /* ---------- 時刻表示・音・タイトル ---------- */
@@ -1200,40 +1292,80 @@ var App = (function () {
     return h > 0 ? (h + '時間' + (m % 60) + '分') : (m + '分');
   }
   function ensureAudio() {
-    if (actx) return;
     try {
       var C = window.AudioContext || window.webkitAudioContext;
-      if (C) actx = new C();
+      if (!actx && C) actx = new C();
+      if (actx && actx.state === 'suspended' && actx.resume) {
+        var p = actx.resume();
+        if (p && p.catch) p.catch(function () { /* ブラウザの自動再生制限 */ });
+      }
     } catch (e) { actx = null; }
+    return actx;
+  }
+  function playBeeps(notes) {
+    var ctx = ensureAudio();
+    if (!ctx) return false;
+    var play = function () {
+      try {
+        var at = ctx.currentTime + 0.02, i, note, o, g;
+        for (i = 0; i < notes.length; i++) {
+          note = notes[i];
+          o = ctx.createOscillator(); g = ctx.createGain();
+          o.type = 'sine'; o.frequency.value = note.frequency;
+          o.connect(g); g.connect(ctx.destination);
+          g.gain.setValueAtTime(0.0001, at);
+          g.gain.exponentialRampToValueAtTime(note.volume || 0.2, at + 0.012);
+          g.gain.exponentialRampToValueAtTime(0.0001, at + note.duration);
+          o.start(at); o.stop(at + note.duration + 0.04);
+          at += note.duration + (note.gap || 0.1);
+        }
+      } catch (e) { /* 音を出せない環境は無視 */ }
+    };
+    try {
+      if (ctx.state === 'suspended' && ctx.resume) {
+        var p = ctx.resume();
+        if (p && p.then) p.then(play, function () { /* 自動再生制限 */ });
+        else play();
+      } else play();
+    } catch (e) { /* 音を出せない環境は無視 */ }
+    return true;
   }
   function beep3() {
-    if (!actx) return;
-    try {
-      if (actx.state === 'suspended' && actx.resume) actx.resume();
-      for (var i = 0; i < 3; i++) {
-        var o = actx.createOscillator(), g = actx.createGain();
-        var t0 = actx.currentTime + i * 0.22;
-        o.type = 'sine';
-        o.frequency.value = 880;
-        o.connect(g); g.connect(actx.destination);
-        g.gain.setValueAtTime(0.0001, t0);
-        g.gain.exponentialRampToValueAtTime(0.18, t0 + 0.012);
-        g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.16);
-        o.start(t0); o.stop(t0 + 0.2);
-      }
-    } catch (e) { /* 音が出せない環境は無視 */ }
+    return playBeeps([
+      { frequency: 880, duration: 0.14, gap: 0.1 },
+      { frequency: 880, duration: 0.14, gap: 0.1 },
+      { frequency: 880, duration: 0.14, gap: 0.1 }
+    ]);
   }
-  function notifyDone() {
-    beep3();
+  function beepAlarm() {
+    return playBeeps([
+      { frequency: 880, duration: 0.24, gap: 0.12, volume: 0.42 },
+      { frequency: 660, duration: 0.24, gap: 0.12, volume: 0.42 },
+      { frequency: 880, duration: 0.24, gap: 0.12, volume: 0.42 },
+      { frequency: 660, duration: 0.24, gap: 0.12, volume: 0.42 },
+      { frequency: 880, duration: 0.24, gap: 0.12, volume: 0.42 },
+      { frequency: 660, duration: 0.24, gap: 0.12, volume: 0.42 },
+      { frequency: 880, duration: 0.28, gap: 0.1, volume: 0.42 }
+    ]);
+  }
+  function flashTitle(label) {
     try {
       if (!baseTitle) baseTitle = document.title;
-      document.title = '時間です';
+      document.title = label;
       if (titleTimer) clearTimeout(titleTimer);
       titleTimer = setTimeout(function () {
         document.title = baseTitle;
         titleTimer = null;
-      }, 4000);
+      }, 5000);
     } catch (e) { /* 無視 */ }
+  }
+  function notifyDone() {
+    beepAlarm();
+    flashTitle('タイマー終了');
+  }
+  function notifyStopwatchHour() {
+    beep3();
+    flashTitle('ストップウォッチ 1時間');
   }
 
   /* ---------- EditFlow のタスク（読み取り専用。ef_* へは絶対に書かない） ---------- */
@@ -1593,6 +1725,8 @@ var App = (function () {
 
     el = q(r, 'date'); if (el) el.textContent = (v.kind === 'compact' ? (fmtShort(curKey) + '・ドラッグで移動') : fmtJP(curKey));
     el = q(r, 'count'); if (el) el.textContent = String(st.today);
+    el = q(r, 'countInput');
+    if (el && el !== r.ownerDocument.activeElement) el.value = String(st.today);
 
     el = q(r, 'targetLine');
     if (el) {
@@ -1681,8 +1815,8 @@ var App = (function () {
     el = q(r, 'history');
     if (el) {
       var html = '', i, dd, av;
-      for (i = 0; i < st.last14.length; i++) {
-        dd = st.last14[i];
+      for (i = 0; i < st.last30.length; i++) {
+        dd = st.last30[i];
         av = dd.dur ? (toMin(dd.dur.avg) + '分') : '';
         html += '<tr' + (i === 0 ? ' class="is-today"' : '') + '>' +
           '<td>' + fmtShort(dd.date) + '</td>' +
@@ -1725,13 +1859,16 @@ var App = (function () {
   /* ---------- CSV ---------- */
   function csvText() {
     var tk = todayKey(), ym = tk.slice(0, 7);
-    var keys = Object.keys(state.days).filter(function (k) { return k.slice(0, 7) === ym; }).sort();
+    var keySet = Object.create(null), k;
+    Object.keys(state.days).forEach(function (key) { keySet[key] = 1; });
+    Object.keys(state.manualCounts || {}).forEach(function (key) { keySet[key] = 1; });
+    var keys = Object.keys(keySet).filter(function (key) { return key.slice(0, 7) === ym; }).sort();
     var out = '日付,本数,目標,時刻一覧\n';
     keys.forEach(function (k) {
-      var a = state.days[k];
+      var a = state.days[k] || [];
       var times = a.map(function (e) { return fmtTime(e.t); }).filter(Boolean).join(' ');
       var tv = targetFor(state, k, tk).value;
-      out += k + ',' + a.length + ',' + (tv === null ? '—' : tv) + ',"' + times.replace(/"/g, '""') + '"\n';
+      out += k + ',' + countFor(state, k) + ',' + (tv === null ? '—' : tv) + ',"' + times.replace(/"/g, '""') + '"\n';
     });
     return out;
   }
@@ -1867,6 +2004,11 @@ var App = (function () {
   }
 
   /* ---------- イベント ---------- */
+  function setCurrentCountFromRoot(root) {
+    var input = q(root, 'countInput');
+    if (!input) return;
+    setCurrentCount(input.value);
+  }
   function bindRoot(root) {
     root.addEventListener('click', function (ev) {
       var b = ev.target.closest ? ev.target.closest('[data-act],[data-tab]') : null;
@@ -1881,6 +2023,8 @@ var App = (function () {
       else if (a === 'ev-csv-dl') downloadEventCsv();
       else if (a === 'acc-toggle') toggleAcc(b.getAttribute('data-client'), b.getAttribute('data-account'));
       else if (a === 'ev-del') askDelEvent(root, b);
+      else if (a === 'count-set') setCurrentCountFromRoot(root);
+      else if (a === 'sound-test') { beepAlarm(); flashTitle('音を確認しました'); }
       else if (a === 'pomo-start') pomoStart();
       else if (a === 'pomo-pause') pomoPause();
       else if (a === 'pomo-reset') pomoReset();
@@ -1905,6 +2049,13 @@ var App = (function () {
       if (nm !== 'swClient' && nm !== 'swAccount') return;
       var ci = q(root, 'swClient'), ai = q(root, 'swAccount');
       setSwNames(ci ? ci.value : '', ai ? ai.value : '');
+    });
+    root.addEventListener('keydown', function (ev) {
+      var t = ev.target;
+      if (t && t.getAttribute && t.getAttribute('data-el') === 'countInput' && ev.key === 'Enter') {
+        ev.preventDefault();
+        setCurrentCountFromRoot(root);
+      }
     });
   }
   function toggleAcc(c, a) {
@@ -2023,7 +2174,8 @@ var App = (function () {
 
     setInterval(function () {
       var r = pomoCheck();
-      if (r === 2) paint();
+      var sh = swCheck();
+      if (r === 2 || sh) paint();
       else if (r === 1) { loadTimer(); paintTimersOnly(); }
       else paintTimersOnly();
     }, 1000);
