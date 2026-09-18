@@ -749,6 +749,7 @@ var App = (function () {
   var DEFAULT_BREAK_MIN = 5;
   var DAY_TARGET_KEEP = 60;   // 今日だけの目標を残す日数（これより古い日は読み込み時に掃除）
   var PIP_W = 560, PIP_H = 48;
+  var COMPACT_W = 260, COMPACT_H = 380;
   var TABS = ['count', 'timer', 'tasks'];
   var WD = ['日', '月', '火', '水', '木', '金', '土'];
 
@@ -2180,6 +2181,41 @@ var App = (function () {
     } catch (e) { /* ポップアップ拒否時は注記のみ */ }
   }
 
+  function restoreStripToOriginal(w, view) {
+    if (!view || view.mode !== 'strip') return;
+    view.mode = 'compact';
+    try { w.resizeTo(COMPACT_W, COMPACT_H); } catch (e) { /* ブラウザが禁止している場合も画面は戻す */ }
+    try {
+      w.document.documentElement.className = 'cpt';
+      w.document.body.className = 'compact';
+      w.document.body.textContent = '';
+      w.document.body.appendChild(document.getElementById('tpl-compact').content.cloneNode(true));
+      view.root = w.document.body.querySelector('.c-wrap');
+      bindRoot(view.root);
+      applyTabs();
+      paint();
+    } catch (e) { /* 画面を戻せない環境では現在の表示を維持 */ }
+  }
+
+  function bindStripResize(w, view) {
+    var resizeTimer = 0;
+    w.addEventListener('resize', function () {
+      try {
+        // 次回起動時に再利用するのは、HUDとして妥当な範囲のサイズだけにする。
+        if (w.innerWidth >= 360 && w.innerWidth <= 760) localStorage.setItem('mc_strip_w_v3', String(w.innerWidth));
+        if (w.innerHeight >= 44 && w.innerHeight <= 120) localStorage.setItem('mc_strip_h_v3', String(w.innerHeight));
+      } catch (e) { /* 無視 */ }
+      // HUDを大きく伸ばしたら、以前の縦型コンパクト画面へ戻す。
+      // リサイズ中は介入せず、操作が止まってから1回だけ切り替える。
+      if (resizeTimer) clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () {
+        if (view.mode === 'strip' && (w.innerWidth > 760 || w.innerHeight > 120)) {
+          restoreStripToOriginal(w, view);
+        }
+      }, 400);
+    });
+  }
+
   function togglePipShortcut() {
     if (pipWin) {
       try { pipWin.close(); } catch (e) { /* 無視 */ }
@@ -2223,7 +2259,7 @@ var App = (function () {
       w.document.body.appendChild(document.getElementById('tpl-strip').content.cloneNode(true));
 
       var root = w.document.body.querySelector('.s-wrap');
-      var view = { root: root, kind: 'compact' };
+      var view = { root: root, kind: 'compact', mode: 'strip' };
       bindRoot(root);
       bindKeys(w.document, 'compact');
       w.document.addEventListener('click', ensureAudio, true);
@@ -2232,21 +2268,7 @@ var App = (function () {
       paint();
       if (btn) btn.textContent = '常時表示ウィンドウを閉じる';
 
-      var resizeTimer = 0;
-      w.addEventListener('resize', function () {
-        try {
-          // 次回起動時に再利用するのは、HUDとして妥当な範囲のサイズだけにする。
-          if (w.innerWidth >= 360 && w.innerWidth <= 760) localStorage.setItem('mc_strip_w_v3', String(w.innerWidth));
-          if (w.innerHeight >= 44 && w.innerHeight <= 120) localStorage.setItem('mc_strip_h_v3', String(w.innerHeight));
-        } catch (e) { /* 無視 */ }
-        // 上端スナップ等のリサイズ中は介入せず、操作が止まってから1回だけ戻す。
-        if (resizeTimer) clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(function () {
-          try {
-            if (w.innerWidth > 760 || w.innerHeight > 120) w.resizeTo(PIP_W, PIP_H);
-          } catch (e) { /* ブラウザが禁止している場合はCSS表示を維持 */ }
-        }, 400);
-      });
+      bindStripResize(w, view);
 
       w.addEventListener('pagehide', function () {
         views = views.filter(function (x) { return x !== view; });
@@ -2422,8 +2444,10 @@ var App = (function () {
       document.body.appendChild(document.getElementById('tpl-strip').content.cloneNode(true));
       var sroot = document.body.querySelector('.s-wrap');
       bindRoot(sroot);
-      views.push({ root: sroot, kind: 'compact' });
+      var stripView = { root: sroot, kind: 'compact', mode: 'strip' };
+      views.push(stripView);
       bindKeys(document, 'compact');
+      bindStripResize(window, stripView);
     } else if (compact) {
       document.documentElement.className = 'cpt';
       document.body.className = 'compact';
