@@ -326,7 +326,7 @@ body.strip{
   height:100%;overflow:hidden;background:#0d1422;color:#f8fafc;font-size:12px;
 }
 .s-wrap{
-  width:100%;height:100%;display:grid;grid-template-columns:155px 230px 245px minmax(260px,1fr);
+  width:100%;height:100%;max-height:96px;display:grid;grid-template-columns:155px 230px 245px minmax(260px,1fr);
   gap:0;align-items:stretch;padding:0 8px;background:#0d1422;
   -webkit-app-region:drag;app-region:drag;cursor:move;
   -webkit-user-select:none;user-select:none;
@@ -395,7 +395,7 @@ body.strip .tk-link{font-size:10px;color:#93b4f5;-webkit-app-region:no-drag;app-
   .s-cell:nth-child(2){min-width:76px}
   .s-cell:nth-child(3){min-width:92px}
   .s-cell:nth-child(4){min-width:76px;flex:1 1 auto}
-  .s-label,.s-date,.s-target,.s-month,.s-bar,.s-pomo-actions,.s-sw-actions,.s-task-list{display:none}
+  .s-label,.s-date,.s-target,.s-month,.s-bar,.s-task-list{display:none}
   .s-count-row::before{content:'編集';font-size:10px;color:#94a3b8;font-weight:700}
   .s-count{font-size:20px}
   .s-unit{font-size:11px}
@@ -405,6 +405,14 @@ body.strip .tk-link{font-size:10px;color:#93b4f5;-webkit-app-region:no-drag;app-
   .s-pomo-row::before{content:'POMO';font-size:9px;color:#94a3b8;font-weight:700}
   .s-sw-row::before{content:'SW';font-size:9px;color:#94a3b8;font-weight:700}
   .s-time{font-size:18px}
+  .s-pomo-actions,.s-sw-actions{display:flex;gap:3px;margin:0}
+  .s-pomo-actions .s-btn,.s-sw-actions .s-btn{width:24px;min-width:24px;padding:0;font-size:0}
+  .s-pomo-actions .s-btn::after,.s-sw-actions .s-btn::after{font-size:13px;line-height:1}
+  .s-pomo-actions [data-act="pomo-start"]::after,.s-pomo-actions [data-act="pomo-pause"]::after,
+  .s-sw-actions [data-act="sw-start"]::after{content:'▶'}
+  .s-pomo-actions [data-act="pomo-reset"]::after{content:'↺'}
+  .s-sw-actions [data-act="sw-done"]::after{content:'✓'}
+  .s-sw-actions [data-act="sw-abort"]::after{content:'■'}
 }
 @media (prefers-reduced-motion:reduce){.bar > i,.bar-lg > i{transition:none}}
 </style>
@@ -537,6 +545,7 @@ body.strip .tk-link{font-size:10px;color:#93b4f5;-webkit-app-region:no-drag;app-
     <button type="button" class="btn btn-line" data-el="pipBtn" aria-keyshortcuts="Meta+Shift+E">常時表示ウィンドウを開く</button>
     <p class="hint">小窓が他アプリより前面に出ます。Premiere Pro の横に置いて使ってください。</p>
     <p class="hint">表示／非表示：<kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>E</kbd></p>
+    <p class="hint">※小窓またはこのページにフォーカスがあるときに有効です。Premiere操作中のOS全体ショートカットではありません。</p>
     <p class="note" data-el="pipNote" hidden></p>
   </section>
 
@@ -2225,6 +2234,11 @@ var App = (function () {
 
       w.addEventListener('resize', function () {
         try {
+          // 常時表示HUDは大きな作業画面にならないよう、拡大操作を標準サイズへ戻す。
+          if (w.innerWidth > 760 || w.innerHeight > 120) {
+            w.resizeTo(PIP_W, PIP_H);
+            return;
+          }
           if (w.innerWidth >= 360 && w.innerWidth <= 760) localStorage.setItem('mc_strip_w_v3', String(w.innerWidth));
           if (w.innerHeight >= 44 && w.innerHeight <= 120) localStorage.setItem('mc_strip_h_v3', String(w.innerHeight));
         } catch (e) { /* 無視 */ }
