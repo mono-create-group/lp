@@ -333,7 +333,7 @@ body.strip{
 }
 .s-cell{
   min-width:0;padding:6px 12px;border-right:1px solid #273449;display:flex;flex-direction:column;
-  justify-content:center;gap:3px;-webkit-app-region:drag;app-region:drag;
+  justify-content:flex-start;gap:3px;-webkit-app-region:drag;app-region:drag;
 }
 .s-cell:last-child{border-right:0}
 .s-label{font-size:10px;line-height:1.2;letter-spacing:.08em;text-transform:uppercase;color:#94a3b8;font-weight:700}
@@ -383,9 +383,28 @@ body.strip .tk-link{font-size:10px;color:#93b4f5;-webkit-app-region:no-drag;app-
   .s-pomo-actions,.s-sw-actions{gap:4px;margin-top:3px}
   .s-task-list{display:none}
 }
-@media (max-width:760px){
-  .s-wrap{grid-template-columns:135px 205px 220px minmax(220px,1fr);padding:0 3px}
-  .s-cell{padding-left:9px;padding-right:9px}
+@media (max-height:64px), (max-width:760px){
+  .s-wrap{
+    display:flex;align-items:center;height:100%;padding:0 4px;overflow:hidden;
+  }
+  .s-cell{
+    flex:0 0 auto;height:100%;padding:0 7px;flex-direction:row;align-items:center;
+    justify-content:center;gap:6px;overflow:hidden;
+  }
+  .s-cell:nth-child(1){min-width:86px}
+  .s-cell:nth-child(2){min-width:76px}
+  .s-cell:nth-child(3){min-width:92px}
+  .s-cell:nth-child(4){min-width:76px;flex:1 1 auto}
+  .s-label,.s-date,.s-target,.s-month,.s-bar,.s-pomo-actions,.s-sw-actions,.s-task-list{display:none}
+  .s-count-row::before{content:'編集';font-size:10px;color:#94a3b8;font-weight:700}
+  .s-count{font-size:20px}
+  .s-unit{font-size:11px}
+  .s-actions{gap:3px;margin:0}
+  .s-btn{min-height:24px;height:24px;padding:1px 6px;font-size:11px}
+  .s-pomo-row,.s-sw-row{gap:4px}
+  .s-pomo-row::before{content:'POMO';font-size:9px;color:#94a3b8;font-weight:700}
+  .s-sw-row::before{content:'SW';font-size:9px;color:#94a3b8;font-weight:700}
+  .s-time{font-size:18px}
 }
 @media (prefers-reduced-motion:reduce){.bar > i,.bar-lg > i{transition:none}}
 </style>
@@ -720,7 +739,7 @@ var App = (function () {
   var DEFAULT_WORK_MIN = 25;
   var DEFAULT_BREAK_MIN = 5;
   var DAY_TARGET_KEEP = 60;   // 今日だけの目標を残す日数（これより古い日は読み込み時に掃除）
-  var PIP_W = 1100, PIP_H = 96;
+  var PIP_W = 560, PIP_H = 48;
   var TABS = ['count', 'timer', 'tasks'];
   var WD = ['日', '月', '火', '水', '木', '金', '土'];
 
@@ -1920,6 +1939,7 @@ var App = (function () {
 
   function paintView(v, st) {
     var r = v.root, tt = st.todayTarget, t = tt.value, isDay = (tt.source === 'day');
+    var isStrip = !!(r && r.classList && r.classList.contains('s-wrap'));
     var done = reachedFor(tt, st.today);
     var showDone = done && (t > 0 || isDay);
     var el;
@@ -1936,7 +1956,7 @@ var App = (function () {
         : ((t <= 0)
           ? (isDay ? '目標達成' : (st.monthTarget > 0 ? '月間目標達成済み' : '目標なし'))
           : (done ? '目標達成' : '目標 ' + t + '本 / 残り ' + (t - st.today) + '本'));
-      el.className = (v.kind === 'compact' ? 'c-target' : 'target-line') + (showDone ? ' done' : '');
+      el.className = (isStrip ? 's-target' : (v.kind === 'compact' ? 'c-target' : 'target-line')) + (showDone ? ' done' : '');
     }
 
     el = q(r, 'bar');
@@ -1959,7 +1979,7 @@ var App = (function () {
     if (el) {
       el.style.width = st.monthPercent + '%';
       var mw = q(r, 'monthBarWrap');
-      if (mw) mw.className = (v.kind === 'compact' ? 'c-mbar' : 'bar-lg') + (mDone ? ' done' : '');
+      if (mw) mw.className = (isStrip ? 's-bar' : (v.kind === 'compact' ? 'c-mbar' : 'bar-lg')) + (mDone ? ' done' : '');
     }
 
     el = q(r, 'monthLine');
@@ -1968,7 +1988,7 @@ var App = (function () {
         ? ('今月 ' + st.monthTotal + '本')
         : (mDone ? ('今月 ' + st.monthTotal + '/' + st.monthTarget + ' ・ 月間目標達成')
                  : ('今月 ' + st.monthTotal + '/' + st.monthTarget + ' ・ あと ' + st.monthRemaining + '本'));
-      el.className = 'c-month' + (mDone ? ' done' : '');
+      el.className = (isStrip ? 's-month' : 'c-month') + (mDone ? ' done' : '');
     }
     el = q(r, 'monthCountInput');
     if (el && el !== r.ownerDocument.activeElement) el.value = String(st.monthTotal);
@@ -2172,10 +2192,10 @@ var App = (function () {
 
     var pipW = PIP_W, pipH = PIP_H;
     try {
-      var sw = parseInt(localStorage.getItem('mc_strip_w_v2'), 10);
-      var sh = parseInt(localStorage.getItem('mc_strip_h_v2'), 10);
-      if (isFinite(sw) && sw >= 760) pipW = sw;
-      if (isFinite(sh) && sh >= 84 && sh <= 150) pipH = sh;
+      var sw = parseInt(localStorage.getItem('mc_strip_w_v3'), 10);
+      var sh = parseInt(localStorage.getItem('mc_strip_h_v3'), 10);
+      if (isFinite(sw) && sw >= 360 && sw <= 760) pipW = sw;
+      if (isFinite(sh) && sh >= 44 && sh <= 120) pipH = sh;
     } catch (e) { /* 無視 */ }
 
     pipReq = true;
@@ -2205,8 +2225,8 @@ var App = (function () {
 
       w.addEventListener('resize', function () {
         try {
-          localStorage.setItem('mc_strip_w_v2', String(w.innerWidth));
-          localStorage.setItem('mc_strip_h_v2', String(w.innerHeight));
+          if (w.innerWidth >= 360 && w.innerWidth <= 760) localStorage.setItem('mc_strip_w_v3', String(w.innerWidth));
+          if (w.innerHeight >= 44 && w.innerHeight <= 120) localStorage.setItem('mc_strip_h_v3', String(w.innerHeight));
         } catch (e) { /* 無視 */ }
       });
 
