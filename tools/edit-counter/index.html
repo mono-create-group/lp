@@ -2232,13 +2232,20 @@ var App = (function () {
       paint();
       if (btn) btn.textContent = '常時表示ウィンドウを閉じる';
 
+      var resizeTimer = 0;
       w.addEventListener('resize', function () {
         try {
-          // ユーザーのリサイズ操作と競合しないよう、自動resizeは行わない。
           // 次回起動時に再利用するのは、HUDとして妥当な範囲のサイズだけにする。
           if (w.innerWidth >= 360 && w.innerWidth <= 760) localStorage.setItem('mc_strip_w_v3', String(w.innerWidth));
           if (w.innerHeight >= 44 && w.innerHeight <= 120) localStorage.setItem('mc_strip_h_v3', String(w.innerHeight));
         } catch (e) { /* 無視 */ }
+        // 上端スナップ等のリサイズ中は介入せず、操作が止まってから1回だけ戻す。
+        if (resizeTimer) clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function () {
+          try {
+            if (w.innerWidth > 760 || w.innerHeight > 120) w.resizeTo(PIP_W, PIP_H);
+          } catch (e) { /* ブラウザが禁止している場合はCSS表示を維持 */ }
+        }, 400);
       });
 
       w.addEventListener('pagehide', function () {
