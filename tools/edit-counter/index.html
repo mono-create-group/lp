@@ -515,9 +515,9 @@ body.strip .tk-link{font-size:10px;color:#93b4f5;-webkit-app-region:no-drag;app-
   </section>
 
   <section class="card">
-    <button type="button" class="btn btn-line" data-el="pipBtn" aria-keyshortcuts="Meta+Shift+E Control+Shift+E">常時表示ウィンドウを開く</button>
+    <button type="button" class="btn btn-line" data-el="pipBtn" aria-keyshortcuts="Meta+Shift+E">常時表示ウィンドウを開く</button>
     <p class="hint">小窓が他アプリより前面に出ます。Premiere Pro の横に置いて使ってください。</p>
-    <p class="hint">表示／非表示：<kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>E</kbd></p>
+    <p class="hint">表示／非表示：<kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>E</kbd></p>
     <p class="note" data-el="pipNote" hidden></p>
   </section>
 
@@ -2312,7 +2312,7 @@ var App = (function () {
   function bindKeys(doc, kind) {
     doc.addEventListener('keydown', function (ev) {
       var shortcutKey = ev.code === 'KeyE' || String(ev.key || '').toLowerCase() === 'e';
-      if ((ev.metaKey || ev.ctrlKey) && ev.shiftKey && !ev.altKey && shortcutKey && !ev.repeat) {
+      if (ev.metaKey && ev.shiftKey && !ev.altKey && shortcutKey && !ev.repeat) {
         if (!isField(ev.target)) {
           ev.preventDefault();
           ev.stopPropagation();
