@@ -2234,11 +2234,8 @@ var App = (function () {
 
       w.addEventListener('resize', function () {
         try {
-          // 常時表示HUDは大きな作業画面にならないよう、拡大操作を標準サイズへ戻す。
-          if (w.innerWidth > 760 || w.innerHeight > 120) {
-            w.resizeTo(PIP_W, PIP_H);
-            return;
-          }
+          // ユーザーのリサイズ操作と競合しないよう、自動resizeは行わない。
+          // 次回起動時に再利用するのは、HUDとして妥当な範囲のサイズだけにする。
           if (w.innerWidth >= 360 && w.innerWidth <= 760) localStorage.setItem('mc_strip_w_v3', String(w.innerWidth));
           if (w.innerHeight >= 44 && w.innerHeight <= 120) localStorage.setItem('mc_strip_h_v3', String(w.innerHeight));
         } catch (e) { /* 無視 */ }
