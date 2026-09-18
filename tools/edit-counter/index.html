@@ -319,6 +319,60 @@ body.compact .tk-chip{border-color:#374151}
 body.compact .tk-chip.p-high,body.compact .tk-chip.due{color:#f06b5a;border-color:#f06b5a}
 body.compact .tk-chip.p-mid{color:#93b4f5;border-color:#3b5e9e}
 body.compact .tk-link{color:#93b4f5;-webkit-app-region:no-drag;app-region:no-drag}
+/* ---------- 上部バー（常時表示） ---------- */
+html.strip{height:100%;overflow:hidden}
+html.strip > body{height:100%;overflow:hidden}
+body.strip{
+  height:100%;overflow:hidden;background:#0d1422;color:#f8fafc;font-size:12px;
+}
+.s-wrap{
+  width:100%;height:100%;display:grid;grid-template-columns:155px 230px 245px minmax(260px,1fr);
+  gap:0;align-items:stretch;padding:0 8px;background:#0d1422;
+  -webkit-app-region:drag;app-region:drag;cursor:move;
+  -webkit-user-select:none;user-select:none;
+}
+.s-cell{
+  min-width:0;padding:8px 14px;border-right:1px solid #273449;display:flex;flex-direction:column;
+  justify-content:center;gap:3px;-webkit-app-region:drag;app-region:drag;
+}
+.s-cell:last-child{border-right:0}
+.s-label{font-size:10px;line-height:1.2;letter-spacing:.08em;text-transform:uppercase;color:#94a3b8;font-weight:700}
+.s-date{font-size:12px;color:#cbd5e1;white-space:nowrap}
+.s-count-row{display:flex;align-items:baseline;gap:4px;line-height:1}
+.s-count{font-size:36px;letter-spacing:-.04em;font-weight:800;font-variant-numeric:tabular-nums}
+.s-unit{font-size:13px;color:#cbd5e1}
+.s-target{font-size:11px;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s-target.done{color:#4ade80;font-weight:700}
+.s-actions{display:flex;align-items:center;gap:6px;margin-top:4px}
+.s-btn{
+  min-height:30px;padding:3px 10px;border-radius:5px;border:1px solid #334155;background:#1e293b;color:#f8fafc;
+  cursor:pointer;font:inherit;font-weight:700;white-space:nowrap;-webkit-app-region:no-drag;app-region:no-drag;
+}
+.s-btn:disabled{opacity:.35;cursor:not-allowed}
+.s-btn-primary{background:#2563eb;border-color:#2563eb}
+.s-btn:focus-visible{outline:2px solid #93c5fd;outline-offset:2px}
+.s-month{font-size:10px;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s-bar{height:4px;background:#273449;border-radius:2px;overflow:hidden;margin-top:5px}
+.s-bar > i{display:block;height:100%;width:0;background:#2563eb}
+.s-bar.done > i{background:#4ade80}
+.s-pomo-row,.s-sw-row{display:flex;align-items:center;gap:8px;min-width:0}
+.s-time{font-size:26px;line-height:1;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.s-mode{font-size:11px;color:#94a3b8;white-space:nowrap}
+.s-mode.is-break{color:#4ade80;font-weight:700}
+.s-pomo-actions,.s-sw-actions{display:flex;gap:5px;margin-top:6px}
+.s-task-list{min-width:0;max-height:58px;overflow:hidden}
+body.strip .tk{margin:3px 0 0;padding:4px 7px;border-color:#273449;border-left-color:#334155;background:#111c2d;border-radius:4px}
+body.strip .tk-now{border-left-color:#2563eb;background:#111827;box-shadow:0 0 0 1px #2563eb inset}
+body.strip .tk-over{border-left-color:#f06b5a}
+body.strip .tk-t{font-size:11px;line-height:1.25;color:#f8fafc;-webkit-line-clamp:1}
+body.strip .tk-m,body.strip .tk-group,body.strip .tk-empty,body.strip .tk-foot,body.strip .tk-note{font-size:10px;color:#94a3b8}
+body.strip .tk-group{margin-top:3px}
+body.strip .tk-link{font-size:10px;color:#93b4f5;-webkit-app-region:no-drag;app-region:no-drag}
+@media (max-width:760px){
+  .s-wrap{grid-template-columns:135px 205px 220px minmax(220px,1fr);padding:0 3px}
+  .s-cell{padding-left:9px;padding-right:9px}
+}
+@media (prefers-reduced-motion:reduce){.bar > i,.bar-lg > i{transition:none}}
 </style>
 </head>
 <body>
@@ -597,6 +651,45 @@ body.compact .tk-link{color:#93b4f5;-webkit-app-region:no-drag;app-region:no-dra
   </div>
 </template>
 
+<template id="tpl-strip">
+  <div class="s-wrap">
+    <div class="s-cell">
+      <div class="s-label">編集本数</div>
+      <div class="s-date" data-el="date">—</div>
+      <div class="s-count-row"><span class="s-count" data-el="count">0</span><span class="s-unit">本</span></div>
+      <div class="s-target" data-el="targetLine">—</div>
+    </div>
+    <div class="s-cell">
+      <div class="s-label">今日の操作</div>
+      <div class="s-actions">
+        <button type="button" class="s-btn s-btn-primary" data-act="inc">＋1本</button>
+        <button type="button" class="s-btn" data-act="dec">−1</button>
+      </div>
+      <div class="s-month" data-el="monthLine">—</div>
+      <div class="s-bar" data-el="monthBarWrap"><i data-el="monthBar"></i></div>
+    </div>
+    <div class="s-cell">
+      <div class="s-label">ポモドーロ</div>
+      <div class="s-pomo-row"><span class="s-mode" data-el="pomoMode">作業</span><strong class="s-time" data-el="pomoTime">25:00</strong></div>
+      <div class="s-pomo-actions">
+        <button type="button" class="s-btn s-btn-primary" data-act="pomo-start">開始</button>
+        <button type="button" class="s-btn s-btn-primary" data-act="pomo-pause" hidden>一時停止</button>
+        <button type="button" class="s-btn" data-act="pomo-reset">リセット</button>
+      </div>
+    </div>
+    <div class="s-cell">
+      <div class="s-label">ストップウォッチ / 今日のタスク</div>
+      <div class="s-sw-row"><strong class="s-time" data-el="swTime">00:00</strong><span class="s-mode" data-el="swNameRun" hidden>—</span></div>
+      <div class="s-sw-actions">
+        <button type="button" class="s-btn s-btn-primary" data-act="sw-start">編集開始</button>
+        <button type="button" class="s-btn s-btn-primary" data-act="sw-done" hidden>完了 ＋1本</button>
+        <button type="button" class="s-btn" data-act="sw-abort" hidden>中断</button>
+      </div>
+      <div class="s-task-list" data-el="taskList"></div>
+    </div>
+  </div>
+</template>
+
 <script>
 var App = (function () {
   'use strict';
@@ -611,7 +704,7 @@ var App = (function () {
   var DEFAULT_WORK_MIN = 25;
   var DEFAULT_BREAK_MIN = 5;
   var DAY_TARGET_KEEP = 60;   // 今日だけの目標を残す日数（これより古い日は読み込み時に掃除）
-  var PIP_W = 260, PIP_H = 380;
+  var PIP_W = 1100, PIP_H = 128;
   var TABS = ['count', 'timer', 'tasks'];
   var WD = ['日', '月', '火', '水', '木', '金', '土'];
 
@@ -2037,7 +2130,7 @@ var App = (function () {
       note.hidden = false;
     }
     try {
-      window.open(location.href.split('?')[0] + '?compact=1', 'mc_counter',
+      window.open(location.href.split('?')[0] + '?strip=1', 'mc_counter',
         'popup,width=' + PIP_W + ',height=' + PIP_H);
     } catch (e) { /* ポップアップ拒否時は注記のみ */ }
   }
@@ -2050,10 +2143,10 @@ var App = (function () {
 
     var pipW = PIP_W, pipH = PIP_H;
     try {
-      var sw = parseInt(localStorage.getItem('mc_pip_w'), 10);
-      var sh = parseInt(localStorage.getItem('mc_pip_h'), 10);
-      if (isFinite(sw) && sw > 0) pipW = sw;
-      if (isFinite(sh) && sh > 0) pipH = sh;
+      var sw = parseInt(localStorage.getItem('mc_strip_w'), 10);
+      var sh = parseInt(localStorage.getItem('mc_strip_h'), 10);
+      if (isFinite(sw) && sw >= 760) pipW = sw;
+      if (isFinite(sh) && sh >= 108 && sh <= 180) pipH = sh;
     } catch (e) { /* 無視 */ }
 
     pipReq = true;
@@ -2067,11 +2160,11 @@ var App = (function () {
         w.document.head.appendChild(c);
       }
       w.document.documentElement.lang = 'ja';
-      w.document.documentElement.className = 'cpt';
-      w.document.body.className = 'compact';
-      w.document.body.appendChild(document.getElementById('tpl-compact').content.cloneNode(true));
+      w.document.documentElement.className = 'strip';
+      w.document.body.className = 'strip';
+      w.document.body.appendChild(document.getElementById('tpl-strip').content.cloneNode(true));
 
-      var root = w.document.body.querySelector('.c-wrap');
+      var root = w.document.body.querySelector('.s-wrap');
       var view = { root: root, kind: 'compact' };
       bindRoot(root);
       bindKeys(w.document, 'compact');
@@ -2083,8 +2176,8 @@ var App = (function () {
 
       w.addEventListener('resize', function () {
         try {
-          localStorage.setItem('mc_pip_w', String(w.innerWidth));
-          localStorage.setItem('mc_pip_h', String(w.innerHeight));
+          localStorage.setItem('mc_strip_w', String(w.innerWidth));
+          localStorage.setItem('mc_strip_h', String(w.innerHeight));
         } catch (e) { /* 無視 */ }
       });
 
@@ -2243,8 +2336,19 @@ var App = (function () {
     load();
     loadTimer();
     loadTab();
+    var strip = /[?&]strip=1/.test(location.search);
     var compact = /[?&]compact=1/.test(location.search);
-    if (compact) {
+    if (strip) {
+      document.documentElement.className = 'strip';
+      document.body.className = 'strip';
+      var stripMain = document.getElementById('main');
+      if (stripMain) stripMain.parentNode.removeChild(stripMain);
+      document.body.appendChild(document.getElementById('tpl-strip').content.cloneNode(true));
+      var sroot = document.body.querySelector('.s-wrap');
+      bindRoot(sroot);
+      views.push({ root: sroot, kind: 'compact' });
+      bindKeys(document, 'compact');
+    } else if (compact) {
       document.documentElement.className = 'cpt';
       document.body.className = 'compact';
       var main = document.getElementById('main');
