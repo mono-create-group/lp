@@ -332,7 +332,7 @@ body.strip{
   -webkit-user-select:none;user-select:none;
 }
 .s-cell{
-  min-width:0;padding:8px 14px;border-right:1px solid #273449;display:flex;flex-direction:column;
+  min-width:0;padding:6px 12px;border-right:1px solid #273449;display:flex;flex-direction:column;
   justify-content:center;gap:3px;-webkit-app-region:drag;app-region:drag;
 }
 .s-cell:last-child{border-right:0}
@@ -368,6 +368,21 @@ body.strip .tk-t{font-size:11px;line-height:1.25;color:#f8fafc;-webkit-line-clam
 body.strip .tk-m,body.strip .tk-group,body.strip .tk-empty,body.strip .tk-foot,body.strip .tk-note{font-size:10px;color:#94a3b8}
 body.strip .tk-group{margin-top:3px}
 body.strip .tk-link{font-size:10px;color:#93b4f5;-webkit-app-region:no-drag;app-region:no-drag}
+@media (max-height:110px){
+  .s-cell{padding:4px 10px;gap:1px}
+  .s-label{font-size:9px}
+  .s-date{font-size:10px}
+  .s-count{font-size:30px}
+  .s-target{font-size:10px}
+  .s-actions{gap:4px;margin-top:2px}
+  .s-btn{min-height:24px;padding:2px 8px;font-size:11px}
+  .s-month{font-size:9px}
+  .s-bar{margin-top:2px}
+  .s-time{font-size:22px}
+  .s-mode{font-size:10px}
+  .s-pomo-actions,.s-sw-actions{gap:4px;margin-top:3px}
+  .s-task-list{display:none}
+}
 @media (max-width:760px){
   .s-wrap{grid-template-columns:135px 205px 220px minmax(220px,1fr);padding:0 3px}
   .s-cell{padding-left:9px;padding-right:9px}
@@ -704,7 +719,7 @@ var App = (function () {
   var DEFAULT_WORK_MIN = 25;
   var DEFAULT_BREAK_MIN = 5;
   var DAY_TARGET_KEEP = 60;   // 今日だけの目標を残す日数（これより古い日は読み込み時に掃除）
-  var PIP_W = 1100, PIP_H = 128;
+  var PIP_W = 1100, PIP_H = 96;
   var TABS = ['count', 'timer', 'tasks'];
   var WD = ['日', '月', '火', '水', '木', '金', '土'];
 
@@ -2143,10 +2158,10 @@ var App = (function () {
 
     var pipW = PIP_W, pipH = PIP_H;
     try {
-      var sw = parseInt(localStorage.getItem('mc_strip_w'), 10);
-      var sh = parseInt(localStorage.getItem('mc_strip_h'), 10);
+      var sw = parseInt(localStorage.getItem('mc_strip_w_v2'), 10);
+      var sh = parseInt(localStorage.getItem('mc_strip_h_v2'), 10);
       if (isFinite(sw) && sw >= 760) pipW = sw;
-      if (isFinite(sh) && sh >= 108 && sh <= 180) pipH = sh;
+      if (isFinite(sh) && sh >= 84 && sh <= 150) pipH = sh;
     } catch (e) { /* 無視 */ }
 
     pipReq = true;
@@ -2176,8 +2191,8 @@ var App = (function () {
 
       w.addEventListener('resize', function () {
         try {
-          localStorage.setItem('mc_strip_w', String(w.innerWidth));
-          localStorage.setItem('mc_strip_h', String(w.innerHeight));
+          localStorage.setItem('mc_strip_w_v2', String(w.innerWidth));
+          localStorage.setItem('mc_strip_h_v2', String(w.innerHeight));
         } catch (e) { /* 無視 */ }
       });
 
