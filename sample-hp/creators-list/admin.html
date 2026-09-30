@@ -2522,7 +2522,7 @@ function renderClientMaster(data) {
     tbody.innerHTML = '<tr><td colspan="6" style="padding:24px;text-align:center;color:var(--sub);">登録された<wbr>クライアントが<wbr>ありません</td></tr>';
     return;
   }
-  var payLabel = { spot: <wbr>'つど払い<wbr>', month_end: '当月払い<wbr>（特例）<wbr>', next_month_end: '翌月末払い<wbr>（特例）<wbr>', custom_date: '日付指定<wbr>（特例）<wbr>' };
+  var payLabel = { spot: 'つど払い<wbr>', month_end: '当月払い<wbr>（特例）<wbr>', next_month_end: '翌月末払い<wbr>（特例）<wbr>', custom_date: '日付指定<wbr>（特例）<wbr>' };
   tbody.innerHTML = data.map(function(d) {
     return '<tr style="border-bottom:1px solid var(--border);">'
       + '<td style="padding:10px 12px;">'
@@ -3092,7 +3092,7 @@ async function doSetup() {
     const r = await gasFetch(GAS_URL, {
       method: 'POST',
 
-      body: JSON.stringify({ type: 'changePw', old_key: '20180412k', new_key: pw1 })
+      body: JSON.stringify({ type: 'changePw', old_key: pw1, new_key: pw1 })
     });
     const j = await r.json();
     if (j.error && j.error === 'unauthorized') {
@@ -4194,7 +4194,7 @@ async function syncGasKey() {
     const r = await gasFetch(GAS_URL, {
       method: 'POST',
 
-      body: JSON.stringify({ type: 'changePw', old_key: '20180412k', new_key: currentPw })
+      body: JSON.stringify({ type: 'changePw', old_key: currentPw, new_key: currentPw })
     });
     const j = await r.json();
     if (j.success) {
