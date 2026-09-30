@@ -348,3 +348,31 @@ body{background:#fff}
  #price .compact-terms .terms-columns h3{font-size:16px;margin-bottom:6px}
  #price .compact-terms .terms-payment{padding-bottom:14px;margin-bottom:14px}
 }
+
+/* Explanatory typography: quieter text, clear pricing hierarchy. */
+.section-heading p,.price-item,.payment,.timing,.disclosure-content,summary,.flow-steps p{
+ font-family:"IBM Plex Sans JP","Hiragino Kaku Gothic ProN","Hiragino Sans",sans-serif;
+ font-weight:400;letter-spacing:.025em;
+}
+.section-heading p{font-size:clamp(16px,1.35vw,19px);line-height:1.85}
+.price-item h3,.price-item.option h3{font-weight:600;letter-spacing:.01em;line-height:1.6}
+.price-item h3{font-size:clamp(24px,2.15vw,31px)}
+.price-item.option h3{font-size:clamp(22px,1.95vw,28px)}
+.price-item p{font-size:clamp(18px,1.65vw,24px);line-height:1.65;gap:8px;letter-spacing:.015em}
+.price-item strong{font-size:clamp(32px,2.65vw,38px);font-weight:600;letter-spacing:-.025em;font-variant-numeric:lining-nums tabular-nums}
+.price-item.option strong{font-size:clamp(30px,2.35vw,34px)}
+.payment,.timing{font-size:clamp(16px,1.4vw,20px);line-height:1.85}
+summary{font-weight:500;letter-spacing:.02em}
+.flow-steps p{font-weight:500;letter-spacing:0}
+#price .compact-terms .terms-columns h3,#price .compact-terms .terms-revision p:first-child{font-weight:600}
+@media(min-width:721px) and (max-width:1100px){
+ .price-item h3{font-size:23px}.price-item.option h3{font-size:21px}
+ .price-item p{font-size:18px}.price-item strong{font-size:30px}.price-item.option strong{font-size:28px}
+}
+@media(max-width:720px){
+ .section-heading p{font-size:15px;line-height:1.85}
+ .price-item h3{font-size:20px}.price-item.option h3{font-size:19px}
+ .price-item p{font-size:16px;gap:5px}.price-item strong{font-size:30px}.price-item.option strong{font-size:27px}
+ .payment,.timing{font-size:15px;line-height:1.85}
+ .flow-steps p{font-size:13px}
+}
