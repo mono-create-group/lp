@@ -867,7 +867,7 @@ function doGet(e) {
           '▶ Chatworkグループ参加待ち\n' +
           '▶ 管理画面: ' + LP_BASE_URL + 'admin.html';
         try {
-          UrlFetchApp.fetch('https://api.chatwork.com/v2/rooms/' + editorRoomId + '/messages', {
+          fetchWithChatworkWritesDisabled_('https://api.chatwork.com/v2/rooms/' + editorRoomId + '/messages', {
             method: 'POST',
             headers: { 'X-ChatWorkToken': CHATWORK_TOKEN },
             payload: 'body=' + encodeURIComponent(msg)
@@ -1351,7 +1351,7 @@ function notifyPayment(data) {
     ].join('\n');
 
     var url = 'https://api.chatwork.com/v2/rooms/' + PAYMENT_ROOM_ID + '/messages';
-    UrlFetchApp.fetch(url, {
+    fetchWithChatworkWritesDisabled_(url, {
       method:  'post',
       headers: { 'X-ChatWorkToken': CHATWORK_TOKEN },
       payload: { body: msg }
@@ -1419,7 +1419,7 @@ function notifyChatwork(data, now) {
   ].join('\n');
 
   var url = 'https://api.chatwork.com/v2/rooms/' + CHATWORK_ROOM_ID + '/messages';
-  UrlFetchApp.fetch(url, {
+  fetchWithChatworkWritesDisabled_(url, {
     method:  'post',
     headers: { 'X-ChatWorkToken': CHATWORK_TOKEN },
     payload: { body: msg }
@@ -1703,7 +1703,7 @@ function applyPartner(data) {
       (data.message ? '【メッセージ】\n' + data.message + '\n━━━━━━━━━━━━━━━━━━━━\n' : '') +
       '▶ 管理画面で承認: ' + LP_BASE_URL + 'admin.html';
     try {
-      UrlFetchApp.fetch('https://api.chatwork.com/v2/rooms/' + CHATWORK_ROOM_ID + '/messages', {
+      fetchWithChatworkWritesDisabled_('https://api.chatwork.com/v2/rooms/' + CHATWORK_ROOM_ID + '/messages', {
         method: 'POST',
         headers: { 'X-ChatWorkToken': CHATWORK_TOKEN },
         payload: 'body=' + encodeURIComponent(msg)
@@ -1921,7 +1921,7 @@ function applySales(data) {
       (data.message ? '【志望動機・PR】\n' + data.message + '\n━━━━━━━━━━━━━━━━━━━━\n' : '') +
       '▶ 管理画面: ' + LP_BASE_URL + 'admin.html';
     try {
-      UrlFetchApp.fetch('https://api.chatwork.com/v2/rooms/' + roomId + '/messages', {
+      fetchWithChatworkWritesDisabled_('https://api.chatwork.com/v2/rooms/' + roomId + '/messages', {
         method: 'POST',
         headers: { 'X-ChatWorkToken': CHATWORK_TOKEN },
         payload: 'body=' + encodeURIComponent(msg)
@@ -2078,7 +2078,7 @@ function updateSalesAppStatus(row, status) {
         '━━━━━━━━━━━━━━━━━━━━\n' +
         '▶ 管理画面: ' + LP_BASE_URL + 'admin.html';
       try {
-        UrlFetchApp.fetch('https://api.chatwork.com/v2/rooms/' + salesNotifyRoom + '/messages', {
+        fetchWithChatworkWritesDisabled_('https://api.chatwork.com/v2/rooms/' + salesNotifyRoom + '/messages', {
           method: 'POST',
           headers: { 'X-ChatWorkToken': CHATWORK_TOKEN },
           payload: 'body=' + encodeURIComponent(cwMsg)
@@ -2705,7 +2705,7 @@ function saveContract(data) {
       ].join('\n');
     }
     var url = 'https://api.chatwork.com/v2/rooms/' + CHATWORK_ROOM_ID + '/messages';
-    UrlFetchApp.fetch(url, { method:'post', headers:{'X-ChatWorkToken':CHATWORK_TOKEN}, payload:{body:msg} });
+    fetchWithChatworkWritesDisabled_(url, { method:'post', headers:{'X-ChatWorkToken':CHATWORK_TOKEN}, payload:{body:msg} });
   }
 
   // ② お客様への自動返信メール（ステージで分岐）
@@ -2983,7 +2983,7 @@ function saveHearing(data) {
     Object.keys(ans).forEach(function(k){ lines.push(k + '：' + ans[k]); });
     lines.push('━━━━━━━━━━━━━━━━━━━━');
     var url = 'https://api.chatwork.com/v2/rooms/' + CHATWORK_ROOM_ID + '/messages';
-    UrlFetchApp.fetch(url, { method:'post', headers:{'X-ChatWorkToken':CHATWORK_TOKEN}, payload:{body:lines.join('\n')} });
+    fetchWithChatworkWritesDisabled_(url, { method:'post', headers:{'X-ChatWorkToken':CHATWORK_TOKEN}, payload:{body:lines.join('\n')} });
   }
 
   // ③ お客様への自動返信メール
@@ -3737,7 +3737,7 @@ function submitPFInquiry(data) {
       '━━━━━━━━━━━━━━━━━━━━\n' +
       '▶ 管理画面: ' + LP_BASE_URL + 'admin.html';
     try {
-      UrlFetchApp.fetch('https://api.chatwork.com/v2/rooms/' + CHATWORK_ROOM_ID + '/messages', {
+      fetchWithChatworkWritesDisabled_('https://api.chatwork.com/v2/rooms/' + CHATWORK_ROOM_ID + '/messages', {
         method:'POST', headers:{'X-ChatWorkToken':CHATWORK_TOKEN},
         payload:'body=' + encodeURIComponent(msg)
       });
@@ -4035,7 +4035,7 @@ function autoCreatePartnerRewardRecord(clientName, clientEmail, plan) {
     '▶ 管理画面で報酬メールを送信してください\n' +
     LP_BASE_URL + 'admin.html';
   try {
-    UrlFetchApp.fetch('https://api.chatwork.com/v2/rooms/' + CHATWORK_ROOM_ID + '/messages', {
+    fetchWithChatworkWritesDisabled_('https://api.chatwork.com/v2/rooms/' + CHATWORK_ROOM_ID + '/messages', {
       method: 'POST',
       headers: { 'X-ChatWorkToken': CHATWORK_TOKEN },
       payload: { body: msg, self_unread: 1 }
@@ -4489,7 +4489,7 @@ function handleLineInquiry(data) {
 function replyToLine(replyToken, messages) {
   if (!replyToken || !LINE_CHANNEL_ACCESS_TOKEN) return;
   try {
-    UrlFetchApp.fetch(LINE_REPLY_API, {
+    fetchWithChatworkWritesDisabled_(LINE_REPLY_API, {
       method:  'post',
       headers: {
         'Content-Type':  'application/json',
@@ -4512,7 +4512,7 @@ function replyToLine(replyToken, messages) {
 function pushToLine(userId, messages) {
   if (!userId || !LINE_CHANNEL_ACCESS_TOKEN) return { ok: false, status: 0, body: 'no token' };
   try {
-    var res = UrlFetchApp.fetch(LINE_PUSH_API, {
+    var res = fetchWithChatworkWritesDisabled_(LINE_PUSH_API, {
       method:  'post',
       headers: {
         'Content-Type':  'application/json',
@@ -4555,7 +4555,7 @@ function setupRichMenu(imageUrl) {
   };
 
   // 1) リッチメニュー作成
-  var res = UrlFetchApp.fetch('https://api.line.me/v2/bot/richmenu', {
+  var res = fetchWithChatworkWritesDisabled_('https://api.line.me/v2/bot/richmenu', {
     method: 'post', contentType: 'application/json',
     headers: { Authorization: 'Bearer ' + token },
     payload: JSON.stringify(menu), muteHttpExceptions: true
@@ -4564,12 +4564,12 @@ function setupRichMenu(imageUrl) {
   var richMenuId = JSON.parse(res.getContentText()).richMenuId;
 
   // 2) 画像アップロード（公開URLから取得して送信）
-  var img = UrlFetchApp.fetch(imageUrl, { muteHttpExceptions: true });
+  var img = fetchWithChatworkWritesDisabled_(imageUrl, { muteHttpExceptions: true });
   if (img.getResponseCode() !== 200) return { ok: false, step: 'fetch_image', code: img.getResponseCode(), url: imageUrl };
   var blob = img.getBlob();
   var ct = blob.getContentType();
   if (ct !== 'image/png' && ct !== 'image/jpeg') ct = 'image/png';
-  var up = UrlFetchApp.fetch('https://api-data.line.me/v2/bot/richmenu/' + richMenuId + '/content', {
+  var up = fetchWithChatworkWritesDisabled_('https://api-data.line.me/v2/bot/richmenu/' + richMenuId + '/content', {
     method: 'post', contentType: ct,
     headers: { Authorization: 'Bearer ' + token },
     payload: blob.getBytes(), muteHttpExceptions: true
@@ -4577,7 +4577,7 @@ function setupRichMenu(imageUrl) {
   if (up.getResponseCode() !== 200) return { ok: false, step: 'upload', code: up.getResponseCode(), body: up.getContentText(), richMenuId: richMenuId };
 
   // 3) デフォルト（全ユーザー表示）に設定
-  var def = UrlFetchApp.fetch('https://api.line.me/v2/bot/user/all/richmenu/' + richMenuId, {
+  var def = fetchWithChatworkWritesDisabled_('https://api.line.me/v2/bot/user/all/richmenu/' + richMenuId, {
     method: 'post', headers: { Authorization: 'Bearer ' + token }, muteHttpExceptions: true
   });
   if (def.getResponseCode() !== 200) return { ok: false, step: 'set_default', code: def.getResponseCode(), body: def.getContentText(), richMenuId: richMenuId };
@@ -4586,7 +4586,7 @@ function setupRichMenu(imageUrl) {
 }
 
 function listRichMenus() {
-  var res = UrlFetchApp.fetch('https://api.line.me/v2/bot/richmenu/list', {
+  var res = fetchWithChatworkWritesDisabled_('https://api.line.me/v2/bot/richmenu/list', {
     method: 'get', headers: { Authorization: 'Bearer ' + LINE_CHANNEL_ACCESS_TOKEN }, muteHttpExceptions: true
   });
   return { code: res.getResponseCode(), body: res.getContentText() };
@@ -4594,7 +4594,7 @@ function listRichMenus() {
 
 function deleteRichMenu(id) {
   if (!id) return { ok: false, body: 'no id' };
-  var res = UrlFetchApp.fetch('https://api.line.me/v2/bot/richmenu/' + id, {
+  var res = fetchWithChatworkWritesDisabled_('https://api.line.me/v2/bot/richmenu/' + id, {
     method: 'delete', headers: { Authorization: 'Bearer ' + LINE_CHANNEL_ACCESS_TOKEN }, muteHttpExceptions: true
   });
   return { ok: res.getResponseCode() === 200, code: res.getResponseCode(), body: res.getContentText() };
@@ -4647,7 +4647,7 @@ function saveAdditionalOrder(data) {
       '━━━━━━━━━━━━━━━━━━━━\n' +
       '▶ 管理画面: ' + LP_BASE_URL + 'admin.html';
     try {
-      UrlFetchApp.fetch(
+      fetchWithChatworkWritesDisabled_(
         'https://api.chatwork.com/v2/rooms/' + CHATWORK_ROOM_ID + '/messages',
         { method: 'post', headers: { 'X-ChatWorkToken': CHATWORK_TOKEN }, payload: { body: msg } }
       );
@@ -5554,7 +5554,7 @@ function hpOwnerRequest(data) {
       '━━━━━━━━━━━━━━━━━━━━\n' +
       (data.message ? '【内容】\n' + data.message + '\n' : '');
     try {
-      UrlFetchApp.fetch('https://api.chatwork.com/v2/rooms/' + roomId + '/messages', {
+      fetchWithChatworkWritesDisabled_('https://api.chatwork.com/v2/rooms/' + roomId + '/messages', {
         method: 'POST',
         headers: { 'X-ChatWorkToken': CHATWORK_TOKEN },
         payload: 'body=' + encodeURIComponent(msg)
@@ -5565,3 +5565,18 @@ function hpOwnerRequest(data) {
 }
 
 
+
+// 2026-09-30 user policy: Chatwork automatic writes are abolished. LINE and reads remain enabled.
+function fetchWithChatworkWritesDisabled_(url, options) {
+  var opts = options || {};
+  var method = String(opts.method || (opts.payload ? 'post' : 'get')).toLowerCase();
+  if (/^https?:\/\/api\.chatwork\.com(?:[:/]|$)/i.test(String(url)) && method !== 'get' && method !== 'head') {
+    return {
+      getResponseCode: function() { return 410; },
+      getContentText: function() { return '{"ok":false,"disabled":true,"reason":"Chatwork automated writes disabled by user policy"}'; },
+      getAllHeaders: function() { return {}; },
+      getHeaders: function() { return {}; }
+    };
+  }
+  return UrlFetchApp.fetch(url, options);
+}
