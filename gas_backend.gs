@@ -13,9 +13,9 @@
 // ================================================================
 
 // ─── 設定（フォールバック値。ScriptProperties で上書き可能）────────
-var ADMIN_KEY         = '20180412k';
+var ADMIN_KEY = requirePrivateScriptProperty_('ADMIN_KEY');
 var SPREADSHEET_ID    = '13RESWCy5tuOqVzzG5aoeIFtyDk--OrLnpaPDep5yjj0';
-var CHATWORK_TOKEN    = 'f79405b3d71215d721e6a9d3f86f55a6';
+var CHATWORK_TOKEN = requirePrivateScriptProperty_('CHATWORK_TOKEN');
 var CHATWORK_ROOM_ID  = '437407663';  // HPお問い合わせ
 var PAYMENT_ROOM_ID   = '437439208';  // 振込確認依頼
 var EDITOR_ROOM_ID    = '438093676';  // 🎬編集者募集（応募通知専用）
@@ -25,8 +25,8 @@ var OWNER_EMAIL       = 'mono.create.group@gmail.com';  // オーナー通知先
 var LP_BASE_URL       = 'https://mono-create-group.github.io/lp/';
 
 // ─── LINE Messaging API ───────────────────────────────────────
-var LINE_CHANNEL_SECRET       = '1322ddbd622dbea420f68cfc2bd957f5';
-var LINE_CHANNEL_ACCESS_TOKEN = 'WoL98l0NE3ZWox6Kd5ntByqB85NlyxtoJ7Jwf/7f0T/TuCbmF9lHu5t90JR0kE7Jyz5sm5/B+pozKep+8s9Esv0Abhu/KbuAAOXRM7tMspiKlEfFme11mk6Fwowo4+pNeVUlUfR07h54CGZYLgxfdQdB04t89/1O/w1cDnyilFU=';
+var LINE_CHANNEL_SECRET = requirePrivateScriptProperty_('LINE_CHANNEL_SECRET');
+var LINE_CHANNEL_ACCESS_TOKEN = requirePrivateScriptProperty_('LINE_CHANNEL_ACCESS_TOKEN');
 var LINE_REPLY_API            = 'https://api.line.me/v2/bot/message/reply';
 var LINE_PUSH_API             = 'https://api.line.me/v2/bot/message/push';
 var OWNER_LINE_UID            = 'U5e926566fa2cad3aec632c6f6811f915'; // オーナーのLINE UID（Script Properties: OWNER_LINE_UID）
@@ -5579,4 +5579,14 @@ function fetchWithChatworkWritesDisabled_(url, options) {
     };
   }
   return UrlFetchApp.fetch(url, options);
+}
+
+// Public source contains no secret fallback. Configure private Script Properties
+// before deploying this source to GAS; missing values fail closed.
+function requirePrivateScriptProperty_(name) {
+  var value = PropertiesService.getScriptProperties().getProperty(name);
+  if (typeof value !== 'string' || !value.trim()) {
+    throw new Error('Missing required Script Property: ' + name);
+  }
+  return value;
 }
