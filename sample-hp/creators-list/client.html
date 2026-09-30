@@ -1,815 +1,222 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" type="image/svg+xml" href="favicon.svg">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!doctype html><html lang="ja"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="favicon.svg" rel="icon" type="image/svg+xml"/>
+<link href="favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="apple-touch-icon.png" rel="apple-touch-icon"/>
+<title>個人向けの動画編集代行・料金｜クリエイターズリスト</title>
+<meta content="個人の発信者向け動画編集代行。ショート動画は2分まで4,000円〜（税込）。長尺・オープニング・エンディングにも対応。中村が相談から納品まで担当し、内容を伺って正式料金と納品日を決めます。" name="description"/>
+<meta content="website" property="og:type"/>
+<meta content="ja_JP" property="og:locale"/>
+<meta content="個人向けの動画編集代行・料金｜クリエイターズリスト" property="og:title"/>
+<meta content="個人の発信者向け動画編集代行。ショート動画は2分まで4,000円〜（税込）。長尺・オープニング・エンディングにも対応。中村が相談から納品まで担当し、内容を伺って正式料金と納品日を決めます。" property="og:description"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 
-<title>動画編集者派遣｜クリエイターズリスト｜mono.create</title>
-<meta name="description" content="編集者不足を最短3日で解消。mono.create在籍の動画編集者を、必要なスキル・本数・期間だけ選んで派遣。プロフィールとポートフォリオを見て指名できます。">
-<meta property="og:type" content="website">
-<meta property="og:locale" content="ja_JP">
-<meta property="og:title" content="動画編集者派遣｜クリエイターズリスト｜mono.create">
-<meta property="og:description" content="編集者不足を最短3日で解消。プロフィールを見て指名できる動画編集者派遣。">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
-<script type="application/ld+json">
-{
+
+<meta content="index,follow,max-image-preview:large" name="robots"/><meta content="summary" name="twitter:card"/><meta content="個人向けの動画編集代行・料金｜クリエイターズリスト" name="twitter:title"/><meta content="個人の発信者向け動画編集代行。ショート動画は2分まで4,000円〜（税込）。長尺・オープニング・エンディングにも対応。中村が相談から納品まで担当し、内容を伺って正式料金と納品日を決めます。" name="twitter:description"/><meta content="https://mono-create-group.github.io/lp/sample-hp/creators-list/client.html" property="og:url"/><meta content="クリエイターズリスト" property="og:site_name"/><link href="https://mono-create-group.github.io/lp/sample-hp/creators-list/client.html" rel="canonical"/><script type="application/ld+json">{
   "@context": "https://schema.org",
-  "@type": "Service",
-  "name": "動画編集者派遣(クリエイターズリスト)",
-  "serviceType": "動画編集者派遣・編集代行",
-  "provider": { "@type": "Organization", "name": "mono.create" },
-  "areaServed": "JP",
-  "description": "在籍動画編集者を必要なスキル・本数・期間だけ派遣。ショート・長尺・企業VP対応。",
-  "hasOfferCatalog": {
-    "@type": "OfferCatalog",
-    "name": "動画編集 料金",
-    "itemListElement": [
-      { "@type": "Offer", "name": "ショート動画編集", "priceSpecification": { "@type": "PriceSpecification", "price": "4000", "priceCurrency": "JPY", "description": "1本あたり ¥4,000〜" } },
-      { "@type": "Offer", "name": "長尺動画編集(10分)", "priceSpecification": { "@type": "PriceSpecification", "price": "10000", "priceCurrency": "JPY", "description": "1本あたり ¥10,000〜" } },
-      { "@type": "Offer", "name": "長尺動画編集(15分)", "priceSpecification": { "@type": "PriceSpecification", "price": "15000", "priceCurrency": "JPY", "description": "1本あたり ¥15,000〜" } },
-      { "@type": "Offer", "name": "長尺動画編集(20分)", "priceSpecification": { "@type": "PriceSpecification", "price": "20000", "priceCurrency": "JPY", "description": "1本あたり ¥20,000〜" } }
-    ]
-  }
-}
-</script>
-<style>
-  :root{
-    --coral:#e2704a;
-    --coral-2:#ef8f66;
-    --coral-soft:#fbe9df;
-    --amber:#f3b34c;
-    --amber-soft:#fdf3df;
-    --green:#7cab72;
-    --green-soft:#e9f2e5;
-    --blue:#6f92c9;
-    --blue-soft:#e8eef9;
-    --purple:#a48ad0;
-    --purple-soft:#f0eaf9;
-    --ink:#40403a;
-    --sub:#8a8778;
-    --bg:#fdfbf7;
-    --cream:#faf3e7;
-    --line:#efe8db;
-    --card:#ffffff;
-  }
-  *{margin:0;padding:0;box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  body{
-    font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN",sans-serif;
-    color:var(--ink);background:var(--bg);line-height:1.9;
-    word-break:keep-all;line-break:strict;overflow-wrap:break-word;
-  }
-  h1,h2,h3,h4,.logo,.btn{font-family:"Zen Maru Gothic","Noto Sans JP",sans-serif;}
-  a{color:inherit;}
-  img{max-width:100%;display:block;}
-  .wrap{max-width:1100px;margin:0 auto;padding:0 24px;}
-
-  /* ===== ヘッダー ===== */
-  header{position:sticky;top:0;z-index:100;background:rgba(253,251,247,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);}
-  .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;max-width:1100px;margin:0 auto;gap:10px;}
-  .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:16.5px;white-space:nowrap;text-decoration:none;}
-  .logo img{width:36px;height:36px;border-radius:10px;}
-  .logo .lg-name{line-height:1.2;}
-  .logo .lg-sub{display:block;font-size:9px;font-weight:700;color:var(--sub);letter-spacing:.18em;font-family:"Noto Sans JP",sans-serif;}
-  nav ul{list-style:none;display:flex;gap:22px;font-size:13px;}
-  nav a{text-decoration:none;color:var(--sub);font-weight:600;}
-  nav a:hover{color:var(--coral);}
-  .nav-cta{background:linear-gradient(90deg,var(--coral),var(--coral-2));color:#fff;padding:10px 22px;border-radius:99px;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap;box-shadow:0 6px 16px rgba(226,112,74,.3);}
-
-  /* ===== ヒーロー ===== */
-  .hero{position:relative;overflow:hidden;}
-  .hero-inner{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:72px 24px 84px;display:grid;grid-template-columns:1.02fr .98fr;gap:44px;align-items:center;}
-  .hero h1{font-size:clamp(26px,4vw,40px);font-weight:900;line-height:1.55;letter-spacing:.02em;margin-bottom:18px;}
-  .hero h1 em{font-style:normal;color:var(--coral);}
-  .hero .lead{color:var(--sub);font-size:15px;margin-bottom:26px;}
-  .hero-badges{display:flex;gap:22px;flex-wrap:wrap;margin-bottom:30px;}
-  .hbadge{display:flex;align-items:center;gap:9px;}
-  .hbadge .ic{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-  .hbadge:nth-child(1) .ic{background:var(--coral-soft);color:var(--coral);}
-  .hbadge:nth-child(2) .ic{background:var(--amber-soft);color:#d9932c;}
-  .hbadge:nth-child(3) .ic{background:var(--green-soft);color:var(--green);}
-  .hbadge .tx{font-size:10.5px;color:var(--sub);font-weight:700;line-height:1.4;}
-  .hbadge .tx b{display:block;font-size:14.5px;color:var(--ink);font-weight:900;}
-  .btn{padding:15px 34px;border-radius:99px;font-weight:800;font-size:14.5px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:transform .15s ease,box-shadow .15s ease;}
-  .btn:active{transform:scale(.97);}
-  .btn-primary{background:linear-gradient(90deg,var(--coral),var(--coral-2));color:#fff;box-shadow:0 10px 24px rgba(226,112,74,.32);}
-  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(226,112,74,.4);}
-  .btn-outline{border:1.5px solid var(--coral);color:var(--coral);background:#fff;margin-left:10px;}
-  .btn-outline:hover{background:var(--coral-soft);}
-  .hero-note{font-size:11px;color:var(--sub);margin-top:12px;}
-  .hero-visual{position:relative;}
-  .hero-visual img{width:116%;max-width:none;height:auto;margin-left:-8%;}
-
-  /* ===== 4ステップ帯(サービスの流れ・ファーストビュー直下) ===== */
-  .steps-band{background:var(--cream);padding:56px 24px 62px;}
-  .steps-band h3{text-align:center;font-size:clamp(17px,3vw,22px);font-weight:900;margin-bottom:36px;font-family:"Zen Maru Gothic",sans-serif;}
-  .steps-band .sub{text-align:center;color:var(--sub);font-size:12.5px;margin-bottom:36px;}
-  .steps-grid{max-width:1020px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:18px;position:relative;}
-  .step-card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:26px 16px 22px;text-align:center;position:relative;transition:transform .2s ease,box-shadow .2s ease;}
-  .step-card:hover{transform:translateY(-5px);box-shadow:0 16px 32px rgba(64,64,58,.1);}
-  .step-card .no{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:linear-gradient(90deg,var(--coral),var(--coral-2));color:#fff;font-size:11.5px;font-weight:800;padding:5px 16px;border-radius:99px;white-space:nowrap;box-shadow:0 6px 14px rgba(226,112,74,.3);}
-  .step-card .il{height:130px;display:flex;align-items:flex-end;justify-content:center;margin-bottom:14px;}
-  .step-card .il img{max-height:130px;max-width:88%;width:auto;}
-  .step-card h4{font-size:14.5px;font-weight:800;margin-bottom:6px;}
-  .step-card p{font-size:11px;color:var(--sub);line-height:1.8;}
-  .step-arrow{position:absolute;top:50%;transform:translateY(-50%);font-size:18px;color:var(--coral);font-weight:900;}
-
-  /* ===== セクション共通 ===== */
-  section{padding:80px 24px;position:relative;}
-  .sec-head{text-align:center;margin-bottom:44px;}
-  .sec-head h2{font-size:clamp(21px,3.8vw,30px);font-weight:900;letter-spacing:.03em;}
-  .sec-head p{color:var(--sub);font-size:13.5px;margin-top:10px;}
-  .sec-head .deco{width:46px;height:5px;border-radius:99px;background:linear-gradient(90deg,var(--coral),var(--amber));margin:14px auto 0;}
-
-  /* ===== サービス6カード ===== */
-  .svc-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;max-width:1100px;margin:0 auto;}
-  .svc-card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:26px 12px;text-align:center;transition:transform .2s ease,box-shadow .2s ease;}
-  .svc-card:hover{transform:translateY(-5px);box-shadow:0 16px 32px rgba(64,64,58,.1);}
-  .svc-card .ic{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:23px;}
-  .svc-card:nth-child(1) .ic{background:var(--coral-soft);}
-  .svc-card:nth-child(2) .ic{background:var(--blue-soft);}
-  .svc-card:nth-child(3) .ic{background:var(--green-soft);}
-  .svc-card:nth-child(4) .ic{background:var(--coral-soft);}
-  .svc-card:nth-child(5) .ic{background:var(--purple-soft);}
-  .svc-card:nth-child(6) .ic{background:var(--amber-soft);}
-  .svc-card h4{font-size:13.5px;font-weight:800;margin-bottom:5px;}
-  .svc-card p{font-size:10px;color:var(--sub);line-height:1.7;}
-
-  /* ===== 実績バンド ===== */
-  .stats-band{background:var(--cream);border-radius:0;padding:56px 24px;}
-  .stats-band h3{text-align:center;font-size:clamp(17px,3vw,22px);font-weight:900;margin-bottom:34px;font-family:"Zen Maru Gothic",sans-serif;}
-  .stats-grid{max-width:860px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
-  .stat{display:flex;align-items:center;gap:14px;justify-content:center;}
-  .stat .ic{width:52px;height:52px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 6px 16px rgba(64,64,58,.08);flex-shrink:0;}
-  .stat .lb{font-size:11px;color:var(--sub);font-weight:700;}
-  .stat .num{font-size:26px;font-weight:900;font-family:"Zen Maru Gothic",sans-serif;line-height:1.3;}
-  .stat .num small{font-size:13px;}
-
-  /* ===== 編集者一覧 ===== */
-  .fmt-tabs{display:flex;justify-content:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
-  .fmt-tab{padding:10px 26px;border-radius:99px;border:1.5px solid var(--line);background:#fff;font-size:13px;font-weight:800;color:var(--sub);cursor:pointer;transition:.15s;font-family:"Zen Maru Gothic",sans-serif;}
-  .fmt-tab.act{background:linear-gradient(90deg,var(--coral),var(--coral-2));border-color:transparent;color:#fff;box-shadow:0 6px 16px rgba(226,112,74,.3);}
-  .genre-label{text-align:center;font-size:11px;color:var(--sub);font-weight:700;letter-spacing:.08em;margin:14px 0 8px;}
-  .genre-tags{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:36px;}
-  .genre-tag{font-size:12px;padding:7px 16px;border-radius:99px;background:#fff;border:1px solid var(--line);color:var(--sub);cursor:pointer;font-weight:600;transition:.15s;}
-  .genre-tag.act{background:var(--ink);border-color:var(--ink);color:#fff;}
-  .creator-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:20px;}
-  .creator-card{background:#fff;border:1px solid var(--line);border-radius:22px;overflow:hidden;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease;position:relative;}
-  .creator-card:hover{transform:translateY(-5px);box-shadow:0 18px 40px rgba(64,64,58,.13);}
-  .creator-card .ph{height:180px;background:linear-gradient(135deg,var(--blue-soft),var(--cream));display:flex;align-items:center;justify-content:center;color:#b5ad9b;font-size:12px;}
-  .creator-card img.ph-img{height:180px;width:100%;object-fit:cover;}
-  .creator-body{padding:18px 20px 20px;}
-  .creator-body h4{font-size:16px;font-weight:800;}
-  .creator-body .role{font-size:11.5px;color:var(--sub);margin-bottom:10px;}
-  .tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
-  .tags span{font-size:10.5px;background:var(--blue-soft);color:#54719f;padding:4px 10px;border-radius:8px;font-weight:700;}
-  .creator-body .meta{font-size:11px;color:#b5ad9b;}
-  .card-more{margin-top:12px;font-size:12px;font-weight:800;color:var(--coral);}
-  /* ランク・空きバッジ */
-  .rank-badge{display:inline-block;font-size:10.5px;font-weight:800;padding:2px 9px;border-radius:6px;margin-right:6px;vertical-align:middle;}
-  .rank-S{background:#fef3c7;color:#92400e;}
-  .rank-A{background:#e0f2fe;color:#075985;}
-  .rank-B{background:#f0fdf4;color:#166534;}
-  .rank-Rookie{background:#f5f3ff;color:#5b21b6;}
-  .avail-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;vertical-align:middle;}
-  .avail-余裕あり{background:#dcfce7;color:#166534;}
-  .avail-普通{background:#fef9c3;color:#713f12;}
-  .avail-満枠{background:#fee2e2;color:#991b1b;}
-  .star-score{color:#f59e0b;font-size:11px;font-weight:700;margin-right:4px;}
-  .capacity-note{font-size:10.5px;color:#6b7280;margin-top:2px;}
-  .empty-note{grid-column:1/-1;text-align:center;color:var(--sub);font-size:13px;padding:40px 0;}
-
-  /* ===== 詳細モーダル ===== */
-  .modal-bg{position:fixed;inset:0;background:rgba(64,64,58,.5);backdrop-filter:blur(4px);z-index:200;display:none;align-items:flex-start;justify-content:center;padding:30px 16px;overflow-y:auto;}
-  .modal-bg.open{display:flex;}
-  .modal{background:#fff;border-radius:24px;max-width:560px;width:100%;overflow:hidden;animation:pop .22s ease;}
-  @keyframes pop{from{opacity:0;transform:translateY(14px) scale(.98);}to{opacity:1;transform:none;}}
-  .modal .m-head{position:relative;}
-  .modal .m-head img{width:100%;height:220px;object-fit:cover;}
-  .modal .m-head .ph{height:220px;background:linear-gradient(135deg,var(--blue-soft),var(--cream));display:flex;align-items:center;justify-content:center;color:#b5ad9b;}
-  .m-close{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;background:rgba(64,64,58,.55);color:#fff;border:none;font-size:16px;cursor:pointer;}
-  .m-body{padding:24px 26px 28px;}
-  .m-body h3{font-size:20px;font-weight:900;}
-  .m-sub{font-size:12.5px;color:var(--sub);margin-bottom:14px;}
-  .m-row{display:flex;gap:10px;padding:9px 0;border-top:1px solid var(--line);font-size:13px;}
-  .m-row .k{width:110px;flex-shrink:0;color:var(--sub);font-weight:700;font-size:12px;padding-top:1px;}
-  .m-row .v{min-width:0;flex:1;}
-  .m-row .v a{color:var(--coral);font-weight:700;word-break:break-all;}
-  .m-contact{margin-top:18px;background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:18px;}
-  .m-contact h5{font-size:13.5px;font-weight:800;margin-bottom:10px;}
-  .m-contact input,.m-contact textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font-size:13.5px;font-family:inherit;margin-bottom:8px;background:#fff;}
-  .m-contact textarea{min-height:70px;resize:vertical;}
-  .m-send{width:100%;padding:13px;border:none;border-radius:99px;background:linear-gradient(90deg,var(--coral),var(--coral-2));color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;}
-  .m-note{font-size:10.5px;color:#b5ad9b;margin-top:8px;text-align:center;}
-
-  /* ===== ご利用の流れ ===== */
-  .flow-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-width:1020px;margin:0 auto;position:relative;}
-  .flow-grid::before{content:"";position:absolute;top:36px;left:9%;right:9%;border-top:2px dashed #e5d9c4;}
-  .flow-card{text-align:center;padding:0 8px;position:relative;}
-  .flow-card .f-ic{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 12px;position:relative;z-index:1;box-shadow:0 0 0 8px var(--bg);}
-  .flow-card:nth-child(1) .f-ic{background:var(--coral-soft);}
-  .flow-card:nth-child(2) .f-ic{background:var(--amber-soft);}
-  .flow-card:nth-child(3) .f-ic{background:var(--green-soft);}
-  .flow-card:nth-child(4) .f-ic{background:var(--blue-soft);}
-  .flow-card:nth-child(5) .f-ic{background:var(--purple-soft);}
-  .flow-card .n{width:22px;height:22px;border-radius:50%;color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;margin:-24px auto 10px;position:relative;z-index:2;transform:translateX(28px);}
-  .flow-card:nth-child(1) .n{background:var(--coral);}
-  .flow-card:nth-child(2) .n{background:var(--amber);}
-  .flow-card:nth-child(3) .n{background:var(--green);}
-  .flow-card:nth-child(4) .n{background:var(--blue);}
-  .flow-card:nth-child(5) .n{background:var(--purple);}
-  .flow-card h4{font-size:14px;font-weight:800;margin-bottom:5px;}
-  .flow-card p{font-size:11px;color:var(--sub);line-height:1.7;}
-
-  /* ===== 料金 ===== */
-  .price-sec{background:var(--cream);}
-  .price-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;max-width:1100px;margin:0 auto;}
-  .price-card{position:relative;background:#fff;border:1px solid var(--line);border-radius:22px;padding:28px 20px 24px;text-align:center;transition:transform .2s ease,box-shadow .2s ease;}
-  .price-card:hover{transform:translateY(-4px);box-shadow:0 16px 34px rgba(64,64,58,.1);}
-  .price-card.hot{border:2px solid var(--coral);}
-  .price-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(90deg,var(--coral),var(--coral-2));color:#fff;font-size:10.5px;font-weight:800;padding:4px 14px;border-radius:99px;white-space:nowrap;}
-  .price-card .p-cat{font-size:10.5px;font-weight:800;color:var(--coral);letter-spacing:.1em;margin-bottom:6px;}
-  .price-card h4{font-size:15px;font-weight:900;margin-bottom:12px;}
-  .price-card .p-num{font-size:28px;font-weight:900;color:var(--coral);font-family:"Zen Maru Gothic",sans-serif;}
-  .price-card .p-num small{font-size:13px;font-weight:800;}
-  .price-card .p-unit{font-size:10.5px;color:var(--sub);font-weight:700;margin-top:2px;}
-  .price-card ul{list-style:none;margin-top:14px;border-top:1px dashed var(--line);padding-top:12px;text-align:left;}
-  .price-card ul li{font-size:11.5px;color:var(--sub);padding:3px 0 3px 20px;position:relative;}
-  .price-card ul li::before{content:"✓";position:absolute;left:2px;color:var(--green);font-weight:900;}
-  .price-note{text-align:center;font-size:11.5px;color:var(--sub);margin-top:20px;line-height:2;}
-  .price-cta{text-align:center;margin-top:24px;}
-
-  /* ===== お問い合わせ ===== */
-  .form-card{background:#fff;border:1px solid var(--line);border-radius:26px;padding:40px;max-width:680px;margin:0 auto;box-shadow:0 18px 40px rgba(64,64,58,.07);}
-  .form-row{margin-bottom:18px;}
-  .form-row label{display:block;font-size:13px;font-weight:800;margin-bottom:6px;}
-  .form-row input,.form-row select,.form-row textarea{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:14px;font-size:14px;font-family:inherit;background:var(--bg);}
-  .form-row input:focus,.form-row select:focus,.form-row textarea:focus{outline:none;border-color:var(--coral);background:#fff;box-shadow:0 0 0 3px rgba(226,112,74,.12);}
-  .form-row textarea{resize:vertical;min-height:100px;}
-  .form-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-  .form-submit{width:100%;padding:16px;background:linear-gradient(90deg,var(--coral),var(--coral-2));color:#fff;border:none;border-radius:99px;font-size:15px;font-weight:800;cursor:pointer;font-family:"Zen Maru Gothic",sans-serif;box-shadow:0 10px 24px rgba(226,112,74,.3);}
-  .form-submit:hover{transform:translateY(-1px);}
-  .form-note{font-size:11px;color:#b5ad9b;margin-top:14px;text-align:center;}
-
-  /* ===== 最終CTA ===== */
-  .final-cta{background:var(--cream);overflow:hidden;position:relative;}
-  .final-cta::before{content:"";position:absolute;width:380px;height:380px;border-radius:50%;background:radial-gradient(closest-side,rgba(226,112,74,.1),transparent);bottom:-140px;left:-100px;}
-  .final-inner{position:relative;max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;}
-  .final-inner h2{font-size:clamp(24px,4vw,36px);font-weight:900;line-height:1.6;margin-bottom:12px;}
-  .final-inner .fp{color:var(--sub);font-size:14px;margin-bottom:26px;}
-  .final-visual{position:relative;}
-  .final-visual img{width:100%;height:auto;}
-
-  footer{background:#fdfbf7;border-top:1px solid var(--line);padding:52px 24px 34px;font-size:12.5px;color:var(--sub);}
-  .foot-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:30px;}
-  .foot-brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:15px;color:var(--ink);margin-bottom:12px;font-family:"Zen Maru Gothic",sans-serif;}
-  .foot-brand img{width:36px;height:36px;border-radius:10px;}
-  footer h5{color:var(--ink);font-size:12.5px;font-weight:800;margin-bottom:12px;}
-  footer ul{list-style:none;}
-  footer li{padding:4px 0;}
-  footer a{text-decoration:none;}
-  footer a:hover{color:var(--coral);}
-  .foot-copy{max-width:1100px;margin:34px auto 0;padding-top:18px;border-top:1px solid var(--line);text-align:center;color:#b5ad9b;font-size:11px;}
-
-  .flow-card .f-ic img{width:82%;height:82%;object-fit:contain;}
-  .p-illust{height:64px;display:flex;align-items:flex-end;justify-content:center;margin-bottom:10px;}
-  .p-illust img{height:64px;width:auto;}
-  .contact-illust{width:230px;margin:0 auto 20px;display:block;}
-  .creators-deco{position:absolute;top:18px;right:4%;width:110px;opacity:.95;pointer-events:none;}
-  @media(max-width:960px){.creators-deco{display:none;}}
-  .rv{opacity:0;transform:translateY(18px);transition:opacity .5s ease,transform .5s ease;}
-  .rv.in{opacity:1;transform:none;}
-
-  @media (max-width:960px){
-    nav ul{display:none;}
-    .hero-inner{grid-template-columns:1fr;padding:48px 24px 64px;gap:36px;}
-    .hero-visual img{width:100%;margin-left:0;}
-    .steps-grid{grid-template-columns:repeat(2,1fr);gap:26px 14px;}
-    .svc-grid{grid-template-columns:repeat(3,1fr);}
-    .flow-grid{grid-template-columns:repeat(2,1fr);gap:26px 8px;}
-    .flow-grid::before{display:none;}
-    .flow-card p{white-space:normal !important;}
-    .price-grid{grid-template-columns:repeat(2,1fr);}
-    .final-inner{grid-template-columns:1fr;}
-    .foot-inner{grid-template-columns:1fr 1fr;}
-    section{padding:60px 20px;}
-  }
-  @media (max-width:560px){
-    .svc-grid{grid-template-columns:repeat(2,1fr);}
-    .price-grid{grid-template-columns:1fr;max-width:340px;}
-    .form-cols{grid-template-columns:1fr;}
-    .stats-grid{grid-template-columns:1fr;gap:14px;}
-    .steps-grid{grid-template-columns:1fr;max-width:320px;}
-    .flow-grid{grid-template-columns:1fr;max-width:280px;margin:0 auto;}
-    .btn-outline{margin-left:0;margin-top:10px;}
-    .nav-inner{gap:6px;}
-    .logo{font-size:13.5px;gap:7px;}
-    .logo img{width:30px;height:30px;}
-    .logo .lg-sub{font-size:8px;}
-    .nav-cta{padding:8px 14px;font-size:11.5px;}
-  }
-</style>
-</head>
-<body>
-
-<header>
-  <div class="nav-inner">
-    <a class="logo" href="./">
-      <img src="favicon.svg" alt="クリエイターズリスト ロゴ">
-      <span class="lg-name">クリエイターズリスト<span class="lg-sub">CREATORS LIST</span></span>
-    </a>
-    <nav>
-      <ul>
-        <li><a href="#creators">編集者一覧</a></li>
-        <li><a href="#flow">ご利用の<wbr>流れ</a></li>
-        <li><a href="#price">料金</a></li>
-      </ul>
-    </nav>
-    <a class="nav-cta" href="#contact">無料で<wbr>相談する</a>
-  </div>
-</header>
-
-<!-- ヒーロー -->
-<section class="hero" style="padding:0;">
-  <div class="hero-inner">
-    <div>
-      <h1>編集者不足を、<br>一瞬で<wbr>解決。</h1>
-      <p class="lead">クリエイターズリストは、<wbr>動画編集者と<wbr>企業を<wbr>つなぐ<br>編集者派遣サービスです。</p>
-      <div class="hero-badges">
-        <div class="hbadge"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d9932c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg></div><div class="tx">最短<b>即日で<wbr>ご提案</b></div></div>
-        <div class="hbadge"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7cab72" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div><div class="tx"><span style="white-space:nowrap">ご相談・お見積り</span><b>無料</b></div></div>
-      </div>
-      <div>
-        <a class="btn btn-primary" href="#contact">無料で<wbr>相談してみる<wbr> <span>›</span></a>
-      </div>
-    </div>
-    <div class="hero-visual rv in">
-      <img src="img/soco/hero.svg" alt="チームでパソコン作業をするイラスト" loading="eager">
-    </div>
-  </div>
-</section>
-
-<!-- 4ステップ(編集者派遣サービスであることを一目で伝える) 出典: ソコスト(商用可) -->
-<div class="steps-band">
-  <h3>クリエイターズリストは<wbr>「編集者派遣」<wbr>サービスです</h3>
-  <div class="steps-grid rv in">
-    <div class="step-card">
-      <div class="no">STEP 1</div>
-      <div class="il"><img src="img/steps/step1.svg" alt="虫眼鏡で編集者を探すイラスト" loading="lazy"></div>
-      <h4>編集者を<wbr>探す</h4>
-      <p>ご要望を<wbr>ヒアリングし、<br>登録編集者から<wbr>候補を<wbr>選定します。</p>
-    </div>
-    <div class="step-card">
-      <div class="no">STEP 2</div>
-      <div class="il"><img src="img/steps/step2.svg" alt="プロフィールを画面で確認するイラスト" loading="lazy"></div>
-      <h4>プロフィール比較</h4>
-      <p><span style="white-space:nowrap">実績・得意ジャンル・単価を</span><br>見<wbr>比べて<wbr>検討できます。</p>
-    </div>
-    <div class="step-card">
-      <div class="no">STEP 3</div>
-      <div class="il"><img src="img/steps/step3.svg" alt="握手してマッチング成立するイラスト" loading="lazy"></div>
-      <h4>マッチング成立</h4>
-      <p>お試し1本で<wbr>相性を<wbr>確認してから<br>スタートできます。</p>
-    </div>
-    <div class="step-card">
-      <div class="no">STEP 4</div>
-      <div class="il"><img src="img/steps/step4.svg" alt="打ち合わせを重ねる長期パートナーのイラスト" loading="lazy"></div>
-      <h4>長期パートナー</h4>
-      <p>継続発注も<wbr>編集者の<wbr>交代も、<br>窓口ひとつで<wbr>完結します。</p>
-    </div>
-  </div>
-</div>
-
-<!-- 編集者一覧 -->
-<section id="creators">
-  <div class="wrap">
-    <div class="sec-head rv">
-      <h2>登録編集者の<wbr>一例</h2>
-      <p>経験豊富な<wbr>プロフェッショナルが<wbr>多数在籍しています。<br>カードを<wbr>タップすると、<wbr>詳細の<wbr>確認と<wbr>その<wbr>場での<wbr>お問い<wbr>合わせが<wbr>できます。</p>
-      <div class="deco"></div>
-    </div>
-    <div class="fmt-tabs rv">
-      <div class="fmt-tab act" data-fmt="all">すべて</div>
-      <div class="fmt-tab" data-fmt="short"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>ショート動画</div>
-      <div class="fmt-tab" data-fmt="long"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px;"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>長尺動画</div>
-    </div>
-    <div class="genre-label">— ジャンル別一覧 —</div>
-    <div class="genre-tags" id="genre-tags"></div>
-    <div class="creator-grid" id="creator-grid"><p class="empty-note">読み込み中...</p></div>
-  </div>
-</section>
-
-<!-- 詳細モーダル -->
-<div class="modal-bg" id="modal-bg" onclick="if(event.target===this)closeModal()">
-  <div class="modal" id="modal"></div>
-</div>
-
-<!-- ご利用の流れ -->
-<section id="flow">
-  <div class="wrap">
-    <div class="sec-head rv">
-      <h2>ご利用の<wbr>流れ</h2>
-      <p>最短3営業日で、<wbr>最適な<wbr>編集者を<wbr>ご紹介します。</p>
-      <div class="deco"></div>
-    </div>
-    <div class="flow-grid">
-      <div class="flow-card rv"><div class="f-ic"><img src="img/soco/flow1-mail.svg" alt="お問い合わせ"></div><div class="n">1</div><h4>お問い<wbr>合わせ</h4><p style="white-space:nowrap">フォームから<wbr>お気軽に<wbr>ご連絡ください</p></div>
-      <div class="flow-card rv"><div class="f-ic"><img src="img/soco/flow2-hearing.svg" alt="ヒアリング"></div><div class="n">2</div><h4>ヒアリング</h4><p>ご要望や<wbr>課題を<wbr>詳しく<wbr>お伺いします</p></div>
-      <div class="flow-card rv"><div class="f-ic"><img src="img/soco/flow3-select.svg" alt="人材選定"></div><div class="n">3</div><h4>人材選定</h4><p>最適な<wbr>編集者を<wbr>選定し、<wbr>ご提案します</p></div>
-      <div class="flow-card rv"><div class="f-ic"><img src="img/soco/flow4-trial.svg" alt="トライアル"></div><div class="n">4</div><h4>トライアル</h4><p style="white-space:nowrap">1本お試しで<wbr>相性と<wbr>品質を<wbr>確認します</p></div>
-      <div class="flow-card rv"><div class="f-ic"><img src="img/soco/flow5-start.svg" alt="稼働開始"></div><div class="n">5</div><h4>稼働開始</h4><p>プロジェクトを<wbr>開始し、<wbr>成果を<wbr>創出します</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- 料金 -->
-<section class="price-sec" id="price">
-  <div class="wrap">
-    <div class="sec-head rv">
-      <h2>料金</h2>
-      <p>1本あたりの<wbr>目安料金です。<wbr><span style="white-space:nowrap">テロップ量・エフェクト量などの</span><wbr>編集内容に<wbr>より<wbr>変動します。<br>※編集者の<wbr>稼働状況に<wbr>より、<wbr>すべての<wbr>ご依頼を<wbr>お受けできない<wbr>場合が<wbr>あります。<wbr>その際は<wbr>別の<wbr>編集者の<wbr>ご提案、<wbr>または<wbr>納期の<wbr>ご相談を<wbr>いたします。</p>
-      <div class="deco"></div>
-    </div>
-    <div class="price-grid" style="grid-template-columns:repeat(2,1fr);max-width:820px;">
-      <div class="price-card hot rv">
-        <div class="price-badge">まずは<wbr>お試しに<wbr>人気</div>
-        <div class="p-illust"><img src="img/soco/price-short.svg" alt="ショート動画"></div>
-        <div class="p-cat">SHORT</div>
-        <h4>ショート動画</h4>
-        <div class="p-num"><small>¥</small>4,000<small>〜</small></div>
-        <div class="p-unit">1本あたり</div>
-        <ul>
-          <li>TikTok / Reels / Shorts</li>
-          <li><span style="white-space:nowrap">テロップ・効果音・カット</span></li>
-          <li>縦型フォーマット最適化</li>
-        </ul>
-      </div>
-      <div class="price-card rv">
-        <div class="p-illust"><img src="img/soco/price-long.svg" alt="長尺動画の編集"></div>
-        <div class="p-cat">LONG</div>
-        <h4>長尺動画</h4>
-        <div style="margin:6px 0 2px;">
-          <div style="display:flex;justify-content:space-between;align-items:baseline;padding:7px 6px;border-bottom:1px dashed var(--line);"><span style="font-size:13px;font-weight:800;">10分</span><span class="p-num" style="font-size:22px;"><small>¥</small>10,000<small>〜</small></span></div>
-          <div style="display:flex;justify-content:space-between;align-items:baseline;padding:7px 6px;border-bottom:1px dashed var(--line);"><span style="font-size:13px;font-weight:800;">15分</span><span class="p-num" style="font-size:22px;"><small>¥</small>15,000<small>〜</small></span></div>
-          <div style="display:flex;justify-content:space-between;align-items:baseline;padding:7px 6px;"><span style="font-size:13px;font-weight:800;">20分</span><span class="p-num" style="font-size:22px;"><small>¥</small>20,000<small>〜</small></span></div>
-        </div>
-        <div class="p-unit">1本あたり</div>
-        <ul>
-          <li><span style="white-space:nowrap">YouTube本編・セミナー・企業VP</span></li>
-          <li><span style="white-space:nowrap">フルテロップ・BGM・効果音</span></li>
-          <li><span style="white-space:nowrap">サムネイル・構成の</span><wbr>ご相談可</li>
-        </ul>
-      </div>
-    </div>
-    <p class="price-note rv"><span style="white-space:nowrap">継続本数・ご予算に</span><wbr>応じた<wbr>お見積りも<wbr>承ります。<wbr>まずは<wbr>1本の<wbr>トライアルから<wbr>お試しいただけます。</p>
-    <div class="price-cta rv"><a class="btn btn-primary" href="#contact">料金に<wbr>ついて<wbr>相談する</a></div>
-  </div>
-</section>
-
-<!--
-  導入企業様の声セクション(デザイン案準拠・実データ受領後に有効化)
-  ※実在しないお客様の声は掲載しない方針のため、最初の導入企業の許可取得後にコメントアウトを外す
--->
-
-<!-- お問い合わせ -->
-<section id="contact">
-  <div class="sec-head rv">
-    <h2>お問い<wbr>合わせ</h2>
-    <div class="deco"></div>
-  </div>
-  <img class="contact-illust rv" src="img/soco/contact-hands.svg" alt="握手するクライアントと編集者">
-  <form class="form-card rv" id="contact-form">
-    <div class="form-row" id="named-editor-row" style="display:none;">
-      <label>指名編集者</label>
-      <input type="text" id="named-editor" readonly style="background:var(--cream);font-weight:700;">
-    </div>
-    <div class="form-cols">
-      <div class="form-row"><label for="company"><span style="white-space:nowrap">会社名・屋号</span></label><input type="text" id="company" required></div>
-      <div class="form-row"><label for="contact-name">ご担当者名</label><input type="text" id="contact-name" required></div>
-    </div>
-    <div class="form-cols">
-      <div class="form-row"><label for="email">メールアドレス</label><input type="email" id="email" required></div>
-      <div class="form-row"><label for="phone">電話番号(任意)</label><input type="tel" id="phone"></div>
-    </div>
-    <div class="form-cols">
-      <div class="form-row">
-        <label for="fmt">動画の<wbr>形式</label>
-        <select id="fmt" onchange="syncGenreSelect()">
-          <option value="short">ショート動画(TikTok/Reels/Shorts)</option>
-          <option value="long">長尺動画(YouTube等)</option>
-          <option value="other">その他・未定</option>
-        </select>
-      </div>
-      <div class="form-row">
-        <label for="genre">ジャンル</label>
-        <select id="genre"></select>
-      </div>
-    </div>
-    <div class="form-cols">
-      <div class="form-row"><label for="volume">希望本数(週または<wbr>月あたり)</label><input type="text" id="volume" placeholder="例:週5本"></div>
-      <div class="form-row">
-        <label for="start">希望開始時期</label>
-        <select id="start">
-          <option>できるだけ早く(今週中)</option>
-          <option>今月中</option>
-          <option>来月以降</option>
-          <option>未定・相談したい</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row">
-      <label for="message">ご相談内容</label>
-      <textarea id="message" placeholder="現在の編集体制や、お困りごとをご記入ください"></textarea>
-    </div>
-    <button type="submit" class="form-submit">この<wbr>内容で<wbr>お問い<wbr>合わせする</button>
-    <p class="form-note">送信内容は<wbr>自動で<wbr>受け付けられ、<wbr>担当者から<wbr>メールで<wbr>ご連絡します。<wbr>お問い<wbr>合わせ対応の<wbr>目的のみに<wbr>使用します。</p>
-    <p class="form-note" style="margin-top:8px;">LINEでの<wbr>ご相談も<wbr>可能です: <a href="https://line.me/ti/p/@229dbicf" target="_blank" rel="noopener" style="color:#06C755;font-weight:800;">公式LINEを<wbr>開く</a></p>
-  </form>
-</section>
-
-<footer>
-  <div class="foot-inner">
-    <div>
-      <div class="foot-brand"><img src="favicon.svg" alt=""><span>クリエイターズリスト</span></div>
-      <p>編集者と<wbr>企業を<wbr>つなぐ、<br>編集者派遣サービス。</p>
-    </div>
-    <div>
-      <h5>編集者一覧</h5>
-      <ul>
-        <li><a href="#creators">すべての<wbr>編集者</a></li>
-        <li><a href="#creators">得意ジャンルから<wbr>探す</a></li>
-        <li><a href="#price">料金</a></li>
-      </ul>
-    </div>
-    <div>
-      <h5>お問い<wbr>合わせ</h5>
-      <ul>
-        <li><a href="#contact">無料相談</a></li>
-        <li><a href="editor.html">編集者と<wbr>して<wbr>働きたい方</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="foot-copy">© mono.create ／ クリエイターズリスト(動画編集者派遣)</div>
-</footer>
-
-<script>
-  const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Mta1CzlD-Odanvr9dPtku2TK4PfNe0Fvq_MBHX0UypqY3DgLbZTglcenqf1drfF9vw/exec';
-  const CONTACT_EMAIL = 'mono.create.group@gmail.com';
-  const SHORT_KEYS = ['ショート','TikTok','Reels','Shorts','切り抜き','Vtuber'];
-  const LONG_KEYS  = ['長尺','YouTube長尺','企業','VP','Vlog','ビジネス','教育'];
-  const GENRES_BY_FMT = {
-    short: ['エンタメ・バラエティ','美容・コスメ','ゲーム実況・切り抜き','Vtuber','ビジネス・教育','その他'],
-    long:  ['YouTube長尺','企業VP・採用動画','Vlog・旅行','ビジネス・教育','その他'],
-    other: ['未定・相談したい'],
-  };
-
-  let EDITORS = [];
-  let EDITOR_RANKS = {}; // content_get から取得した editor_ranks
-  let curFmt = 'all';
-  let curGenre = 'all';
-
-  function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-  // monthly_capacity は「8本・余裕あり」形式で稼働状況を内包する(GASに稼働状況カラムが無いため)
-  function parseCapacity(s){
-    s = String(s||'');
-    const status = (s.match(/余裕あり|普通|満枠/)||[''])[0];
-    const n = s.replace(/[・\s]*(余裕あり|普通|満枠)/,'').replace(/本$/,'').trim();
-    return { n, status };
-  }
-  function fmtsOf(ed){
-    const g = ed.genres || '';
-    const f = [];
-    if (SHORT_KEYS.some(k=>g.includes(k))) f.push('short');
-    if (LONG_KEYS.some(k=>g.includes(k))) f.push('long');
-    if (!f.length) f.push('short','long');
-    return f;
-  }
-  function genreList(ed){return (ed.genres||'').split(/[、,]/).map(s=>s.trim()).filter(Boolean);}
-
-  async function loadEditors(){
-    const grid = document.getElementById('creator-grid');
-    try{
-      // editors API と content_get(editor_ranks) を並行取得
-      const [edRes, rankRes] = await Promise.all([
-        fetch(GAS_URL + '?action=editors'),
-        fetch(GAS_URL + '?action=content_get').catch(()=>null)
-      ]);
-      const edJson = await edRes.json();
-      EDITORS = edJson.data || [];
-      if(rankRes){
-        try{
-          const rankJson = await rankRes.json();
-          EDITOR_RANKS = (rankJson.content && rankJson.content.editor_ranks) || {};
-        }catch(e){ EDITOR_RANKS = {}; }
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://mono-create-group.github.io/lp/sample-hp/creators-list/#organization",
+      "name": "mono.create",
+      "url": "https://mono-create-group.github.io/lp/mono-create/"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://mono-create-group.github.io/lp/sample-hp/creators-list/client.html#webpage",
+      "url": "https://mono-create-group.github.io/lp/sample-hp/creators-list/client.html",
+      "name": "個人向けの動画編集代行・料金｜クリエイターズリスト",
+      "description": "個人の発信者向け動画編集代行。ショート動画は2分まで4,000円〜（税込）。長尺・オープニング・エンディングにも対応。中村が相談から納品まで担当し、内容を伺って正式料金と納品日を決めます。",
+      "inLanguage": "ja",
+      "publisher": {
+        "@id": "https://mono-create-group.github.io/lp/sample-hp/creators-list/#organization"
+      },
+      "mainEntity": {
+        "@id": "https://mono-create-group.github.io/lp/sample-hp/creators-list/client.html#service"
+      },
+      "breadcrumb": {
+        "@id": "https://mono-create-group.github.io/lp/sample-hp/creators-list/client.html#breadcrumb"
       }
-    }catch(e){
-      grid.innerHTML = '<p class="empty-note">編集者一覧の取得に失敗しました。<br>時間をおいて再度お試しください。</p>';
-      return;
+    },
+    {
+      "@type": "Service",
+      "@id": "https://mono-create-group.github.io/lp/sample-hp/creators-list/client.html#service",
+      "name": "クリエイターズリストの動画編集代行",
+      "serviceType": "動画編集代行",
+      "url": "https://mono-create-group.github.io/lp/sample-hp/creators-list/client.html",
+      "provider": {
+        "@id": "https://mono-create-group.github.io/lp/sample-hp/creators-list/#organization"
+      },
+      "description": "個人の発信者向け動画編集代行。ショート動画は2分まで4,000円〜（税込）。長尺・オープニング・エンディングにも対応。中村が相談から納品まで担当し、内容を伺って正式料金と納品日を決めます。",
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "動画編集の基本料金（税込）",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "name": "ショート動画",
+            "url": "https://mono-create-group.github.io/lp/sample-hp/creators-list/client.html#price",
+            "priceSpecification": {
+              "@type": "PriceSpecification",
+              "price": 4000,
+              "priceCurrency": "JPY",
+              "valueAddedTaxIncluded": true,
+              "description": "完成尺2分まで。超過分は1分単位で切り上げ、1,000円ずつ加算。基本料金。編集内容を確認し、正式な料金は作業前に見積もります。"
+            }
+          },
+          {
+            "@type": "Offer",
+            "name": "長尺動画（10分まで）",
+            "url": "https://mono-create-group.github.io/lp/sample-hp/creators-list/client.html#price",
+            "priceSpecification": {
+              "@type": "PriceSpecification",
+              "price": 13000,
+              "priceCurrency": "JPY",
+              "valueAddedTaxIncluded": true,
+              "description": "完成尺10分まで。基本料金。編集内容を確認し、正式な料金は作業前に見積もります。"
+            }
+          },
+          {
+            "@type": "Offer",
+            "name": "長尺動画（10分超〜15分まで）",
+            "url": "https://mono-create-group.github.io/lp/sample-hp/creators-list/client.html#price",
+            "priceSpecification": {
+              "@type": "PriceSpecification",
+              "price": 16000,
+              "priceCurrency": "JPY",
+              "valueAddedTaxIncluded": true,
+              "description": "完成尺10分超〜15分まで。基本料金。編集内容を確認し、正式な料金は作業前に見積もります。"
+            }
+          },
+          {
+            "@type": "Offer",
+            "name": "長尺動画（15分超〜20分まで）",
+            "url": "https://mono-create-group.github.io/lp/sample-hp/creators-list/client.html#price",
+            "priceSpecification": {
+              "@type": "PriceSpecification",
+              "price": 20000,
+              "priceCurrency": "JPY",
+              "valueAddedTaxIncluded": true,
+              "description": "完成尺15分超〜20分まで。20分超は1分単位で切り上げ、1,000円ずつ加算。基本料金。編集内容を確認し、正式な料金は作業前に見積もります。"
+            }
+          },
+          {
+            "@type": "Offer",
+            "name": "オープニング制作",
+            "url": "https://mono-create-group.github.io/lp/sample-hp/creators-list/client.html#price",
+            "priceSpecification": {
+              "@type": "PriceSpecification",
+              "price": 5000,
+              "priceCurrency": "JPY",
+              "valueAddedTaxIncluded": true,
+              "description": "1本あたり。基本料金。編集内容を確認し、正式な料金は作業前に見積もります。"
+            }
+          },
+          {
+            "@type": "Offer",
+            "name": "エンディング制作",
+            "url": "https://mono-create-group.github.io/lp/sample-hp/creators-list/client.html#price",
+            "priceSpecification": {
+              "@type": "PriceSpecification",
+              "price": 5000,
+              "priceCurrency": "JPY",
+              "valueAddedTaxIncluded": true,
+              "description": "1本あたり。基本料金。編集内容を確認し、正式な料金は作業前に見積もります。"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://mono-create-group.github.io/lp/sample-hp/creators-list/client.html#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "クリエイターズリスト",
+          "item": "https://mono-create-group.github.io/lp/sample-hp/creators-list/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "動画編集代行",
+          "item": "https://mono-create-group.github.io/lp/sample-hp/creators-list/client.html"
+        }
+      ]
     }
-    buildGenreTags();
-    renderEditors();
-  }
-
-  // ランクラベル(emoji付き)
-  const RANK_LABEL = { S:'[S]', A:'[A]', B:'[B]', Rookie:'New' };
-  function getRankInfo(name){
-    return EDITOR_RANKS[name] || null;
-  }
-
-  function buildGenreTags(){
-    const set = new Set();
-    EDITORS.forEach(ed=>genreList(ed).forEach(g=>{if(!g.includes('ショート動画'))set.add(g);}));
-    const el = document.getElementById('genre-tags');
-    el.innerHTML = '<div class="genre-tag act" data-g="all">すべて</div>' +
-      [...set].map(g=>`<div class="genre-tag" data-g="${esc(g)}">${esc(g)}</div>`).join('');
-    el.querySelectorAll('.genre-tag').forEach(t=>t.addEventListener('click',()=>{
-      curGenre = t.dataset.g;
-      el.querySelectorAll('.genre-tag').forEach(x=>x.classList.toggle('act',x===t));
-      renderEditors();
-    }));
-  }
-
-  document.querySelectorAll('.fmt-tab').forEach(t=>t.addEventListener('click',()=>{
-    curFmt = t.dataset.fmt;
-    document.querySelectorAll('.fmt-tab').forEach(x=>x.classList.toggle('act',x===t));
-    renderEditors();
-  }));
-
-  function visible(ed){
-    if (curFmt!=='all' && !fmtsOf(ed).includes(curFmt)) return false;
-    if (curGenre!=='all' && !genreList(ed).includes(curGenre)) return false;
-    return true;
-  }
-
-  function renderEditors(){
-    const grid = document.getElementById('creator-grid');
-    const list = EDITORS.filter(visible);
-    if(!list.length){
-      grid.innerHTML = '<p class="empty-note">この条件に合う編集者は現在準備中です。<br>お問い合わせいただければ最適な編集者をお探しします。</p>';
-      return;
-    }
-    grid.innerHTML = list.map(ed=>{
-      const tags = genreList(ed).slice(0,4);
-      const ri = getRankInfo(ed.name);
-      const rankHtml = ri
-        ? `<span class="rank-badge rank-${esc(ri.rank)}">${esc(RANK_LABEL[ri.rank]||ri.rank)}</span>`
-        : '';
-      const starHtml = ri && ri.rating
-        ? `<span class="star-score">★${ri.rating.toFixed(1)} (${ri.reviewCount}件)</span>`
-        : '';
-      const cap = parseCapacity(ed.monthly_capacity);
-      const avail = ed.availability || cap.status;
-      const availBadge = avail
-        ? `<span class="avail-badge avail-${esc(avail)}">${esc(avail)}</span>`
-        : '';
-      const capacityNote = cap.n
-        ? `<div class="capacity-note">今月の空き: ${esc(cap.n)}本</div>`
-        : '';
-      return `<div class="creator-card" onclick="openModal(${ed.row})">
-        ${ed.icon?`<img class="ph-img" src="${esc(ed.icon)}" loading="lazy" onerror="this.outerHTML='<div class=&quot;ph&quot;>NO PHOTO</div>'">`:'<div class="ph">NO PHOTO</div>'}
-        <div class="creator-body">
-          <div style="margin-bottom:5px;">${rankHtml}${starHtml}${availBadge}</div>
-          <h4>${esc(ed.name)}</h4>
-          <div class="role">${esc([ed.occupation,ed.experience].filter(Boolean).join(' ／ '))}</div>
-          <div class="tags">${tags.map(t=>`<span>${esc(t)}</span>`).join('')}</div>
-          ${capacityNote}
-          <div class="meta">${esc(ed.software?`使用ソフト ${ed.software}`:'')}</div>
-          <div class="card-more">タップで詳細・お問い合わせ →</div>
-        </div>
-      </div>`;
-    }).join('');
-  }
-
-  function openModal(row){
-    const ed = EDITORS.find(e=>e.row===row);
-    if(!ed) return;
-    const ri = getRankInfo(ed.name);
-    const rows = [
-      ['<span style="white-space:nowrap">職業・肩</span><wbr>書き', ed.occupation],
-      ['編集歴', ed.experience],
-      ['得意ジャンル', ed.genres],
-      ['得意スタイル', ed.style],
-      ['使用ソフト', ed.software],
-      ['ランク', ri ? `${RANK_LABEL[ri.rank]||ri.rank}  ★${ri.rating.toFixed(1)} (${ri.reviewCount}件の<wbr>口コミ)  納品実績: ${ri.deliveries}本` : null],
-      ['稼働状況', ed.availability || parseCapacity(ed.monthly_capacity).status || null],
-      ['今<wbr>月の<wbr>空き', parseCapacity(ed.monthly_capacity).n ? parseCapacity(ed.monthly_capacity).n + '本' : null],
-      ['週の<wbr>対応本数', ed.weekly_capacity],
-      ['稼働時間帯', ed.work_hours],
-    ].filter(([,v])=>v);
-    const pf = (ed.portfolios||[]).filter(p=>p&&p.url);
-    document.getElementById('modal').innerHTML = `
-      <div class="m-head">
-        ${ed.icon?`<img src="${esc(ed.icon)}" onerror="this.outerHTML='<div class=&quot;ph&quot;>NO PHOTO</div>'">`:'<div class="ph">NO PHOTO</div>'}
-        <button class="m-close" onclick="closeModal()">✕</button>
-      </div>
-      <div class="m-body">
-        <h3>${esc(ed.name)}</h3>
-        <div class="m-sub">${esc([ed.occupation,ed.experience].filter(Boolean).join(' ／ '))}</div>
-        ${rows.map(([k,v])=>`<div class="m-row"><div class="k">${k}</div><div class="v">${esc(String(v))}</div></div>`).join('')}
-        ${pf.length?`<div class="m-row"><div class="k">ポートフォリオ</div><div class="v">${pf.map((p,i)=>`<a href="${esc(p.url)}" target="_blank" rel="noopener">作品${i+1}を<wbr>見る<wbr> ↗</a>`).join('<br>')}</div></div>`:''}
-        ${ed.comment?`<div class="m-row"><div class="k">ひとこと</div><div class="v">${esc(ed.comment)}</div></div>`:''}
-        <div class="m-contact">
-          <h5><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:6px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>${esc(ed.name)}さんに<wbr>ついて、<wbr>その場で<wbr>お問い<wbr>合わせ</h5>
-          <input type="text" id="mc-name" placeholder="お名前・会社名">
-          <input type="email" id="mc-email" placeholder="メールアドレス">
-          <textarea id="mc-msg" placeholder="ご相談内容(例: 週3本のショート編集をお願いしたい)"></textarea>
-          <button class="m-send" onclick="sendModalContact('${esc(ed.name)}')">この<wbr>編集者に<wbr>ついてお問い<wbr>合わせする</button>
-          <p class="m-note">送信ボタンで<wbr>メールが<wbr>作成されます。</p>
-        </div>
-      </div>`;
-    document.getElementById('modal-bg').classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeModal(){
-    document.getElementById('modal-bg').classList.remove('open');
-    document.body.style.overflow = '';
-  }
-
-  function mailtoSend(subject, body){
-    location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  }
-
-  // GASへ<wbr>自動受付(失敗時は<wbr>メール作成に<wbr>フォールバック)
-  async function submitInquiry(payload){
-    try{
-      const res = await fetch(GAS_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(Object.assign({ action: 'creator_dispatch_request' }, payload)),
-      });
-      let json; try { json = await res.json(); } catch(e) { json = { ok: true, degraded: true }; } // GAS POSTの<wbr>echo応答が<wbr>読めない<wbr>障害対策(2026-07-04観測): 実行自体は<wbr>成功している<wbr>ため成功扱い<wbr>
-      return !!json.ok;
-    }catch(e){
-      return false;
-    }
-  }
-
-  async function sendModalContact(editorName){
-    const name = document.getElementById('mc-name').value.trim();
-    const email = document.getElementById('mc-email').value.trim();
-    const msg = document.getElementById('mc-msg').value.trim();
-    if(!name||!email){alert('お名前と<wbr>メールアドレスを<wbr>入力してください<wbr>');return;}
-    const btn = document.querySelector('.m-send');
-    btn.disabled = true; btn.textContent = '送信中...';
-    const ok = await submitInquiry({ company: name, contact_name: name, email, selected_editors: editorName, message: msg });
-    if(ok){
-      btn.textContent = '送信しました。<wbr>担当者から<wbr>ご連絡します';
-      btn.style.background = '#16a34a';
-    }else{
-      btn.disabled = false; btn.textContent = 'この<wbr>編集者に<wbr>ついてお問い<wbr>合わせする<wbr>';
-      alert('自動送信に<wbr>失敗した<wbr>ため、<wbr>メール作成画面を<wbr>開きます。<wbr>');
-      mailtoSend(`【クリエイターズリスト】${editorName}さんへの<wbr>お問い<wbr>合わせ`,
-        `指名編集者: ${editorName}\<span style="white-space:nowrap">nお名前・会社名</span>: ${name}\n連絡先メール: ${email}\n\nご相談内容:\n${msg}`);
-    }
-  }
-
-  function syncGenreSelect(){
-    const fmt = document.getElementById('fmt').value;
-    const sel = document.getElementById('genre');
-    sel.innerHTML = (GENRES_BY_FMT[fmt]||[]).map(g=>`<option>${g}</option>`).join('');
-  }
-  syncGenreSelect();
-
-  document.getElementById('contact-form').addEventListener('submit',async e=>{
-    e.preventDefault();
-    const v = id=>document.getElementById(id).value.trim();
-    const named = document.getElementById('named-editor-row').style.display!=='none'?v('named-editor'):'';
-    const fmtLabel = document.getElementById('fmt').selectedOptions[0].textContent;
-    const btn = document.querySelector('.form-submit');
-    btn.disabled = true; btn.textContent = '送信中...';
-    const ok = await submitInquiry({
-      company: v('company'), contact_name: v('contact-name'), email: v('email'), phone: v('phone'),
-      genre: `${fmtLabel} / ${v('genre')}`, volume: v('volume'), start: v('start'),
-      selected_editors: named, message: v('message'),
-    });
-    if(ok){
-      document.getElementById('contact-form').innerHTML =
-        `<div style="text-align:center;padding:30px 10px;">
-          <div style="font-size:40px;margin-bottom:10px;"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#2563a8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-          <div style="font-weight:900;font-size:18px;margin-bottom:8px;">お問い<wbr>合わせを<wbr>受け付けました</div>
-          <div style="font-size:13.5px;color:var(--sub);">担当者より<wbr>1〜2営業日以内に<wbr>メールで<wbr>ご連絡します。<br>お急ぎの<wbr>場合は<wbr>その旨を<wbr>お書き<wbr>添えの<wbr>うえ再送ください。</div>
-        </div>`;
-    }else{
-      btn.disabled = false; btn.textContent = 'この<wbr>内容で<wbr>お問い<wbr>合わせする<wbr>';
-      alert('自動送信に<wbr>失敗した<wbr>ため、<wbr>メール作成画面を<wbr>開きます。<wbr>');
-      mailtoSend('【クリエイターズリスト】派遣の<wbr>お問い<wbr>合わせ',
-        (named?`指名編集者: ${named}\n`:'')+
-        `<span style="white-space:nowrap">会社名・屋号</span>: ${v('company')}\nご担当者名: ${v('contact-name')}\nメール: ${v('email')}\n電話: ${v('phone')||'なし'}\n`+
-        `形式: ${fmtLabel}\nジャンル: ${v('genre')}\n希望本数: ${v('volume')||'未記入'}\n開始時期: ${v('start')}\n\nご相談内容:\n${v('message')}`);
-    }
+  ]
+}</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&amp;family=Zen+Kaku+Gothic+New:wght@400;500;700;900&amp;display=swap">
+<link rel="stylesheet" href="rpg.css?v=db1fb0c7d9c0">
+</head><body id="top">
+<header class="site-header"><div class="header-inner"><a class="brand" href="#top"><img src="favicon.svg" alt="" width="48" height="48"><span>クリエイターズリスト</span></a><nav aria-label="ページ内"><a href="#portfolio">制作例</a><a href="#price">料金</a><a href="#flow">ご利用の流れ</a></nav><a class="cta cta-small" href="https://line.me/ti/p/@229dbicf" target="_blank" rel="noopener noreferrer"><span class="line-badge" aria-hidden="true"></span><span>無料で相談する</span><span aria-hidden="true" class="chevron"></span></a></div></header>
+<main>
+<section id="hero" class="hero wrap"><div class="hero-copy"><h1 data-jp-heading><span class="jp-line">撮ったのに、</span><span class="jp-line">編集が追いつかない</span></h1><p class="hero-price"><span>ショート動画</span> <span>1本<strong>4,000円〜</strong>（税込）</span></p><a class="cta " href="https://line.me/ti/p/@229dbicf" target="_blank" rel="noopener noreferrer"><span class="line-badge" aria-hidden="true"></span><span>LINEで編集を相談する</span><span aria-hidden="true" class="chevron"></span></a></div><img class="hero-art" src="img/rpg-hero-v6.png" alt="" width="1774" height="887" fetchpriority="high"></section>
+<section id="editing-future" class="editing-future"><div class="wrap future-inner"><div class="future-heading"><h2 data-jp-heading><span class="jp-line">編集を任せて</span><span class="jp-line">次の一本へ</span></h2><span class="story-underline" aria-hidden="true"></span></div><div class="story-comparison"><figure class="story-scene story-before"><img src="img/rpg-story-before-v11.png" alt="" width="1448" height="1086" decoding="async"><figcaption><span class="jp-sentence">投稿は後回し。</span><span class="jp-sentence">次の企画まで手が回らない。</span></figcaption></figure><span class="story-arrow" aria-hidden="true"><svg viewBox="0 0 80 64" focusable="false"><path d="M8 22h6v6H8zm0 14h6v6H8zm12-14h6v6h-6zm0 14h6v6h-6zM32 16h16V4l28 28-28 28V48H32z" fill="currentColor"/></svg></span><figure class="story-scene story-after"><img src="img/rpg-story-after-v11.png" alt="" width="1448" height="1086" decoding="async"><figcaption><span class="jp-sentence">空いた時間を、</span><span class="jp-sentence">企画や台本づくり、</span><span class="jp-sentence">次の撮影に使う。</span></figcaption></figure></div></div></section>
+<section id="portfolio" class="section"><span class="scene-decor exact-art art-books-lantern-left decor-portfolio-left" aria-hidden="true"></span><span class="scene-decor exact-art art-reel-vine-right decor-portfolio-right" aria-hidden="true"></span><div class="wrap portfolio-layout"><div class="portfolio-heading"><h2 id="portfolio-title" data-jp-heading><span class="jp-line">制作例</span></h2></div><div class="portfolio-controls"><button type="button" class="portfolio-prev" aria-label="前の制作例" aria-controls="portfolio-rail"><span aria-hidden="true">←</span></button><div class="portfolio-position" role="progressbar" aria-labelledby="portfolio-title" aria-valuemin="1" aria-valuemax="10" aria-valuenow="1"><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></div><button type="button" class="portfolio-next" aria-label="次の制作例" aria-controls="portfolio-rail"><span aria-hidden="true">→</span></button></div><div id="portfolio-rail" class="portfolio-videos" role="region" aria-label="動画の制作例" tabindex="0"><figure class="video-example video-short"><div class="phone-shell"><div class="phone-screen"><iframe src="https://drive.google.com/file/d/1Wju50chJjZg-mDk8GSkG0Ct7J53sidrD/preview" title="トークリール系" loading="lazy" allow="fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div></div><figcaption><span class="video-kind">ショート動画</span><strong>トークリール系</strong></figcaption><a class="video-external" href="https://drive.google.com/file/d/1Wju50chJjZg-mDk8GSkG0Ct7J53sidrD/view" target="_blank" rel="noopener noreferrer">別画面で見る<span aria-hidden="true"> ↗</span></a></figure><figure class="video-example video-short"><div class="phone-shell"><div class="phone-screen"><iframe src="https://drive.google.com/file/d/19TLOElyFz1ZDJEGYyWeCdgjv_PvEqGZA/preview" title="Vlog系" loading="lazy" allow="fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div></div><figcaption><span class="video-kind">ショート動画</span><strong>Vlog系</strong></figcaption><a class="video-external" href="https://drive.google.com/file/d/19TLOElyFz1ZDJEGYyWeCdgjv_PvEqGZA/view" target="_blank" rel="noopener noreferrer">別画面で見る<span aria-hidden="true"> ↗</span></a></figure><figure class="video-example video-short"><div class="phone-shell"><div class="phone-screen"><iframe src="https://drive.google.com/file/d/1nt-6D__bj53xolDCRj0_0YAZjj4IovnM/preview" title="医療解説系" loading="lazy" allow="fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div></div><figcaption><span class="video-kind">ショート動画</span><strong>医療解説系</strong></figcaption><a class="video-external" href="https://drive.google.com/file/d/1nt-6D__bj53xolDCRj0_0YAZjj4IovnM/view" target="_blank" rel="noopener noreferrer">別画面で見る<span aria-hidden="true"> ↗</span></a></figure><figure class="video-example video-short"><div class="phone-shell"><div class="phone-screen"><iframe src="https://drive.google.com/file/d/1aNTjF29YbYKnnrV-VwWOvjxb41lBi855/preview" title="スポーツ解説" loading="lazy" allow="fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div></div><figcaption><span class="video-kind">ショート動画</span><strong>スポーツ解説</strong></figcaption><a class="video-external" href="https://drive.google.com/file/d/1aNTjF29YbYKnnrV-VwWOvjxb41lBi855/view" target="_blank" rel="noopener noreferrer">別画面で見る<span aria-hidden="true"> ↗</span></a></figure><figure class="video-example video-short"><div class="phone-shell"><div class="phone-screen"><iframe src="https://drive.google.com/file/d/1likaSPOkhuukk8i3KtI0A_66humWpJUD/preview" title="ポッドキャスト系" loading="lazy" allow="fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div></div><figcaption><span class="video-kind">ショート動画</span><strong>ポッドキャスト系</strong></figcaption><a class="video-external" href="https://drive.google.com/file/d/1likaSPOkhuukk8i3KtI0A_66humWpJUD/view" target="_blank" rel="noopener noreferrer">別画面で見る<span aria-hidden="true"> ↗</span></a></figure><figure class="video-example video-short"><div class="phone-shell"><div class="phone-screen"><iframe src="https://drive.google.com/file/d/1gHOvHtCC8lSG6AlIfvxYn9T7QUhoO59C/preview" title="キッズ系" loading="lazy" allow="fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div></div><figcaption><span class="video-kind">ショート動画</span><strong>キッズ系</strong></figcaption><a class="video-external" href="https://drive.google.com/file/d/1gHOvHtCC8lSG6AlIfvxYn9T7QUhoO59C/view" target="_blank" rel="noopener noreferrer">別画面で見る<span aria-hidden="true"> ↗</span></a></figure><figure class="video-example video-long"><div class="phone-shell"><div class="phone-screen"><iframe src="https://drive.google.com/file/d/1_uyQsmrTTw4FDNpYPYSbSN9llCnsW4CL/preview" title="トーク" loading="lazy" allow="fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div></div><figcaption><span class="video-kind">長尺動画</span><strong>トーク</strong></figcaption><a class="video-external" href="https://drive.google.com/file/d/1_uyQsmrTTw4FDNpYPYSbSN9llCnsW4CL/view" target="_blank" rel="noopener noreferrer">別画面で見る<span aria-hidden="true"> ↗</span></a></figure><figure class="video-example video-long"><div class="phone-shell"><div class="phone-screen"><iframe src="https://drive.google.com/file/d/1dqQQqR8vJzenS65xhVVZy-KLi9lrBvev/preview" title="ダイエット（非属人）" loading="lazy" allow="fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div></div><figcaption><span class="video-kind">長尺動画</span><strong>ダイエット（非属人）</strong></figcaption><a class="video-external" href="https://drive.google.com/file/d/1dqQQqR8vJzenS65xhVVZy-KLi9lrBvev/view" target="_blank" rel="noopener noreferrer">別画面で見る<span aria-hidden="true"> ↗</span></a></figure><figure class="video-example video-long"><div class="phone-shell"><div class="phone-screen"><iframe src="https://drive.google.com/file/d/13TNC7y0WjiJIJWzj-kKPdzNaop3BRNSF/preview" title="ビジネス系（属人）" loading="lazy" allow="fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div></div><figcaption><span class="video-kind">長尺動画</span><strong>ビジネス系（属人）</strong></figcaption><a class="video-external" href="https://drive.google.com/file/d/13TNC7y0WjiJIJWzj-kKPdzNaop3BRNSF/view" target="_blank" rel="noopener noreferrer">別画面で見る<span aria-hidden="true"> ↗</span></a></figure><figure class="video-example video-long"><div class="phone-shell"><div class="phone-screen"><iframe src="https://drive.google.com/file/d/1cklI_q1YUnrjl29UcWdgjUIxl21DI7md/preview" title="ビジネス系（非属人）" loading="lazy" allow="fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div></div><figcaption><span class="video-kind">長尺動画</span><strong>ビジネス系（非属人）</strong></figcaption><a class="video-external" href="https://drive.google.com/file/d/1cklI_q1YUnrjl29UcWdgjUIxl21DI7md/view" target="_blank" rel="noopener noreferrer">別画面で見る<span aria-hidden="true"> ↗</span></a></figure></div></div></section>
+<section id="price" class="section"><span class="scene-decor exact-art art-edge-vine-left decor-price-left" aria-hidden="true"></span><span class="scene-decor exact-art art-edge-vine-right decor-price-right" aria-hidden="true"></span><div class="wrap"><div class="section-heading"><h2 data-jp-heading><span class="jp-line">料金</span></h2><p><span class="jp-sentence">以下は1本あたりの基本料金で、</span><span class="jp-sentence">すべて税込です。</span><span class="jp-sentence">内容を伺ってから正式にお見積もりします。</span></p></div><div class="price-grid"><article class="price-item "><span class="rpg-icon exact-art art-price-phone" aria-hidden="true"></span><div><h3>ショート動画</h3><p><span>2分まで：</span><strong>4,000円</strong></p></div></article><article class="price-item "><span class="rpg-icon exact-art art-price-screen" aria-hidden="true"></span><div><h3>長尺動画</h3><p><span>10分まで：</span><strong>13,000円</strong></p></div></article><article class="price-item option"><span class="rpg-icon exact-art art-price-clap" aria-hidden="true"></span><div><h3>オープニング制作</h3><p><span>1本：</span><strong>5,000円</strong></p></div></article><article class="price-item option"><span class="rpg-icon exact-art art-price-film" aria-hidden="true"></span><div><h3>エンディング制作</h3><p><span>1本：</span><strong>5,000円</strong></p></div></article></div><p class="payment"><span class="jp-sentence">お支払いは、</span><span class="jp-sentence">ご依頼ごとの全額先払いです。</span></p><details><summary>詳しい料金・修正条件</summary><div class="disclosure-content compact-terms"><div class="terms-intro"><p><span class="jp-sentence">素材とご希望の編集によって、</span><span class="jp-sentence">追加料金が必要な場合があります。</span></p><p><span class="jp-sentence">編集の範囲と正式な料金は、</span><span class="jp-sentence">作業前に決めます。</span></p></div><div class="terms-columns"><div><h3>ショート動画</h3><p><span class="jp-sentence">2分を超える分は、</span><span class="jp-sentence">1分ごとに1,000円加算します。</span></p><p><span class="jp-sentence">1分未満の端数は切り上げます。</span></p></div><div><h3>長尺動画</h3><p><span class="jp-sentence">10分超〜15分まで：16,000円</span><br class="terms-row-break"><span class="jp-sentence">15分超〜20分まで：20,000円</span></p><p><span class="jp-sentence">20分を超える分は、</span><span class="jp-sentence">1分ごとに1,000円加算します。</span></p><p><span class="jp-sentence">1分未満の端数は切り上げます。</span></p></div></div><div class="terms-payment"><p><span class="jp-sentence">お支払いは、</span><span class="jp-sentence">ご依頼ごとの全額先払いです。</span></p><p><span class="jp-sentence">まとめ払いによる割引はありません。</span></p></div><div class="terms-revision"><p><span class="jp-sentence">合意した編集範囲内での修正は</span><span class="jp-sentence">2回まで無料です。</span></p><p><span class="jp-sentence">こちらのミスによる修正は</span><span class="jp-sentence">回数に含めず、</span><span class="jp-sentence">無料で対応します。</span></p><p><span class="jp-sentence">3回目以降の修正や大幅な変更は、</span><span class="jp-sentence">作業前に別途お見積もりします。</span></p></div></div></details></div></section>
+<section id="flow" class="section"><span class="scene-decor exact-art art-edge-vine-left decor-flow-left" aria-hidden="true"></span><span class="scene-decor exact-art art-edge-vine-right decor-flow-right" aria-hidden="true"></span><div class="wrap"><h2 data-jp-heading><span class="jp-line">ご利用の流れ</span></h2><ol class="flow-steps"><li><span class="step-number" aria-hidden="true">01</span><span class="rpg-icon exact-art art-flow-chat" aria-hidden="true"></span><p><span class="jp-line">ご相談・希望の確認</span></p></li><li><span class="step-number" aria-hidden="true">02</span><span class="rpg-icon exact-art art-flow-calendar" aria-hidden="true"></span><p><span class="jp-line">お見積もり・日程の決定</span></p></li><li><span class="step-number" aria-hidden="true">03</span><span class="rpg-icon exact-art art-flow-folder" aria-hidden="true"></span><p><span class="jp-line">入金・素材確認</span></p></li><li><span class="step-number" aria-hidden="true">04</span><span class="rpg-icon exact-art art-flow-screen" aria-hidden="true"></span><p><span class="jp-line">編集</span></p></li><li><span class="step-number" aria-hidden="true">05</span><span class="rpg-icon exact-art art-flow-check" aria-hidden="true"></span><p><span class="jp-line">お客様の確認・修正</span></p></li><li><span class="step-number" aria-hidden="true">06</span><span class="rpg-icon exact-art art-flow-film" aria-hidden="true"></span><p><span class="jp-line">納品</span></p></li></ol><p class="timing"><span class="jp-sentence">納期の目安は3〜4日です。</span><span class="jp-sentence">正式な納品日は、</span><span class="jp-sentence">ご希望の編集内容と素材を</span><span class="jp-sentence">確認してから決めます。</span></p><details><summary>日程の詳細</summary><div class="disclosure-content"><p><span class="jp-sentence">ご相談や入金・素材の準備、</span><span class="jp-sentence">お客様の確認・修正にかかる日数によって、</span><span class="jp-sentence">ご相談から納品までの期間は変わります。</span></p><p><span class="jp-sentence">確認・修正の日程も含めて、</span><span class="jp-sentence">事前にご相談します。</span></p></div></details></div></section>
+<section id="contact" class="contact section"><div class="wrap contact-inner"><span class="contact-art exact-art art-footer-conversation" aria-hidden="true"></span><span class="scene-decor exact-art art-footer-cat-books decor-contact-right" aria-hidden="true"></span><span class="scene-decor exact-art art-edge-vine-right decor-contact-vine" aria-hidden="true"></span><div class="contact-copy"><a class="cta " href="https://line.me/ti/p/@229dbicf" target="_blank" rel="noopener noreferrer"><span class="line-badge" aria-hidden="true"></span><span>LINEで編集を相談する</span><span aria-hidden="true" class="chevron"></span></a><p>ご相談・お見積もり無料</p></div></div></section>
+</main><footer class="wrap"><a class="brand" href="#top"><img src="favicon.svg" alt="" width="48" height="48"><span>クリエイターズリスト</span></a><p>© mono.create</p></footer><script>
+(() => {
+  const rail = document.querySelector('#portfolio-rail');
+  const prev = document.querySelector('.portfolio-prev');
+  const next = document.querySelector('.portfolio-next');
+  const cards = [...rail.children];
+  const position = document.querySelector('.portfolio-position');
+  const markers = [...position.children];
+  const update = () => {
+    const atEnd = rail.scrollLeft + rail.clientWidth >= rail.scrollWidth - 2;
+    prev.disabled = rail.scrollLeft < 2; next.disabled = atEnd;
+    const step = cards[1].offsetLeft - cards[0].offsetLeft;
+    const index = atEnd ? cards.length - 1 : Math.max(0, Math.min(cards.length - 1, Math.round(rail.scrollLeft / step)));
+    position.setAttribute('aria-valuenow', String(index + 1));
+    markers.forEach((marker, i) => marker.classList.toggle('is-current', i === index));
+    rail.classList.toggle('is-at-end', atEnd);
+  };
+  const move = delta => {
+    const step = cards[1].offsetLeft - cards[0].offsetLeft;
+    const current = Math.round(rail.scrollLeft / step);
+    rail.scrollTo({left: (current + delta) * step, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'});
+  };
+  prev.addEventListener('click', () => move(-1)); next.addEventListener('click', () => move(1));
+  rail.addEventListener('keydown', e => {
+    if (e.target !== rail) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); move(e.key === 'ArrowRight' ? 1 : -1); }
+    if (e.key === 'Home' || e.key === 'End') { e.preventDefault(); rail.scrollTo({left:e.key === 'Home' ? 0 : rail.scrollWidth}); }
   });
-
-  // スクロール出現
-  const io = new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target);}}),{threshold:.12});
-  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
-
-  loadEditors();
-</script>
-
-</body>
-</html>
+  rail.addEventListener('scroll', update, {passive:true}); new ResizeObserver(update).observe(rail); update();
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const progress = document.createElement('div');
+  progress.className = 'adventure-progress'; progress.setAttribute('aria-hidden','true'); document.body.append(progress);
+  let scheduled = false;
+  const updateProgress = () => {
+    const total = document.documentElement.scrollHeight - innerHeight;
+    progress.style.setProperty('--progress', total > 0 ? Math.min(1, Math.max(0, scrollY / total)) : 0);
+    scheduled = false;
+  };
+  addEventListener('scroll', () => { if (!scheduled) { scheduled = true; requestAnimationFrame(updateProgress); } }, {passive:true});
+  addEventListener('resize', updateProgress); updateProgress();
+  if ('IntersectionObserver' in window) {
+    const reveal = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) { entry.target.classList.add('is-seen'); reveal.unobserve(entry.target); }
+    }), {threshold:.18});
+    document.querySelectorAll('.section h2,.price-item,.flow-steps li,.contact-art').forEach(el => reveal.observe(el));
+  }
+  const burst = event => {
+    if (reduced.matches || document.querySelectorAll('.pixel-spark').length > 24) return;
+    const area = event.currentTarget;
+    const bounds = area.getBoundingClientRect();
+    for (let i=0;i<8;i++) {
+      const spark=document.createElement('span'); spark.className='pixel-spark'; spark.setAttribute('aria-hidden','true');
+      const angle=i*Math.PI/4; const distance=22+(i%3)*10;
+      spark.style.cssText=`left:${event.clientX-bounds.left}px;top:${event.clientY-bounds.top}px;--dx:${Math.cos(angle)*distance}px;--dy:${Math.sin(angle)*distance-12}px;--spark-color:${i%2?'#d69832':'#fff4ac'}`;
+      area.append(spark); setTimeout(()=>spark.remove(),750);
+    }
+  };
+  document.querySelectorAll('#hero,#contact').forEach(area => area.addEventListener('pointerup',burst));
+})();
+</script></body></html>
